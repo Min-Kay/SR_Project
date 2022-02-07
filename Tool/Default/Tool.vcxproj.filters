@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="00. Special">
+      <UniqueIdentifier>{36848ca4-e1ca-4e39-803a-19e0c67361fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\00. MainFrm">
+      <UniqueIdentifier>{53149755-998e-476e-b123-7e4913ab055a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View">
+      <UniqueIdentifier>{730949fa-a597-4aa5-b953-9f258fddcf23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\02. Document">
+      <UniqueIdentifier>{cb351790-976d-418f-a84c-669a92443870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Obj">
+      <UniqueIdentifier>{2744de1d-9ba8-4e5c-83a1-66f7b1500e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Obj\Terrain">
+      <UniqueIdentifier>{43e204ab-2fb0-4c3d-abe2-1bc45cf68fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm">
+      <UniqueIdentifier>{fb6795ee-8b2a-421c-b6e8-342c7b26e625}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\01. MiniView">
+      <UniqueIdentifier>{fc8f5792-5be9-48bb-be92-6a1240542faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm\00. UnitTool">
+      <UniqueIdentifier>{246d244d-c309-4078-a41c-23cb715eddbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm\01. MapTool">
+      <UniqueIdentifier>{55151d52-ea5b-49f1-a12e-5a5d03e3063e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Etc">
+      <UniqueIdentifier>{90697169-e63a-4408-af4a-8b44b0743268}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Etc\00. FileInfo">
+      <UniqueIdentifier>{ec48caa4-a157-4b0a-a84f-379add35a130}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm\02. PopUpWnd">
+      <UniqueIdentifier>{ea971879-6799-40ca-b3d6-71a0aa9e92ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet">
+      <UniqueIdentifier>{8993ac3c-330d-4352-b9cd-4b20bc7a6fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet\00. MyPage1">
+      <UniqueIdentifier>{daf089f1-d7d6-47a4-954b-88894c81ff3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet\01. MyPage2">
+      <UniqueIdentifier>{faf693b5-77f2-4be9-bd93-bb4423ed1914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\01. View\00. MyForm\03. PathFind">
+      <UniqueIdentifier>{099e32db-2a44-4167-8120-80f8b66a3666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Include">
+      <UniqueIdentifier>{7f2ca14c-fce0-419d-a940-cd4bd31407bf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Public\MainFrm.h">
+      <Filter>00. Special\00. MainFrm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UnitTool.h">
+      <Filter>00. Special\01. View\00. MyForm\00. UnitTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapTool.h">
+      <Filter>00. Special\01. View\00. MyForm\01. MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MySheet.h">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MyPage1.h">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet\00. MyPage1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MyPage2.h">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet\01. MyPage2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MyForm.h">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PathFind.h">
+      <Filter>00. Special\01. View\00. MyForm\03. PathFind</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolView.h">
+      <Filter>00. Special\01. View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolDoc.h">
+      <Filter>00. Special\02. Document</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FileInfo.h">
+      <Filter>03. Etc\00. FileInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>Obj\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Functor.h">
+      <Filter>헤더 파일\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Include.h">
+      <Filter>헤더 파일\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Struct.h">
+      <Filter>헤더 파일\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Define.h">
+      <Filter>헤더 파일\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Enum.h">
+      <Filter>헤더 파일\Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Private\MainFrm.cpp">
+      <Filter>00. Special\00. MainFrm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UnitTool.cpp">
+      <Filter>00. Special\01. View\00. MyForm\00. UnitTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapTool.cpp">
+      <Filter>00. Special\01. View\00. MyForm\01. MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MySheet.cpp">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MyPage2.cpp">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet\01. MyPage2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MyPage1.cpp">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet\00. MyPage1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MyForm.cpp">
+      <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PathFind.cpp">
+      <Filter>00. Special\01. View\00. MyForm\03. PathFind</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolView.cpp">
+      <Filter>00. Special\01. View</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolDoc.cpp">
+      <Filter>00. Special\02. Document</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FileInfo.cpp">
+      <Filter>03. Etc\00. FileInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>Obj\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tool.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Tool.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\ToolDoc.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Tool.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
