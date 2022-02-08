@@ -15,6 +15,10 @@ public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
 
+private:
+	_uint RectCount = 100;
+	_uint vertexCount = 0; 
+
 public:
 	static CVIBuffer_Terrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
     virtual CComponent* Clone(void* pArg) override; 

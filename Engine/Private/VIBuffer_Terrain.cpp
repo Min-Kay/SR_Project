@@ -12,11 +12,13 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 
 HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype()
 {
+	vertexCount = RectCount + 1;
+
 	m_iStride = sizeof(VTXTEX);
-	m_iNumVertices = 121;
+	m_iNumVertices = vertexCount * vertexCount;
 	m_dwFVF = D3DFVF_XYZ | D3DFVF_TEX1;
 	m_ePrimitiveType = D3DPT_TRIANGLELIST;
-	m_iNumPrimitive = 200;
+	m_iNumPrimitive = (RectCount * RectCount * 2);
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
@@ -25,12 +27,12 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype()
 
 	m_pVB->Lock(0, 0, (void**)&pVertices, 0);
 
-	for (int i = 0; i < 11; ++i)
+	for (int i = 0; i < vertexCount; ++i)
 	{
-		for (int j = 0; j < 11; ++j)
+		for (int j = 0; j < vertexCount; ++j)
 		{
-			pVertices[j + i * 11].vPosition = _float3(10.0f * j, 10.0f * i, 0.f);
-			pVertices[j + i * 11].vTexUV = _float2(0.f,0.f);
+			pVertices[j + i * vertexCount].vPosition = _float3(1.0f * j, 1.0f * i, 0.f);
+			pVertices[j + i * vertexCount].vTexUV = _float2(0.f,0.f);
 		}
 	}
 
@@ -45,17 +47,17 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype()
 
 	m_pIB->Lock(0, 0, (void**)&pIndices, 0);
 	
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < RectCount; ++i)
 	{
-		for (int j = 0; j < 10; ++j)
+		for (int j = 0; j < RectCount; ++j)
 		{
-			_uint index = (j + i * 10) * 2;
-			_uint vertex = j + i * 11;
-			pIndices[index]._0 = vertex + 11;
-			pIndices[index]._1 = vertex + 12;
+			_uint index = (j + i * RectCount) * 2;
+			_uint vertex = j + i * vertexCount;
+			pIndices[index]._0 = vertex + vertexCount;
+			pIndices[index]._1 = vertex + vertexCount + 1;
 			pIndices[index]._2 = vertex + 1;
 							 
-			pIndices[index + 1]._0 = vertex + 11;
+			pIndices[index + 1]._0 = vertex + vertexCount;
 			pIndices[index + 1]._1 = vertex + 1;
 			pIndices[index + 1]._2 = vertex;
 		}
