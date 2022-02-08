@@ -2,49 +2,9 @@
 #include "Terrain.h"
 #include "GameInstance.h"
 #include "ToolView.h"
-CTerrain::CTerrain()
-{
-}
-HRESULT CTerrain::Initialize(void)
-{
-	CGameInstance* pInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pInstance);
-	if (FAILED(pInstance->InsertTexture(CTextureMgr::TEX_MULTI, L"../../Texture/Stage/Terrain/Tile/Tile%d.png", L"Terrain", L"Tile", 36)))
-	{
-		AfxMessageBox(L"Tile Texture Insert Failed");
-		return E_FAIL;
-	}
 
-	for (int i = 0; i < TILEY; ++i)
-	{
-		for (int j = 0; j < TILEX; ++j)
-		{
-			TILE*		pTile = new TILE;
 
-			float		fY = (TILECY / 2.f) * i;
-			float		fX = (TILECX * j) + (i % 2) * (TILECX / 2.f);
-
-			pTile->vPos = D3DXVECTOR3(fX, fY, 0.f);
-			pTile->vSize = D3DXVECTOR3((float)TILECX, (float)TILECY, 0.f);
-			pTile->byOption = 0;
-			pTile->byTileIdx = 3;
-			pTile->iIndex = i * TILEX + j;
-			pTile->iParentIndex = 0;
-
-			m_vecTile.push_back(pTile);
-		}
-	}
-
-	Safe_Release(pInstance);
-	return S_OK;
-}
-
-void CTerrain::Update(void)
-{
-
-}
-
-void CTerrain::MiniRender(void)
+HRESULT CTerrain::MiniRender(void)
 {
 	D3DXMATRIX	matWorld, matScale, matTrans;
 	
@@ -67,7 +27,7 @@ void CTerrain::MiniRender(void)
 		
 		const	TEXINFO*		pTextureInfo = pInstance->Get_Texture(L"Terrain", L"Tile", iter->byTileIdx);
 		if (nullptr == pTextureInfo)
-			return;
+			return E_FAIL;
 
 		// 이미지의 중심 좌표
 		float	fCenterX = pTextureInfo->tImgInfo.Width / 2.f;
@@ -82,10 +42,91 @@ void CTerrain::MiniRender(void)
 			D3DCOLOR_ARGB(255, 255, 255, 255));	
 	}
 	Safe_Release(pInstance);
+	return S_OK;
 }
 
-void CTerrain::Render(void)
+CTerrain::CTerrain(LPDIRECT3DDEVICE9 pGraphic_Device)
+	:CGameObject(pGraphic_Device)
 {
+}
+
+CTerrain::CTerrain(const CTerrain& rhs)
+	: CGameObject(rhs.m_pGraphic_Device),
+	m_pMainView(rhs.m_pMainView),
+	m_pRendererCom(rhs.m_pRendererCom)
+{
+	Safe_AddRef(m_pRendererCom);
+}
+
+HRESULT CTerrain::NativeConstruct_Prototype()
+{
+	CGameInstance* pInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pInstance);
+	if (FAILED(pInstance->InsertTexture(CTextureMgr::TEX_MULTI, L"../../Texture/Stage/Terrain/Tile/Tile%d.png", L"Terrain", L"Tile", 36)))
+	{
+		AfxMessageBox(L"Tile Texture Insert Failed");
+		return E_FAIL;
+	}
+
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			TILE* pTile = new TILE;
+
+			float		fY = (TILECY / 2.f) * i;
+			float		fX = (TILECX * j) + (i % 2) * (TILECX / 2.f);
+
+			pTile->vPos = D3DXVECTOR3(fX, fY, 0.f);
+			pTile->vSize = D3DXVECTOR3((float)TILECX, (float)TILECY, 0.f);
+			pTile->byOption = 0;
+			pTile->byTileIdx = 3;
+			pTile->iIndex = i * TILEX + j;
+			pTile->iParentIndex = 0;
+
+			m_vecTile.push_back(pTile);
+		}
+	}
+
+	Safe_Release(pInstance);
+
+	/* For.Com_Renderer */
+	if (FAILED(__super::Add_Component(1, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
+		return E_FAIL;
+
+
+	return S_OK;
+}
+
+HRESULT CTerrain::NativeConstruct(void* pArg)
+{
+	
+	return S_OK;
+}
+
+_int CTerrain::Tick(_float fTimeDelta)
+{
+	if (0 > __super::Tick(fTimeDelta))
+		return -1;
+
+	return _int();
+}
+
+_int CTerrain::LateTick(_float fTimeDelta)
+{
+	if (0 > __super::LateTick(fTimeDelta))
+		return -1;
+
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+
+	return _int();
+}
+
+HRESULT CTerrain::Render(void)
+{
+	if(FAILED(__super::Render()))
+		return E_FAIL;
+
 	RECT		rc;
 
 	::GetClientRect(m_pMainView->m_hWnd, &rc);
@@ -117,7 +158,7 @@ void CTerrain::Render(void)
 
 		const	TEXINFO*		pTextureInfo = pInstance->Get_Texture(L"Terrain", L"Tile", iter->byTileIdx);
 		if (nullptr == pTextureInfo)
-			return;
+			return E_FAIL;
 
 		// 이미지의 중심 좌표
 		float	fCenterX = pTextureInfo->tImgInfo.Width / 2.f;
@@ -137,13 +178,13 @@ void CTerrain::Render(void)
 		++iIndex;
 	}
 	Safe_Release(pInstance);
+	return S_OK; 
 }
 
-
-CTerrain* CTerrain::Create()
+CTerrain* CTerrain::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CTerrain* pInstance = new CTerrain;
-	if (FAILED(pInstance->Initialize()))
+	CTerrain* pInstance = new CTerrain(pGraphic_Device);
+	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
 		MSGBOX("Terrain Create Error");
 		Safe_Release(pInstance);
@@ -153,6 +194,8 @@ CTerrain* CTerrain::Create()
 
 void CTerrain::Free()
 {
+	__super::Free();
+	Safe_Release(m_pRendererCom);
 	for_each(m_vecTile.begin(), m_vecTile.end(), Safe_Delete<TILE*>);
 	m_vecTile.clear();
 }
@@ -306,4 +349,16 @@ void CTerrain::SetRatio(D3DXMATRIX* pOut, float fRatioX, float fRatioY)
 	pOut->_22 *= fRatioY;
 	pOut->_32 *= fRatioY;
 	pOut->_42 *= fRatioY;
+}
+
+CGameObject* CTerrain::Clone(void* pArg)
+{
+	CTerrain* pInstance = new CTerrain(*this);
+
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		Safe_Release(pInstance);
+		return nullptr;
+	}
+	return pInstance;
 }

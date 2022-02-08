@@ -132,11 +132,11 @@
     <ClInclude Include="..\Public\Tool_Enum.h">
       <Filter>헤더 파일\Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SubView.h">
+      <Filter>00. Special\01. View\01. MiniView</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Private\MainFrm.cpp">
-      <Filter>00. Special\00. MainFrm</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UnitTool.cpp">
       <Filter>00. Special\01. View\00. MyForm\00. UnitTool</Filter>
     </ClCompile>
@@ -175,6 +175,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\stdafx.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainFrm.cpp">
+      <Filter>00. Special\00. MainFrm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SubView.cpp">
+      <Filter>00. Special\01. View\01. MiniView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

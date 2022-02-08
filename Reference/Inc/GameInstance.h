@@ -25,13 +25,11 @@ public:
 	HRESULT Clear_LevelResource(_uint iLevelIndex);
 
 public:
-	HRESULT Init_Device(CGraphic_Device::GRAPHICDESC & GraphicDesc, LPDIRECT3DDEVICE9 * ppOut);
-
 	const LPDIRECT3DDEVICE9 Get_Device();
 
 public: /* For.Graphic_Device */
 	void Render_Begin(void);
-	void Render_End();	
+	void Render_End(HWND hWnd = nullptr);	
 	LPD3DXSPRITE		Get_Sprite(void);
 	LPD3DXFONT			Get_Font(void);
 

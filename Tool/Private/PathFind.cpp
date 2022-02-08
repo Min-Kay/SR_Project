@@ -114,7 +114,7 @@ void CPathFind::OnLoadData()
 	UpdateData(FALSE);
 
 	// 윈도우의 기본 프로그램을 실행시켜주는 함수
-	WinExec("notepad.exe ../Data/ImgPath.txt", SW_SHOW);
+	WinExec("notepad.exe ../../Data/ImgPath.txt", SW_SHOW);
 }
 
 

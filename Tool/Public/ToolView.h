@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include "GameInstance.h"
 #include "Terrain.h"
+#include "Renderer.h"
+
 
 class CToolDoc;
 class CToolView : public CScrollView
@@ -51,6 +52,7 @@ public:
 public:
 	CTerrain*			m_pTerrain = nullptr;
 	LPDIRECT3DDEVICE9	m_device = nullptr;
+	CRenderer*			m_pRenderer = nullptr;
 
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

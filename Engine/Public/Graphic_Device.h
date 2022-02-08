@@ -32,7 +32,7 @@ public:
 	void		SetParameters(D3DPRESENT_PARAMETERS& d3dpp, const GRAPHICDESC& GraphicDesc);
 
 	void		Render_Begin(void);
-	void		Render_End();
+	void		Render_End(HWND hWnd = nullptr);
 
 private:
 	LPDIRECT3D9				m_p3D;

@@ -200,6 +200,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\SubView.h" />
     <ClInclude Include="..\Public\Tool_Define.h" />
     <ClInclude Include="..\Public\Tool_Enum.h" />
     <ClInclude Include="..\Public\FileInfo.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="..\Private\MySheet.cpp" />
     <ClCompile Include="..\Private\PathFind.cpp" />
     <ClCompile Include="..\Private\stdafx.cpp" />
+    <ClCompile Include="..\Private\SubView.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Tool.cpp" />
     <ClCompile Include="..\Private\ToolDoc.cpp" />

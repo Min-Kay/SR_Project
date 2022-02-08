@@ -12,9 +12,10 @@
 #include "ToolDoc.h"
 #include "ToolView.h"
 #include "MainFrm.h"
-#include "MiniView.h"
+#include "SubView.h"
 #include "MyForm.h"
 #include "GameInstance.h"
+#include "Renderer.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,6 +45,7 @@ CToolView::CToolView()
 
 CToolView::~CToolView()
 {
+	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTerrain);
 	Safe_Release(m_device);
 }
@@ -106,9 +108,10 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 	
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	pInstance->Render_Begin();
-
-	m_pTerrain->Render();
-	
+	pInstance->Get_Sprite()->Begin(D3DXSPRITE_ALPHABLEND);
+	m_pRenderer->Render();
+	m_pTerrain->LateTick(0.f);
+	pInstance->Get_Sprite()->End();
 	pInstance->Render_End();
 
 	Safe_Release(pInstance);
@@ -171,7 +174,6 @@ void CToolView::OnInitialUpdate()
 
 	g_hWnd = m_hWnd;
 
-
 	CGraphic_Device::GRAPHICDESC		GraphicDesc;
 	ZeroMemory(&GraphicDesc, sizeof(CGraphic_Device::GRAPHICDESC));
 
@@ -181,7 +183,7 @@ void CToolView::OnInitialUpdate()
 	GraphicDesc.eScreenMode = CGraphic_Device::TYPE_WINMODE;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	if (FAILED(pInstance->Initialize_Engine( nullptr, GraphicDesc,0, &m_device)))
+	if (FAILED(pInstance->Initialize_Engine( nullptr, GraphicDesc,2, &m_device)))
 	{
 		AfxMessageBox(L"Device Init Failed");
 		return;
@@ -193,10 +195,17 @@ void CToolView::OnInitialUpdate()
 		return;
 	}
 
+	m_device->SetRenderState(D3DRS_LIGHTING,false);
+
+	if (FAILED(pInstance->Add_Prototype(1, TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_device))))
+		return;
+	
+	Safe_AddRef(m_pRenderer);
 	Safe_Release(pInstance);
 
-	m_pTerrain = CTerrain::Create();
+	m_pTerrain = CTerrain::Create(m_device);
 	m_pTerrain->SetMainView(this);
+	m_pTerrain->LateTick(0.f);
 
 		// AfxGetMainWnd : 현재 메인 윈도우를 반환하는 전역 함수
 		// 반환타입이 부모타입이어서 자식 타입으로 형변환 했음
@@ -249,7 +258,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
 	//CMainFrame*	pMain = dynamic_cast<CMainFrame*>(GetParentFrame());
 
-	CMyForm*	pMiniView = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(0, 0));
+	CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
 
 	CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
 
@@ -260,7 +269,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		point.y + GetScrollPos(1),
 		0.f), pMapTool->m_iDrawID);
 
-
+	
 	pMiniView->Invalidate(FALSE);
 }
 
@@ -277,12 +286,12 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 		Invalidate(FALSE);
 
 		CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-		CMyForm*	pMiniView = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(0, 0));
+		CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
 		CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
 		CMapTool*	pMapTool = &pMyForm->m_MapTool;
 
 		m_pTerrain->TileChange(D3DXVECTOR3(point.x + GetScrollPos(0), point.y + GetScrollPos(1), 0.f), pMapTool->m_iDrawID);
 
-		//pMiniView->Invalidate(FALSE);
+		pMiniView->Invalidate(FALSE);
 	}
 }

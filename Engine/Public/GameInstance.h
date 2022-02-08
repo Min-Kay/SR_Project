@@ -29,7 +29,7 @@ public:
 
 public: /* For.Graphic_Device */
 	void Render_Begin(void);
-	void Render_End();	
+	void Render_End(HWND hWnd = nullptr);	
 	LPD3DXSPRITE		Get_Sprite(void);
 	LPD3DXFONT			Get_Font(void);
 

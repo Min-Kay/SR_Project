@@ -98,12 +98,12 @@ void CGameInstance::Render_Begin(void)
 	m_pGraphic_Device->Render_Begin();
 }
 
-void CGameInstance::Render_End()
+void CGameInstance::Render_End(HWND hWnd)
 {
 	if (nullptr == m_pGraphic_Device)
 		return;
 
-	m_pGraphic_Device->Render_End();
+	m_pGraphic_Device->Render_End(hWnd);
 }
 
 LPD3DXSPRITE CGameInstance::Get_Sprite(void)

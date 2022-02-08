@@ -116,14 +116,16 @@ void CGraphic_Device::Render_Begin(void)
 
 	m_pDevice->BeginScene();
 
+	
 }
 
-void CGraphic_Device::Render_End()
+void CGraphic_Device::Render_End(HWND hWnd)
 {	
+
 	m_pDevice->EndScene();
 
 	// 후면버퍼에 연결되어 있는 서피스와 전면 버퍼에 연결된 서피스를 교환하는 과정
-	m_pDevice->Present(nullptr, nullptr, 0, nullptr);
+	m_pDevice->Present(nullptr, nullptr, hWnd, nullptr);
 	// 1,2인자 : 스왑체인 기법이 D3DSWAPEFFECT_COPY가 아닌 이상 NULL
 	// 3인자 : 출력 대상 윈도우 핸들, 기본 nullptr인 경우 d3dpp.hDeviceWindow을 참조
 	// 4인자 :  스왑체인 기법이 D3DSWAPEFFECT_COPY가 아닌 이상 NULL
