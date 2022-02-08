@@ -35,7 +35,7 @@ private:
 #endif // _DEBUG
 
 private:
-	HRESULT OpenLevel(LEVEL eLevelID, LEVEL currLevel = LEVEL_END);
+	HRESULT OpenLevel(LEVEL eLevelID);
 	HRESULT DefaultSetting();
 
 	HRESULT Ready_Prototype_GameObject();

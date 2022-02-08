@@ -14,7 +14,7 @@ public:
 	CLevel_Manager();
 	virtual ~CLevel_Manager() = default;
 public:
-	HRESULT OpenLevel(_uint iCurrLevelIndex,_uint iLevelIndex, class CLevel* pNextLevel);
+	HRESULT OpenLevel(_uint iCurrLevelIndex, class CLevel* pNextLevel);
 	_int Tick(_float fTimeDelta);
 	_int LateTick(_float fTimeDelta);
 	HRESULT Render();

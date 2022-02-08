@@ -27,11 +27,11 @@ public:
 protected:
 	LPDIRECT3DVERTEXBUFFER9			m_pVB = nullptr;
 	_uint							m_iStride = 0; /* 정점하나의 바이트크기 .*/
-	_uint							m_iNumVertices = 0;
+	_ulong							m_iNumVertices = 0;
 	_ulong							m_dwFVF = 0;
 
 	D3DPRIMITIVETYPE				m_ePrimitiveType;
-	_uint							m_iNumPrimitive = 0;
+	_ulong							m_iNumPrimitive = 0;
 
 	LPDIRECT3DINDEXBUFFER9			m_pIB = nullptr;
 	_uint							m_iIndicesSize = 0;

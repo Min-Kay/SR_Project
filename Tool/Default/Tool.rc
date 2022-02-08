@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "../Public/resource.h"
+#include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -8,7 +8,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #ifndef APSTUDIO_INVOKED
-#include "../Public/targetver.h"
+#include "targetver.h"
 #endif
 #include "afxres.h"
 #include "verrsrc.h"
@@ -235,10 +235,10 @@ BEGIN
     PUSHBUTTON      "저장하기",IDC_BUTTON1,12,150,90,24
 END
 
-IDD_MYPAGE1 DIALOG 0, 0, 320, 200
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_MYPAGE1 DIALOGEX 0, 0, 320, 200
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "대화 상자"
-FONT 9, "MS Shell Dlg"
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "확인",IDOK,209,179,50,14
     PUSHBUTTON      "취소",IDCANCEL,263,179,50,14
@@ -398,6 +398,11 @@ BEGIN
 END
 
 IDD_PATHFIND AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MYPAGE1 AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

@@ -16,7 +16,7 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 
 private:
-	_uint RectCount = 100;
+	_uint RectCount = 1000;
 	_uint vertexCount = 0; 
 
 public:

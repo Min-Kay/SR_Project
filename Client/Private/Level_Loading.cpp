@@ -53,7 +53,7 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 			break;
 		}				
 
-		if (FAILED(pGameInstance->OpenLevel(LEVEL_LOADING, m_eNextLevel, pLevel)))
+		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, pLevel)))
 			return E_FAIL;
 
 		Safe_Release(pGameInstance);

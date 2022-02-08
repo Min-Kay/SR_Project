@@ -8,20 +8,24 @@ CLevel_Manager::CLevel_Manager()
 {
 }
 
-HRESULT CLevel_Manager::OpenLevel(_uint iCurrLevelIndex, _uint iLevelIndex, CLevel * pNextLevel)
+HRESULT CLevel_Manager::OpenLevel(_uint iCurrLevelIndex, CLevel * pNextLevel)
 {
 	if (nullptr == pNextLevel)
 		return E_FAIL;
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 	
-	pGameInstance->Clear_LevelResource(iCurrLevelIndex);
+	if (nullptr != m_pCurrentLevel)
+	{
+		if (FAILED(pGameInstance->Clear_LevelResource(m_iCurrentLevelIndex)))
+			return E_FAIL;
+	}
 
 	Safe_Release(m_pCurrentLevel);
 
 	m_pCurrentLevel = pNextLevel;
 
-	m_iCurrentLevelIndex = iLevelIndex;
+	m_iCurrentLevelIndex = iCurrLevelIndex;
 
 	RELEASE_INSTANCE(CGameInstance);
 

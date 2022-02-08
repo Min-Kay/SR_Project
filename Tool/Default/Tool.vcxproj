@@ -221,6 +221,7 @@
     <ClInclude Include="..\Public\ToolDoc.h" />
     <ClInclude Include="..\Public\ToolView.h" />
     <ClInclude Include="..\Public\UnitTool.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\FileInfo.cpp" />

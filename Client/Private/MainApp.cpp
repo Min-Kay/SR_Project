@@ -94,7 +94,7 @@ HRESULT CMainApp::Render()
 }
 
 
-HRESULT CMainApp::OpenLevel(LEVEL eLevelID ,LEVEL currLevel)
+HRESULT CMainApp::OpenLevel(LEVEL eLevelID)
 {
 	CLevel*			pLevel = nullptr;
 
@@ -113,7 +113,7 @@ HRESULT CMainApp::OpenLevel(LEVEL eLevelID ,LEVEL currLevel)
 	if (nullptr == pLevel)
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->OpenLevel(/*eLevelID == LEVEL_LOGO ? eLevelID : LEVEL_LOADING*/currLevel, eLevelID, pLevel)))
+	if (FAILED(m_pGameInstance->OpenLevel(/*eLevelID == LEVEL_LOGO ? eLevelID : LEVEL_LOADING*/eLevelID, pLevel)))
 		return E_FAIL;	
 
 	return S_OK;

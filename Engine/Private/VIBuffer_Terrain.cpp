@@ -32,18 +32,18 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype()
 		for (int j = 0; j < vertexCount; ++j)
 		{
 			pVertices[j + i * vertexCount].vPosition = _float3(1.0f * j, 1.0f * i, 0.f);
-			pVertices[j + i * vertexCount].vTexUV = _float2(0.f,0.f);
+			pVertices[j + i * vertexCount].vTexUV = _float2(_float(j) / (vertexCount - 1), _float(i)/ (vertexCount-1));
 		}
 	}
 
 	m_pVB->Unlock();
 
-	m_iIndicesSize = sizeof(FACEINDICES16);
-	m_eIndexFormat = D3DFMT_INDEX16;
+	m_iIndicesSize = sizeof(FACEINDICES32);
+	m_eIndexFormat = D3DFMT_INDEX32;
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
 
-	FACEINDICES16* pIndices = nullptr;
+	FACEINDICES32* pIndices = nullptr;
 
 	m_pIB->Lock(0, 0, (void**)&pIndices, 0);
 	

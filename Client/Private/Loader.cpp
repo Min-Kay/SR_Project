@@ -47,9 +47,9 @@ HRESULT CLoader::NativeConstruct(LEVEL eNextLevel)
 
 HRESULT CLoader::Loading_ForGamePlay()
 {
-	for (_uint i = 0; i < 999999999
-		; ++i)
-		int a = 10;
+	/*원형 컴포넌트 생성*/
+
+	/*원형 객체 생성*/
 
 	m_isFinished = true;
 
@@ -58,8 +58,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 HRESULT CLoader::Loading_ForBoss()
 {
-	for (_uint i = 0; i < 9999999999; ++i)
-		int a = 10;
+	/*원형 컴포넌트 생성*/
+
+	/*원형 객체 생성*/
 
 	m_isFinished = true;
 	

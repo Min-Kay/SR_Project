@@ -138,12 +138,12 @@ HRESULT CGameInstance::Add_Timer(const _tchar * pTimerTag)
 	return m_pTimer_Manager->Add_Timer(pTimerTag);
 }
 
-HRESULT CGameInstance::OpenLevel(_uint iCurrLevelIndex, _uint iLevelIndex, CLevel * pNextLevel)
+HRESULT CGameInstance::OpenLevel(_uint iCurrLevelIndex, CLevel * pNextLevel)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
 
-	return m_pLevel_Manager->OpenLevel(iCurrLevelIndex, iLevelIndex, pNextLevel);
+	return m_pLevel_Manager->OpenLevel(iCurrLevelIndex, pNextLevel);
 }
 
 HRESULT CGameInstance::Render_Level()

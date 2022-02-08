@@ -51,7 +51,7 @@ _int CLevel_Logo::LateTick(_float fTimeDelta)
 		CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 		Safe_AddRef(pGameInstance);
 
-		if (FAILED(pGameInstance->OpenLevel(LEVEL_LOGO,LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_GAMEPLAY))))
+		if (FAILED(pGameInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_GAMEPLAY))))
 			return E_FAIL;
 
 		Safe_Release(pGameInstance);
