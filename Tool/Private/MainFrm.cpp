@@ -124,7 +124,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	m_SecondSplitter.CreateStatic(&m_MainSplitter, 2, 1, WS_CHILD | WS_VISIBLE, m_MainSplitter.IdFromRowCol(0, 0));
 
-	m_SecondSplitter.CreateView(0, 0, RUNTIME_CLASS(CSubView), CSize(300, 300), pContext);
+	m_SecondSplitter.CreateView(0, 0, RUNTIME_CLASS(CMyForm), CSize(300, 300), pContext);
 	m_SecondSplitter.CreateView(1, 0, RUNTIME_CLASS(CMyForm), CSize(300, 300), pContext);
 
 	// 열 번호, 열의 크기 지정, 허용 가능한 최소 크기

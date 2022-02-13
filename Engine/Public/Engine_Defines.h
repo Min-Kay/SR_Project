@@ -16,10 +16,6 @@
 #include <map>
 #include <string>
 #include <algorithm>
-
-#include <ctime>
-#include <fstream>
-
 using namespace std;
 
 #ifdef _DEBUG

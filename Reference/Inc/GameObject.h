@@ -12,6 +12,9 @@ protected:
 	explicit CGameObject(const CGameObject& rhs);
 	virtual ~CGameObject() = default;
 public:
+	class CComponent* Get_Component(const _tchar* pComponentTag);
+
+public:
 	virtual HRESULT NativeConstruct_Prototype();
 	virtual HRESULT NativeConstruct(void* pArg);
 	virtual _int Tick(_float fTimeDelta);

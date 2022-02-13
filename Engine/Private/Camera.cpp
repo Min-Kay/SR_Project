@@ -50,37 +50,56 @@ HRESULT CCamera::NativeConstruct(void * pArg)
 
 _int CCamera::Tick(_float fTimeDelta)
 {
-	if (nullptr == m_pGraphic_Device)
-		return -1;
-
-	if (FAILED(m_pGraphic_Device->SetTransform(D3DTS_VIEW, &m_pTransform->Get_WorldMatrixInverse())))
-		return -1;
-
-	_float4x4		ProjMatrix;
-
-	D3DXMatrixPerspectiveFovLH(&ProjMatrix, m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
-	if (FAILED(m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &ProjMatrix)))
-		return -1;
-
 	return _int();
 }
 
 _int CCamera::LateTick(_float fTimeDelta)
 {
-
 	return _int();
 }
 
 HRESULT CCamera::Render()
 {
+	return S_OK;
+}
+
+HRESULT CCamera::BeforeRender()
+{
+	if (nullptr == m_pGraphic_Device)
+		return E_FAIL;
+
+	if (FAILED(m_pGraphic_Device->SetTransform(D3DTS_VIEW, &m_pTransform->Get_WorldMatrixInverse())))
+		return E_FAIL;
+
+	_float4x4		ProjMatrix;
+
+	D3DXMatrixPerspectiveFovLH(&ProjMatrix, m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+	if (FAILED(m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &ProjMatrix)))
+		return E_FAIL;
 
 	return S_OK;
 }
 
+HRESULT CCamera::AfterRender()
+{
+	//m_pGraphic_Device->SetRenderTarget(0,nullptr);
+	return S_OK;
+}
+
+void CCamera::Set_Handle(HWND _hWnd)
+{
+	hWnd = _hWnd;
+}
+
+const HWND& CCamera::Get_Handle() const
+{
+	return hWnd;
+}
+
+
 void CCamera::Free()
 {
 	__super::Free();
-
 	Safe_Release(m_pTransform);
 
 }

@@ -200,6 +200,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\SubView.h" />
     <ClInclude Include="..\Public\Tool_Define.h" />
     <ClInclude Include="..\Public\Tool_Enum.h" />
@@ -217,13 +218,12 @@
     <ClInclude Include="..\Public\stdafx.h" />
     <ClInclude Include="..\Public\Tool_Struct.h" />
     <ClInclude Include="..\Public\targetver.h" />
-    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\ToolDoc.h" />
     <ClInclude Include="..\Public\ToolView.h" />
     <ClInclude Include="..\Public\UnitTool.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\Private\FileInfo.cpp" />
     <ClCompile Include="..\Private\MainFrm.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />
@@ -234,7 +234,6 @@
     <ClCompile Include="..\Private\PathFind.cpp" />
     <ClCompile Include="..\Private\stdafx.cpp" />
     <ClCompile Include="..\Private\SubView.cpp" />
-    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Tool.cpp" />
     <ClCompile Include="..\Private\ToolDoc.cpp" />
     <ClCompile Include="..\Private\ToolView.cpp" />
@@ -242,9 +241,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Tool.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\Tool.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Tool.ico" />

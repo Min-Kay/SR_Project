@@ -3,7 +3,6 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "BackGround.h"
-#include "Map.h"
 #include "Camera_Dynamic.h"
 
 CLevel_Logo::CLevel_Logo(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -77,7 +76,7 @@ HRESULT CLevel_Logo::Ready_Prototype_GameObject()
 	/* 원본객체 생성 */
 
 	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Background"), CBackGround::Create(m_pGraphic_Device))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -93,21 +92,42 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERADESC		CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CameraDesc));
 
-	CameraDesc.vEye = _float3(0.f, -10.f, -10.f);
+	CameraDesc.vEye = _float3(0.f, 0.f, -50.f);
 	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.fFovy = D3DXToRadian(60.0f);
 	CameraDesc.fAspect = _float(g_iWinCX) / g_iWinCY;
-	CameraDesc.fNear = 0.2f;
+	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 300.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_Camera_Dynamic"), &CameraDesc)))
+	if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Dynamic"), pLayerTag, &CameraDesc)))
 		return E_FAIL;
+
+
+	CCamera::CAMERADESC		CameraDesc2;
+	ZeroMemory(&CameraDesc2, sizeof(CameraDesc2));
+
+	CameraDesc2.vEye = _float3(0.f, 0.f, -50.f);
+	CameraDesc2.vAt = _float3(0.f, 0.f, 0.f);
+	CameraDesc2.vAxisY = _float3(0.f, 1.f, 0.f);
+			
+	CameraDesc2.fFovy = D3DXToRadian(60.0f);
+	CameraDesc2.fAspect = 1;
+	CameraDesc2.fNear = 0.1f;
+	CameraDesc2.fFar = 300.f;
+			
+	CameraDesc2.TransformDesc.fSpeedPerSec = 10.f;
+	CameraDesc2.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
+
+
+	if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Sub"), TEXT("Layer_Camera_Sub"), &CameraDesc2)))
+		return E_FAIL;
+
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -119,7 +139,33 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	/* 사본객체를 생성ㅎ나다. */
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_Background"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

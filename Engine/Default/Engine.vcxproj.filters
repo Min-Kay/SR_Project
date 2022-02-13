@@ -76,17 +76,11 @@
     <Filter Include="01.Utility\03.GameObject\Camera">
       <UniqueIdentifier>{17017a4f-fdc1-4c68-9175-0765cb7841cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\05.Texture">
-      <UniqueIdentifier>{278ab517-1fb1-4cf4-a0b1-24ec1cb724b7}</UniqueIdentifier>
+    <Filter Include="01.Utility\04.Components\Texture">
+      <UniqueIdentifier>{dd3095cf-d559-4ef5-b684-ca9370ebd9cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\05.Texture\00.Manager">
-      <UniqueIdentifier>{a1103198-9355-40cb-94cb-8f356da7cf9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\05.Texture\01.Single">
-      <UniqueIdentifier>{d21e4f47-a045-49e5-8e2e-22d5239a0812}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\05.Texture\02.Multi">
-      <UniqueIdentifier>{462fc945-517b-4790-a443-83346b20bd70}</UniqueIdentifier>
+    <Filter Include="01.Utility\03.GameObject\Camera\Manager">
+      <UniqueIdentifier>{fdc9d89f-3030-43e7-be1a-aead14cfaded}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -162,17 +156,11 @@
     <ClInclude Include="..\Public\VIBuffer_Terrain.h">
       <Filter>01.Utility\04.Components\Model\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TextureMgr.h">
-      <Filter>01.Utility\05.Texture\00.Manager</Filter>
+    <ClInclude Include="..\public\Texture.h">
+      <Filter>01.Utility\04.Components\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Texture.h">
-      <Filter>01.Utility\05.Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\SingleTexture.h">
-      <Filter>01.Utility\05.Texture\01.Single</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\MultiTexture.h">
-      <Filter>01.Utility\05.Texture\02.Multi</Filter>
+    <ClInclude Include="..\Public\Camera_Manager.h">
+      <Filter>01.Utility\03.GameObject\Camera\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,17 +221,11 @@
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp">
       <Filter>01.Utility\04.Components\Model\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SingleTexture.cpp">
-      <Filter>01.Utility\05.Texture\01.Single</Filter>
+    <ClCompile Include="..\private\Texture.cpp">
+      <Filter>01.Utility\04.Components\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MultiTexture.cpp">
-      <Filter>01.Utility\05.Texture\02.Multi</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Texture.cpp">
-      <Filter>01.Utility\05.Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\TextureMgr.cpp">
-      <Filter>01.Utility\05.Texture\00.Manager</Filter>
+    <ClCompile Include="..\Private\Camera_Manager.cpp">
+      <Filter>01.Utility\03.GameObject\Camera\Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

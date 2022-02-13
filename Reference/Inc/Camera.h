@@ -18,14 +18,25 @@ protected:
 	explicit CCamera(LPDIRECT3DDEVICE9 pGraphic_Device);
 	explicit CCamera(const CCamera& rhs);
 	virtual ~CCamera() = default;
+
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
 	virtual _int Tick(_float fTimeDelta);
 	virtual _int LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
+
+public:
+	virtual HRESULT BeforeRender();
+	virtual HRESULT AfterRender();
+
+public:
+	void Set_Handle(HWND _hWnd);
+	const HWND& Get_Handle() const;
+
 protected:
 	class CTransform*			m_pTransform = nullptr;
+	HWND						hWnd = nullptr;
 	CAMERADESC					m_CameraDesc;
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CVIBuffer_Terrain;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -25,6 +26,7 @@ public:
 
 private:
 	/* 텍스쳐 */
+	CTexture* m_pTexture = nullptr;
 
 	/* 모델 */
 	CVIBuffer_Terrain* m_pVIBufferCom = nullptr;

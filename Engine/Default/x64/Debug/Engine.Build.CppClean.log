@@ -10,6 +10,16 @@ d:\jung\124\framework\engine\default\x64\debug\level_manager.obj
 d:\jung\124\framework\engine\default\x64\debug\object_manager.obj
 d:\jung\124\framework\engine\default\x64\debug\timer.obj
 d:\jung\124\framework\engine\default\x64\debug\timer_manager.obj
+d:\jung\124\framework\engine\default\x64\debug\component.obj
+d:\jung\124\framework\engine\default\x64\debug\renderer.obj
+d:\jung\124\framework\engine\default\x64\debug\component_manager.obj
+d:\jung\124\framework\engine\default\x64\debug\vibuffer.obj
+d:\jung\124\framework\engine\default\x64\debug\vibuffer_rect.obj
+d:\jung\124\framework\engine\default\x64\debug\transform.obj
+d:\jung\124\framework\engine\default\x64\debug\camera.obj
+d:\jung\124\framework\engine\default\x64\debug\input_device.obj
+d:\jung\124\framework\engine\default\x64\debug\vibuffer_terrain.obj
+d:\jung\124\framework\engine\default\x64\debug\texture.obj
 d:\jung\124\framework\engine\bin\engine.lib
 d:\jung\124\framework\engine\bin\engine.exp
 d:\jung\124\framework\engine\bin\engine.ilk

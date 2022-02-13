@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "Terrain.h"
 #include "Renderer.h"
 
 
@@ -47,10 +46,7 @@ protected:
 public:
 	virtual void OnInitialUpdate();
 
-	CTerrain*			Get_Terrain(void) {	return m_pTerrain; }
-
 public:
-	CTerrain*			m_pTerrain = nullptr;
 	LPDIRECT3DDEVICE9	m_device = nullptr;
 	CRenderer*			m_pRenderer = nullptr;
 

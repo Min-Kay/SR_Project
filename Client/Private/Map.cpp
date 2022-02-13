@@ -34,6 +34,11 @@ HRESULT CMap::SetUp_Components()
         return E_FAIL;
 
 
+    /* For.Com_Texture */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
+        return E_FAIL;
+
+
 
     return S_OK;
 }
@@ -71,6 +76,7 @@ void CMap::Free()
     Safe_Release(m_pTransformCom);
     Safe_Release(m_pVIBufferCom);
     Safe_Release(m_pRendererCom);
+    Safe_Release(m_pTexture);
 
 }
 
@@ -109,7 +115,7 @@ _int CMap::LateTick(_float fTimeDelta)
     if (nullptr == m_pRendererCom)
         return -1;
 
-    m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+    m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
     return _int();
 }

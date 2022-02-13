@@ -4,8 +4,7 @@
 #include "Level_Logo.h"
 #include "Level_Loading.h"
 #include "Camera_Dynamic.h"
-#include "Camera_Static.h"
-
+#include "Camera_Sub.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -41,7 +40,7 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(OpenLevel(LEVEL_LOGO)))
 		return E_FAIL;
 
-	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
 
 	return S_OK;
 }
@@ -67,13 +66,15 @@ HRESULT CMainApp::Render()
 		return E_FAIL;
 
 
-	m_pGameInstance->Render_Begin();
+
+	m_pGameInstance->Render_Camera(m_pRenderer);
+	/*m_pGameInstance->Render_Begin();
 
 	m_pRenderer->Render();
 
 	m_pGameInstance->Render_Level();
 
-	m_pGameInstance->Render_End();
+	m_pGameInstance->Render_End();*/
 
 
 
@@ -124,8 +125,18 @@ HRESULT CMainApp::DefaultSetting()
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
 
+	/* 바인딩되어있는 텍스쳐로부터 픽셀값을 얻어오는 작업을 수행할때에 대한 설정. */
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+
 	/* 그리는 상태를 셋팅한다. */
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, false);
+	// m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
 
 	return S_OK;
 }
@@ -135,11 +146,12 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pGraphic_Device))))
+	if (FAILED(m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Static"), CCamera_Static::Create(m_pGraphic_Device))))
+	if (FAILED(m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Sub"), CCamera_Sub::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -161,8 +173,13 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Default */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Default.jpg")))))
+		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pGraphic_Device))))
+
+	/* For.Prototype_Component_Texture_Default */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX,g_iWinCY))))
 		return E_FAIL;
 
 	Safe_AddRef(m_pRenderer);

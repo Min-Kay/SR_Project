@@ -4,6 +4,7 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
+class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
@@ -26,6 +27,7 @@ public:
 
 private:
 	/* 텍스쳐 */
+	CTexture*			m_pTextureCom = nullptr;
 
 	/* 모델 */
 	CVIBuffer_Rect*		m_pVIBufferCom = nullptr;

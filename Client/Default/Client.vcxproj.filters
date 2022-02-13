@@ -34,14 +34,17 @@
     <Filter Include="02.GameObjects\Camera">
       <UniqueIdentifier>{9d68a6fd-1ba3-4a11-9780-9bb5c2907f32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Camera\Cam_Static">
-      <UniqueIdentifier>{bf112c38-8e72-49eb-98a8-59053c6334d7}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\Terrain">
+      <UniqueIdentifier>{ba685d1e-8ccc-41ee-ad00-e1f6233b24e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Camera\Cam_Dynamic">
-      <UniqueIdentifier>{de5f38c1-4488-44b3-8f99-aca35e9bfe69}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\Player">
+      <UniqueIdentifier>{43516271-a655-4bfa-a75e-3f02feb17bcb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Map">
-      <UniqueIdentifier>{c53304f0-c469-48e6-95e9-3e929e0b1ad7}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\Camera\Cam_Sub">
+      <UniqueIdentifier>{f686672e-0308-4257-abc5-af620f729abf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Camera\Cam_Dyn">
+      <UniqueIdentifier>{7c2d06ec-b9de-447c-af8b-24245141f6bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,14 +84,17 @@
     <ClInclude Include="..\public\BackGround.h">
       <Filter>02.GameObjects\BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>02.GameObjects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>02.GameObjects\Player</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Camera_Dynamic.h">
-      <Filter>02.GameObjects\Camera\Cam_Dynamic</Filter>
+      <Filter>02.GameObjects\Camera\Cam_Dyn</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Camera_Static.h">
-      <Filter>02.GameObjects\Camera\Cam_Static</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Map.h">
-      <Filter>02.GameObjects\Map</Filter>
+    <ClInclude Include="..\Public\Camera_Sub.h">
+      <Filter>02.GameObjects\Camera\Cam_Sub</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,14 +122,17 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>02.GameObjects\BackGround</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>02.GameObjects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObjects\Player</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Camera_Dynamic.cpp">
-      <Filter>02.GameObjects\Camera\Cam_Dynamic</Filter>
+      <Filter>02.GameObjects\Camera\Cam_Dyn</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Camera_Static.cpp">
-      <Filter>02.GameObjects\Camera\Cam_Static</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Map.cpp">
-      <Filter>02.GameObjects\Map</Filter>
+    <ClCompile Include="..\Private\Camera_Sub.cpp">
+      <Filter>02.GameObjects\Camera\Cam_Sub</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

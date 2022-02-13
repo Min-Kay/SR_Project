@@ -18,6 +18,9 @@ public:
 protected:
 	LPDIRECT3DDEVICE9			m_pGraphic_Device = nullptr;
 
+protected:
+	_bool				m_isCloned = false;
+
 public:
 	virtual CComponent* Clone(void* pArg = nullptr) = 0;
 	virtual void Free() override;

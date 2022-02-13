@@ -203,16 +203,9 @@ void CMapTool::OnSaveData()
 
 		CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
 		CToolView*	pToolView = dynamic_cast<CToolView*>(pMain->m_MainSplitter.GetPane(0, 1));
-		CTerrain*	pTerrain = pToolView->m_pTerrain;
-		vector<TILE*>& vecTile = pTerrain->Get_Tile();
 	
 		DWORD	dwByte = 0;
 
-		for (auto& iter : vecTile)
-		{
-			WriteFile(hFile, iter, sizeof(TILE), &dwByte, nullptr);
-
-		}
 		CloseHandle(hFile);
 	}
 }

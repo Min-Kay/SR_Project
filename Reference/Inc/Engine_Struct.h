@@ -46,6 +46,7 @@ namespace Engine
 		unsigned short	_0, _1, _2;
 	}FACEINDICES16;
 
+
 	typedef struct tagInfo
 	{
 		D3DXVECTOR3	vPos;

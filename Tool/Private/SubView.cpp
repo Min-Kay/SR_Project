@@ -27,16 +27,11 @@ void CSubView::OnDraw(CDC* pDC)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	pInstance->Render_Begin();
-	pInstance->Get_Sprite()->Begin(D3DXSPRITE_ALPHABLEND);
 	CMainFrame* pMain = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
 	CToolView* pMainView = dynamic_cast<CToolView*>(pMain->m_MainSplitter.GetPane(0, 1));
-
-	CTerrain* pTerrain = pMainView->Get_Terrain();
-	pTerrain->MiniRender();
-	pInstance->Get_Sprite()->End();
 	pInstance->Render_End(m_hWnd);
 
-	Safe_Release(pInstance);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 

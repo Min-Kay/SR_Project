@@ -1,22 +1,38 @@
 #pragma once
-#include "Base.h"
+
+#include "Component.h"
 
 BEGIN(Engine)
-class CTexture : public CBase
+
+class ENGINE_DLL CTexture final : public CComponent
 {
-protected:
-	CTexture();
-	virtual ~CTexture();
+public:
+	enum TYPE { TYPE_DEFAULT, TYPE_CUBEMAP, TYPE_END };
+private:
+	explicit CTexture(LPDIRECT3DDEVICE9 pGraphic_Device);
+	explicit CTexture(const CTexture& rhs);
+	virtual ~CTexture() = default;
 
 public:
-	virtual const TEXINFO*		Get_Texture(const TCHAR* pStateKey = L"", const int& iCnt = 0)PURE;
-public:
-	virtual HRESULT		InsertTexture(const TCHAR* pFilePath,  // 파일 경로
-									  const TCHAR* pStateKey = L"", // 멀티 텍스처일 경우 사용, 스프라이트 상태 키값
-									  const int& iCnt = 0)PURE;     // 멀티 텍스처일 경우 사용, 몇장있는가
+	virtual HRESULT NativeConstruct_Prototype(TYPE eType, const _tchar* pTextureFilePath, _uint iNumTextures);
+	virtual HRESULT NativeConstruct_Prototype(_uint iWidth, _uint iHeight);
+
+	virtual HRESULT NativeConstruct(void* pArg) override;
 
 public:
-	// CBase을(를) 통해 상속됨
+	HRESULT Bind_OnGraphicDevice(_uint iTextureIndex = 0);
+	LPDIRECT3DBASETEXTURE9* GetTexture();
+
+private:
+	vector<LPDIRECT3DBASETEXTURE9>			m_Textures;
+	typedef vector<LPDIRECT3DBASETEXTURE9>	TEXTURES;
+
+public:
+	static CTexture* Create(LPDIRECT3DDEVICE9 pGraphic_Device, TYPE eType, const _tchar* pTextureFilePath, _uint iNumTextures = 1);
+	static CTexture* Create(LPDIRECT3DDEVICE9 pGraphic_Device, _uint iWidth, _uint iHeight);
+
+	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };
+
 END

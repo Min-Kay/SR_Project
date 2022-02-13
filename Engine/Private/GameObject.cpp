@@ -14,6 +14,11 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	Safe_AddRef(m_pGraphic_Device);
 }
 
+CComponent * CGameObject::Get_Component(const _tchar * pComponentTag)
+{
+	return Find_Component(pComponentTag);	
+}
+
 HRESULT CGameObject::NativeConstruct_Prototype()
 {
 	return S_OK;

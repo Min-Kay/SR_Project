@@ -25,12 +25,6 @@
     <Filter Include="00. Special\02. Document">
       <UniqueIdentifier>{cb351790-976d-418f-a84c-669a92443870}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Obj">
-      <UniqueIdentifier>{2744de1d-9ba8-4e5c-83a1-66f7b1500e05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Obj\Terrain">
-      <UniqueIdentifier>{43e204ab-2fb0-4c3d-abe2-1bc45cf68fea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. Special\01. View\00. MyForm">
       <UniqueIdentifier>{fb6795ee-8b2a-421c-b6e8-342c7b26e625}</UniqueIdentifier>
     </Filter>
@@ -66,6 +60,9 @@
     </Filter>
     <Filter Include="헤더 파일\Include">
       <UniqueIdentifier>{7f2ca14c-fce0-419d-a940-cd4bd31407bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Camera">
+      <UniqueIdentifier>{da3ffab2-2c14-4624-b801-e61aa1126b17}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -105,9 +102,6 @@
     <ClInclude Include="..\Public\FileInfo.h">
       <Filter>03. Etc\00. FileInfo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Terrain.h">
-      <Filter>Obj\Terrain</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -135,8 +129,8 @@
     <ClInclude Include="..\Public\SubView.h">
       <Filter>00. Special\01. View\01. MiniView</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="..\Public\Camera_Dynamic.h">
+      <Filter>04. Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -170,9 +164,6 @@
     <ClCompile Include="..\Private\FileInfo.cpp">
       <Filter>03. Etc\00. FileInfo</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>Obj\Terrain</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Tool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -185,16 +176,14 @@
     <ClCompile Include="..\Private\SubView.cpp">
       <Filter>00. Special\01. View\01. MiniView</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Camera_Dynamic.cpp">
+      <Filter>04. Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Tool.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\Tool.rc2">
-      <Filter>리소스 파일</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ToolDoc.ico">

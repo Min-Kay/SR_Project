@@ -106,22 +106,13 @@ void CGraphic_Device::SetParameters(D3DPRESENT_PARAMETERS & d3dpp, const GRAPHIC
 
 void CGraphic_Device::Render_Begin(void)
 {
-	
-	m_pDevice->Clear(0,
-		nullptr,
-		D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
-		D3DCOLOR_ARGB(255, 0, 0, 255),	// 백버퍼 색상
-		1.f, // z버퍼의 초기화 값
-		0);	 // 스텐실 버퍼의 초기화 값
 
 	m_pDevice->BeginScene();
 
-	
 }
 
 void CGraphic_Device::Render_End(HWND hWnd)
 {	
-
 	m_pDevice->EndScene();
 
 	// 후면버퍼에 연결되어 있는 서피스와 전면 버퍼에 연결된 서피스를 교환하는 과정

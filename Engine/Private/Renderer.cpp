@@ -34,6 +34,20 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pRend
 
 HRESULT CRenderer::Render()
 {
+	//for (_uint i = 0; i < RENDER_END; ++i)
+	//{
+	//	for (auto& pRenderObject : m_RenderObjects[i])
+	//	{
+	//		if (nullptr != pRenderObject)
+	//		{
+	//			if (FAILED(pRenderObject->Render()))
+	//				return E_FAIL;
+	//		}
+	//		Safe_Release(pRenderObject);
+	//	}
+	//	m_RenderObjects[i].clear();
+	//}
+
 	for (_uint i = 0; i < RENDER_END; ++i)
 	{
 		for (auto& pRenderObject : m_RenderObjects[i])
@@ -43,6 +57,18 @@ HRESULT CRenderer::Render()
 				if (FAILED(pRenderObject->Render()))
 					return E_FAIL;
 			}
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Clear_RenderObjects()
+{
+	for (_uint i = 0; i < RENDER_END; ++i)
+	{
+		for (auto& pRenderObject : m_RenderObjects[i])
+		{
 			Safe_Release(pRenderObject);
 		}
 		m_RenderObjects[i].clear();

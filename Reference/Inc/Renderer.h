@@ -22,6 +22,7 @@ public:
 public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
 	HRESULT Render();
+	HRESULT Clear_RenderObjects();
 
 private:
 	list<class CGameObject*>				m_RenderObjects[RENDER_END];

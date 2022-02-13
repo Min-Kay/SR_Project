@@ -1,5 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\Loader.h"
+#include "GameInstance.h"
+
+
+#include "Player.h"
+#include "Terrain.h"
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: m_pGraphic_Device(pGraphic_Device)
@@ -47,9 +52,45 @@ HRESULT CLoader::NativeConstruct(LEVEL eNextLevel)
 
 HRESULT CLoader::Loading_ForGamePlay()
 {
-	/*원형 컴포넌트 생성*/
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	/*원형 객체 생성*/
+	/* 원형컴포넌트를 생성한다. */
+#pragma region PROTOTYPE_COMPONENT
+
+	/* For.Prototype_Component_VIBuffer_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../../Resources/Textures/Terrain/Height.bmp")/*129, 129*/))))
+		return E_FAIL;	
+
+	/* For.Prototype_Component_Texture_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Grass_%d.tga"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Player/AKIHA_AKI00_00%d.png"), 12))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Explosion */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Explosion"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Explosion/Explosion%d.png"), 90))))
+		return E_FAIL;
+
+
+	
+
+#pragma endregion
+
+#pragma  region PROTOTYPE_GAMEOBJECT
+	/* 원형객체를 생성한다. */
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CTerrain::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+#pragma endregion
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_isFinished = true;
 
@@ -58,9 +99,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 HRESULT CLoader::Loading_ForBoss()
 {
-	/*원형 컴포넌트 생성*/
-
-	/*원형 객체 생성*/
+	for (_uint i = 0; i < 9999999999; ++i)
+		int a = 10;
 
 	m_isFinished = true;
 	

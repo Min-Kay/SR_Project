@@ -16,6 +16,7 @@
 #include "MyForm.h"
 #include "GameInstance.h"
 #include "Renderer.h"
+#include "Camera_Dynamic.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,7 +47,6 @@ CToolView::CToolView()
 CToolView::~CToolView()
 {
 	Safe_Release(m_pRenderer);
-	Safe_Release(m_pTerrain);
 	Safe_Release(m_device);
 }
 
@@ -107,14 +107,8 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 #pragma endregion 복습용
 	
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	pInstance->Render_Begin();
-	pInstance->Get_Sprite()->Begin(D3DXSPRITE_ALPHABLEND);
-	m_pRenderer->Render();
-	m_pTerrain->LateTick(0.f);
-	pInstance->Get_Sprite()->End();
-	pInstance->Render_End();
-
-	Safe_Release(pInstance);
+	pInstance->Render_Camera(m_pRenderer);
+	RELEASE_INSTANCE(CGameInstance);
 
 }
 
@@ -183,29 +177,24 @@ void CToolView::OnInitialUpdate()
 	GraphicDesc.eScreenMode = CGraphic_Device::TYPE_WINMODE;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	if (FAILED(pInstance->Initialize_Engine( nullptr, GraphicDesc,2, &m_device)))
+
+	if (FAILED(pInstance->Initialize_Engine(nullptr, GraphicDesc,2, &m_device)))
 	{
 		AfxMessageBox(L"Device Init Failed");
 		return;
 	}
 
-	if (FAILED(pInstance->InsertTexture(CTextureMgr::TEX_SINGLE, L"../../Texture/Cube.png", L"CUBE")))
-	{
-		AfxMessageBox(L"Cube Texture Insert Failed");
+	if (FAILED(pInstance->Add_Prototype(0, TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_device))))
 		return;
-	}
 
 	m_device->SetRenderState(D3DRS_LIGHTING,false);
 
-	if (FAILED(pInstance->Add_Prototype(1, TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_device))))
-		return;
-	
-	Safe_AddRef(m_pRenderer);
-	Safe_Release(pInstance);
+	pInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera"),CCamera_Dynamic::Create(m_device));
+	pInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera"),TEXT("Camera"));
 
-	m_pTerrain = CTerrain::Create(m_device);
-	m_pTerrain->SetMainView(this);
-	m_pTerrain->LateTick(0.f);
+	Safe_AddRef(m_pRenderer);
+	RELEASE_INSTANCE(CGameInstance);
+
 
 		// AfxGetMainWnd : 현재 메인 윈도우를 반환하는 전역 함수
 		// 반환타입이 부모타입이어서 자식 타입으로 형변환 했음
@@ -247,51 +236,44 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 
-	//Invalidate : 호출 시 윈도우 wm_paint와 wm_erasebkgnd 메세지를 발생시킴
-	// ondraw 함수를 다시 한 번 호출
-	// 인자값이 FALSE일때는 wm_paint만 메시지만 발생
-	// 인자값이 true일때 wm_paint와 wm_erasebkgnd 두 메세지를 동시에 발생
-	// wm_erasebkgnd 메세지 : 배경을 지우라는 메시지
-	Invalidate(FALSE);
+	////Invalidate : 호출 시 윈도우 wm_paint와 wm_erasebkgnd 메세지를 발생시킴
+	//// ondraw 함수를 다시 한 번 호출
+	//// 인자값이 FALSE일때는 wm_paint만 메시지만 발생
+	//// 인자값이 true일때 wm_paint와 wm_erasebkgnd 두 메세지를 동시에 발생
+	//// wm_erasebkgnd 메세지 : 배경을 지우라는 메시지
+	//Invalidate(FALSE);
 
 
-	CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-	//CMainFrame*	pMain = dynamic_cast<CMainFrame*>(GetParentFrame());
+	//CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	////CMainFrame*	pMain = dynamic_cast<CMainFrame*>(GetParentFrame());
 
-	CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
+	//CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
 
-	CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
+	//CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
 
-	CMapTool*	pMapTool = &pMyForm->m_MapTool;
+	//CMapTool*	pMapTool = &pMyForm->m_MapTool;
 
-
-	m_pTerrain->TileChange(D3DXVECTOR3(point.x + GetScrollPos(0),
-		point.y + GetScrollPos(1),
-		0.f), pMapTool->m_iDrawID);
-
-	
-	pMiniView->Invalidate(FALSE);
+	//
+	//pMiniView->Invalidate(FALSE);
 }
 
 
 void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	//// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CScrollView::OnMouseMove(nFlags, point);
 
-	if (GetAsyncKeyState(VK_LBUTTON))
-	{
-		
-		Invalidate(FALSE);
+	//if (GetAsyncKeyState(VK_LBUTTON))
+	//{
+	//	
+	//	Invalidate(FALSE);
 
-		CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-		CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
-		CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
-		CMapTool*	pMapTool = &pMyForm->m_MapTool;
+	//	CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	//	CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
+	//	CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
+	//	CMapTool*	pMapTool = &pMyForm->m_MapTool;
 
-		m_pTerrain->TileChange(D3DXVECTOR3(point.x + GetScrollPos(0), point.y + GetScrollPos(1), 0.f), pMapTool->m_iDrawID);
-
-		pMiniView->Invalidate(FALSE);
-	}
+	//	pMiniView->Invalidate(FALSE);
+	//}
 }

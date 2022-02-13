@@ -9,7 +9,7 @@ CGameInstance::CGameInstance()
 	, m_pLevel_Manager(CLevel_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
-	, m_pTexture_Manager(CTextureMgr::GetInstance())
+	, m_pCamera_Manager(CCamera_Manager::GetInstance())
 {
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
@@ -17,8 +17,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pTimer_Manager);
-	Safe_AddRef(m_pTexture_Manager);
-
+	Safe_AddRef(m_pCamera_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Device::GRAPHICDESC & GraphicDesc, _uint iNumLevels, LPDIRECT3DDEVICE9* ppOut)
@@ -30,9 +29,12 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Dev
 	if (FAILED(m_pGraphic_Device->InitDevice(GraphicDesc, ppOut)))
 		return E_FAIL;
 
-	if (nullptr != hInstance && FAILED(m_pInput_Device->Ready_Input_Device(hInstance, GraphicDesc.hWnd)))
-		return E_FAIL;
-
+	if (nullptr != hInstance)
+	{
+		if (FAILED(m_pInput_Device->Ready_Input_Device(hInstance, GraphicDesc.hWnd)))
+			return E_FAIL;
+	}
+	
 	if (FAILED(m_pObject_Manager->Reserve_Container(iNumLevels)))
 		return E_FAIL;
 
@@ -54,12 +56,18 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pObject_Manager->Tick(fTimeDelta))
 		return -1;
 
+	if (0 > m_pCamera_Manager->Tick(fTimeDelta))
+		return -1;
+
 	if (0 > m_pLevel_Manager->Tick(fTimeDelta))
 		return -1;
 
 
 	if (0 > m_pObject_Manager->LateTick(fTimeDelta))
 		return -1;	
+
+	if (0 > m_pCamera_Manager->LateTick(fTimeDelta))
+		return -1;
 
 	if (0 > m_pLevel_Manager->LateTick(fTimeDelta))
 		return -1;
@@ -82,14 +90,6 @@ HRESULT CGameInstance::Clear_LevelResource(_uint iLevelIndex)
 	return S_OK;
 }
 
-const LPDIRECT3DDEVICE9 CGameInstance::Get_Device()
-{
-	if (nullptr == m_pGraphic_Device)
-		return nullptr;
-
-	return m_pGraphic_Device->Get_Device();
-}
-
 void CGameInstance::Render_Begin(void)
 {
 	if (nullptr == m_pGraphic_Device)
@@ -104,22 +104,6 @@ void CGameInstance::Render_End(HWND hWnd)
 		return;
 
 	m_pGraphic_Device->Render_End(hWnd);
-}
-
-LPD3DXSPRITE CGameInstance::Get_Sprite(void)
-{
-	if (!m_pGraphic_Device)
-		return nullptr;
-
-	return m_pGraphic_Device->Get_Sprite();
-}
-
-LPD3DXFONT CGameInstance::Get_Font(void)
-{
-	if (!m_pGraphic_Device)
-		return nullptr;
-
-	return m_pGraphic_Device->Get_Font();
 }
 
 _float CGameInstance::Get_TimeDelta(const _tchar * pTimerTag)
@@ -138,12 +122,12 @@ HRESULT CGameInstance::Add_Timer(const _tchar * pTimerTag)
 	return m_pTimer_Manager->Add_Timer(pTimerTag);
 }
 
-HRESULT CGameInstance::OpenLevel(_uint iCurrLevelIndex, CLevel * pNextLevel)
+HRESULT CGameInstance::OpenLevel(_uint iLevelIndex, CLevel * pNextLevel)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
 
-	return m_pLevel_Manager->OpenLevel(iCurrLevelIndex, pNextLevel);
+	return m_pLevel_Manager->OpenLevel(iLevelIndex, pNextLevel);	
 }
 
 HRESULT CGameInstance::Render_Level()
@@ -152,6 +136,14 @@ HRESULT CGameInstance::Render_Level()
 		return E_FAIL;
 
 	return m_pLevel_Manager->Render();
+}
+
+CComponent * CGameInstance::Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Get_Component(iLevelIndex, pLayerTag, pComponentTag, iIndex);	
 }
 
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
@@ -210,19 +202,48 @@ _byte CGameInstance::Get_DIMouseButtonState(CInput_Device::MOUSEBUTTONSTATE eMou
 	return m_pInput_Device->Get_DIMouseButtonState(eMouseButtonState);
 }
 
-const TEXINFO* CGameInstance::Get_Texture(const TCHAR* pObjKey, const TCHAR* pStateKey, const int& iCnt)
+HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 {
-	if (!m_pTexture_Manager)
-		return nullptr;
-	return m_pTexture_Manager->Get_Texture(pObjKey,pStateKey,iCnt);
-}
-
-HRESULT CGameInstance::InsertTexture(CTextureMgr::TEXTYPE eType, const TCHAR* pFilePath, const TCHAR* pObjKey, const TCHAR* pStateKey, const int& iCnt)
-{
-	if (!m_pTexture_Manager)
+	if (nullptr == m_pCamera_Manager)
 		return E_FAIL;
 
-	return m_pTexture_Manager->InsertTexture(eType,pFilePath, pObjKey, pStateKey, iCnt);
+	if (nullptr == renderer)
+		return E_FAIL;
+	
+	map<const _tchar*, CCamera*>* camList = m_pCamera_Manager->GetCameraList();
+
+	for (auto& cam : *camList)
+	{
+		if (FAILED(cam.second->BeforeRender()))
+			return E_FAIL;
+		
+		Render_Begin();
+		renderer->Render();
+		Render_Level();
+		Render_End(cam.second->Get_Handle());
+
+		if (FAILED(cam.second->AfterRender()))
+			return E_FAIL;
+	}
+
+	renderer->Clear_RenderObjects();
+
+	return S_OK;
+}
+
+HRESULT CGameInstance::Add_Camera_Object(const _tchar* _Prototypetag, const _tchar* _ObjectTag, void* pArg)
+{
+	return m_pCamera_Manager->Add_Camera_Object(_Prototypetag,_ObjectTag,pArg);
+}
+
+HRESULT CGameInstance::Add_Camera_Prototype(const _tchar* _tag, CCamera* cam)
+{
+	return m_pCamera_Manager->Add_Camera_Prototype(_tag,cam);
+}
+
+HRESULT CGameInstance::Release_Camera(const _tchar* _tag)
+{
+	return S_OK;
 }
 
 
@@ -244,11 +265,11 @@ void CGameInstance::Release_Engine()
 	if (0 != CLevel_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CLevel_Manager ");
 
+	if (0 != CCamera_Manager::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Delete Camera_Manager ");
+
 	if (0 != CInput_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CInput_Device ");
-
-	if (0 != CTextureMgr::GetInstance()->DestroyInstance())
-		MSGBOX("Failed to Delete CObject_Manager ");
 
 	if (0 != CGraphic_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CGraphic_Device ");
@@ -261,9 +282,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pLevel_Manager);
+	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pTimer_Manager);
-	Safe_Release(m_pTexture_Manager);
-
 }

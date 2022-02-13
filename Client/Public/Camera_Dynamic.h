@@ -7,6 +7,7 @@ BEGIN(Client)
 
 class CCamera_Dynamic final : public CCamera
 {
+protected:
 	explicit CCamera_Dynamic(LPDIRECT3DDEVICE9 pGraphic_Device);
 	explicit CCamera_Dynamic(const CCamera_Dynamic& rhs);
 	virtual ~CCamera_Dynamic() = default;
@@ -16,6 +17,10 @@ public:
 	virtual _int Tick(_float fTimeDelta);
 	virtual _int LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
+
+public:
+	virtual HRESULT BeforeRender();
+	virtual HRESULT AfterRender();
 
 public:
 	static CCamera_Dynamic* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

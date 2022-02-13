@@ -6,6 +6,19 @@ CLayer::CLayer()
 
 }
 
+CComponent * CLayer::Get_Component(const _tchar * pComponentTag, _uint iIndex)
+{
+	if (iIndex >= m_Objects.size())
+		return nullptr;
+
+	auto	iter = m_Objects.begin();
+
+	for (_uint i = 0; i < iIndex; ++i)
+		++iter;
+
+	return (*iter)->Get_Component(pComponentTag);	
+}
+
 HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 {
 	m_Objects.push_back(pGameObject);
