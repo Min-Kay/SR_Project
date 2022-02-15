@@ -87,6 +87,9 @@ HRESULT CGameInstance::Clear_LevelResource(_uint iLevelIndex)
 	if (FAILED(m_pObject_Manager->Clear_LevelObject(iLevelIndex)))
 		return E_FAIL;
 
+	if (FAILED(m_pCamera_Manager->Clear_Camera(iLevelIndex)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -210,9 +213,9 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 	if (nullptr == renderer)
 		return E_FAIL;
 	
-	map<const _tchar*, CCamera*>* camList = m_pCamera_Manager->GetCameraList();
+	map<const _tchar*, CCamera*> camList = *m_pCamera_Manager->GetCameraList();
 
-	for (auto& cam : *camList)
+	for (auto& cam : camList)
 	{
 		if (FAILED(cam.second->BeforeRender()))
 			return E_FAIL;
@@ -243,7 +246,12 @@ HRESULT CGameInstance::Add_Camera_Prototype(const _tchar* _tag, CCamera* cam)
 
 HRESULT CGameInstance::Release_Camera(const _tchar* _tag)
 {
-	return S_OK;
+	return m_pCamera_Manager->Release_Camera(_tag);
+}
+
+CCamera* CGameInstance::Find_Camera_Object(const _tchar* _ObjTag)
+{
+	return m_pCamera_Manager->Find_Camera_Object(_ObjTag);
 }
 
 

@@ -53,10 +53,10 @@ HRESULT CTexture::NativeConstruct_Prototype(_uint iWidth, _uint iHeight)
 {
 	LPDIRECT3DBASETEXTURE9		pTexture = nullptr;
 	
-	if (FAILED(m_pGraphic_Device->CreateTexture(iWidth, iHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, (LPDIRECT3DTEXTURE9*) & pTexture, NULL)))
-		return E_FAIL;
+	//if (FAILED(m_pGraphic_Device->CreateTexture(iWidth, iHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, (LPDIRECT3DTEXTURE9*) & pTexture, NULL)))
+	//	return E_FAIL;
 
-	m_Textures.push_back(pTexture);
+	//m_Textures.push_back(pTexture);
 
 	return S_OK;
 }
@@ -74,9 +74,29 @@ HRESULT CTexture::Bind_OnGraphicDevice(_uint iTextureIndex)
 	return m_pGraphic_Device->SetTexture(0, m_Textures[iTextureIndex]);	
 }
 
-LPDIRECT3DBASETEXTURE9* CTexture::GetTexture()
+LPDIRECT3DBASETEXTURE9* CTexture::GetTexture(_uint iIndex)
 {
-	return &(m_Textures[0]);
+	if (iIndex >= m_Textures.size())
+		return nullptr; 
+
+	return &(m_Textures[iIndex]);
+}
+
+HRESULT CTexture::Add_Texture(_uint iWidth, _uint iHeight)
+{
+	LPDIRECT3DBASETEXTURE9		pTexture = nullptr;
+	
+	if (FAILED(m_pGraphic_Device->CreateTexture(iWidth, iHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, (LPDIRECT3DTEXTURE9*)&pTexture, NULL)))
+		return E_FAIL;
+
+	m_Textures.push_back(pTexture);
+
+	return S_OK;
+}
+
+const _uint CTexture::Get_Textures_Count() const
+{
+	return m_Textures.size();
 }
 
 CTexture * CTexture::Create(LPDIRECT3DDEVICE9 pGraphic_Device, TYPE eType, const _tchar * pTextureFilePath, _uint iNumTextures)

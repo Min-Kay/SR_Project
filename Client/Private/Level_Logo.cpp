@@ -47,13 +47,12 @@ _int CLevel_Logo::LateTick(_float fTimeDelta)
 
 	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
-		CGameInstance*	pGameInstance = CGameInstance::GetInstance();
-		Safe_AddRef(pGameInstance);
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 		if (FAILED(pGameInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_GAMEPLAY))))
 			return E_FAIL;
 
-		Safe_Release(pGameInstance);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
 	return 0;
@@ -103,6 +102,7 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
+	CameraDesc.iLevel = LEVEL_LOGO;
 
 
 	if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Dynamic"), pLayerTag, &CameraDesc)))
@@ -123,6 +123,8 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 			
 	CameraDesc2.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc2.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
+
+	CameraDesc2.iLevel = LEVEL_LOGO;
 
 
 	if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Sub"), TEXT("Layer_Camera_Sub"), &CameraDesc2)))
@@ -189,5 +191,4 @@ CLevel_Logo * CLevel_Logo::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 void CLevel_Logo::Free()
 {
 	__super::Free();
-
 }

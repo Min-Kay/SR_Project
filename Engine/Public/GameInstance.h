@@ -57,6 +57,7 @@ public: /* For.Camera_Manager*/
 	HRESULT Add_Camera_Prototype(const _tchar * _Prototypetag, class CCamera * cam);
 	HRESULT Add_Camera_Object(const _tchar * _Prototypetag, const _tchar* _ObjectTag, void* pArg = nullptr);
 	HRESULT Release_Camera(const _tchar * _tag);
+	CCamera* Find_Camera_Object(const _tchar* _ObjTag);
 
 private:
 	CGraphic_Device*		m_pGraphic_Device = nullptr;

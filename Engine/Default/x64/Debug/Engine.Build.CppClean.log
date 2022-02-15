@@ -1,35 +1,5 @@
-d:\jung\124\framework\engine\default\x64\debug\vc140.pdb
-d:\jung\124\framework\engine\default\x64\debug\vc140.idb
-d:\jung\124\framework\engine\default\x64\debug\base.obj
-d:\jung\124\framework\engine\default\x64\debug\gameinstance.obj
-d:\jung\124\framework\engine\default\x64\debug\gameobject.obj
-d:\jung\124\framework\engine\default\x64\debug\graphic_device.obj
-d:\jung\124\framework\engine\default\x64\debug\layer.obj
-d:\jung\124\framework\engine\default\x64\debug\level.obj
-d:\jung\124\framework\engine\default\x64\debug\level_manager.obj
-d:\jung\124\framework\engine\default\x64\debug\object_manager.obj
-d:\jung\124\framework\engine\default\x64\debug\timer.obj
-d:\jung\124\framework\engine\default\x64\debug\timer_manager.obj
-d:\jung\124\framework\engine\default\x64\debug\component.obj
-d:\jung\124\framework\engine\default\x64\debug\renderer.obj
-d:\jung\124\framework\engine\default\x64\debug\component_manager.obj
-d:\jung\124\framework\engine\default\x64\debug\vibuffer.obj
-d:\jung\124\framework\engine\default\x64\debug\vibuffer_rect.obj
-d:\jung\124\framework\engine\default\x64\debug\transform.obj
-d:\jung\124\framework\engine\default\x64\debug\camera.obj
-d:\jung\124\framework\engine\default\x64\debug\input_device.obj
-d:\jung\124\framework\engine\default\x64\debug\vibuffer_terrain.obj
-d:\jung\124\framework\engine\default\x64\debug\texture.obj
-d:\jung\124\framework\engine\bin\engine.lib
-d:\jung\124\framework\engine\bin\engine.exp
-d:\jung\124\framework\engine\bin\engine.ilk
-d:\jung\124\framework\engine\bin\engine.dll
-d:\jung\124\framework\engine\bin\engine.pdb
-d:\jung\124\framework\engine\default\..\bin\engine.dll
-d:\jung\124\framework\engine\default\x64\debug\engine.tlog\cl.command.1.tlog
-d:\jung\124\framework\engine\default\x64\debug\engine.tlog\cl.read.1.tlog
-d:\jung\124\framework\engine\default\x64\debug\engine.tlog\cl.write.1.tlog
-d:\jung\124\framework\engine\default\x64\debug\engine.tlog\engine.write.1u.tlog
-d:\jung\124\framework\engine\default\x64\debug\engine.tlog\link.command.1.tlog
-d:\jung\124\framework\engine\default\x64\debug\engine.tlog\link.read.1.tlog
-d:\jung\124\framework\engine\default\x64\debug\engine.tlog\link.write.1.tlog
+c:\users\chris\onedrive\바탕 화면\프로젝트\srproject\engine\default\x64\debug\vc143.pdb
+c:\users\chris\onedrive\바탕 화면\프로젝트\srproject\engine\default\x64\debug\vc143.idb
+c:\users\chris\onedrive\바탕 화면\프로젝트\srproject\engine\default\x64\debug\engine.tlog\cl.command.1.tlog
+c:\users\chris\onedrive\바탕 화면\프로젝트\srproject\engine\default\x64\debug\engine.tlog\cl.read.1.tlog
+c:\users\chris\onedrive\바탕 화면\프로젝트\srproject\engine\default\x64\debug\engine.tlog\cl.write.1.tlog

@@ -21,6 +21,8 @@ public:
     HRESULT Add_Camera_Object(const _tchar* _PrototypeTag, const _tchar* _ObjectTag, void* pArg = nullptr);
 
     HRESULT Release_Camera(const _tchar* _tag);
+    HRESULT Clear_Camera(_uint _level);
+
     CCamera* Find_Camera_Prototype(const _tchar* _PrototypeTag);
     CCamera* Find_Camera_Object(const _tchar* _ObjectTag);
 

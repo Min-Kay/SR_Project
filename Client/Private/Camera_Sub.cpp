@@ -95,8 +95,8 @@ HRESULT CCamera_Sub::NativeConstruct(void* pArg)
 	m_pRenderTransform->Scaled(_float3(50.f,50.f,50.f));
 	m_pRenderTransform->Set_State(CTransform::STATE_POSITION,_float3(0.f, 0.f, 10.f));
 
-
-	LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture();
+	m_pTextureCom->Add_Texture(g_iWinCX,g_iWinCY);
+	LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(m_pTextureCom->Get_Textures_Count()-1);
 	(static_cast<LPDIRECT3DTEXTURE9>(texture))->GetSurfaceLevel(0, &m_pSurface);
 
 	return S_OK;

@@ -46,6 +46,9 @@
     <Filter Include="02.GameObjects\Camera\Cam_Dyn">
       <UniqueIdentifier>{7c2d06ec-b9de-447c-af8b-24245141f6bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Camera\Cam_Portal">
+      <UniqueIdentifier>{1a6269de-38b4-4a5d-9c61-fa75669281e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -96,6 +99,9 @@
     <ClInclude Include="..\Public\Camera_Sub.h">
       <Filter>02.GameObjects\Camera\Cam_Sub</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Cam_Portal.h">
+      <Filter>02.GameObjects\Camera\Cam_Portal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -133,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Sub.cpp">
       <Filter>02.GameObjects\Camera\Cam_Sub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cam_Portal.cpp">
+      <Filter>02.GameObjects\Camera\Cam_Portal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

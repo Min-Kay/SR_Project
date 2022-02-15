@@ -21,7 +21,9 @@ public:
 
 public:
 	HRESULT Bind_OnGraphicDevice(_uint iTextureIndex = 0);
-	LPDIRECT3DBASETEXTURE9* GetTexture();
+	LPDIRECT3DBASETEXTURE9* GetTexture(_uint iIndex);
+	HRESULT	Add_Texture(_uint iWidth, _uint iHeight);
+	const _uint Get_Textures_Count() const; 
 
 private:
 	vector<LPDIRECT3DBASETEXTURE9>			m_Textures;

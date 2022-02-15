@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 #include "Camera_Dynamic.h"
 #include "Camera_Sub.h"
+#include "Cam_Portal.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -53,9 +54,9 @@ _int CMainApp::Tick(_float fTimeDelta)
 	if (0 > m_pGameInstance->Tick_Engine(fTimeDelta))
 		return -1;
 
-#ifdef _DEBUG
-	m_fTimerAcc += fTimeDelta;
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	m_fTimerAcc += fTimeDelta;
+//#endif // _DEBUG
 
 	return _int();
 }
@@ -78,18 +79,18 @@ HRESULT CMainApp::Render()
 
 
 
-#ifdef _DEBUG
-	++m_dwNumRender;
-
-	if (m_fTimerAcc >= 1.f)
-	{
-		wsprintf(m_szFPS, TEXT("FPS : %d"), m_dwNumRender);
-		SetWindowText(g_hWnd, m_szFPS);
-
-		m_dwNumRender = 0;
-		m_fTimerAcc = 0.f;
-	}
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	++m_dwNumRender;
+//
+//	if (m_fTimerAcc >= 1.f)
+//	{
+//		wsprintf(m_szFPS, TEXT("FPS : %d"), m_dwNumRender);
+//		SetWindowText(g_hWnd, m_szFPS);
+//
+//		m_dwNumRender = 0;
+//		m_fTimerAcc = 0.f;
+//	}
+//#endif // _DEBUG
 
 	return S_OK;
 }
@@ -150,6 +151,9 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Sub"), CCamera_Sub::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Portal"), CCam_Portal::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 

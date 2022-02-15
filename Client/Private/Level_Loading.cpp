@@ -19,6 +19,29 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 
 	 m_pLoader = CLoader::Create(m_pGraphic_Device, m_eNextLevel);
 
+	 CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	 /* 사본객체를 생성ㅎ나다. */
+	 CCamera::CAMERADESC		CameraDesc;
+	 ZeroMemory(&CameraDesc, sizeof(CameraDesc));
+
+	 CameraDesc.vEye = _float3(0.f, 0.f, -50.f);
+	 CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
+	 CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
+
+	 CameraDesc.fFovy = D3DXToRadian(60.0f);
+	 CameraDesc.fAspect = _float(g_iWinCX) / g_iWinCY;
+	 CameraDesc.fNear = 0.1f;
+	 CameraDesc.fFar = 300.f;
+
+	 CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
+	 CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
+	 CameraDesc.iLevel = LEVEL_LOADING; 
+
+	 if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Dynamic"), TEXT("Loading_Camera"), &CameraDesc)))
+		 return E_FAIL;
+
+	 RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
@@ -91,4 +114,5 @@ void CLevel_Loading::Free()
 	__super::Free();
 
 	Safe_Release(m_pLoader);
+
 }

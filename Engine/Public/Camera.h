@@ -13,6 +13,7 @@ public:
 		_float3		vEye, vAt, vAxisY;
 		_float		fFovy, fAspect, fNear, fFar;
 		CTransform::TRANSFORMDESC TransformDesc;
+		_uint		iLevel;
 	}CAMERADESC;
 protected:
 	explicit CCamera(LPDIRECT3DDEVICE9 pGraphic_Device);
@@ -31,12 +32,17 @@ public:
 	virtual HRESULT AfterRender();
 
 public:
+	const _uint& Get_Level() const;
+	void Set_Level(_uint iLevel = 0);
 	void Set_Handle(HWND _hWnd);
 	const HWND& Get_Handle() const;
+	CTransform* Get_CameraTransform();
 
 protected:
 	class CTransform*			m_pTransform = nullptr;
 	HWND						hWnd = nullptr;
+	_uint						m_Level = 0;
+
 	CAMERADESC					m_CameraDesc;
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

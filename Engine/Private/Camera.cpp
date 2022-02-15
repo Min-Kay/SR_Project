@@ -1,6 +1,5 @@
 #include "..\Public\Camera.h"
 
-
 CCamera::CCamera(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
 {
@@ -26,6 +25,7 @@ HRESULT CCamera::NativeConstruct(void * pArg)
 		memcpy(&m_CameraDesc, pArg, sizeof(CAMERADESC));
 
 	m_pTransform = CTransform::Create(m_pGraphic_Device);
+
 	if (nullptr == m_pTransform)
 		return E_FAIL;
 
@@ -39,6 +39,8 @@ HRESULT CCamera::NativeConstruct(void * pArg)
 
 	_float3		vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);
 	D3DXVec3Normalize(&vUp, &vUp);
+
+	m_Level = m_CameraDesc.iLevel;
 
 	m_pTransform->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
@@ -86,6 +88,16 @@ HRESULT CCamera::AfterRender()
 	return S_OK;
 }
 
+const _uint& CCamera::Get_Level() const
+{
+	return m_Level; 
+}
+
+void CCamera::Set_Level(_uint iLevel)
+{
+	m_Level = iLevel;
+}
+
 void CCamera::Set_Handle(HWND _hWnd)
 {
 	hWnd = _hWnd;
@@ -94,6 +106,11 @@ void CCamera::Set_Handle(HWND _hWnd)
 const HWND& CCamera::Get_Handle() const
 {
 	return hWnd;
+}
+
+CTransform* CCamera::Get_CameraTransform()
+{
+	return m_pTransform;
 }
 
 
