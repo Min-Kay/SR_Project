@@ -49,7 +49,7 @@ HRESULT CCamera_Manager::Add_Camera_Object(const _tchar* _PrototypeTag, const _t
 
 	CGameObject* clone = pCamProto->Clone(pArg); 
 
-	m_CameraList.emplace(_ObjectTag,(CCamera*)clone);
+	m_CameraList.emplace(_ObjectTag, static_cast<CCamera*>(clone));
 	
 
 	return S_OK;

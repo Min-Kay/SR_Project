@@ -37,11 +37,14 @@ public:
 	void Set_Handle(HWND _hWnd);
 	const HWND& Get_Handle() const;
 	CTransform* Get_CameraTransform();
+	void Set_Vaild(_bool _bool);
+	const _bool Get_Vaild() const;
 
 protected:
 	class CTransform*			m_pTransform = nullptr;
 	HWND						hWnd = nullptr;
 	_uint						m_Level = 0;
+	_bool						isVaild = true;
 
 	CAMERADESC					m_CameraDesc;
 public:

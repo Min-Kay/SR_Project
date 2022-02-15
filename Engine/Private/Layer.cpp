@@ -19,6 +19,11 @@ CComponent * CLayer::Get_Component(const _tchar * pComponentTag, _uint iIndex)
 	return (*iter)->Get_Component(pComponentTag);	
 }
 
+list<class CGameObject*> CLayer::Get_List()
+{
+	return m_Objects;
+}
+
 HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 {
 	m_Objects.push_back(pGameObject);

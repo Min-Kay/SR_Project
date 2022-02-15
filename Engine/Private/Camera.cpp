@@ -113,6 +113,16 @@ CTransform* CCamera::Get_CameraTransform()
 	return m_pTransform;
 }
 
+void CCamera::Set_Vaild(_bool _bool)
+{
+	isVaild = _bool;
+}
+
+const _bool CCamera::Get_Vaild() const
+{
+	return isVaild;
+}
+
 
 void CCamera::Free()
 {

@@ -31,7 +31,6 @@ CGameObject* CCam_Portal::Clone(void* pArg)
 void CCam_Portal::Free()
 {
     __super::Free();
-    //Safe_Release(m_ExitPortal);
     Safe_Release(m_pSurface);
     Safe_Release(m_pTextureCom);
     Safe_Release(pBackBuffer);
@@ -53,6 +52,7 @@ CCam_Portal::CCam_Portal(const CCam_Portal& rhs)
     , m_pVIBuffer(rhs.m_pVIBuffer)
     , pBackBuffer(rhs.pBackBuffer)
     , m_pTextureCom(rhs.m_pTextureCom)
+
 {
     Safe_AddRef(m_pSurface);
     Safe_AddRef(m_pTextureCom);
@@ -60,6 +60,7 @@ CCam_Portal::CCam_Portal(const CCam_Portal& rhs)
     Safe_AddRef(pBackBuffer);
     Safe_AddRef(m_pRenderTransform);
     Safe_AddRef(m_pRender);
+
 
 }
 
@@ -101,7 +102,8 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
     m_pRenderTransform->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 10.f));*/
 
     m_pTextureCom->Add_Texture(g_iWinCX,g_iWinCY);
-    LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(m_pTextureCom->Get_Textures_Count() - 1);
+    m_TextureIndex = m_pTextureCom->Get_Textures_Count() - 1;
+    LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(m_TextureIndex);
     (static_cast<LPDIRECT3DTEXTURE9>(texture))->GetSurfaceLevel(0, &m_pSurface);
 }
 
@@ -112,22 +114,39 @@ _int CCam_Portal::Tick(_float fTimeDelta)
 
 _int CCam_Portal::LateTick(_float fTimeDelta)
 {
-
-    m_pRender->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+    if (nullptr == m_ExitPortal)
+        __super::Set_Vaild(false);
+    else
+    {
+        m_pRender->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
+        __super::Set_Vaild(true);
+    }
 
     return _int();
 }
 
 HRESULT CCam_Portal::Render()
 {
+    if (__super::Get_Vaild())
+    {
+        m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+        m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-    if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
-        return E_FAIL;
+        if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
+            return E_FAIL;
 
-    if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-        return E_FAIL;
+        if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_TextureIndex)))
+            return E_FAIL;
 
-    m_pVIBuffer->Render();
+        m_pVIBuffer->Render();
+
+        m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+        m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+
+    }
 
     return S_OK;
 }
@@ -159,21 +178,11 @@ void CCam_Portal::Set_ExitPortal(CCam_Portal* _exit)
     
     if (nullptr != m_ExitPortal)
     {
-      // Safe_AddRef(m_ExitPortal);
-
        CTransform* opponent =  static_cast<CCamera*>(m_ExitPortal)->Get_CameraTransform();
 
       m_pRenderTransform->Set_State(CTransform::STATE_RIGHT, opponent->Get_State(CTransform::STATE_RIGHT));
       m_pRenderTransform->Set_State(CTransform::STATE_UP, opponent->Get_State(CTransform::STATE_UP));
       m_pRenderTransform->Set_State(CTransform::STATE_LOOK, opponent->Get_State(CTransform::STATE_LOOK));
       m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION));
-
-
-      //CTransform* opponent_Portal = static_cast<CTransform*>(m_ExitPortal->Get_Component(TEXT("Com_Transform_Portal")));
-
-      //opponent_Portal->Set_State(CTransform::STATE_RIGHT, m_pTransform->Get_State(CTransform::STATE_RIGHT));
-      //opponent_Portal->Set_State(CTransform::STATE_UP, m_pTransform->Get_State(CTransform::STATE_UP));
-      //opponent_Portal->Set_State(CTransform::STATE_LOOK, m_pTransform->Get_State(CTransform::STATE_LOOK));
-      //opponent_Portal->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
     }
 }

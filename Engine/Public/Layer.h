@@ -11,6 +11,7 @@ public:
 	virtual ~CLayer() = default;
 public:
 	class CComponent* Get_Component(const _tchar* pComponentTag, _uint iIndex);
+	list<class CGameObject*> Get_List();
 
 public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);

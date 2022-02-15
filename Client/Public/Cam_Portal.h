@@ -29,7 +29,6 @@ public:
 	virtual HRESULT BeforeRender();
 	virtual HRESULT AfterRender();
 
-
 public:
 	void Set_ExitPortal(CCam_Portal* _exit = nullptr);
 
@@ -40,6 +39,7 @@ private:
 	CTransform* m_pRenderTransform = nullptr;
 
 	LPDIRECT3DSURFACE9 m_pSurface = nullptr;
+	_uint m_TextureIndex = 0;
 	IDirect3DSurface9* pBackBuffer = nullptr;
 	
 	CCam_Portal* m_ExitPortal = nullptr;

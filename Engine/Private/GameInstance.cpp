@@ -165,6 +165,11 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const _tchar * pLayerTa
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
 }
 
+CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, _uint iObjectIndex)
+{
+	return m_pObject_Manager->Get_GameObject(iLevelIndex,pLayerTag,iObjectIndex);
+}
+
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
@@ -217,6 +222,9 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 
 	for (auto& cam : camList)
 	{
+		if (!cam.second->Get_Vaild())
+			continue;
+
 		if (FAILED(cam.second->BeforeRender()))
 			return E_FAIL;
 		

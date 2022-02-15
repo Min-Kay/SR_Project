@@ -20,6 +20,9 @@ public:
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype); /* 원형객체를 추가한다. */
 	HRESULT Add_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pPrototypeTag, void* pArg); /* 사본(게임내에 출현해야할 객체) 객체를 추가한다. */
 	HRESULT Clear_LevelObject(_uint iLevelIndex);
+
+public:
+	CGameObject* Get_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, _uint iIndex = 0);
 public:
 	_int Tick(_float fTimeDelta);
 	_int LateTick(_float fTimeDelta);
