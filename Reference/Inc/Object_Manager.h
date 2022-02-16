@@ -23,6 +23,7 @@ public:
 
 public:
 	CGameObject* Get_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, _uint iIndex = 0);
+	HRESULT Release_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, CGameObject* target);
 public:
 	_int Tick(_float fTimeDelta);
 	_int LateTick(_float fTimeDelta);

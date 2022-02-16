@@ -128,36 +128,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	//pPortal1->Set_ExitPortal(pPortal2);
 	//pPortal2->Set_ExitPortal(pPortal1);
 
-	CPortal::PORTALDESC portalDesc;
-	portalDesc.iLevel = LEVEL_GAMEPLAY;
-	portalDesc.iPortalColor = 0;
-	portalDesc.vAxisY = _float3(0.f,1.f,0.f);
-	portalDesc.vEye = _float3(10.f, 0.f, 0.f);
-	portalDesc.vAt = _float3(10.f, 0.f, 1.f);
+	
 
-	portalDesc.portalCam = TEXT("Portal_Orange");
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal"), TEXT("Prototype_GameObject_Portal"), &portalDesc)))
-		return E_FAIL;
 
-	CPortal* portal1 = static_cast<CPortal*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY,TEXT("Portal"),0));
-
-	CPortal::PORTALDESC portalDesc2;
-	portalDesc2.iLevel = LEVEL_GAMEPLAY;
-	portalDesc2.iPortalColor = 1;
-	portalDesc2.vAxisY = _float3(0.f, 1.f, 0.f);
-	portalDesc2.vEye = _float3(0.f, 0.f, 0.f);
-	portalDesc2.vAt = _float3(0.f, 0.f, 1.f);
-
-	portalDesc.portalCam = TEXT("Portal_Blue");
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal"), TEXT("Prototype_GameObject_Portal"), &portalDesc2)))
-		return E_FAIL;
-
-	CPortal* portal2 = static_cast<CPortal*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal"), 1));
-
-	portal1->Link_Portal(portal2);
-	portal2->Link_Portal(portal1);
+	//portal1->Link_Portal(portal2);
+	//portal2->Link_Portal(portal1);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -168,7 +144,45 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+		return E_FAIL;*/
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

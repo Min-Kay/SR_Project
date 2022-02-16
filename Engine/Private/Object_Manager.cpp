@@ -112,6 +112,19 @@ CGameObject* CObject_Manager::Get_GameObject(_uint iLevelIndex, const _tchar* pL
 	return nullptr;
 }
 
+HRESULT CObject_Manager::Release_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, CGameObject* target)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex,pLayerTag);
+
+	if (nullptr == pLayer)
+		return E_FAIL;
+
+	if (FAILED(pLayer->Release_GameObject(target)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 _int CObject_Manager::Tick(_float fTimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)

@@ -80,8 +80,8 @@ _int CPlayer::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return -1;
 
-	if (FAILED(SetUp_OnTerrain()))
-		return -1;
+	/*if (FAILED(SetUp_OnTerrain()))
+		return -1;*/
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 

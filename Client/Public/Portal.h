@@ -51,6 +51,7 @@ private:
 	CPortal* m_pOpponent = nullptr;
 	CCam_Portal* m_pCam_Portal = nullptr;
 
+	const _tchar* tag = nullptr;
 public:
 	static CPortal* Create(LPDIRECT3DDEVICE9 pGraphicDevice);
 	virtual CGameObject* Clone(void* pArg) override;

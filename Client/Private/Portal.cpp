@@ -55,7 +55,10 @@ CGameObject* CPortal::Clone(void* pArg)
 void CPortal::Free()
 {
     __super::Free();
-    Safe_Release(m_pCam_Portal);
+   // Safe_Release(m_pCam_Portal);
+    
+    if(nullptr != m_pCam_Portal)
+        m_pCam_Portal->Set_ExitPortal(nullptr);
     Safe_Release(m_pRenderer);
     Safe_Release(m_pTexture);
     Safe_Release(m_pVIBuffer);
@@ -98,20 +101,32 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     CCamera::CAMERADESC camDesc;
     ZeroMemory(&camDesc,sizeof(CCamera::CAMERADESC));
 
-    camDesc.fAspect = 1;
+    camDesc.fAspect = 3/4.f;
     camDesc.fFar = 300.f;
     camDesc.fNear = 0.1f;
     camDesc.fFovy = D3DXToRadian(90.f);
     camDesc.iLevel = portalDesc.iLevel;
     camDesc.vEye = portalDesc.vEye;
     camDesc.vAxisY = portalDesc.vAxisY;
-    camDesc.vAt = portalDesc.vAt;
+    _float3 dir = portalDesc.vEye - portalDesc.vAt;
+    _float3 nor = *D3DXVec3Normalize(&nor, &dir);
+    camDesc.vAt = portalDesc.vEye + nor;
 
     CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-    if (FAILED(pInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Portal"), portalDesc.portalCam, &camDesc)))
-        return E_FAIL;
+    tag = portalDesc.portalCam;
+    if (nullptr == static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(portalDesc.portalCam)))
+    {
+        if (FAILED(pInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Portal"), portalDesc.portalCam, &camDesc)))
+            return E_FAIL;
 
-    m_pCam_Portal = static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(portalDesc.portalCam));
+        m_pCam_Portal = static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(tag));
+    }
+    else
+    {
+        m_pCam_Portal = static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(tag));
+
+        m_pCam_Portal->Set_State(camDesc);
+    }
 
     /* For.Com_Renderer */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
@@ -159,7 +174,6 @@ HRESULT CPortal::Render()
     m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
     m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
-
     if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
         return E_FAIL;
 
@@ -179,11 +193,12 @@ void CPortal::Link_Portal(CPortal* opponent)
     m_pOpponent = opponent;
 
     if (nullptr == m_pOpponent)
+    {
+        m_pCam_Portal->Set_Vaild(false);
         return;
+    }
 
-    CCam_Portal* opponent_Cam = m_pOpponent->Get_Cam_Portal();
-    opponent_Cam->Set_ExitPortal(m_pCam_Portal);
-
+    m_pCam_Portal->Set_ExitPortal(m_pOpponent);
 }
 
 CCam_Portal* CPortal::Get_Cam_Portal()

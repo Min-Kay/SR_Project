@@ -26,26 +26,7 @@ HRESULT CCamera::NativeConstruct(void * pArg)
 
 	m_pTransform = CTransform::Create(m_pGraphic_Device);
 
-	if (nullptr == m_pTransform)
-		return E_FAIL;
-
-	m_pTransform->Set_TransformDesc(m_CameraDesc.TransformDesc);
-
-	_float3		vLook = m_CameraDesc.vAt - m_CameraDesc.vEye;
-	D3DXVec3Normalize(&vLook, &vLook);
-
-	_float3		vRight = *D3DXVec3Cross(&vRight, &m_CameraDesc.vAxisY, &vLook);
-	D3DXVec3Normalize(&vRight, &vRight);
-
-	_float3		vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);
-	D3DXVec3Normalize(&vUp, &vUp);
-
-	m_Level = m_CameraDesc.iLevel;
-
-	m_pTransform->Set_State(CTransform::STATE_UP, vUp);
-	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
-	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
-	m_pTransform->Set_State(CTransform::STATE_POSITION, m_CameraDesc.vEye);
+	Set_State(m_CameraDesc);
 
 	return S_OK;
 }
@@ -121,6 +102,30 @@ void CCamera::Set_Vaild(_bool _bool)
 const _bool CCamera::Get_Vaild() const
 {
 	return isVaild;
+}
+
+void CCamera::Set_State(const CCamera::CAMERADESC& desc)
+{
+	if (nullptr == m_pTransform)
+		return;
+
+	m_pTransform->Set_TransformDesc(desc.TransformDesc);
+
+	_float3		vLook = desc.vAt - desc.vEye;
+	D3DXVec3Normalize(&vLook, &vLook);
+
+	_float3		vRight = *D3DXVec3Cross(&vRight, &desc.vAxisY, &vLook);
+	D3DXVec3Normalize(&vRight, &vRight);
+
+	_float3		vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);
+	D3DXVec3Normalize(&vUp, &vUp);
+
+	m_Level = desc.iLevel;
+
+	m_pTransform->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, desc.vEye);
 }
 
 

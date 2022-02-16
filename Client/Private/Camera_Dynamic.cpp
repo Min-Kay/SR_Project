@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Camera_Dynamic.h"
 #include "GameInstance.h"
+#include "PortalControl.h"
 
 CCamera_Dynamic::CCamera_Dynamic(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CCamera(pGraphic_Device)
@@ -53,6 +54,40 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 		m_pTransform->Go_Right(fTimeDelta);
 	}
 
+	if (nullptr == portalCtl)
+	{
+		if (pGameInstance->Get_DIKeyState(DIK_I) & 0x80)
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), TEXT("Prototype_GameObject_PortalCtrl"))))
+				return E_FAIL;
+
+			portalCtl = static_cast<CPortalControl*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), 0));
+
+			Safe_AddRef(portalCtl);
+		}
+	}
+
+	if (nullptr != portalCtl)
+	{
+		if (pGameInstance->Get_DIMouseButtonState(CInput_Device::MBS_LBUTTON) & 0x80)
+		{
+			portalCtl->Spawn_Portal(LEVEL_GAMEPLAY,m_pTransform, CPortalControl::PORTAL_ORANGE);
+		}
+
+		if (pGameInstance->Get_DIMouseButtonState(CInput_Device::MBS_RBUTTON) & 0x80)
+		{
+			portalCtl->Spawn_Portal(LEVEL_GAMEPLAY, m_pTransform, CPortalControl::PORTAL_BLUE);
+		}
+
+		if (pGameInstance->Get_DIKeyState(DIK_SPACE) & 0x80)
+		{
+			portalCtl->Erase_Portal(LEVEL_GAMEPLAY);
+		}
+	}
+
+
+	
+
 	_long		MouseMove = 0;
 
 	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
@@ -74,6 +109,8 @@ _int CCamera_Dynamic::LateTick(_float fTimeDelta)
 {
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
+
+	
 
 	return _int();
 }
@@ -130,7 +167,5 @@ CGameObject * CCamera_Dynamic::Clone(void * pArg)
 void CCamera_Dynamic::Free()
 {
 	__super::Free();
-
-
-
+	Safe_Release(portalCtl);
 }

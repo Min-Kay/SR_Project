@@ -31,7 +31,7 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(rand() % 100 - 50, rand() % 100 - 50, 0.f) );
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(rand() % 50 - 25, rand() % 50 - 25, 0.f) );
 	return S_OK;
 }
 

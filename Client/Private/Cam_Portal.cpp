@@ -2,7 +2,8 @@
 #include "Cam_Portal.h"
 #include "Renderer.h"
 #include "Texture.h"
-#include "VIBuffer_Rect.h"
+#include "Portal.h"
+#include "VIBuffer_Portal.h"
 
 CCam_Portal* CCam_Portal::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
@@ -91,7 +92,7 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRender)))
         return E_FAIL;
 
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Portal"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer)))
         return E_FAIL;
 
   /*  CTransform::TRANSFORMDESC desc;
@@ -115,10 +116,12 @@ _int CCam_Portal::Tick(_float fTimeDelta)
 _int CCam_Portal::LateTick(_float fTimeDelta)
 {
     if (nullptr == m_ExitPortal)
+    {
         __super::Set_Vaild(false);
+    }
     else
     {
-        m_pRender->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
+        m_pRender->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
         __super::Set_Vaild(true);
     }
 
@@ -129,10 +132,14 @@ HRESULT CCam_Portal::Render()
 {
     if (__super::Get_Vaild())
     {
-        m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+      /*  m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
         m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
         m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
+       /* m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+        m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 10);
+        m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
+
 
         if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
             return E_FAIL;
@@ -142,8 +149,8 @@ HRESULT CCam_Portal::Render()
 
         m_pVIBuffer->Render();
 
-        m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-        m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+     /*   m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+        m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);*/
 
 
     }
@@ -156,9 +163,9 @@ HRESULT CCam_Portal::BeforeRender()
     m_pGraphic_Device->SetRenderTarget(0, m_pSurface);
     m_pGraphic_Device->Clear(0,
         nullptr,
-        D3DCLEAR_TARGET,
+        D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
         D3DCOLOR_ARGB(255, 0, 255, 0),	// 백버퍼 색상
-        1.f, // z버퍼의 초기화 값
+        1.0f, // z버퍼의 초기화 값
         0);	 // 스텐실 버퍼의 초기화 값
 
 
@@ -172,17 +179,21 @@ HRESULT CCam_Portal::AfterRender()
     return __super::AfterRender();
 }
 
-void CCam_Portal::Set_ExitPortal(CCam_Portal* _exit)
+void CCam_Portal::Set_ExitPortal(CPortal* _exit)
 {
-    m_ExitPortal = _exit; 
+    if(nullptr == _exit)
+        m_ExitPortal = nullptr;
     
-    if (nullptr != m_ExitPortal)
+    if (nullptr != _exit)
     {
-       CTransform* opponent =  static_cast<CCamera*>(m_ExitPortal)->Get_CameraTransform();
+        m_ExitPortal = _exit->Get_Cam_Portal();
+
+       CTransform* opponent =  static_cast<CTransform*>(_exit->Get_Component(TEXT("Com_Transform")));
 
       m_pRenderTransform->Set_State(CTransform::STATE_RIGHT, opponent->Get_State(CTransform::STATE_RIGHT));
       m_pRenderTransform->Set_State(CTransform::STATE_UP, opponent->Get_State(CTransform::STATE_UP));
       m_pRenderTransform->Set_State(CTransform::STATE_LOOK, opponent->Get_State(CTransform::STATE_LOOK));
-      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION));
+      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - opponent->Get_State(CTransform::STATE_LOOK) * 0.01f);
     }
 }
+

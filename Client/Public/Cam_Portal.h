@@ -4,11 +4,13 @@
 
 BEGIN(Engine)
 class CRenderer;
-class CVIBuffer_Rect;
+class CVIBuffer_Portal;
 class CTexture;
 END
 
 BEGIN(Client)
+class CPortal;
+
 class CCam_Portal :
     public CCamera
 {
@@ -30,11 +32,11 @@ public:
 	virtual HRESULT AfterRender();
 
 public:
-	void Set_ExitPortal(CCam_Portal* _exit = nullptr);
+	void Set_ExitPortal(CPortal* _exit = nullptr);
 
 private:
 	CTexture* m_pTextureCom = nullptr;
-	CVIBuffer_Rect* m_pVIBuffer = nullptr;
+	CVIBuffer_Portal* m_pVIBuffer = nullptr;
 	CRenderer* m_pRender = nullptr;
 	CTransform* m_pRenderTransform = nullptr;
 
@@ -43,6 +45,7 @@ private:
 	IDirect3DSurface9* pBackBuffer = nullptr;
 	
 	CCam_Portal* m_ExitPortal = nullptr;
+
 public:
 	static CCam_Portal* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

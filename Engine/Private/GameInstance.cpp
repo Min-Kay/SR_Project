@@ -170,6 +170,13 @@ CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const _tchar* pLay
 	return m_pObject_Manager->Get_GameObject(iLevelIndex,pLayerTag,iObjectIndex);
 }
 
+HRESULT CGameInstance::Release_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, CGameObject* pTarget)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+	return m_pObject_Manager->Release_GameObject(iLevelIndex,pLayerTag,pTarget);
+}
+
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
@@ -227,7 +234,7 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 
 		if (FAILED(cam.second->BeforeRender()))
 			return E_FAIL;
-		
+
 		Render_Begin();
 		renderer->Render();
 		Render_Level();

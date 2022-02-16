@@ -39,6 +39,7 @@ public:
 	CTransform* Get_CameraTransform();
 	void Set_Vaild(_bool _bool);
 	const _bool Get_Vaild() const;
+	void Set_State(const CCamera::CAMERADESC& desc);
 
 protected:
 	class CTransform*			m_pTransform = nullptr;

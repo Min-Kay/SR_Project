@@ -31,6 +31,24 @@ HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 	return S_OK;
 }
 
+HRESULT CLayer::Release_GameObject(CGameObject* pTarget)
+{
+	auto iter = m_Objects.begin();
+	
+	for (; iter != m_Objects.end();)
+	{
+		if (*iter == pTarget)
+		{
+			Safe_Release(pTarget);
+			iter = m_Objects.erase(iter);
+			return S_OK;
+		}
+		else
+			++iter;
+	}
+	return E_FAIL;
+}
+
 _int CLayer::Tick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_Objects)

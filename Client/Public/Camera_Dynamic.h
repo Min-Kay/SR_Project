@@ -4,7 +4,7 @@
 #include "Camera.h"
 
 BEGIN(Client)
-
+class CPortalControl;
 class CCamera_Dynamic final : public CCamera
 {
 protected:
@@ -22,10 +22,15 @@ public:
 	virtual HRESULT BeforeRender();
 	virtual HRESULT AfterRender();
 
+private:
+	CPortalControl* portalCtl = nullptr; 
+
 public:
 	static CCamera_Dynamic* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
+
+
 };
 
 END

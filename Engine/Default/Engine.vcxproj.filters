@@ -82,6 +82,9 @@
     <Filter Include="01.Utility\03.GameObject\Camera\Manager">
       <UniqueIdentifier>{fdc9d89f-3030-43e7-be1a-aead14cfaded}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Components\Model\Portal">
+      <UniqueIdentifier>{30ddb95c-12a6-46a4-972c-75e7854bbf4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -162,6 +165,9 @@
     <ClInclude Include="..\Public\Camera_Manager.h">
       <Filter>01.Utility\03.GameObject\Camera\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Portal.h">
+      <Filter>01.Utility\04.Components\Model\Portal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -226,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Manager.cpp">
       <Filter>01.Utility\03.GameObject\Camera\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Portal.cpp">
+      <Filter>01.Utility\04.Components\Model\Portal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
