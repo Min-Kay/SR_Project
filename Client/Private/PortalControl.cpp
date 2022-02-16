@@ -2,6 +2,7 @@
 #include "PortalControl.h"
 #include "Portal.h"
 #include "GameInstance.h"
+#include "Cam_Portal.h"
 
 CPortalControl* CPortalControl::Create(LPDIRECT3DDEVICE9 pGraphicDevice)
 {
@@ -31,6 +32,7 @@ void CPortalControl::Free()
 {
 	Safe_Release(m_pPortal_Orange);
 	Safe_Release(m_pPortal_Blue);
+	Safe_Release(m_pPlayerTransform);
 	__super::Free();
 }
 
@@ -63,8 +65,19 @@ _int CPortalControl::LateTick(_float fTimeDelta)
 {
 	if (nullptr != m_pPortal_Orange && nullptr != m_pPortal_Blue)
 	{
-		m_pPortal_Orange->Link_Portal(m_pPortal_Blue);
-		m_pPortal_Blue->Link_Portal(m_pPortal_Orange);
+		if(nullptr == m_pPortal_Orange->Get_Link_Portal())
+			m_pPortal_Orange->Link_Portal(m_pPortal_Blue);
+		if (nullptr == m_pPortal_Blue->Get_Link_Portal())
+			m_pPortal_Blue->Link_Portal(m_pPortal_Orange);
+
+		if (nullptr != m_pPlayerTransform)
+		{
+			if (nullptr != m_pPortal_Orange->Get_Link_Portal() && nullptr != m_pPortal_Blue->Get_Link_Portal())
+			{
+				m_pPortal_Blue->Get_Cam_Portal()->Set_Cam_Angle(m_pPlayerTransform);
+				m_pPortal_Orange->Get_Cam_Portal()->Set_Cam_Angle(m_pPlayerTransform);
+			}
+		}
 	}
 
     return _int();
@@ -174,4 +187,10 @@ HRESULT CPortalControl::Erase_Portal(_uint iLevelIndex)
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+void CPortalControl::Set_Player(CTransform* pPlayer)
+{
+	m_pPlayerTransform = pPlayer;	
+	Safe_AddRef(m_pPlayerTransform);
 }

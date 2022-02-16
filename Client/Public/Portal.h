@@ -38,7 +38,7 @@ public:
 
 public:
 	void Link_Portal(CPortal* opponent = nullptr);
-
+	CPortal* Get_Link_Portal();
 public:
 	CCam_Portal* Get_Cam_Portal();
 

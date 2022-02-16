@@ -201,6 +201,11 @@ void CPortal::Link_Portal(CPortal* opponent)
     m_pCam_Portal->Set_ExitPortal(m_pOpponent);
 }
 
+CPortal* CPortal::Get_Link_Portal()
+{
+    return m_pOpponent;
+}
+
 CCam_Portal* CPortal::Get_Cam_Portal()
 {
     return m_pCam_Portal;

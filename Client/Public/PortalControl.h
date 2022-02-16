@@ -28,8 +28,10 @@ public:
 public:
 	HRESULT Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalColor iIndex);
 	HRESULT Erase_Portal(_uint iLevelIndex);
+	void Set_Player(CTransform* pPlayer);
 
 private:
+	CTransform* m_pPlayerTransform = nullptr;
 	CPortal* m_pPortal_Orange = nullptr;
 	CPortal* m_pPortal_Blue = nullptr;
 

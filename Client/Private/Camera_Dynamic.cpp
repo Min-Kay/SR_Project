@@ -62,7 +62,7 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 				return E_FAIL;
 
 			portalCtl = static_cast<CPortalControl*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), 0));
-
+			portalCtl->Set_Player(m_pTransform);
 			Safe_AddRef(portalCtl);
 		}
 	}

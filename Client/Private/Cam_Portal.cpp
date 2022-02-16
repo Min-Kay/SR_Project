@@ -179,6 +179,19 @@ HRESULT CCam_Portal::AfterRender()
     return __super::AfterRender();
 }
 
+HRESULT CCam_Portal::Set_Cam_Angle(CTransform* target)
+{
+   _float3 dir =  m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION);
+    D3DXVec3Normalize(&dir, &dir);
+
+   m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) - dir );
+
+  // m_pTransform->Set_State(CTransform::STATE_LOOK, dir );
+
+
+    return S_OK;
+}
+
 void CCam_Portal::Set_ExitPortal(CPortal* _exit)
 {
     if(nullptr == _exit)
