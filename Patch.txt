@@ -1,9 +1,0 @@
-2022-02-15
-
-Engine:
-구조체 CameraDesc에 카메라 출력 레벨 담당 iLevel 변수 추가 
-클래스 Texture의 GetTexture() 수정, Add_Texture(), Get_Textures_Count() 추가
-
-Client:
-클래스 Cam_Portal 추가 / 포탈용 카메라 담당
-------------------------------------------------------

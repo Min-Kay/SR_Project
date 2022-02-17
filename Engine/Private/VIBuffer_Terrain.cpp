@@ -143,6 +143,9 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar * pHeightMapFi
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
 
+	m_pIndices = new FACEINDICES32[m_iNumPrimitive];
+	ZeroMemory(m_pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
+
 	FACEINDICES32*		pIndices = nullptr;
 
 	m_pIB->Lock(0, 0, (void**)&pIndices, 0);
@@ -173,7 +176,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar * pHeightMapFi
 			++iNumPrimitive;
 		}
 	}
-
+	memcpy(m_pIndices, pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 	m_pIB->Unlock();
 
 	Safe_Delete_Array(pPixel);
