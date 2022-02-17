@@ -32,7 +32,7 @@ public:
 	virtual HRESULT AfterRender();
 
 public:
-	HRESULT Set_Cam_Angle(CTransform* target);
+	HRESULT Set_Cam_Angle(CTransform* portal, CTransform* target);
 
 public:
 	void Set_ExitPortal(CPortal* _exit = nullptr);

@@ -41,6 +41,7 @@ public:
 	CPortal* Get_Link_Portal();
 public:
 	CCam_Portal* Get_Cam_Portal();
+	void Set_Cam_Angle(CTransform* target);
 
 private:
 	CTransform* m_pTransform = nullptr;

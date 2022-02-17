@@ -210,3 +210,11 @@ CCam_Portal* CPortal::Get_Cam_Portal()
 {
     return m_pCam_Portal;
 }
+
+void CPortal::Set_Cam_Angle(CTransform* target)
+{
+    if (nullptr == m_pCam_Portal)
+        return; 
+    
+    m_pCam_Portal->Set_Cam_Angle(m_pTransform,target);
+}

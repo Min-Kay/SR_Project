@@ -74,8 +74,8 @@ _int CPortalControl::LateTick(_float fTimeDelta)
 		{
 			if (nullptr != m_pPortal_Orange->Get_Link_Portal() && nullptr != m_pPortal_Blue->Get_Link_Portal())
 			{
-				m_pPortal_Blue->Get_Cam_Portal()->Set_Cam_Angle(m_pPlayerTransform);
-				m_pPortal_Orange->Get_Cam_Portal()->Set_Cam_Angle(m_pPlayerTransform);
+				m_pPortal_Blue->Set_Cam_Angle(m_pPlayerTransform);
+				m_pPortal_Orange->Set_Cam_Angle(m_pPlayerTransform);
 			}
 		}
 	}

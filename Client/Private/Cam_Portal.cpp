@@ -132,14 +132,6 @@ HRESULT CCam_Portal::Render()
 {
     if (__super::Get_Vaild())
     {
-      /*  m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-        m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
-       /* m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-        m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 10);
-        m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
-
 
         if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
             return E_FAIL;
@@ -148,10 +140,6 @@ HRESULT CCam_Portal::Render()
             return E_FAIL;
 
         m_pVIBuffer->Render();
-
-     /*   m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-        m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);*/
-
 
     }
 
@@ -179,12 +167,19 @@ HRESULT CCam_Portal::AfterRender()
     return __super::AfterRender();
 }
 
-HRESULT CCam_Portal::Set_Cam_Angle(CTransform* target)
+HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
 {
-   _float3 dir =  m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION);
-    D3DXVec3Normalize(&dir, &dir);
-    
-   m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) + dir );
+   _float3 targetDir =  m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION);
+    D3DXVec3Normalize(&targetDir, &targetDir);
+
+
+    _float3 portalDir = portal->Get_State(CTransform::STATE_LOOK);
+    D3DXVec3Normalize(&portalDir, &portalDir);
+
+    if(D3DXToDegree(acos(D3DXVec3Dot(&targetDir, &portalDir))) >= 90.f)
+       m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) + targetDir);
+    else
+        m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) - targetDir);
 
     return S_OK;
 }

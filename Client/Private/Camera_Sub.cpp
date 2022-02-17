@@ -136,8 +136,8 @@ _int CCamera_Sub::LateTick(_float fTimeDelta)
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_pRender->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-
-	return _int();
+	
+	return _int(); 
 }
 
 HRESULT CCamera_Sub::Render()
