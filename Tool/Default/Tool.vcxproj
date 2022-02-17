@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8F8F0EB5-3A22-4822-8B4D-756ADD380D59}</ProjectGuid>
     <RootNamespace>Tool</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -50,7 +50,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
@@ -200,7 +200,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
+    <ClInclude Include="..\Public\Runtime.h" />
     <ClInclude Include="..\Public\SubView.h" />
     <ClInclude Include="..\Public\Tool_Define.h" />
     <ClInclude Include="..\Public\Tool_Enum.h" />
@@ -223,6 +225,7 @@
     <ClInclude Include="..\Public\UnitTool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\Private\FileInfo.cpp" />
     <ClCompile Include="..\Private\MainFrm.cpp" />
@@ -232,6 +235,7 @@
     <ClCompile Include="..\Private\MyPage2.cpp" />
     <ClCompile Include="..\Private\MySheet.cpp" />
     <ClCompile Include="..\Private\PathFind.cpp" />
+    <ClCompile Include="..\Private\Runtime.cpp" />
     <ClCompile Include="..\Private\stdafx.cpp" />
     <ClCompile Include="..\Private\SubView.cpp" />
     <ClCompile Include="..\Private\Tool.cpp" />

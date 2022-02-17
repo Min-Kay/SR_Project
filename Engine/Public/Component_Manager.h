@@ -1,12 +1,12 @@
 #pragma once
-
+#include "Base.h"
 #include "Texture.h"
 #include "Renderer.h"
 #include "Transform.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Portal.h"
-
+#include "VIBuffer_Cube.h"
 /* 컴포넌트 원형들을 모아놓는다. */
 
 BEGIN(Engine)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Camera_Dynamic.h"
 #include "GameInstance.h"
+#include "ToolView.h"
 
 CCamera_Dynamic::CCamera_Dynamic(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CCamera(pGraphic_Device)
@@ -32,37 +33,54 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-
-	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	
+	if (GetKeyState(VK_UP) & 0x80)
 	{
-		m_pTransform->Go_Straight(fTimeDelta);
+		m_pTransform->Go_Straight(fTimeDelta*0.1f);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	if (GetKeyState(VK_DOWN) & 0x80)
 	{
-		m_pTransform->Go_BackWard(fTimeDelta);
+		m_pTransform->Go_BackWard(fTimeDelta*0.1f);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	if (GetKeyState(VK_LEFT) & 0x80)
 	{
-		m_pTransform->Go_Left(fTimeDelta);
+		m_pTransform->Go_Left(fTimeDelta*0.1f);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	if (GetKeyState(VK_RIGHT) & 0x80)
 	{
-		m_pTransform->Go_Right(fTimeDelta);
+		m_pTransform->Go_Right(fTimeDelta*0.1f);
+	}
+	if (GetKeyState('1') & 0x80)
+	{
+		m_pTransform->Turn(_float3(0.f, 1.f, 0.f),fTimeDelta * 1 * 0.1f);
+	}
+	if (GetKeyState('2') & 0x80)
+	{
+		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * 1 * 0.1f);
+	}
+	//_long		MouseMove = 0;
+	CToolView* pToolView = (CToolView *)AfxGetApp();
+	_long  MouseMove;
+	POINT  MousePos;
+	GetCursorPos(&MousePos);
+	ScreenToClient(pToolView->m_hWnd, &MousePos);
+	
+	POINT CnterPos;
+	CnterPos.x = g_iWinCX * 0.5f + 300;
+	CnterPos.y = g_iWinCY * 0.5f;
+	//POINT NomalMousePos()
+	//CInput_Device::MMS_X
+	if (MouseMove = CnterPos.x - MousePos.x)
+	{
+		m_pTransform->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.000005f);
 	}
 
-	_long		MouseMove = 0;
-
-	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
+	if (MouseMove = CnterPos.y - MousePos.y/*pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y)*/)
 	{
-		m_pTransform->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
-	}
-
-	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
-	{
-		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.000005f);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

@@ -1,4 +1,4 @@
-#include "..\Public\Component_Manager.h"
+#include "Component_Manager.h"
 #include "Component.h"
 
 IMPLEMENT_SINGLETON(CComponent_Manager)

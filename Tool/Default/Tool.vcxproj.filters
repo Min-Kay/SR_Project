@@ -64,6 +64,18 @@
     <Filter Include="04. Camera">
       <UniqueIdentifier>{da3ffab2-2c14-4624-b801-e61aa1126b17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05.Obj">
+      <UniqueIdentifier>{fe8892f6-66d9-4ee5-876c-bda74dd86802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Obj\00.BackGround">
+      <UniqueIdentifier>{c8893934-0b9b-4fda-a6bd-fc86348e260c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Obj\01.Cube">
+      <UniqueIdentifier>{2b064782-f0f5-4ba4-b842-d3773c641749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Special\03.RunTime">
+      <UniqueIdentifier>{12850050-d7ab-4c10-9eb5-6fd7cf90a556}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -132,6 +144,12 @@
     <ClInclude Include="..\Public\Camera_Dynamic.h">
       <Filter>04. Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BackGround.h">
+      <Filter>05.Obj\00.BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Runtime.h">
+      <Filter>00. Special\03.RunTime</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\UnitTool.cpp">
@@ -178,6 +196,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Dynamic.cpp">
       <Filter>04. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackGround.cpp">
+      <Filter>05.Obj\00.BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Runtime.cpp">
+      <Filter>00. Special\03.RunTime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

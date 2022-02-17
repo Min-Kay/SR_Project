@@ -1,16 +1,7 @@
 ﻿  GameObject.cpp
-  VIBuffer_Cube.cpp
-  VIBuffer_Portal.cpp
-  VIBuffer_Terrain.cpp
-C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\Private\VIBuffer_Terrain.cpp(40,51): warning C4244: '인수': 'Engine::_uint'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\Private\VIBuffer_Terrain.cpp(40,42): warning C4244: '인수': 'Engine::_uint'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\Private\VIBuffer_Terrain.cpp(132,84): warning C4244: '인수': 'Engine::_uint'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\Private\VIBuffer_Terrain.cpp(132,42): warning C4244: '인수': 'Engine::_uint'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Component_Manager.cpp
   GameInstance.cpp
   Level_Manager.cpp
-  VIBuffer.cpp
-  VIBuffer_Rect.cpp
   코드를 생성하고 있습니다...
-C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\Private\VIBuffer_Portal.cpp(130): warning C4715: 'Engine::CVIBuffer_Portal::Render': 모든 제어 경로에서 값을 반환하지는 않습니다.
+     ..\Bin\Engine.lib 라이브러리 및 ..\Bin\Engine.exp 개체를 생성하고 있습니다.
   Engine.vcxproj -> C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\Bin\Engine.dll

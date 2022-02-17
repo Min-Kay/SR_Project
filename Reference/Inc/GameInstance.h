@@ -23,6 +23,7 @@ public:
 public:
 	HRESULT Initialize_Engine(HINSTANCE hInstance, const CGraphic_Device::GRAPHICDESC& GraphicDesc, _uint iNumLevels, LPDIRECT3DDEVICE9* ppOut);
 	_int Tick_Engine(_float fTimeDelta);
+	_int Tick_Tool(_float fTimeDelta);
 	HRESULT Clear_LevelResource(_uint iLevelIndex);
 
 public: /* For.Graphic_Device */
@@ -56,7 +57,7 @@ public: /* For.Input_Device */
 	_byte Get_DIMouseButtonState(CInput_Device::MOUSEBUTTONSTATE eMouseButtonState);
 
 public: /* For.Camera_Manager*/
-	HRESULT Render_Camera(CRenderer* renderer);
+	HRESULT Render_Camera(class CRenderer* renderer);
 	HRESULT Add_Camera_Prototype(const _tchar * _Prototypetag, class CCamera * cam);
 	HRESULT Add_Camera_Object(const _tchar * _Prototypetag, const _tchar* _ObjectTag, void* pArg = nullptr);
 	HRESULT Release_Camera(const _tchar * _tag);

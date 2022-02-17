@@ -5,7 +5,6 @@
 
 #pragma once
 
-
 class CToolDoc : public CDocument
 {
 protected: // serialization에서만 만들어집니다.

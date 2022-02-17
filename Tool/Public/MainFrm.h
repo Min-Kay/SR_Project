@@ -40,8 +40,6 @@ public:
 	CSplitterWnd		m_MainSplitter;	// CSplitterWnd : 창 분할을 위한 클래스
 	CSplitterWnd		m_SecondSplitter;
 
-private:
-	CGameInstance* m_pGameInstance = nullptr;
 
 // 생성된 메시지 맵 함수
 protected:
