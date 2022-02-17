@@ -10,7 +10,9 @@ CGameInstance::CGameInstance()
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pCamera_Manager(CCamera_Manager::GetInstance())
+	, m_pPicking(CPicking::GetInstance())
 {
+	Safe_AddRef(m_pPicking);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
@@ -41,6 +43,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Dev
 	if (FAILED(m_pComponent_Manager->Reserve_Container(iNumLevels)))
 		return E_FAIL;
 
+	if (FAILED(m_pPicking->NativeConstruct(*ppOut, GraphicDesc.hWnd)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -62,6 +67,8 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pLevel_Manager->Tick(fTimeDelta))
 		return -1;
 
+	if (FAILED(m_pPicking->Transform_ToWorldSpace()))
+		return -1;
 
 	if (0 > m_pObject_Manager->LateTick(fTimeDelta))
 		return -1;	
@@ -236,7 +243,7 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 			return E_FAIL;
 
 		Render_Begin();
-		renderer->Render();
+		renderer->Render(cam.second->Get_RenderUi());
 		Render_Level();
 		Render_End(cam.second->Get_Handle());
 
@@ -288,6 +295,9 @@ void CGameInstance::Release_Engine()
 	if (0 != CLevel_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CLevel_Manager ");
 
+	if (0 != CPicking::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Delete CPicking ");
+
 	if (0 != CCamera_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete Camera_Manager ");
 
@@ -302,6 +312,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pPicking);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pLevel_Manager);

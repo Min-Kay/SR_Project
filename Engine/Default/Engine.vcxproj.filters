@@ -85,6 +85,9 @@
     <Filter Include="01.Utility\04.Components\Model\Portal">
       <UniqueIdentifier>{30ddb95c-12a6-46a4-972c-75e7854bbf4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\06.Picking">
+      <UniqueIdentifier>{636ea084-7111-4e91-b392-4f93e1e783e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -168,6 +171,12 @@
     <ClInclude Include="..\Public\VIBuffer_Portal.h">
       <Filter>01.Utility\04.Components\Model\Portal</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cube.h">
+      <Filter>01.Utility\04.Components\Model\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Picking.h">
+      <Filter>01.Utility\06.Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -235,6 +244,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Portal.cpp">
       <Filter>01.Utility\04.Components\Model\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
+      <Filter>01.Utility\04.Components\Model\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Picking.cpp">
+      <Filter>01.Utility\06.Picking</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

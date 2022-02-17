@@ -1,4 +1,5 @@
 #include "..\Public\VIBuffer.h"
+#include "Picking.h"
 
 CVIBuffer::CVIBuffer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent(pGraphic_Device)
@@ -18,6 +19,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer & rhs)
 	, m_iIndicesSize(rhs.m_iIndicesSize)
 	, m_eIndexFormat(rhs.m_eIndexFormat)
 	, m_pVertices(rhs.m_pVertices)
+	, m_pIndices(rhs.m_pIndices)
 {
 	Safe_AddRef(m_pIB);
 	Safe_AddRef(m_pVB);
@@ -37,6 +39,57 @@ HRESULT CVIBuffer::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_bool CVIBuffer::Pick(const _float4x4& WorldMatrixInverse, _float3 * pOut)
+{	
+	CPicking*		pPicking = GET_INSTANCE(CPicking);
+
+	pPicking->Transform_ToLocalSpace(WorldMatrixInverse);
+
+	_uint		iIndexByte = 0;
+
+	if (m_eIndexFormat == D3DFMT_INDEX16)
+		iIndexByte = 2;
+	else
+		iIndexByte = 4;	
+
+	_bool		isPick = false;
+
+	for (_uint i = 0; i < m_iNumPrimitive; ++i)
+	{
+		_uint	iIndices[3] = { 0 };
+
+		/* void*를 _byte*로 캐스팅한 이유 : 주소에 상수를 더했을때 그 상수바이트크기만큼ㅂ 이동할 수 있도록 만들어주기위해. */
+		/* _short*포인터형변수에 1을더하면 2byte씩 이동하낟.  */
+		/* _uint*포인터형변수에 1을더하면 4byte씩 이동하낟.  */
+		/* _byte*포인터형변수에 1을더하면 1byte씩 이동하낟.  */
+
+		/* 129, 130, 1 */
+		/* 129, 1, 0 */
+
+		for (_uint j = 0; j < 3; ++j)					
+			memcpy(&iIndices[j], (((_byte*)m_pIndices + m_iIndicesSize * i) + iIndexByte * j), iIndexByte);
+
+		_float3		vPoint[3] = {
+			*(_float3*)(((_byte*)m_pVertices) + m_iStride * iIndices[0]), 
+			*(_float3*)(((_byte*)m_pVertices) + m_iStride * iIndices[1]),
+			*(_float3*)(((_byte*)m_pVertices) + m_iStride * iIndices[2])
+		};
+
+		if (isPick = pPicking->isPick(vPoint, pOut))
+		{
+			_float4x4		WorldMatrix;
+			D3DXMatrixInverse(&WorldMatrix, nullptr, &WorldMatrixInverse);
+			D3DXVec3TransformCoord(pOut, pOut, &WorldMatrix);
+
+			break;
+		}
+	}
+
+	RELEASE_INSTANCE(CPicking);
+
+	return isPick;
 }
 
 HRESULT CVIBuffer::Render()
@@ -83,7 +136,10 @@ void CVIBuffer::Free()
 	__super::Free();
 
 	if(false == m_isCloned)
+	{
 		Safe_Delete_Array(m_pVertices);
+		Safe_Delete_Array(m_pIndices);
+	}
 
 	Safe_Release(m_pIB);
 	Safe_Release(m_pVB);

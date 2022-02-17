@@ -65,7 +65,6 @@ HRESULT CCamera::BeforeRender()
 
 HRESULT CCamera::AfterRender()
 {
-	//m_pGraphic_Device->SetRenderTarget(0,nullptr);
 	return S_OK;
 }
 
@@ -99,9 +98,19 @@ void CCamera::Set_Vaild(_bool _bool)
 	isVaild = _bool;
 }
 
+void CCamera::Set_RenderUi(_bool _bool)
+{
+	renderUi = _bool;
+}
+
 const _bool CCamera::Get_Vaild() const
 {
 	return isVaild;
+}
+
+const _bool CCamera::Get_RenderUi() const
+{
+	return renderUi;
 }
 
 void CCamera::Set_State(const CCamera::CAMERADESC& desc)

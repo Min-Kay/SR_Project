@@ -101,16 +101,16 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     CCamera::CAMERADESC camDesc;
     ZeroMemory(&camDesc,sizeof(CCamera::CAMERADESC));
 
-    camDesc.fAspect = 3/4.f;
+    camDesc.fAspect = 3/(4.f);
     camDesc.fFar = 300.f;
     camDesc.fNear = 0.1f;
     camDesc.fFovy = D3DXToRadian(90.f);
     camDesc.iLevel = portalDesc.iLevel;
     camDesc.vEye = portalDesc.vEye;
     camDesc.vAxisY = portalDesc.vAxisY;
-    _float3 dir = portalDesc.vEye - portalDesc.vAt;
-    _float3 nor = *D3DXVec3Normalize(&nor, &dir);
-    camDesc.vAt = portalDesc.vEye + nor;
+    _float3 nor = portalDesc.vAt - portalDesc.vEye;
+    D3DXVec3Normalize(&nor,&nor);
+    camDesc.vAt = portalDesc.vEye - nor;
 
     CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
     tag = portalDesc.portalCam;

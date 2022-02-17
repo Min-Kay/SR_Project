@@ -22,6 +22,9 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 
 public:
+	_bool Pick(const _float4x4& pWorldMatrixInverse, _float3* pOut = nullptr);
+
+public:
 	virtual HRESULT Render();
 
 protected:
@@ -37,6 +40,7 @@ protected:
 	LPDIRECT3DINDEXBUFFER9			m_pIB = nullptr;
 	_uint							m_iIndicesSize = 0;
 	D3DFORMAT						m_eIndexFormat;
+	void*							m_pIndices = nullptr;
 
 
 protected:

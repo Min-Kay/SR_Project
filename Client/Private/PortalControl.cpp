@@ -101,7 +101,7 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 			}
 			m_pPortal_Orange->Link_Portal(nullptr);
 
-			pGameInstance->Release_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange"), m_pPortal_Orange);
+			pGameInstance->Release_GameObject(iLevelIndex, TEXT("Portal_Orange"), m_pPortal_Orange);
 			m_pPortal_Orange = nullptr;
 		}
 
@@ -109,8 +109,11 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 		portalDesc.iLevel = iLevelIndex;
 		portalDesc.iPortalColor = 0;
 		portalDesc.vAxisY = _float3(0.f, 1.f, 0.f);
-		portalDesc.vEye = _tr->Get_State(CTransform::STATE_POSITION) + _tr->Get_State(CTransform::STATE_LOOK) * 2.f;
-		portalDesc.vAt = _tr->Get_State(CTransform::STATE_POSITION) + _tr->Get_State(CTransform::STATE_LOOK) * 3.f;
+
+		_float3 nor = _tr->Get_State(CTransform::STATE_LOOK);
+		D3DXVec3Normalize(&nor,&nor);
+		portalDesc.vEye = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.f;
+		portalDesc.vAt = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.1f;
 		portalDesc.portalCam = TEXT("Portal_Orange");
 
 		if (FAILED(pGameInstance->Add_GameObject(iLevelIndex, TEXT("Portal_Orange"), TEXT("Prototype_GameObject_Portal"), &portalDesc)))
@@ -119,7 +122,7 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 			return E_FAIL;
 		}
 
-		m_pPortal_Orange = static_cast<CPortal*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange"), 0));
+		m_pPortal_Orange = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Orange"), 0));
 	}
 	else if (iIndex == PORTAL_BLUE)
 	{
@@ -131,7 +134,7 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 			}
 			m_pPortal_Blue->Link_Portal(nullptr);
 
-			pGameInstance->Release_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue"), m_pPortal_Blue);
+			pGameInstance->Release_GameObject(iLevelIndex, TEXT("Portal_Blue"), m_pPortal_Blue);
 			m_pPortal_Blue = nullptr;
 		}
 
@@ -139,8 +142,10 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 		portalDesc2.iLevel = iLevelIndex;
 		portalDesc2.iPortalColor = 1;
 		portalDesc2.vAxisY = _float3(0.f, 1.f, 0.f);
-		portalDesc2.vEye = _tr->Get_State(CTransform::STATE_POSITION) + _tr->Get_State(CTransform::STATE_LOOK) * 2.f;
-		portalDesc2.vAt = _tr->Get_State(CTransform::STATE_POSITION) + _tr->Get_State(CTransform::STATE_LOOK) * 3.f;
+		_float3 nor = _tr->Get_State(CTransform::STATE_LOOK);
+		D3DXVec3Normalize(&nor, &nor);
+		portalDesc2.vEye = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.f;
+		portalDesc2.vAt = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.1f;
 
 		portalDesc2.portalCam = TEXT("Portal_Blue");
 
@@ -150,7 +155,7 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 			return E_FAIL;
 		}
 
-		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue"), 0));
+		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Blue"), 0));
 	}
 	RELEASE_INSTANCE(CGameInstance);
    
@@ -169,7 +174,7 @@ HRESULT CPortalControl::Erase_Portal(_uint iLevelIndex)
 		}
 		m_pPortal_Blue->Link_Portal(nullptr);
 
-		pGameInstance->Release_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue"), m_pPortal_Blue);
+		pGameInstance->Release_GameObject(iLevelIndex, TEXT("Portal_Blue"), m_pPortal_Blue);
 		m_pPortal_Blue = nullptr;
 	}
 
@@ -181,7 +186,7 @@ HRESULT CPortalControl::Erase_Portal(_uint iLevelIndex)
 		}
 		m_pPortal_Orange->Link_Portal(nullptr);
 
-		pGameInstance->Release_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange"), m_pPortal_Orange);
+		pGameInstance->Release_GameObject(iLevelIndex, TEXT("Portal_Orange"), m_pPortal_Orange);
 		m_pPortal_Orange = nullptr;
 	}
 	RELEASE_INSTANCE(CGameInstance);

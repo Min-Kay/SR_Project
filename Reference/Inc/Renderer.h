@@ -21,7 +21,8 @@ public:
 
 public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
-	HRESULT Render();
+	HRESULT Render(bool bRenderUi);
+
 	HRESULT Clear_RenderObjects();
 
 private:

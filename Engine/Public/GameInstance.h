@@ -7,7 +7,7 @@
 #include "Object_Manager.h"
 #include "Component_Manager.h"
 #include "Camera_Manager.h"
-
+#include "Picking.h"
 
 /* 엔진내에 모든(클라이언트에 보여주기위한) 매니져 클래스를 보관한다. */
 
@@ -70,6 +70,8 @@ private:
 	CComponent_Manager*		m_pComponent_Manager = nullptr;
 	CInput_Device*			m_pInput_Device = nullptr;
 	CCamera_Manager*		m_pCamera_Manager = nullptr;
+	CPicking* m_pPicking = nullptr;
+
 public:
 	static void Release_Engine();
 	virtual void Free() override;

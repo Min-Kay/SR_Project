@@ -32,19 +32,24 @@ public:
 	virtual HRESULT AfterRender();
 
 public:
-	const _uint& Get_Level() const;
 	void Set_Level(_uint iLevel = 0);
 	void Set_Handle(HWND _hWnd);
+	void Set_Vaild(_bool _bool);
+	void Set_RenderUi(_bool _bool);
+	void Set_State(const CCamera::CAMERADESC& desc);
+
+public:
+	const _uint& Get_Level() const;
 	const HWND& Get_Handle() const;
 	CTransform* Get_CameraTransform();
-	void Set_Vaild(_bool _bool);
 	const _bool Get_Vaild() const;
-	void Set_State(const CCamera::CAMERADESC& desc);
+	const _bool Get_RenderUi() const;
 
 protected:
 	class CTransform*			m_pTransform = nullptr;
 	HWND						hWnd = nullptr;
 	_uint						m_Level = 0;
+	_bool						renderUi = true;
 	_bool						isVaild = true;
 
 	CAMERADESC					m_CameraDesc;

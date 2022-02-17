@@ -32,7 +32,7 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pRend
 	return S_OK;
 }
 
-HRESULT CRenderer::Render()
+HRESULT CRenderer::Render(bool bRenderUi)
 {
 	//for (_uint i = 0; i < RENDER_END; ++i)
 	//{
@@ -48,7 +48,9 @@ HRESULT CRenderer::Render()
 	//	m_RenderObjects[i].clear();
 	//}
 
-	for (_uint i = 0; i < RENDER_END; ++i)
+	_uint renderLevel = bRenderUi ? RENDER_END : RENDER_END - 1;
+
+	for (_uint i = 0; i < renderLevel; ++i)
 	{
 		for (auto& pRenderObject : m_RenderObjects[i])
 		{

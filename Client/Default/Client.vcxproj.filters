@@ -55,6 +55,12 @@
     <Filter Include="02.GameObjects\Portal\PortalControl">
       <UniqueIdentifier>{b11bfc61-7205-4959-9129-eaba24ca23fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Sky">
+      <UniqueIdentifier>{213568ae-1777-46ee-a9c4-45d1e40a51e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI">
+      <UniqueIdentifier>{6e31ccb4-e96c-406a-9af9-fc7d913d2cd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -114,6 +120,12 @@
     <ClInclude Include="..\Public\PortalControl.h">
       <Filter>02.GameObjects\Portal\PortalControl</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sky.h">
+      <Filter>02.GameObjects\Sky</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI.h">
+      <Filter>02.GameObjects\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -160,6 +172,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\PortalControl.cpp">
       <Filter>02.GameObjects\Portal\PortalControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp">
+      <Filter>02.GameObjects\Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI.cpp">
+      <Filter>02.GameObjects\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

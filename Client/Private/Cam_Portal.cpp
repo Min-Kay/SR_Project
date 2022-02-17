@@ -72,6 +72,8 @@ HRESULT CCam_Portal::NativeConstruct_Prototype()
 
     m_pGraphic_Device->GetRenderTarget(0, &pBackBuffer);
 
+    __super::Set_RenderUi(false);
+
     return S_OK;
 
 }
@@ -169,17 +171,55 @@ HRESULT CCam_Portal::AfterRender()
 
 HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
 {
-   _float3 targetDir =  m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION);
-    D3DXVec3Normalize(&targetDir, &targetDir);
+ /*   _float3 renderTargetLook = m_pRenderTransform->Get_State(CTransform::STATE_LOOK);
+    D3DXVec3Normalize(&renderTargetLook, &renderTargetLook);
 
+    _float3 renderToTarget = m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION);
+    D3DXVec3Normalize(&renderToTarget,&renderToTarget);
 
-    _float3 portalDir = portal->Get_State(CTransform::STATE_LOOK);
-    D3DXVec3Normalize(&portalDir, &portalDir);
+    _float3 angle = renderToTarget - renderTargetLook;
+    D3DXVec3Normalize(&angle,&angle);
 
-    if(D3DXToDegree(acos(D3DXVec3Dot(&targetDir, &portalDir))) >= 90.f)
+    _float3 portalLook = portal->Get_State(CTransform::STATE_LOOK);
+    D3DXVec3Normalize(&portalLook,&portalLook);
+
+    portalLook = -portalLook;
+
+    _float3 result = portalLook - renderTargetLook;
+    D3DXVec3Normalize(&result,&result);
+
+    result = result + angle;
+    D3DXVec3Normalize(&result, &result);
+
+    portalLook = result + portalLook;
+
+    _float3	vScale = m_pTransform->Get_Scale();
+
+    _float3 vRight, vUp, vLook;
+
+    vLook = *D3DXVec3Normalize(&portalLook, &portalLook) * vScale.z;
+
+    vRight = *D3DXVec3Cross(&vRight, &_float3(0.f, 1.f, 0.f), &vLook);
+    vRight = *D3DXVec3Normalize(&vRight, &vRight) * vScale.x;
+
+    vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);
+    vUp = *D3DXVec3Normalize(&vUp, &vUp) * vScale.y;
+
+    m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+    m_pTransform->Set_State(CTransform::STATE_UP, vUp);
+    m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);*/
+
+ /*   _float3 dir = target->Get_State(CTransform::STATE_POSITION) - m_pRenderTransform->Get_State(CTransform::STATE_POSITION);
+
+    D3DXVec3Normalize(&dir,&dir);
+
+    m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) - dir);
+*/
+
+   /* if(D3DXVec3Dot(&targetDir, &portalDir) < 0)
        m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) + targetDir);
     else
-        m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) - targetDir);
+        m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) - targetDir);*/
 
     return S_OK;
 }
@@ -195,10 +235,22 @@ void CCam_Portal::Set_ExitPortal(CPortal* _exit)
 
        CTransform* opponent =  static_cast<CTransform*>(_exit->Get_Component(TEXT("Com_Transform")));
 
-      m_pRenderTransform->Set_State(CTransform::STATE_RIGHT, opponent->Get_State(CTransform::STATE_RIGHT));
-      m_pRenderTransform->Set_State(CTransform::STATE_UP, opponent->Get_State(CTransform::STATE_UP));
-      m_pRenderTransform->Set_State(CTransform::STATE_LOOK, opponent->Get_State(CTransform::STATE_LOOK));
-      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - opponent->Get_State(CTransform::STATE_LOOK) * 0.01f);
+      _float3 vScale = m_pRenderTransform->Get_Scale();
+
+      _float3 vRight, vUp, vLook;
+
+      vRight = *D3DXVec3Normalize(&vRight, &opponent->Get_State(CTransform::STATE_RIGHT)) * vScale.x;
+
+      vUp = *D3DXVec3Normalize(&vUp, &opponent->Get_State(CTransform::STATE_UP)) * vScale.y;
+
+      vLook = *D3DXVec3Normalize(&vLook, &opponent->Get_State(CTransform::STATE_LOOK)) * vScale.z;
+      m_pRenderTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+      m_pRenderTransform->Set_State(CTransform::STATE_UP, vUp);
+      m_pRenderTransform->Set_State(CTransform::STATE_LOOK, vLook);
+      
+      D3DXVec3Normalize(&vLook,&vLook);
+
+      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.001f );
     }
 }
 
