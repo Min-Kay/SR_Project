@@ -129,8 +129,14 @@ HRESULT CCamera_Dynamic::BeforeRender()
 		1.f, // z버퍼의 초기화 값
 		0);	 // 스텐실 버퍼의 초기화 값
 
+	if(FAILED(__super::BeforeRender()))
+		return E_FAIL;
 
-	return __super::BeforeRender();
+	if (FAILED(__super::Use_Pick(1)))
+		return E_FAIL;
+	
+	return S_OK;
+
 }
 
 HRESULT CCamera_Dynamic::AfterRender()

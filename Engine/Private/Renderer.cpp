@@ -32,7 +32,7 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pRend
 	return S_OK;
 }
 
-HRESULT CRenderer::Render(bool bRenderUi)
+HRESULT CRenderer::Render(vector<_uint> exceptions)
 {
 	//for (_uint i = 0; i < RENDER_END; ++i)
 	//{
@@ -48,10 +48,13 @@ HRESULT CRenderer::Render(bool bRenderUi)
 	//	m_RenderObjects[i].clear();
 	//}
 
-	_uint renderLevel = bRenderUi ? RENDER_END : RENDER_END - 1;
-
-	for (_uint i = 0; i < renderLevel; ++i)
+	for (_uint i = 0; i < RENDER_END; ++i)
 	{
+		auto ignore = find_if(exceptions.begin(), exceptions.end(), [i](_uint j) {return i == j; });
+
+		if (ignore != exceptions.end())
+			continue;
+
 		for (auto& pRenderObject : m_RenderObjects[i])
 		{
 			if (nullptr != pRenderObject)

@@ -41,11 +41,11 @@ HRESULT CVIBuffer::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_bool CVIBuffer::Pick(const _float4x4& WorldMatrixInverse, _float3 * pOut)
+_bool CVIBuffer::Pick(_uint _type, const _float4x4& WorldMatrixInverse, _float3 * pOut)
 {	
 	CPicking*		pPicking = GET_INSTANCE(CPicking);
 
-	pPicking->Transform_ToLocalSpace(WorldMatrixInverse);
+	pPicking->Transform_ToLocalSpace((CPicking::TYPE)_type, WorldMatrixInverse);
 
 	_uint		iIndexByte = 0;
 
@@ -77,7 +77,7 @@ _bool CVIBuffer::Pick(const _float4x4& WorldMatrixInverse, _float3 * pOut)
 			*(_float3*)(((_byte*)m_pVertices) + m_iStride * iIndices[2])
 		};
 
-		if (isPick = pPicking->isPick(vPoint, pOut))
+		if (isPick = pPicking->isPick((CPicking::TYPE)_type, vPoint, pOut))
 		{
 			_float4x4		WorldMatrix;
 			D3DXMatrixInverse(&WorldMatrix, nullptr, &WorldMatrixInverse);

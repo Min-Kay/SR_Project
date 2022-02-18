@@ -10,7 +10,7 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {	
 public:
-	enum RENDERGROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
+	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SKYBOX, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
 public:
 	explicit CRenderer(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual ~CRenderer() = default;
@@ -21,7 +21,7 @@ public:
 
 public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
-	HRESULT Render(bool bRenderUi);
+	HRESULT Render(vector<_uint> exceptions);
 
 	HRESULT Clear_RenderObjects();
 

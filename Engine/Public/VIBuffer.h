@@ -22,7 +22,7 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 
 public:
-	_bool Pick(const _float4x4& pWorldMatrixInverse, _float3* pOut = nullptr);
+	_bool Pick(_uint _type, const _float4x4& pWorldMatrixInverse, _float3* pOut = nullptr);
 
 public:
 	virtual HRESULT Render();

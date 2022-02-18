@@ -1,5 +1,5 @@
 #include "..\Public\Camera.h"
-
+#include "Picking.h"
 CCamera::CCamera(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
 {
@@ -68,6 +68,30 @@ HRESULT CCamera::AfterRender()
 	return S_OK;
 }
 
+HRESULT CCamera::Use_Pick(_uint _type)
+{
+	CPicking* pPick = GET_INSTANCE(CPicking);
+	
+	if (_type == CPicking::TYPE_CROSSHAIR)
+	{
+		if(FAILED(pPick->Transform_ToWorldSpace_Crosshair()))
+			return E_FAIL;
+	}
+	else if (_type == CPicking::TYPE_MOUSE)
+	{
+		if (FAILED(pPick->Transform_ToWorldSpace_Mouse()))
+			return E_FAIL;
+	}
+	
+	RELEASE_INSTANCE(CPicking);
+	return S_OK;
+}
+
+vector<_uint>& CCamera::Get_Exception()
+{
+	return exceptions;
+}
+
 const _uint& CCamera::Get_Level() const
 {
 	return m_Level; 
@@ -98,19 +122,9 @@ void CCamera::Set_Vaild(_bool _bool)
 	isVaild = _bool;
 }
 
-void CCamera::Set_RenderUi(_bool _bool)
-{
-	renderUi = _bool;
-}
-
 const _bool CCamera::Get_Vaild() const
 {
 	return isVaild;
-}
-
-const _bool CCamera::Get_RenderUi() const
-{
-	return renderUi;
 }
 
 void CCamera::Set_State(const CCamera::CAMERADESC& desc)
@@ -137,10 +151,41 @@ void CCamera::Set_State(const CCamera::CAMERADESC& desc)
 	m_pTransform->Set_State(CTransform::STATE_POSITION, desc.vEye);
 }
 
+HRESULT CCamera::Add_Exception(_uint iIndex)
+{
+	for (auto i : exceptions)
+	{
+		if (i == iIndex)
+			return E_FAIL;
+	}
+
+	exceptions.push_back(iIndex);
+	sort(exceptions.begin(), exceptions.end());
+	return S_OK;
+}
+
+void CCamera::Release_Exception(_uint iIndex)
+{
+	auto iter = exceptions.begin();
+
+	for (; iter != exceptions.end();)
+	{
+		if (*iter == iIndex)
+		{
+			exceptions.erase(iter);
+			return;
+		}
+		else
+			++iter;
+	}
+	return;
+}
+
 
 void CCamera::Free()
 {
 	__super::Free();
+	exceptions.clear();
 	Safe_Release(m_pTransform);
 
 }

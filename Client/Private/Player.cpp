@@ -46,7 +46,7 @@ _int CPlayer::Tick(_float fTimeDelta)
 
 	if (m_fFrame >= 12.0f)
 		m_fFrame = 0.f;
-
+	
 	/*if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
@@ -82,6 +82,22 @@ _int CPlayer::LateTick(_float fTimeDelta)
 
 	/*if (FAILED(SetUp_OnTerrain()))
 		return -1;*/
+
+
+	if (GetKeyState(VK_RBUTTON) & 0x8000)
+	{
+		_float3 pout;
+		if (true == m_pVIBufferCom->Pick(0, m_pTransformCom->Get_WorldMatrixInverse(), &pout))
+		{
+			int a = 0;
+		}
+
+		_float3 pout2;
+		if (true == m_pVIBufferCom->Pick(1, m_pTransformCom->Get_WorldMatrixInverse(), &pout2))
+		{
+			int a = 0;
+		}
+	}
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 

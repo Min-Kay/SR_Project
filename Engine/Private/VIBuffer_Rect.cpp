@@ -21,9 +21,11 @@ HRESULT CVIBuffer_Rect::NativeConstruct_Prototype()
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
-	VTXTEX*			pVertices = nullptr;
 	m_pVertices = new VTXTEX[m_iNumVertices];
 	ZeroMemory(m_pVertices, sizeof(VTXTEX) * m_iNumVertices);
+
+	VTXTEX*			pVertices = nullptr;
+	
 	m_pVB->Lock(0, 0, (void**)&pVertices, 0);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
@@ -62,11 +64,10 @@ HRESULT CVIBuffer_Rect::NativeConstruct_Prototype()
 	pIndices[1]._1 = 2;
 	pIndices[1]._2 = 3;
 
-	memcpy(m_pIndices, pIndices, sizeof(FACEINDICES16) * m_iNumPrimitive);
-
-
 	m_pIB->Unlock();
 
+
+	memcpy(m_pIndices, pIndices, sizeof(FACEINDICES16) * m_iNumPrimitive);
 
 	return S_OK;
 }

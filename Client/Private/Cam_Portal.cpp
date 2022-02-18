@@ -72,8 +72,6 @@ HRESULT CCam_Portal::NativeConstruct_Prototype()
 
     m_pGraphic_Device->GetRenderTarget(0, &pBackBuffer);
 
-    __super::Set_RenderUi(false);
-
     return S_OK;
 
 }
@@ -108,6 +106,9 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
     m_TextureIndex = m_pTextureCom->Get_Textures_Count() - 1;
     LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(m_TextureIndex);
     (static_cast<LPDIRECT3DTEXTURE9>(texture))->GetSurfaceLevel(0, &m_pSurface);
+
+    __super::Add_Exception(CRenderer::RENDER_SKYBOX);
+    __super::Add_Exception(CRenderer::RENDER_UI);
 }
 
 _int CCam_Portal::Tick(_float fTimeDelta)
@@ -171,7 +172,7 @@ HRESULT CCam_Portal::AfterRender()
 
 HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
 {
- /*   _float3 renderTargetLook = m_pRenderTransform->Get_State(CTransform::STATE_LOOK);
+   /*   _float3 renderTargetLook = m_pRenderTransform->Get_State(CTransform::STATE_LOOK);
     D3DXVec3Normalize(&renderTargetLook, &renderTargetLook);
 
     _float3 renderToTarget = m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION);
@@ -209,7 +210,7 @@ HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
     m_pTransform->Set_State(CTransform::STATE_UP, vUp);
     m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);*/
 
- /*   _float3 dir = target->Get_State(CTransform::STATE_POSITION) - m_pRenderTransform->Get_State(CTransform::STATE_POSITION);
+   /*   _float3 dir = target->Get_State(CTransform::STATE_POSITION) - m_pRenderTransform->Get_State(CTransform::STATE_POSITION);
 
     D3DXVec3Normalize(&dir,&dir);
 
@@ -220,6 +221,19 @@ HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
        m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) + targetDir);
     else
         m_pTransform->LookAt(m_pTransform->Get_State(CTransform::STATE_POSITION) - targetDir);*/
+
+   /* _float3 renderLook = -m_pRenderTransform->Get_State(CTransform::STATE_LOOK);
+    _float3 renderToTarget = target->Get_State(CTransform::STATE_POSITION) - m_pRenderTransform->Get_State(CTransform::STATE_POSITION);
+
+    _float radian = D3DXVec3Dot(&renderToTarget,&renderLook);
+
+    _float3 portalLook = portal->Get_State(CTransform::STATE_UP);
+    D3DXVec3Normalize(&portalLook,&portalLook);
+
+    m_pTransform->Rotation(portalLook, radian);*/
+   
+
+
 
     return S_OK;
 }

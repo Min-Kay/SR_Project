@@ -70,13 +70,6 @@ HRESULT CMainApp::Render()
 
 
 	m_pGameInstance->Render_Camera(m_pRenderer);
-	/*m_pGameInstance->Render_Begin();
-
-	m_pRenderer->Render();
-
-	m_pGameInstance->Render_Level();
-
-	m_pGameInstance->Render_End();*/
 
 
 
@@ -184,10 +177,13 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Portal"), CVIBuffer_Portal::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Default */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Default.jpg")))))
 		return E_FAIL;
-
 
 	/* For.Prototype_Component_Texture_Default */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX,g_iWinCY))))

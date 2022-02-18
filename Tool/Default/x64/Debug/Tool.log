@@ -1,11 +1,2 @@
-﻿  BackGround.cpp
-  Camera_Dynamic.cpp
-C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Tool\Private\Camera_Dynamic.cpp(72,31): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Tool\Private\Camera_Dynamic.cpp(73,24): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  MainFrm.cpp
-  MapTool.cpp
-  Runtime.cpp
-  SubView.cpp
-  Tool.cpp
-  ToolView.cpp
+﻿  MainFrm.cpp
   Tool.vcxproj -> C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Tool\Bin\Tool.exe

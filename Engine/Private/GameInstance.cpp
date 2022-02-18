@@ -66,9 +66,6 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pLevel_Manager->Tick(fTimeDelta))
 		return -1;
 
-	if (FAILED(m_pPicking->Transform_ToWorldSpace()))
-		return -1;
-
 	if (0 > m_pObject_Manager->LateTick(fTimeDelta))
 		return -1;	
 
@@ -261,7 +258,7 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 			return E_FAIL;
 
 		Render_Begin();
-		renderer->Render(cam.second->Get_RenderUi());
+		renderer->Render(cam.second->Get_Exception());
 		Render_Level();
 		Render_End(cam.second->Get_Handle());
 

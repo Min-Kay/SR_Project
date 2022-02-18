@@ -51,13 +51,17 @@ _int CSky::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return -1;
 
-	_float4x4		ViewMatrix;
-	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
-	D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//_float4x4		ViewMatrix;
+	//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+	//D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, *(_float3*)&ViewMatrix.m[3][0]);
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, *(_float3*)&ViewMatrix.m[3][0]);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION,pInstance->Find_Camera_Object(TEXT("Main_Camera"))->Get_CameraTransform()->Get_State(CTransform::STATE_POSITION));
 	
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+	RELEASE_INSTANCE(CGameInstance);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SKYBOX, this);
 
 	return _int();
 }
@@ -100,7 +104,7 @@ HRESULT CSky::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
@@ -162,7 +166,7 @@ CGameObject * CSky::Clone(void* pArg )
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSGBOX("Failed to Creating CSky");
+		MSGBOX("Failed to Clone CSky");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
