@@ -34,6 +34,11 @@ protected:
 	map<const _tchar*, CComponent*>			m_Components;
 	typedef map<const _tchar*, CComponent*>	COMPONENTS;
 
+public:
+	HRESULT Compute_Distance(_float3 _obj, _float3 _target);
+	const _float Get_Distance() const;
+private:
+	_float m_fDis = 0.f;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
