@@ -83,21 +83,21 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
         return E_FAIL;
 
 
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
         return E_FAIL;
 
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform_Portal"), (CComponent**)&m_pRenderTransform)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pRenderTransform)))
         return E_FAIL;
 
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRender)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RENDERER, COM_RENDERER, (CComponent**)&m_pRender)))
         return E_FAIL;
 
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Portal"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_PORTAL, COM_BUFFER, (CComponent**)&m_pVIBuffer)))
         return E_FAIL;
 
     m_pTextureCom->Add_Texture(g_iWinCX,g_iWinCY);
-    m_TextureIndex = m_pTextureCom->Get_Textures_Count() - 1;
-    LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(m_TextureIndex);
+    m_TextureIndex = 0;
+    LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(0);
     (static_cast<LPDIRECT3DTEXTURE9>(texture))->GetSurfaceLevel(0, &m_pSurface);
 
     __super::Add_Exception(CRenderer::RENDER_SKYBOX);
@@ -117,7 +117,7 @@ _int CCam_Portal::LateTick(_float fTimeDelta)
     }
     else
     {
-        m_pRender->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+        m_pRender->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
         __super::Set_Vaild(true);
     }
 
@@ -132,11 +132,10 @@ HRESULT CCam_Portal::Render()
         if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
             return E_FAIL;
 
-        if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_TextureIndex)))
+        if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
             return E_FAIL;
 
         m_pVIBuffer->Render();
-
     }
 
     return S_OK;
@@ -149,7 +148,7 @@ HRESULT CCam_Portal::BeforeRender()
         nullptr,
         D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
         D3DCOLOR_ARGB(255, 0, 255, 0),	// 백버퍼 색상
-        1.0f, // z버퍼의 초기화 값
+        1.f, // z버퍼의 초기화 값
         0);	 // 스텐실 버퍼의 초기화 값
 
 
@@ -165,28 +164,27 @@ HRESULT CCam_Portal::AfterRender()
 
 HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
 {
-    _float3 targetToRt = -(m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION));
-  
+   /* _float3 targetToRt = -(m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION));
+
     _float3 rtLook = -m_pRenderTransform->Get_State(CTransform::STATE_LOOK);
 
-    _float dot = D3DXVec3Dot(&targetToRt,&rtLook);
+    _float dot = D3DXVec3Dot(&targetToRt, &rtLook);
 
     _float3 result = targetToRt + 2 * dot * rtLook;
-    D3DXVec3Normalize(&result,&result);
+    D3DXVec3Normalize(&result, &result);
 
-  /*  m_pTransform->LookAt(portal->Get_State(CTransform::STATE_POSITION) - result);*/
 
     _float3 vLook, vRight, vUp;
 
     _float3 vScale = m_pTransform->Get_Scale();
 
-    vLook = result ;
-    vRight = *D3DXVec3Cross(&vRight,&_float3(0.f,1.f,0.f),&vLook);
+    vLook = result;
+    vRight = *D3DXVec3Cross(&vRight, &_float3(0.f, 1.f, 0.f), &vLook);
     vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);
 
-    m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
-    m_pTransform->Set_State(CTransform::STATE_UP, vUp*vScale.y);
-    m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+    m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+    m_pTransform->Set_State(CTransform::STATE_UP, vUp);
+    m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);*/
 
 
     return S_OK;
@@ -201,10 +199,10 @@ void CCam_Portal::Set_ExitPortal(CPortal* _exit)
     {
         m_ExitPortal = _exit->Get_Cam_Portal();
 
-       CTransform* opponent =  static_cast<CTransform*>(_exit->Get_Component(TEXT("Com_Transform")));
+       CTransform* opponent =  static_cast<CTransform*>(_exit->Get_Component(COM_TRANSFORM));
 
       _float3 vScale = m_pRenderTransform->Get_Scale();
-
+       
       _float3 vRight, vUp, vLook;
 
       vRight = *D3DXVec3Normalize(&vRight, &opponent->Get_State(CTransform::STATE_RIGHT)) * vScale.x;

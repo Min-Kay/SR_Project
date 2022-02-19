@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Cam_Portal.h"
 #include "Portal.h"
+#include "UI.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLevel(pGraphic_Device)
@@ -17,7 +18,6 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 		return E_FAIL;
 
 	SetWindowText(g_hWnd, TEXT("PORTAL_GAMEPLAY"));
-
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -65,7 +65,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERADESC		CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CameraDesc));
 
-	CameraDesc.vEye = _float3(0.f, 10.f, -7.f);
+	CameraDesc.vEye = _float3(0.f, 0.f, -7.f);
 	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
@@ -78,7 +78,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 	CameraDesc.iLevel = LEVEL_GAMEPLAY;
 
-	if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Dynamic"), TEXT("Main_Camera"), &CameraDesc)))
+	if (FAILED(pGameInstance->Add_Camera_Object(CAM_DYNAMIC, TEXT("Main_Camera"), &CameraDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -131,7 +131,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("UI"), TEXT("Prototype_GameObject_UI"))))
+
+	CUI::UIDESC desc;
+	desc.PosX = g_iWinCX * 0.5f;
+	desc.PosY = g_iWinCY * 0.5f;
+	desc.SizeX = 50.f;
+	desc.SizeY = 50.f;
+	desc.Alpha = CUI::ALPHA_TEST;
+	desc.Func = D3DCMP_GREATER;
+	desc.Ref = 70;
+	desc.Texture = TEXT("Prototype_Component_Texture_Crosshair");
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Crosshair"), PROTO_UI,&desc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

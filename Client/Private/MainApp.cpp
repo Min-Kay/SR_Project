@@ -3,13 +3,8 @@
 #include "GameInstance.h"
 #include "Level_Logo.h"
 #include "Level_Loading.h"
-#include "Camera_Dynamic.h"
-#include "Cam_Portal.h"
 #include "Camera_Static.h"
-#include "PortalControl.h"
-#include "UI_Loading.h"
-#include "UI_Logo.h"
-
+#include "UI.h"
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -140,24 +135,10 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pGraphic_Device))))
+	if (FAILED(m_pGameInstance->Add_Camera_Prototype(CAM_STATIC, CCamera_Static::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Portal"), CCam_Portal::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Static"), CCamera_Static::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-
-
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_PortalCtrl"), CPortalControl::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Loading"), CUI_Loading::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Logo"), CUI_Logo::Create(m_pGraphic_Device))))
+	if (FAILED(m_pGameInstance->Add_Prototype(PROTO_UI, CUI::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	return S_OK;
@@ -169,39 +150,19 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Renderer */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_pGraphic_Device))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_RENDERER, m_pRenderer = CRenderer::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Transform */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), CTransform::Create(m_pGraphic_Device))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_TRANSFORM, CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Rect */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_VIBuffer_Rect */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Portal"), CVIBuffer_Portal::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_VIBuffer_Cube */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Default */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Default.jpg")))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Camera */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX,g_iWinCY))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Loadingscreen */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Loading/Loadingscreen_0%d.png"),10))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_RECT, CVIBuffer_Rect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Logo */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/PortalLogo.png")))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Main/Main.jpg")))))
 		return E_FAIL;
 
 	Safe_AddRef(m_pRenderer);

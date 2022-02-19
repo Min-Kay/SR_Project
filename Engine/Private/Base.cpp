@@ -4,7 +4,6 @@ using namespace Engine;
 
 CBase::CBase()
 {
-	int a = 10;
 }
 
 

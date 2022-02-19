@@ -60,19 +60,19 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pObject_Manager->Tick(fTimeDelta))
 		return -1;
 
-	if (0 > m_pCamera_Manager->Tick(fTimeDelta))
+	if (0 > m_pLevel_Manager->Tick(fTimeDelta))
 		return -1;
 
-	if (0 > m_pLevel_Manager->Tick(fTimeDelta))
+	if (0 > m_pCamera_Manager->Tick(fTimeDelta))
 		return -1;
 
 	if (0 > m_pObject_Manager->LateTick(fTimeDelta))
 		return -1;	
 
-	if (0 > m_pCamera_Manager->LateTick(fTimeDelta))
+	if (0 > m_pLevel_Manager->LateTick(fTimeDelta))
 		return -1;
 
-	if (0 > m_pLevel_Manager->LateTick(fTimeDelta))
+	if (0 > m_pCamera_Manager->LateTick(fTimeDelta))
 		return -1;
 
 	return _int();
@@ -88,6 +88,7 @@ _int CGameInstance::Tick_Tool(_float fTimeDelta)
 
 	if (0 > m_pCamera_Manager->Tick(fTimeDelta))
 		return -1;
+
 
 	if (0 > m_pObject_Manager->LateTick(fTimeDelta))
 		return -1;

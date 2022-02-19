@@ -64,11 +64,8 @@
     <Filter Include="02.GameObjects\Camera\Cam_St">
       <UniqueIdentifier>{fe3e3377-5199-4bd4-89e5-52eb3a7916fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\UI\LoadingScreen">
-      <UniqueIdentifier>{7b56b69a-3336-4d94-86fb-663c97c198f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\UI\LogoScreen">
-      <UniqueIdentifier>{e7eb2aaa-34e5-45d1-b2f4-9689da431439}</UniqueIdentifier>
+    <Filter Include="01.Levels\Logo\Loader">
+      <UniqueIdentifier>{654b5e5a-395f-4b29-a5de-e75da86d6b7e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -138,11 +135,8 @@
     <ClInclude Include="..\Public\Camera_Static.h">
       <Filter>02.GameObjects\Camera\Cam_St</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Loading.h">
-      <Filter>02.GameObjects\UI\LoadingScreen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_Logo.h">
-      <Filter>02.GameObjects\UI\LogoScreen</Filter>
+    <ClInclude Include="..\Public\LoadingLoader.h">
+      <Filter>01.Levels\Logo\Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,11 +194,8 @@
     <ClCompile Include="..\Private\Camera_Static.cpp">
       <Filter>02.GameObjects\Camera\Cam_St</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Loading.cpp">
-      <Filter>02.GameObjects\UI\LoadingScreen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_Logo.cpp">
-      <Filter>02.GameObjects\UI\LogoScreen</Filter>
+    <ClCompile Include="..\Private\LoadingLoader.cpp">
+      <Filter>01.Levels\Logo\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

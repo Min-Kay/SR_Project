@@ -4,6 +4,8 @@
 #include "Level_Loading.h"
 #include "BackGround.h"
 #include "Camera_Dynamic.h"
+#include "LoadingLoader.h"
+#include "UI.h"
 
 CLevel_Logo::CLevel_Logo(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLevel(pGraphic_Device)
@@ -18,16 +20,14 @@ HRESULT CLevel_Logo::NativeConstruct()
 
 	SetWindowText(g_hWnd, TEXT("PORTAL_LOGO"));
 
-	if (FAILED(Ready_Prototype_GameObject()))
-		return E_FAIL;
-
-
 	/* 현재 레벨이 생성될 때, 레벨에서 사용하고자하는 사본객체를 생성한다. */
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
-		return E_FAIL;	
+		return E_FAIL;
+
+	m_pLoader = CLoadingLoader::Create(m_pGraphic_Device);
 
 	return S_OK;
 }
@@ -45,7 +45,7 @@ _int CLevel_Logo::LateTick(_float fTimeDelta)
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
-	if (GetKeyState(VK_RETURN) & 0x8000)
+	if ( true == m_pLoader->isFinished() && GetKeyState(VK_RETURN) & 0x8000)
 	{
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -62,16 +62,6 @@ HRESULT CLevel_Logo::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_Prototype_GameObject()
-{
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -98,7 +88,7 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.iLevel = LEVEL_LOGO;
 
 
-	if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Static"), pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_Camera_Object(CAM_STATIC, pLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 
@@ -111,8 +101,17 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	CUI::UIDESC desc;
+	ZeroMemory(&desc,sizeof(CUI::UIDESC));
+
+	desc.PosX = g_iWinCX * 0.5f;
+	desc.PosY = g_iWinCY * 0.5f;
+	desc.SizeX = g_iWinCX;
+	desc.SizeY = g_iWinCY;
+	desc.Texture = TEXT("Prototype_Component_Texture_Logo");
+
 	/* 사본객체를 생성ㅎ나다. */
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_Logo"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, PROTO_UI,&desc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -136,4 +135,6 @@ CLevel_Logo * CLevel_Logo::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 void CLevel_Logo::Free()
 {
 	__super::Free();
+	Safe_Release(m_pLoader);
+
 }

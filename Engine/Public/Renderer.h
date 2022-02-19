@@ -25,8 +25,10 @@ public:
 
 	HRESULT Clear_RenderObjects();
 
-public:
+private:
+	HRESULT Render_GroupIndex(RENDERGROUP eRenderGroup);
 	HRESULT Alpha_Sorting();
+	HRESULT UI_Sorting();
 
 private:
 	list<class CGameObject*>				m_RenderObjects[RENDER_END];

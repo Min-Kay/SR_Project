@@ -6,7 +6,6 @@
 CRenderer::CRenderer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent(pGraphic_Device)
 {
-	
 }
 
 HRESULT CRenderer::NativeConstruct_Prototype()
@@ -34,20 +33,6 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pRend
 
 HRESULT CRenderer::Render(vector<_uint> exceptions)
 {
-	//for (_uint i = 0; i < RENDER_END; ++i)
-	//{
-	//	for (auto& pRenderObject : m_RenderObjects[i])
-	//	{
-	//		if (nullptr != pRenderObject)
-	//		{
-	//			if (FAILED(pRenderObject->Render()))
-	//				return E_FAIL;
-	//		}
-	//		Safe_Release(pRenderObject);
-	//	}
-	//	m_RenderObjects[i].clear();
-	//}
-
 	for (_uint i = 0; i < RENDER_END; ++i)
 	{
 		auto ignore = find_if(exceptions.begin(), exceptions.end(), [i](_uint j) {return i == j; });
@@ -55,19 +40,19 @@ HRESULT CRenderer::Render(vector<_uint> exceptions)
 		if (ignore != exceptions.end())
 			continue;
 
-		if (i == RENDER_ALPHA)
-			Alpha_Sorting();
-	
-		for (auto& pRenderObject : m_RenderObjects[i])
+		switch (i)
 		{
-			if (nullptr != pRenderObject)
-			{
-				if (FAILED(pRenderObject->Render()))
-					return E_FAIL;
-			}
+		case RENDER_ALPHA:
+			Alpha_Sorting();
+			break;
+		case RENDER_UI:
+			UI_Sorting();
+			break;
+		default:
+			Render_GroupIndex((RENDERGROUP)i);
+			break;
 		}
 	}
-
 	return S_OK;
 }
 
@@ -85,6 +70,19 @@ HRESULT CRenderer::Clear_RenderObjects()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_GroupIndex(RENDERGROUP eRenderGroup)
+{
+	for (auto& pRenderObject : m_RenderObjects[eRenderGroup])
+	{
+		if (nullptr != pRenderObject)
+		{
+			if (FAILED(pRenderObject->Render()))
+				return E_FAIL;
+		}
+	}
+	return S_OK;
+}
+
 HRESULT CRenderer::Alpha_Sorting()
 {
 	_float4x4 ViewMatrix;
@@ -98,6 +96,25 @@ HRESULT CRenderer::Alpha_Sorting()
 	}
 
 	m_RenderObjects[RENDER_ALPHA].sort([](CGameObject* a, CGameObject* b) -> _bool { return a->Get_Distance() > b->Get_Distance(); });
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+	Render_GroupIndex(RENDER_ALPHA);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::UI_Sorting()
+{
+	m_RenderObjects[RENDER_UI].sort([](CGameObject* a, CGameObject* b) -> _bool { return a->Get_Layer() > b->Get_Layer(); });
+
+	Render_GroupIndex(RENDER_UI);
 
 	return S_OK;
 }
@@ -117,9 +134,7 @@ CRenderer * CRenderer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 CComponent * CRenderer::Clone(void * pArg)
 {
-	
 	AddRef();
-
 	return this;	
 }
 

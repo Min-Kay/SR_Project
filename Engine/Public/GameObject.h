@@ -37,8 +37,16 @@ protected:
 public:
 	HRESULT Compute_Distance(_float3 _obj, _float3 _target);
 	const _float Get_Distance() const;
+
 private:
-	_float m_fDis = 0.f;
+	_float				m_fDis = 0.f;
+
+public:
+	void Set_Layer(_uint _layer);
+	const _uint Get_Layer() const;
+
+private:
+	_uint				m_Layer = 0;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

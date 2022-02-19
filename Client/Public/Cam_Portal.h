@@ -43,10 +43,12 @@ private:
 	CRenderer* m_pRender = nullptr;
 	CTransform* m_pRenderTransform = nullptr;
 
+private:
 	LPDIRECT3DSURFACE9 m_pSurface = nullptr;
 	_uint m_TextureIndex = 0;
 	IDirect3DSurface9* pBackBuffer = nullptr;
 	
+private:
 	CCam_Portal* m_ExitPortal = nullptr;
 
 public:

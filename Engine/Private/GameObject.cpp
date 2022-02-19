@@ -61,6 +61,16 @@ const _float CGameObject::Get_Distance() const
 	return m_fDis;
 }
 
+void CGameObject::Set_Layer(_uint _layer)
+{
+	m_Layer = _layer;
+}
+
+const _uint CGameObject::Get_Layer() const
+{
+	return m_Layer;
+}
+
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
 {

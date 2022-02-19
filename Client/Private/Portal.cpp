@@ -78,7 +78,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     if (FAILED(__super::NativeConstruct(pArg)))
         return E_FAIL;
 
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransform)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransform)))
         return E_FAIL;
     
 
@@ -116,7 +116,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     tag = portalDesc.portalCam;
     if (nullptr == static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(portalDesc.portalCam)))
     {
-        if (FAILED(pInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Portal"), portalDesc.portalCam, &camDesc)))
+        if (FAILED(pInstance->Add_Camera_Object(CAM_PORTAL, portalDesc.portalCam, &camDesc)))
             return E_FAIL;
 
         m_pCam_Portal = static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(tag));
@@ -129,27 +129,26 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     }
 
     /* For.Com_Renderer */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RENDERER, COM_RENDERER, (CComponent**)&m_pRenderer)))
         return E_FAIL;
 
     /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer)))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBuffer)))
         return E_FAIL;
 
 
     if (portalDesc.iPortalColor == 0)
     {
         /* For.Com_Texture */
-        if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Orange"), TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
+        if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Orange"), COM_TEXTURE, (CComponent**)&m_pTexture)))
             return E_FAIL;
     }
     else
     {
         /* For.Com_Texture */
-        if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Blue"), TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
+        if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Blue"), COM_TEXTURE, (CComponent**)&m_pTexture)))
             return E_FAIL;
     }
-   
 
     RELEASE_INSTANCE(CGameInstance);
     return S_OK;
@@ -162,18 +161,13 @@ _int CPortal::Tick(_float fTimeDelta)
 
 _int CPortal::LateTick(_float fTimeDelta)
 {
-    m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA,this);
+    m_pRenderer->Add_RenderGroup(CRenderer::RENDER_ALPHA,this);
 
     return _int();
 }
 
 HRESULT CPortal::Render()
 {
-
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-
     if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
         return E_FAIL;
 
@@ -181,9 +175,6 @@ HRESULT CPortal::Render()
         return E_FAIL;
 
     m_pVIBuffer->Render();
-
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
     return S_OK;
 }
