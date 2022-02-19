@@ -17,9 +17,6 @@ public:
 	virtual HRESULT Render();
 
 private:
-	_bool	isMouseOn = false;
-	_float	tick = 0.f;
-private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);

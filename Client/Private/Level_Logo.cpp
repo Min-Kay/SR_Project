@@ -7,6 +7,7 @@
 #include "LoadingLoader.h"
 #include "UI.h"
 
+
 CLevel_Logo::CLevel_Logo(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLevel(pGraphic_Device)
 {
@@ -27,8 +28,6 @@ HRESULT CLevel_Logo::NativeConstruct()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	m_pLoader = CLoadingLoader::Create(m_pGraphic_Device);
-
 	return S_OK;
 }
 
@@ -45,7 +44,7 @@ _int CLevel_Logo::LateTick(_float fTimeDelta)
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
-	if ( true == m_pLoader->isFinished() && GetKeyState(VK_RETURN) & 0x8000)
+	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 	{
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -115,6 +114,19 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, pLayerTag, PROTO_UI,&desc)))
 		return E_FAIL;
 
+	CUI::UIDESC desc2;
+	ZeroMemory(&desc2, sizeof(desc2));
+
+	desc2.Alpha = CUI::ALPHA_BLEND;
+	desc2.PosX = g_iWinCX * 0.5f;
+	desc2.PosY = g_iWinCY * 0.8f;
+	desc2.SizeX = 640.f;
+	desc2.SizeY = 360.f;
+	desc2.Layer = 0;
+	desc2.Texture = TEXT("Prototype_Component_Texture_Press");
+
+	pGameInstance->Add_GameObject(LEVEL_LOGO, TEXT("Layer_Press_Start"), PROTO_UI, &desc2);
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -136,6 +148,6 @@ CLevel_Logo * CLevel_Logo::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 void CLevel_Logo::Free()
 {
 	__super::Free();
-	Safe_Release(m_pLoader);
+	//Safe_Release(m_pLoader);
 
 }

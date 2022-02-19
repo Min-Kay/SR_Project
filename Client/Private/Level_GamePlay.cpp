@@ -51,15 +51,17 @@ _int CLevel_GamePlay::LateTick(_float fTimeDelta)
 		return -1;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	if (pInstance->Get_DIKeyState(DIK_O) & 0x80)
-	{
-		if (isMouseOn)
-			pInstance->SetMouseMode(false, g_hWnd);
-		else
-			pInstance->SetMouseMode(true);
 
-		isMouseOn = isMouseOn ? false : true;
+	if (pInstance->Get_DIKeyState(DIK_Y) & 0x80)
+	{
+		pInstance->SetMouseMode(false, g_hWnd);
 	}
+	
+	if (pInstance->Get_DIKeyState(DIK_U) & 0x80)
+	{
+		pInstance->SetMouseMode(true);
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	
@@ -70,7 +72,6 @@ HRESULT CLevel_GamePlay::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-
 
 	return S_OK;
 }

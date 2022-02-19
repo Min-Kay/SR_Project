@@ -38,8 +38,17 @@ private:
 	HRESULT OpenLevel(LEVEL eLevelID);
 	HRESULT DefaultSetting();
 
-	HRESULT Ready_Prototype_GameObject();
 	HRESULT Ready_Prototype_Component();
+	HRESULT Play_Intro();
+	HRESULT Close_Intro();
+
+private:
+	class CLoadingLoader* m_pLoader = nullptr;
+
+private:
+	_bool	isFin = false;
+	_bool	isSkip = false; 
+	HWND	vid = nullptr;
 
 public:
 	static CMainApp* Create();

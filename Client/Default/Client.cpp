@@ -57,11 +57,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	if (nullptr == pMainApp)
 		return FALSE;
 
-	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+    CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (nullptr == pGameInstance)
 		return FALSE;
-
-	Safe_AddRef(pGameInstance);
 
 	/* For.Timer_Default */
 	if (FAILED(pGameInstance->Add_Timer(TEXT("Timer_Default"))))
@@ -99,7 +97,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
-	Safe_Release(pGameInstance);
+    RELEASE_INSTANCE(CGameInstance);
 
 	if (0 != Safe_Release(pMainApp))	
 		MSGBOX("Failed to Release CMainApp");

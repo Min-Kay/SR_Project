@@ -3,8 +3,28 @@
 #include "GameInstance.h"
 #include "Level_Logo.h"
 #include "Level_Loading.h"
-#include "Camera_Static.h"
 #include "UI.h"
+#include "LoadingLoader.h"
+#include "Camera_Static.h"
+#include <Vfw.h>
+
+//#ifdef _DEBUG
+//	m_fTimerAcc += fTimeDelta;
+//#endif // _DEBUG
+// 
+//#ifdef _DEBUG
+//	++m_dwNumRender;
+//
+//	if (m_fTimerAcc >= 1.f)
+//	{
+//		wsprintf(m_szFPS, TEXT("FPS : %d"), m_dwNumRender);
+//		SetWindowText(g_hWnd, m_szFPS);
+//
+//		m_dwNumRender = 0;
+//		m_fTimerAcc = 0.f;
+//	}
+//#endif // _DEBUG
+
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -33,13 +53,9 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(Ready_Prototype_Component()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Prototype_GameObject()))
-		return E_FAIL;	
+	m_pLoader = CLoadingLoader::Create(m_pGraphic_Device);
 
-	if (FAILED(OpenLevel(LEVEL_LOGO)))
-		return E_FAIL;
-
-
+	Play_Intro();
 
 	return S_OK;
 }
@@ -49,36 +65,33 @@ _int CMainApp::Tick(_float fTimeDelta)
 	if (nullptr == m_pGameInstance)
 		return -1;
 
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+		isSkip = true;
+
+	if ((MCIWndGetLength(vid) <= MCIWndGetPosition(vid) || isSkip) && !isFin )
+	{
+		isFin = true;
+		Close_Intro();
+		if (FAILED(OpenLevel(LEVEL_LOGO)))
+			return -1;
+		return 0;
+	}
+
 	if (0 > m_pGameInstance->Tick_Engine(fTimeDelta))
 		return -1;
-
-//#ifdef _DEBUG
-//	m_fTimerAcc += fTimeDelta;
-//#endif // _DEBUG
 
 	return _int();
 }
 
 HRESULT CMainApp::Render()
 {
+	if (!isFin)
+		return S_OK;
+
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-
 	m_pGameInstance->Render_Camera(m_pRenderer);
-
-//#ifdef _DEBUG
-//	++m_dwNumRender;
-//
-//	if (m_fTimerAcc >= 1.f)
-//	{
-//		wsprintf(m_szFPS, TEXT("FPS : %d"), m_dwNumRender);
-//		SetWindowText(g_hWnd, m_szFPS);
-//
-//		m_dwNumRender = 0;
-//		m_fTimerAcc = 0.f;
-//	}
-//#endif // _DEBUG
 
 	return S_OK;
 }
@@ -129,20 +142,6 @@ HRESULT CMainApp::DefaultSetting()
 	return S_OK;
 }
 
-HRESULT CMainApp::Ready_Prototype_GameObject()
-{
-	if (nullptr == m_pGameInstance)
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Camera_Prototype(CAM_STATIC, CCamera_Static::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(PROTO_UI, CUI::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CMainApp::Ready_Prototype_Component()
 {
 	if (nullptr == m_pGameInstance)
@@ -152,12 +151,23 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_RENDERER, m_pRenderer = CRenderer::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	Safe_AddRef(m_pRenderer);
+
 	/* For.Prototype_Component_Transform */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_TRANSFORM, CTransform::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_RECT, CVIBuffer_Rect::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+
+
+
+	if (FAILED(m_pGameInstance->Add_Camera_Prototype(CAM_STATIC, CCamera_Static::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(PROTO_UI, CUI::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Logo */
@@ -168,10 +178,27 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Press"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Default/press_start.png")))))
 		return E_FAIL;
 
-	Safe_AddRef(m_pRenderer);
+	return S_OK;
+}
+
+HRESULT CMainApp::Play_Intro()
+{
+	vid = MCIWndCreate(g_hWnd, NULL, MCIWNDF_NOPLAYBAR | WS_VISIBLE | WS_CHILD, TEXT("../../Resources/Video/Intro.wmv"));
+
+	MoveWindow(vid, 0, GetSystemMetrics(SM_CYCAPTION) - 20, g_iWinCX, g_iWinCY + 20, NULL);
+
+	MCIWndPlay(vid);
 
 	return S_OK;
 }
+
+HRESULT CMainApp::Close_Intro()
+{
+	MCIWndClose(vid);
+	MCIWndDestroy(vid);
+	return S_OK;
+}
+
 
 CMainApp * CMainApp::Create()
 {
@@ -188,10 +215,10 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	Safe_Release(m_pLoader);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pGameInstance);
-
 	CGameInstance::Release_Engine();
 
 }
