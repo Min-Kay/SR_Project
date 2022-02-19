@@ -28,6 +28,5 @@ HRESULT CLevel::Render()
 
 void CLevel::Free()
 {
-
 	Safe_Release(m_pGraphic_Device);
 }

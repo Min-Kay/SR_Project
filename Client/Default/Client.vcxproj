@@ -159,9 +159,10 @@
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
-    <ClInclude Include="..\Public\Camera_Sub.h" />
+    <ClInclude Include="..\Public\Camera_Static.h" />
     <ClInclude Include="..\Public\Cam_Portal.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\FPS.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
@@ -173,6 +174,8 @@
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UI.h" />
+    <ClInclude Include="..\Public\UI_Loading.h" />
+    <ClInclude Include="..\Public\UI_Logo.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -181,8 +184,9 @@
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
-    <ClCompile Include="..\Private\Camera_Sub.cpp" />
+    <ClCompile Include="..\Private\Camera_Static.cpp" />
     <ClCompile Include="..\Private\Cam_Portal.cpp" />
+    <ClCompile Include="..\Private\FPS.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
@@ -194,6 +198,8 @@
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
+    <ClCompile Include="..\Private\UI_Loading.cpp" />
+    <ClCompile Include="..\Private\UI_Logo.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

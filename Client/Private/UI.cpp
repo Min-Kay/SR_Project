@@ -29,18 +29,9 @@ HRESULT CUI::NativeConstruct(void * pArg)
 	/* 현재 객체에게 추가되어야할 컴포넌트들을 복제(or 참조)하여 멤버변수에 보관한다.  */
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;	
-
-	D3DXMatrixOrthoLH(&m_ProjMatrix, g_iWinCX, g_iWinCY, 0.0f, 1.f);	
-
-	m_fSizeX = 50.f;
-	m_fSizeY = 50.f;
-
-	m_fX = g_iWinCX * 0.5f;
-	m_fY = g_iWinCY * 0.5f;
-
-	m_pTransformCom->Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_fX - g_iWinCX * 0.5f, -m_fY + g_iWinCY * 0.5f, 0.f));
-
+	
+	Set_UI(g_iWinCX * 0.5f, g_iWinCY * 0.5f, 50.f,50.f);
+	
 	return S_OK;
 }
 
@@ -70,17 +61,10 @@ HRESULT CUI::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-	_float4x4		ViewMatrix;
-	D3DXMatrixIdentity(&ViewMatrix);
-	m_pGraphic_Device->SetTransform(D3DTS_VIEW, &ViewMatrix);
-	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &m_ProjMatrix);
+	Bind_UI();
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
-
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 50);
@@ -119,6 +103,33 @@ HRESULT CUI::SetUp_Components()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+HRESULT CUI::Set_UI(_float x, _float y, _float sizeX, _float sizeY)
+{
+	D3DXMatrixOrthoLH(&m_ProjMatrix, g_iWinCX, g_iWinCY, 0.0f, 1.f);
+
+	m_fSizeX = sizeX;
+	m_fSizeY = sizeY;
+
+	m_fX = x;
+	m_fY = y;
+
+	m_pTransformCom->Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_fX - g_iWinCX * 0.5f, -m_fY + g_iWinCY * 0.5f, 0.f));
+
+	return S_OK;
+}
+
+HRESULT CUI::Bind_UI()
+{
+	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+		return E_FAIL;
+
+	_float4x4		ViewMatrix;
+	D3DXMatrixIdentity(&ViewMatrix);
+	m_pGraphic_Device->SetTransform(D3DTS_VIEW, &ViewMatrix);
+	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &m_ProjMatrix);
 }
 
 CUI * CUI::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

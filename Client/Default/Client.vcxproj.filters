@@ -40,9 +40,6 @@
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{43516271-a655-4bfa-a75e-3f02feb17bcb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Camera\Cam_Sub">
-      <UniqueIdentifier>{f686672e-0308-4257-abc5-af620f729abf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Camera\Cam_Dyn">
       <UniqueIdentifier>{7c2d06ec-b9de-447c-af8b-24245141f6bf}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,18 @@
     </Filter>
     <Filter Include="02.GameObjects\UI">
       <UniqueIdentifier>{6e31ccb4-e96c-406a-9af9-fc7d913d2cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player\FPS">
+      <UniqueIdentifier>{10e61156-03c0-486c-a904-c30a5b16f7a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Camera\Cam_St">
+      <UniqueIdentifier>{fe3e3377-5199-4bd4-89e5-52eb3a7916fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\LoadingScreen">
+      <UniqueIdentifier>{7b56b69a-3336-4d94-86fb-663c97c198f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\LogoScreen">
+      <UniqueIdentifier>{e7eb2aaa-34e5-45d1-b2f4-9689da431439}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +117,6 @@
     <ClInclude Include="..\public\Camera_Dynamic.h">
       <Filter>02.GameObjects\Camera\Cam_Dyn</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Camera_Sub.h">
-      <Filter>02.GameObjects\Camera\Cam_Sub</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Cam_Portal.h">
       <Filter>02.GameObjects\Camera\Cam_Portal</Filter>
     </ClInclude>
@@ -125,6 +131,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI.h">
       <Filter>02.GameObjects\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FPS.h">
+      <Filter>02.GameObjects\Player\FPS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera_Static.h">
+      <Filter>02.GameObjects\Camera\Cam_St</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Loading.h">
+      <Filter>02.GameObjects\UI\LoadingScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Logo.h">
+      <Filter>02.GameObjects\UI\LogoScreen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,9 +179,6 @@
     <ClCompile Include="..\private\Camera_Dynamic.cpp">
       <Filter>02.GameObjects\Camera\Cam_Dyn</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Camera_Sub.cpp">
-      <Filter>02.GameObjects\Camera\Cam_Sub</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Cam_Portal.cpp">
       <Filter>02.GameObjects\Camera\Cam_Portal</Filter>
     </ClCompile>
@@ -178,6 +193,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI.cpp">
       <Filter>02.GameObjects\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FPS.cpp">
+      <Filter>02.GameObjects\Player\FPS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Static.cpp">
+      <Filter>02.GameObjects\Camera\Cam_St</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Loading.cpp">
+      <Filter>02.GameObjects\UI\LoadingScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Logo.cpp">
+      <Filter>02.GameObjects\UI\LogoScreen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

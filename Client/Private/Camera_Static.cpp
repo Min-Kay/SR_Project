@@ -17,7 +17,10 @@ CCamera_Static* CCamera_Static::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
     CCamera_Static* pInstance = new CCamera_Static(pGraphic_Device);
 
     if (FAILED(pInstance->NativeConstruct_Prototype()))
+    {
+        Safe_Release(pInstance);
         return nullptr;
+    }
 
     return pInstance;
 }
@@ -27,7 +30,11 @@ CGameObject* CCamera_Static::Clone(void* pArg)
     CCamera_Static* pInstance = new CCamera_Static(*this);
 
     if (FAILED(pInstance->NativeConstruct(pArg)))
+    {
+        Safe_Release(pInstance);
         return nullptr;
+    }
+
     return pInstance;
 }
 
@@ -71,4 +78,21 @@ _int CCamera_Static::LateTick(_float fTimeDelta)
 HRESULT CCamera_Static::Render()
 {
     return S_OK;
+}
+
+HRESULT CCamera_Static::BeforeRender()
+{
+    m_pGraphic_Device->Clear(0,
+        nullptr,
+        D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
+        D3DCOLOR_ARGB(255, 0, 0, 255),	// 백버퍼 색상
+        1.f, // z버퍼의 초기화 값
+        0);	 // 스텐실 버퍼의 초기화 값
+
+    return __super::BeforeRender();
+}
+
+HRESULT CCamera_Static::AfterRender()
+{
+    return __super::AfterRender();
 }

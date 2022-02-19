@@ -1,2 +1,23 @@
 ﻿  Camera.cpp
-  Engine.vcxproj -> C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\Bin\Engine.dll
+  Camera_Manager.cpp
+  Effect.cpp
+  Font_Manager.cpp
+  GameInstance.cpp
+  GameObject.cpp
+  Layer.cpp
+  Level_Manager.cpp
+  Object_Manager.cpp
+  Renderer.cpp
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(70,99): error C3260: ')': 람다 본문 전에 예상치 않은 토큰을 건너뜁니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(76,19): error C2065: 'pRenderObject': 선언되지 않은 식별자입니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(78,9): error C2065: 'pRenderObject': 선언되지 않은 식별자입니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(82,2): error C2143: 구문 오류: ')'이(가) '}' 앞에 없습니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(70,22): error C2660: 'std::list<Engine::CGameObject *,std::allocator<Engine::CGameObject *>>::sort': 함수는 3개의 인수를 사용하지 않습니다.
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\include\list(1700,10): message : 'std::list<Engine::CGameObject *,std::allocator<Engine::CGameObject *>>::sort' 선언을 참조하십시오.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(82,2): error C2143: 구문 오류: ';'이(가) '}' 앞에 없습니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(87,20): error C2601: 'Engine::CRenderer::Clear_RenderObjects': 지역 함수 정의가 잘못되었습니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(101,24): error C2601: 'Engine::CRenderer::Create': 지역 함수 정의가 잘못되었습니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(114,25): error C2601: 'Engine::CRenderer::Clone': 지역 함수 정의가 잘못되었습니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(122,17): error C2601: 'Engine::CRenderer::Free': 지역 함수 정의가 잘못되었습니다.
+C:\Users\chris\OneDrive\바탕 화면\프로젝트\SRProject\Engine\private\Renderer.cpp(133,1): fatal error C1004: 예기치 않은 파일의 끝이 나타났습니다.
+  코드를 생성하고 있습니다...

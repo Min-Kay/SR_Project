@@ -25,6 +25,9 @@ public:
 
 	HRESULT Clear_RenderObjects();
 
+public:
+	HRESULT Alpha_Sorting();
+
 private:
 	list<class CGameObject*>				m_RenderObjects[RENDER_END];
 	typedef	list <class CGameObject* >		RENDEROBJECTS;

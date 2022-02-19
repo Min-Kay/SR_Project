@@ -88,6 +88,15 @@
     <Filter Include="01.Utility\06.Picking">
       <UniqueIdentifier>{636ea084-7111-4e91-b392-4f93e1e783e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\07.Font">
+      <UniqueIdentifier>{1d83ff7a-53bb-4498-b768-9914da41b1c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\07.Font\Manager">
+      <UniqueIdentifier>{24afcca0-7a5f-4d25-96d9-594fab4cecff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\Effect">
+      <UniqueIdentifier>{16bebe88-d49e-4d0e-91f8-d0978f84e35e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -177,6 +186,15 @@
     <ClInclude Include="..\Public\Picking.h">
       <Filter>01.Utility\06.Picking</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Font.h">
+      <Filter>01.Utility\07.Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Font_Manager.h">
+      <Filter>01.Utility\07.Font\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>01.Utility\03.GameObject\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -250,6 +268,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Picking.cpp">
       <Filter>01.Utility\06.Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Font.cpp">
+      <Filter>01.Utility\07.Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Font_Manager.cpp">
+      <Filter>01.Utility\07.Font\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>01.Utility\03.GameObject\Effect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

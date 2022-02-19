@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Portal.h"
 #include "Terrain.h"
+#include "BackGround.h"
 #include "UI.h"
 #include "Sky.h"
 
@@ -60,14 +61,15 @@ HRESULT CLoader::Loading_ForGamePlay()
 	/* 원형컴포넌트를 생성한다. */
 #pragma region PROTOTYPE_COMPONENT
 
-	/* For.Prototype_Component_VIBuffer_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../../Resources/Textures/Terrain/Height.bmp")/*129, 129*/))))
-		return E_FAIL;	
+	///* For.Prototype_Component_VIBuffer_Terrain */
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../../Resources/Textures/Terrain/Height.bmp")/*129, 129*/))))
+	//	return E_FAIL;	
 
-	/* For.Prototype_Component_ */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Orange"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT,TEXT("../../Resources/Textures/Portal/Portal_Orange.png")/*129, 129*/))))
+	/* For.Prototype_Component_Portal_Orange */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Orange"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Portal_Orange.png")/*129, 129*/))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Portal_Blue */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Blue"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Portal_Blue.png")/*129, 129*/))))
 		return E_FAIL;
 
@@ -83,15 +85,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Explosion"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Explosion/Explosion%d.png"), 90))))
 		return E_FAIL;
 
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Crosshair"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Crosshair.png")))))
 		return E_FAIL;
 
-
-	/* For.Prototype_Component_Texture_Sky */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"),4))))
 		return E_FAIL;
-
 
 #pragma endregion
 
@@ -115,6 +113,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	/* For.Prototype_GameObject_UI */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"), CUI::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma endregion

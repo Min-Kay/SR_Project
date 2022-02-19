@@ -246,10 +246,8 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 
 	if (nullptr == renderer)
 		return E_FAIL;
-	
-	map<const _tchar*, CCamera*> camList = *m_pCamera_Manager->GetCameraList();
 
-	for (auto& cam : camList)
+	for (auto& cam : *m_pCamera_Manager->GetCameraList())
 	{
 		if (!cam.second->Get_Vaild())
 			continue;
@@ -257,7 +255,7 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 		if (FAILED(cam.second->BeforeRender()))
 			return E_FAIL;
 
-		Render_Begin();
+		Render_Begin()
 		renderer->Render(cam.second->Get_Exception());
 		Render_Level();
 		Render_End(cam.second->Get_Handle());

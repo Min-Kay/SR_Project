@@ -44,6 +44,24 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+HRESULT CGameObject::Compute_Distance(_float3 _obj, _float3 _target)
+{
+	if (nullptr == _target)
+		return E_FAIL;
+
+	_float3		vDir = _target - _obj;
+
+	m_fDis = D3DXVec3Length(&vDir);
+
+	return S_OK;
+}
+
+const _float CGameObject::Get_Distance() const
+{
+	return m_fDis;
+}
+
+
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
 {
 	if (nullptr != Find_Component(pComponentTag))

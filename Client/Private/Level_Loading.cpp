@@ -15,6 +15,8 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
+	SetWindowText(g_hWnd, TEXT("PORTAL_LOADING"));
+
 	m_eNextLevel = eNextLevel;
 
 	 m_pLoader = CLoader::Create(m_pGraphic_Device, m_eNextLevel);
@@ -25,7 +27,7 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 	 CCamera::CAMERADESC		CameraDesc;
 	 ZeroMemory(&CameraDesc, sizeof(CameraDesc));
 
-	 CameraDesc.vEye = _float3(0.f, 0.f, -50.f);
+	 CameraDesc.vEye = _float3(0.f, 0.f, -100.f);
 	 CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
 	 CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
@@ -38,7 +40,10 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 	 CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 	 CameraDesc.iLevel = LEVEL_LOADING; 
 
-	 if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Dynamic"), TEXT("Loading_Camera"), &CameraDesc)))
+	 if (FAILED(pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera_Static"), TEXT("Loading_Camera"), &CameraDesc)))
+		 return E_FAIL;
+
+	 if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING,TEXT("Loading"), TEXT("Prototype_GameObject_Loading"))))
 		 return E_FAIL;
 
 	 RELEASE_INSTANCE(CGameInstance);
@@ -61,8 +66,7 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 
 	if (true == m_pLoader->isFinished())
 	{
-		CGameInstance*	pGameInstance = CGameInstance::GetInstance();
-		Safe_AddRef(pGameInstance);
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 		CLevel*		pLevel = nullptr;
 
@@ -79,7 +83,7 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, pLevel)))
 			return E_FAIL;
 
-		Safe_Release(pGameInstance);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
 	return 0;
@@ -89,9 +93,6 @@ HRESULT CLevel_Loading::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-
-
-	SetWindowText(g_hWnd, TEXT("로딩레벨임. "));
 
 	return S_OK;
 }

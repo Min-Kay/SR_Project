@@ -17,9 +17,14 @@ public:
 	virtual HRESULT Render();
 
 public:
+	virtual HRESULT BeforeRender();
+	virtual HRESULT AfterRender();
+
+public:
 	static CCamera_Static* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 };
+
 END
 

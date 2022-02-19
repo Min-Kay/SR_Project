@@ -108,7 +108,7 @@ HRESULT CSky::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Sky"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -121,13 +121,10 @@ HRESULT CSky::SetUp_RenderState()
 
 	/* 픽셀의 깊이비교를 하지 않는다. */
 	m_pGraphic_Device->SetRenderState(D3DRS_ZENABLE, FALSE);
-
 	/* 픽셀이 그려질 경우, 픽셀의 깊이를 기록하지 않느낟. */
 	m_pGraphic_Device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-	//m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	return S_OK;
 }
@@ -140,7 +137,6 @@ HRESULT CSky::Release_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_ZENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
 	return S_OK;
 }

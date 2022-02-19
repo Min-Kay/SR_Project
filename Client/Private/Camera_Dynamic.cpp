@@ -85,9 +85,6 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 		}
 	}
 
-
-	
-
 	_long		MouseMove = 0;
 
 	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))

@@ -16,6 +16,9 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
+	SetWindowText(g_hWnd, TEXT("PORTAL_GAMEPLAY"));
+
+
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -50,8 +53,6 @@ HRESULT CLevel_GamePlay::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-
-	SetWindowText(g_hWnd, TEXT("게임플레이임. "));
 
 	return S_OK;
 }
@@ -89,10 +90,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
-		return E_FAIL;*/
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Sky"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("SkyBox"), TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))

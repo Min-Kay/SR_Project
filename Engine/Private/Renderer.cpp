@@ -1,7 +1,7 @@
 #include "..\Public\Renderer.h"
 
 #include "GameObject.h"
-
+#include "Transform.h"
 
 CRenderer::CRenderer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent(pGraphic_Device)
@@ -55,6 +55,9 @@ HRESULT CRenderer::Render(vector<_uint> exceptions)
 		if (ignore != exceptions.end())
 			continue;
 
+		if (i == RENDER_ALPHA)
+			Alpha_Sorting();
+	
 		for (auto& pRenderObject : m_RenderObjects[i])
 		{
 			if (nullptr != pRenderObject)
@@ -78,6 +81,23 @@ HRESULT CRenderer::Clear_RenderObjects()
 		}
 		m_RenderObjects[i].clear();
 	}
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Alpha_Sorting()
+{
+	_float4x4 ViewMatrix;
+	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+	D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
+
+	for (auto& pRenderObjects : m_RenderObjects[RENDER_ALPHA])
+	{
+		_float3 objPos = ((CTransform*)(pRenderObjects->Get_Component(TEXT("Com_Transform"))))->Get_State(CTransform::STATE_POSITION);
+		pRenderObjects->Compute_Distance(objPos, *(_float3*)&ViewMatrix.m[3][0]);
+	}
+
+	m_RenderObjects[RENDER_ALPHA].sort([](CGameObject* a, CGameObject* b) -> _bool { return a->Get_Distance() > b->Get_Distance(); });
 
 	return S_OK;
 }
