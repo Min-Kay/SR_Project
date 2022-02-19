@@ -21,16 +21,6 @@ namespace Engine
 
 	typedef wchar_t						_tchar;
 
-	/*typedef struct tagMyVector3 : public D3DXVECTOR3
-	{
-		float Get_Length() {
-			
-		}
-		float Get_Distance(tagMyVector3 vTarget) {
-			
-		}
-	}_float3;*/
-
 	typedef D3DXVECTOR2					_float2;
 	typedef D3DXVECTOR3					_float3;
 	typedef D3DXVECTOR4					_float4;

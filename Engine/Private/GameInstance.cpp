@@ -292,6 +292,25 @@ CCamera* CGameInstance::Find_Camera_Object(const _tchar* _ObjTag)
 	return m_pCamera_Manager->Find_Camera_Object(_ObjTag);
 }
 
+void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
+{
+	if (setting == true)
+	{
+		ShowCursor(true);
+		ClipCursor(NULL);
+	}
+	else
+	{
+		RECT rc;
+		ShowCursor(false);
+		GetWindowRect(_hwnd,&rc);
+		rc.top = rc.top + GetSystemMetrics(SM_CYCAPTION) + 10;
+		rc.left = rc.left + 10;
+		ClipCursor(&rc);
+	}
+	
+}
+
 
 void CGameInstance::Release_Engine()
 {

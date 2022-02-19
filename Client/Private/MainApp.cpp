@@ -125,8 +125,7 @@ HRESULT CMainApp::DefaultSetting()
 	/* 그리는 상태를 셋팅한다. */
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, false);
 	// m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
-
+	
 	return S_OK;
 }
 
@@ -163,6 +162,10 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	/* For.Prototype_Component_Texture_Logo */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Main/Main.jpg")))))
+		return E_FAIL;
+
+	///* For.Prototype_Component_Texture_Press */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Press"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Default/press_start.png")))))
 		return E_FAIL;
 
 	Safe_AddRef(m_pRenderer);

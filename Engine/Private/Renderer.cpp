@@ -91,7 +91,7 @@ HRESULT CRenderer::Alpha_Sorting()
 
 	for (auto& pRenderObjects : m_RenderObjects[RENDER_ALPHA])
 	{
-		_float3 objPos = ((CTransform*)(pRenderObjects->Get_Component(TEXT("Com_Transform"))))->Get_State(CTransform::STATE_POSITION);
+		_float3 objPos = ((CTransform*)(pRenderObjects->Get_Component(COM_TRANSFORM)))->Get_State(CTransform::STATE_POSITION);
 		pRenderObjects->Compute_Distance(objPos, *(_float3*)&ViewMatrix.m[3][0]);
 	}
 

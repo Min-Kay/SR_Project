@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LoadingLoader.h"
 #include "GameInstance.h"
-
+#include "UI.h"
 CLoadingLoader::CLoadingLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	m_pGraphic_Device = pGraphic_Device;
@@ -41,6 +41,19 @@ HRESULT CLoadingLoader::LoadToLoading()
 	///* For.Prototype_Component_Texture_Loadingscreen */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Loading/Loading_Blue/Aperture_%d.png"),100))))
 		return E_FAIL;
+
+	CUI::UIDESC desc;
+	ZeroMemory(&desc,sizeof(desc));
+
+	desc.Alpha = CUI::ALPHA_BLEND;
+	desc.PosX = g_iWinCX * 0.5f;
+	desc.PosY = g_iWinCY * 0.8f;
+	desc.SizeX = 640.f;
+	desc.SizeY = 360.f;
+	desc.Layer = 0;
+	desc.Texture = TEXT("Prototype_Component_Texture_Press");
+
+	pGameInstance->Add_GameObject(LEVEL_LOGO,TEXT("Layer_Press_Start"),PROTO_UI,&desc);
 
 	RELEASE_INSTANCE(CGameInstance);
 	

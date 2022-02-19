@@ -108,6 +108,7 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	desc.PosY = g_iWinCY * 0.5f;
 	desc.SizeX = g_iWinCX;
 	desc.SizeY = g_iWinCY;
+	desc.Layer = 1;
 	desc.Texture = TEXT("Prototype_Component_Texture_Logo");
 
 	/* 사본객체를 생성ㅎ나다. */

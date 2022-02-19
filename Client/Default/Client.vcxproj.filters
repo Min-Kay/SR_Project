@@ -205,10 +205,19 @@
     <Image Include="small.ico">
       <Filter>98.Default</Filter>
     </Image>
+    <Image Include="icon1.ico" />
+    <Image Include="icon2.ico" />
+    <Image Include="..\..\Resources\Textures\Portal\Logo\MiniLogo.png" />
+    <Image Include="..\..\Resources\Textures\Portal\Logo\MiniLogo.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
       <Filter>98.Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\resources\textures\portal\logo\cursor1.cur" />
+    <None Include="..\..\Resources\Textures\Portal\Default\Blue Portal Gun Normal Select.cur" />
+    <None Include="..\..\resources\textures\portal\default\cursor2.cur" />
   </ItemGroup>
 </Project>

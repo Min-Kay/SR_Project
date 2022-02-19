@@ -1,9 +1,2 @@
-﻿  Effect.cpp
-  Font_Manager.cpp
-  GameObject.cpp
-  Component_Manager.cpp
-  GameInstance.cpp
-  Level_Manager.cpp
-  Renderer.cpp
-  코드를 생성하고 있습니다...
+﻿  GameInstance.cpp
   Engine.vcxproj -> C:\Users\Min\Desktop\수업\쥬신\Team\SR\Engine\Bin\Engine.dll

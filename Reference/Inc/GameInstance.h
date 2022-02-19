@@ -63,6 +63,9 @@ public: /* For.Camera_Manager*/
 	HRESULT Release_Camera(const _tchar * _tag);
 	CCamera* Find_Camera_Object(const _tchar* _ObjTag);
 
+public: // 마우스 커서 설정
+	void SetMouseMode(_bool setting, HWND _hwnd = nullptr);
+
 private:
 	CGraphic_Device*		m_pGraphic_Device = nullptr;
 	CTimer_Manager*			m_pTimer_Manager = nullptr;

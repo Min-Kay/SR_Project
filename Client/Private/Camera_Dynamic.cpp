@@ -67,6 +67,11 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 		}
 	}
 
+	if (pGameInstance->Get_DIKeyState(DIK_O) & 0x80)
+	{
+		ShowCursor(true);
+	}
+
 	if (nullptr != portalCtl)
 	{
 		if (pGameInstance->Get_DIMouseButtonState(CInput_Device::MBS_LBUTTON) & 0x80)

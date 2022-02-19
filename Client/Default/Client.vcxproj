@@ -210,8 +210,17 @@
     <ResourceCompile Include="Client.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Resources\Textures\Portal\Logo\MiniLogo.ico" />
+    <Image Include="..\..\Resources\Textures\Portal\Logo\MiniLogo.png" />
     <Image Include="Client.ico" />
+    <Image Include="icon1.ico" />
+    <Image Include="icon2.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Resources\Textures\Portal\Default\Blue Portal Gun Normal Select.cur" />
+    <None Include="..\..\resources\textures\portal\default\cursor2.cur" />
+    <None Include="..\..\resources\textures\portal\logo\cursor1.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

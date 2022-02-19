@@ -14,6 +14,11 @@ CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 HRESULT CLevel_GamePlay::NativeConstruct()
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	pInstance->SetMouseMode(false,g_hWnd);
+	RELEASE_INSTANCE(CGameInstance);
+
+
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
@@ -45,6 +50,19 @@ _int CLevel_GamePlay::LateTick(_float fTimeDelta)
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	if (pInstance->Get_DIKeyState(DIK_O) & 0x80)
+	{
+		if (isMouseOn)
+			pInstance->SetMouseMode(false, g_hWnd);
+		else
+			pInstance->SetMouseMode(true);
+
+		isMouseOn = isMouseOn ? false : true;
+	}
+	RELEASE_INSTANCE(CGameInstance);
+
+	
 	return 0;
 }
 

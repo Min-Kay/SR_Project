@@ -33,10 +33,23 @@ using namespace std;
 
 #endif // _DEBUG
 
-
 #include "Engine_Macro.h"
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
 #include "Engine_Struct.h"
+
+
+#define COM_TEXTURE TEXT("Com_Texture")
+#define COM_TRANSFORM TEXT("Com_Transform")
+#define COM_RENDERER TEXT("Com_Renderer")
+#define COM_BUFFER TEXT("Com_VIBuffer")
+
+#define PROTO_TRANSFORM TEXT("Prototype_Component_Transform")
+#define PROTO_RENDERER TEXT("Prototype_Component_Renderer")
+#define PROTO_RECT TEXT("Prototype_Component_VIBuffer_Rect")
+#define PROTO_PORTAL TEXT("Prototype_Component_VIBuffer_Portal")
+#define PROTO_CUBE TEXT("Prototype_Component_VIBuffer_Cube")
+
+
 
 using namespace Engine;
