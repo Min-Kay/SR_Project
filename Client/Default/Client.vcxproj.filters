@@ -67,6 +67,9 @@
     <Filter Include="01.Levels\Logo\Loader">
       <UniqueIdentifier>{654b5e5a-395f-4b29-a5de-e75da86d6b7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Camera\Cam_Player">
+      <UniqueIdentifier>{ca01fc62-bf22-4e4b-a539-f292101c1377}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -138,6 +141,9 @@
     <ClInclude Include="..\Public\LoadingLoader.h">
       <Filter>01.Levels\Logo\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Camera_Player.h">
+      <Filter>02.GameObjects\Camera\Cam_Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -196,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\LoadingLoader.cpp">
       <Filter>01.Levels\Logo\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Player.cpp">
+      <Filter>02.GameObjects\Camera\Cam_Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

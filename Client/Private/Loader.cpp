@@ -10,6 +10,7 @@
 #include "Sky.h"
 #include "Cam_Portal.h"
 #include "Camera_Dynamic.h"
+#include "Camera_Player.h"
 #include "PortalControl.h"
 
 
@@ -109,6 +110,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_PORTAL, CCam_Portal::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_PLAYER, CCamera_Player::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Player */

@@ -164,28 +164,32 @@ HRESULT CCam_Portal::AfterRender()
 
 HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
 {
-   /* _float3 targetToRt = -(m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION));
-
+    _float3 targetToRt = m_pRenderTransform->Get_State(CTransform::STATE_POSITION) - target->Get_State(CTransform::STATE_POSITION);
     _float3 rtLook = -m_pRenderTransform->Get_State(CTransform::STATE_LOOK);
 
-    _float dot = D3DXVec3Dot(&targetToRt, &rtLook);
-
-    _float3 result = targetToRt + 2 * dot * rtLook;
+    _float3 result = targetToRt - 2 * D3DXVec3Dot(&targetToRt, &rtLook) * rtLook;
     D3DXVec3Normalize(&result, &result);
 
+    _float3 ptLook  = -portal->Get_State(CTransform::STATE_LOOK);
+    D3DXVec3Normalize(&ptLook, &ptLook);
 
     _float3 vLook, vRight, vUp;
-
-    _float3 vScale = m_pTransform->Get_Scale();
-
-    vLook = result;
+    vLook = ptLook - result;
+    D3DXVec3Normalize(&vLook, &vLook);
     vRight = *D3DXVec3Cross(&vRight, &_float3(0.f, 1.f, 0.f), &vLook);
     vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);
 
     m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
     m_pTransform->Set_State(CTransform::STATE_UP, vUp);
-    m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);*/
+    m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
 
+    _float angle = D3DXVec3Length(&targetToRt) * 5.f;
+    if (angle >= 120.f)
+        angle = 120.f;
+    else if (angle <= 30.f)
+        angle = 30.f;
+
+    m_CameraDesc.fFovy = D3DXToRadian(angle);
 
     return S_OK;
 }
@@ -216,7 +220,7 @@ void CCam_Portal::Set_ExitPortal(CPortal* _exit)
       
       D3DXVec3Normalize(&vLook,&vLook);
 
-      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.001f );
+      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.005f );
     }
 }
 

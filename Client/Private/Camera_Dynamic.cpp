@@ -34,7 +34,7 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 
-	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	/*if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pTransform->Go_Straight(fTimeDelta);
 	}
@@ -52,7 +52,8 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
 	{
 		m_pTransform->Go_Right(fTimeDelta);
-	}
+	}*/
+
 
 	if (nullptr == portalCtl)
 	{

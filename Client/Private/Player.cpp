@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Player.h"
 #include "GameInstance.h"
+#include "Camera_Player.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -47,25 +48,45 @@ _int CPlayer::Tick(_float fTimeDelta)
 	if (m_fFrame >= 12.0f)
 		m_fFrame = 0.f;
 	
-	/*if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
 	{
 		m_pTransformCom->Go_BackWard(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_LEFT) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
 	{
-		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), -fTimeDelta);
+		m_pTransformCom->Go_Left(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_RIGHT) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
 	{
-		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta);
-	}*/
+		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+
+	_long		MouseMove = 0;
+
+	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
+	{
+		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
+	}
+
+	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
+	{
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+	}
+
+
+	if (m_Camera)
+	{
+		m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	}
+
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -123,6 +144,12 @@ HRESULT CPlayer::Render()
 	if (FAILED(Release_RenderState()))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CPlayer::Set_Cam(CCamera_Player* cam)
+{
+	m_Camera = cam;
 	return S_OK;
 }
 

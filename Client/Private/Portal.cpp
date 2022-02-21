@@ -102,9 +102,9 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     ZeroMemory(&camDesc,sizeof(CCamera::CAMERADESC));
 
     camDesc.fAspect = 3/(4.f);
-    camDesc.fFar = 300.f;
+    camDesc.fFar = 200.f;
     camDesc.fNear = 0.1f;
-    camDesc.fFovy = D3DXToRadian(90.f);
+    camDesc.fFovy = D3DXToRadian(30.f);
     camDesc.iLevel = portalDesc.iLevel;
     camDesc.vEye = portalDesc.vEye;
     camDesc.vAxisY = portalDesc.vAxisY;

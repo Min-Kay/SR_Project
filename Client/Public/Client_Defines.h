@@ -9,9 +9,12 @@ extern HINSTANCE	g_hInst;
 extern HWND		g_hWnd;
 
 
+#define MAIN_CAM TEXT("Main_Camera")
+
 #define CAM_STATIC TEXT("Prototype_GameObject_Camera_Static")
 #define CAM_DYNAMIC TEXT("Prototype_GameObject_Camera_Dynamic")
 #define CAM_PORTAL TEXT("Prototype_GameObject_Camera_Portal")
+#define CAM_PLAYER TEXT("Prototype_GameObject_Camera_Player")
 
 
 #define PROTO_UI TEXT("Prototype_GameObject_UI")

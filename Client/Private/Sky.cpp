@@ -58,7 +58,7 @@ _int CSky::LateTick(_float fTimeDelta)
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, *(_float3*)&ViewMatrix.m[3][0]);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION,pInstance->Find_Camera_Object(TEXT("Main_Camera"))->Get_CameraTransform()->Get_State(CTransform::STATE_POSITION));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION,pInstance->Find_Camera_Object(MAIN_CAM)->Get_CameraTransform()->Get_State(CTransform::STATE_POSITION));
 	
 	RELEASE_INSTANCE(CGameInstance);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SKYBOX, this);

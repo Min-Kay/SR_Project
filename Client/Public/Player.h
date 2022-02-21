@@ -11,6 +11,7 @@ class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
+class CCamera_Player;
 
 class CPlayer final : public CGameObject
 {
@@ -25,6 +26,9 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	HRESULT Set_Cam(CCamera_Player* cam);
+
 private:
 	/* 텍스쳐 */
 	CTexture*			m_pTextureCom = nullptr;
@@ -37,6 +41,8 @@ private:
 
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
+
+	CCamera_Player*		m_Camera = nullptr;
 
 private:
 	_float			m_fFrame = 0.f;

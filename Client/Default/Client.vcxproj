@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
+    <ClInclude Include="..\Public\Camera_Player.h" />
     <ClInclude Include="..\Public\Camera_Static.h" />
     <ClInclude Include="..\Public\Cam_Portal.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -183,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
+    <ClCompile Include="..\Private\Camera_Player.cpp" />
     <ClCompile Include="..\Private\Camera_Static.cpp" />
     <ClCompile Include="..\Private\Cam_Portal.cpp" />
     <ClCompile Include="..\Private\FPS.cpp" />

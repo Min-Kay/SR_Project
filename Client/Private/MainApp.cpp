@@ -68,7 +68,7 @@ _int CMainApp::Tick(_float fTimeDelta)
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 		isSkip = true;
 
-	if ((MCIWndGetLength(vid) <= MCIWndGetPosition(vid) || isSkip) && !isFin )
+	if (((MCIWndGetLength(vid) <= MCIWndGetPosition(vid)) || (m_pLoader->isFinished() && isSkip)) && !isFin)
 	{
 		isFin = true;
 		Close_Intro();
