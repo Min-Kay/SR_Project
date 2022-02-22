@@ -105,7 +105,6 @@ _int CPlayer::Tick(_float fTimeDelta)
 	{
 		m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
-	
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -171,7 +170,7 @@ HRESULT CPlayer::Render()
 HRESULT CPlayer::Set_Cam(CCamera* cam)
 {
 	m_Camera = cam;
-	Safe_AddRef(m_Camera);
+	static_cast<CCamera_Player*>(m_Camera)->Set_Player(this);
 	return S_OK;
 }
 
@@ -228,19 +227,9 @@ HRESULT CPlayer::SetUp_RenderState()
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	//m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	//m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-
-/*
-	_float4		vSourColor, vDestColor;
-
-	(vSourColor.rgb) * vSourColor.a + (vDestColor.rgb) * (1.f - vSourColor.a);*/
 
 	return S_OK;
 }
@@ -285,7 +274,6 @@ void CPlayer::Free()
 	__super::Free();
 
 	Safe_Release(m_pPortalCtrl);
-	Safe_Release(m_Camera);
 	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

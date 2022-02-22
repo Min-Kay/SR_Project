@@ -41,8 +41,8 @@ CGameObject* CCamera_Player::Clone(void* pArg)
 
 void CCamera_Player::Free()
 {
-    __super::Free();
     Safe_Release(m_pPlayer);
+    __super::Free();
 }
 
 HRESULT CCamera_Player::NativeConstruct_Prototype()
@@ -71,12 +71,13 @@ _int CCamera_Player::Tick(_float fTimeDelta)
 
     if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
     {
-        m_pTransform->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
+
+        Locked_Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
     }
 
     if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
     {
-        m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+        Locked_Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
     }
 
     RELEASE_INSTANCE(CGameInstance);
@@ -119,5 +120,33 @@ HRESULT CCamera_Player::Set_Player(CPlayer* _pPlayer)
 {
     m_pPlayer = _pPlayer;
     Safe_AddRef(m_pPlayer);
+    return S_OK;
+}
+
+HRESULT CCamera_Player::Locked_Turn(_float3& axis, _float fTimeDelta)
+{
+    _float3		vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+    _float3		vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+    _float3		vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+
+    _float4x4	RotationMatrix;
+    D3DXMatrixRotationAxis(&RotationMatrix, &axis, m_pTransform->Get_TransformDesc().fRotationPerSec * fTimeDelta);
+
+    D3DXVec3TransformNormal(&vRight, &vRight, &RotationMatrix);
+    D3DXVec3TransformNormal(&vUp, &vUp, &RotationMatrix);
+    D3DXVec3TransformNormal(&vLook, &vLook, &RotationMatrix);
+
+    m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+
+    if (m_pPlayer)
+    {
+        _float3 playerLook = static_cast<CTransform*>(m_pPlayer->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_LOOK);
+
+        if (0 > D3DXVec3Dot(&playerLook, &vLook))
+            return S_OK;
+    }
+
+    m_pTransform->Set_State(CTransform::STATE_UP, vUp);
+    m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
     return S_OK;
 }

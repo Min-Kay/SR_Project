@@ -32,6 +32,11 @@ void CTransform::Set_TransformDesc(const TRANSFORMDESC & TransformDesc)
 	m_TransformDesc = TransformDesc;
 }
 
+const CTransform::TRANSFORMDESC& CTransform::Get_TransformDesc() const
+{
+	return m_TransformDesc;
+}
+
 HRESULT CTransform::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))

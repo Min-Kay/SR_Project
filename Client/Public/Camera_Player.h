@@ -24,6 +24,9 @@ public:
 public:
 	HRESULT Set_Player(CPlayer* _pPlayer);
 
+public:
+	HRESULT Locked_Turn(_float3& axis, _float fTimeDelta);
+
 private:
 	CPlayer* m_pPlayer = nullptr;
 

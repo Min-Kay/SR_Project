@@ -37,6 +37,7 @@ public:
 	}
 
 	void Set_TransformDesc(const TRANSFORMDESC& TransformDesc);
+	const TRANSFORMDESC& Get_TransformDesc() const;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
