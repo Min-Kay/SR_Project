@@ -52,9 +52,14 @@ public: /* For.Component_Manager */
 	CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
 
 public: /* For.Input_Device */
-	_byte Get_DIKeyState(_ubyte eKeyID);
+	_bool Get_Key_Down(_ubyte eKeyID);
+	_bool Get_Key_Up(_ubyte eKeyID);
+	_bool Get_Key_Press(_ubyte eKeyID);
+	_bool Get_Mouse_Down(CInput_Device::MOUSEBUTTONSTATE eMouseID);
+	_bool Get_Mouse_Up(CInput_Device::MOUSEBUTTONSTATE eMouseID);
+	_bool Get_Mouse_Press(CInput_Device::MOUSEBUTTONSTATE eMouseID);
+
 	_long Get_DIMouseMoveState(CInput_Device::MOUSEMOVESTATE eMouseMoveState);
-	_byte Get_DIMouseButtonState(CInput_Device::MOUSEBUTTONSTATE eMouseButtonState);
 
 public: /* For.Camera_Manager*/
 	HRESULT Render_Camera(class CRenderer* renderer);

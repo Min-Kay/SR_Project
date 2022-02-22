@@ -42,6 +42,21 @@ _int CLevel_GamePlay::Tick(_float fTimeDelta)
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (pInstance->Get_Key_Down(DIK_Y))
+	{
+		pInstance->SetMouseMode(false, g_hWnd);
+	}
+
+	if (pInstance->Get_Key_Down(DIK_U))
+	{
+		pInstance->SetMouseMode(true);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return 0;
 }
 
@@ -49,20 +64,6 @@ _int CLevel_GamePlay::LateTick(_float fTimeDelta)
 {
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
-
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	if (pInstance->Get_DIKeyState(DIK_Y) & 0x80)
-	{
-		pInstance->SetMouseMode(false, g_hWnd);
-	}
-	
-	if (pInstance->Get_DIKeyState(DIK_U) & 0x80)
-	{
-		pInstance->SetMouseMode(true);
-	}
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	
 	return 0;

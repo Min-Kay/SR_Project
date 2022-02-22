@@ -33,22 +33,22 @@ _int CCamera_Dynamic::Tick(_float fTimeDelta)
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 
-	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_W))
 	{
 		m_pTransform->Go_Straight(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_S))
 	{
 		m_pTransform->Go_BackWard(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_A))
 	{
 		m_pTransform->Go_Left(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_D))
 	{
 		m_pTransform->Go_Right(fTimeDelta);
 	}

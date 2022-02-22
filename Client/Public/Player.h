@@ -44,13 +44,13 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
-	CCamera*		m_Camera = nullptr;
+	CCamera*			m_Camera = nullptr;
 
 private:
-	_float			m_fFrame = 0.f;
+	_float				m_fFrame = 0.f;
 
 private:
-	CPortalControl* portalCtl = nullptr;
+	CPortalControl*		m_pPortalCtrl = nullptr;
 
 private:
 	HRESULT SetUp_Components();

@@ -49,54 +49,54 @@ _int CPlayer::Tick(_float fTimeDelta)
 	if (m_fFrame >= 12.0f)
 		m_fFrame = 0.f;
 	
-	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_W))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_S))
 	{
 		m_pTransformCom->Go_BackWard(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_A))
 	{
 		m_pTransformCom->Go_Left(fTimeDelta);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	if (pGameInstance->Get_Key_Press(DIK_D))
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
 
-	if (nullptr == portalCtl)
+	if (nullptr == m_pPortalCtrl)
 	{
-		if (pGameInstance->Get_DIKeyState(DIK_I) & 0x80)
+		if (pGameInstance->Get_Key_Down(DIK_I))
 		{
 			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), TEXT("Prototype_GameObject_PortalCtrl"))))
 				return E_FAIL;
 
-			portalCtl = static_cast<CPortalControl*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), 0));
-			portalCtl->Set_Player(m_pTransformCom);
-			Safe_AddRef(portalCtl);
+			m_pPortalCtrl = static_cast<CPortalControl*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), 0));
+			m_pPortalCtrl->Set_Player(m_pTransformCom);
+			Safe_AddRef(m_pPortalCtrl);
 		}
 	}
 
-	if (nullptr != portalCtl)
+	if (nullptr != m_pPortalCtrl)
 	{
-		if (pGameInstance->Get_DIMouseButtonState(CInput_Device::MBS_LBUTTON) & 0x80)
+		if (pGameInstance->Get_Mouse_Up(CInput_Device::MBS_LBUTTON))
 		{
-			portalCtl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_ORANGE);
+			m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_ORANGE);
 		}
 
-		if (pGameInstance->Get_DIMouseButtonState(CInput_Device::MBS_RBUTTON) & 0x80)
+		if (pGameInstance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON))
 		{
-			portalCtl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_BLUE);
+			m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_BLUE);
 		}
 
-		if (pGameInstance->Get_DIKeyState(DIK_SPACE) & 0x80)
+		if (pGameInstance->Get_Key_Up(DIK_SPACE))
 		{
-			portalCtl->Erase_Portal(LEVEL_GAMEPLAY);
+			m_pPortalCtrl->Erase_Portal(LEVEL_GAMEPLAY);
 		}
 	}
 
@@ -284,7 +284,7 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	Safe_Release(portalCtl);
+	Safe_Release(m_pPortalCtrl);
 	Safe_Release(m_Camera);
 	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);

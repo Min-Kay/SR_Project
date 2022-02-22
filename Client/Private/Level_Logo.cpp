@@ -36,6 +36,15 @@ _int CLevel_Logo::Tick(_float fTimeDelta)
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	if (pInstance->Get_Key_Down(DIK_RETURN))
+	{
+		if (FAILED(pInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_GAMEPLAY))))
+			return E_FAIL;
+
+	}
+	RELEASE_INSTANCE(CGameInstance);
+
 	return 0;
 }
 
@@ -43,16 +52,6 @@ _int CLevel_Logo::LateTick(_float fTimeDelta)
 {
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
-
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
-	{
-		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-		if (FAILED(pGameInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_GAMEPLAY))))
-			return E_FAIL;
-
-		RELEASE_INSTANCE(CGameInstance);
-	}
 
 	return 0;
 }

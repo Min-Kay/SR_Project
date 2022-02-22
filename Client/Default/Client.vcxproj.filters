@@ -58,9 +58,6 @@
     <Filter Include="02.GameObjects\UI">
       <UniqueIdentifier>{6e31ccb4-e96c-406a-9af9-fc7d913d2cd3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Player\FPS">
-      <UniqueIdentifier>{10e61156-03c0-486c-a904-c30a5b16f7a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Camera\Cam_St">
       <UniqueIdentifier>{fe3e3377-5199-4bd4-89e5-52eb3a7916fd}</UniqueIdentifier>
     </Filter>
@@ -132,9 +129,6 @@
     <ClInclude Include="..\Public\UI.h">
       <Filter>02.GameObjects\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\FPS.h">
-      <Filter>02.GameObjects\Player\FPS</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Camera_Static.h">
       <Filter>02.GameObjects\Camera\Cam_St</Filter>
     </ClInclude>
@@ -193,9 +187,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI.cpp">
       <Filter>02.GameObjects\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\FPS.cpp">
-      <Filter>02.GameObjects\Player\FPS</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Static.cpp">
       <Filter>02.GameObjects\Camera\Cam_St</Filter>

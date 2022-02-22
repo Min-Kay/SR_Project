@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Camera_Player.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CCamera_Player::CCamera_Player(LPDIRECT3DDEVICE9 pGraphic_Device)
     :CCamera(pGraphic_Device)
@@ -41,6 +42,7 @@ CGameObject* CCamera_Player::Clone(void* pArg)
 void CCamera_Player::Free()
 {
     __super::Free();
+    Safe_Release(m_pPlayer);
 }
 
 HRESULT CCamera_Player::NativeConstruct_Prototype()
@@ -111,4 +113,11 @@ HRESULT CCamera_Player::BeforeRender()
 HRESULT CCamera_Player::AfterRender()
 {
     return __super::AfterRender();
+}
+
+HRESULT CCamera_Player::Set_Player(CPlayer* _pPlayer)
+{
+    m_pPlayer = _pPlayer;
+    Safe_AddRef(m_pPlayer);
+    return S_OK;
 }

@@ -65,10 +65,7 @@ _int CMainApp::Tick(_float fTimeDelta)
 	if (nullptr == m_pGameInstance)
 		return -1;
 
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
-		isSkip = true;
-
-	if (((MCIWndGetLength(vid) <= MCIWndGetPosition(vid)) || (m_pLoader->isFinished() && isSkip)) && !isFin)
+	if (((MCIWndGetLength(vid) <= MCIWndGetPosition(vid)) || (m_pLoader->isFinished() && m_pGameInstance->Get_Key_Down(DIK_RETURN))) && !isFin)
 	{
 		isFin = true;
 		Close_Intro();

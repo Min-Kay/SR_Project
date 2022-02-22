@@ -66,6 +66,8 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pCamera_Manager->Tick(fTimeDelta))
 		return -1;
 
+	m_pInput_Device->Tick_KeyState();
+
 	if (0 > m_pObject_Manager->LateTick(fTimeDelta))
 		return -1;	
 
@@ -216,12 +218,50 @@ CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pP
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 }
 
-_byte CGameInstance::Get_DIKeyState(_ubyte eKeyID)
+_bool CGameInstance::Get_Key_Down(_ubyte eKeyID)
 {
 	if (nullptr == m_pInput_Device)
-		return 0;
+		return false;
 
-	return m_pInput_Device->Get_DIKeyState(eKeyID);
+	return m_pInput_Device->Get_Key_Down(eKeyID);
+}
+
+_bool CGameInstance::Get_Key_Up(_ubyte eKeyID)
+{
+	if (nullptr == m_pInput_Device)
+		return false;
+	return m_pInput_Device->Get_Key_Up(eKeyID);
+
+}
+
+_bool CGameInstance::Get_Key_Press(_ubyte eKeyID)
+{
+	if (nullptr == m_pInput_Device)
+		return false;
+	return m_pInput_Device->Get_Key_Press(eKeyID);
+}
+
+_bool CGameInstance::Get_Mouse_Down(CInput_Device::MOUSEBUTTONSTATE eMouseID)
+{
+	if (nullptr == m_pInput_Device)
+		return false;
+	return  m_pInput_Device->Get_Mouse_Button_Down(eMouseID);
+}
+
+_bool CGameInstance::Get_Mouse_Up(CInput_Device::MOUSEBUTTONSTATE eMouseID)
+{
+	if (nullptr == m_pInput_Device)
+		return false;
+	return  m_pInput_Device->Get_Mouse_Button_Up(eMouseID);
+
+}
+
+_bool CGameInstance::Get_Mouse_Press(CInput_Device::MOUSEBUTTONSTATE eMouseID)
+{
+	if (nullptr == m_pInput_Device)
+		return false;
+	return  m_pInput_Device->Get_Mouse_Button_Press(eMouseID);
+
 }
 
 _long CGameInstance::Get_DIMouseMoveState(CInput_Device::MOUSEMOVESTATE eMouseMoveState)
@@ -230,14 +270,6 @@ _long CGameInstance::Get_DIMouseMoveState(CInput_Device::MOUSEMOVESTATE eMouseMo
 		return 0;
 
 	return m_pInput_Device->Get_DIMouseMoveState(eMouseMoveState);
-}
-
-_byte CGameInstance::Get_DIMouseButtonState(CInput_Device::MOUSEBUTTONSTATE eMouseButtonState)
-{
-	if (nullptr == m_pInput_Device)
-		return 0;
-
-	return m_pInput_Device->Get_DIMouseButtonState(eMouseButtonState);
 }
 
 HRESULT CGameInstance::Render_Camera(CRenderer* renderer)

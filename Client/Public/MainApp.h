@@ -47,7 +47,6 @@ private:
 
 private:
 	_bool	isFin = false;
-	_bool	isSkip = false; 
 	HWND	vid = nullptr;
 
 public:
