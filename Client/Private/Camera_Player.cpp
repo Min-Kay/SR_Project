@@ -160,7 +160,7 @@ HRESULT CCamera_Player::Locked_Turn(_float3& axis, _float fTimeDelta)
     {
         _float3 playerLook = static_cast<CTransform*>(m_pPlayer->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_LOOK);
 
-        if (0 > D3DXVec3Dot(&playerLook, &vLook))
+        if (0 >= D3DXVec3Dot(&playerLook, &vLook))
             return S_OK;
     }
 

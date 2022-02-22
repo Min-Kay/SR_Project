@@ -29,6 +29,9 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(_uint iNumVerticesX, _uint 
 
 	VTXTEX*			pVertices = nullptr;
 
+	m_pVertices = new VTXTEX[m_iNumVertices];
+	ZeroMemory(m_pVertices, sizeof(VTXTEX) * m_iNumVertices);
+
 	m_pVB->Lock(0, 0, (void**)&pVertices, 0);
 
 	for (_uint i = 0; i < m_iNumVerticesZ; ++i)
@@ -39,6 +42,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(_uint iNumVerticesX, _uint 
 
 			pVertices[iIndex].vPosition = _float3(j, 0.0f, i);
 			pVertices[iIndex].vTexUV = _float2((_float)j / (m_iNumVerticesX - 1) * 20.f, (_float)i / (m_iNumVerticesZ - 1) * 20.f);
+			((VTXTEX*)m_pVertices)[iIndex] = pVertices[iIndex];
 		}
 	}
 
@@ -48,6 +52,9 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(_uint iNumVerticesX, _uint 
 	m_eIndexFormat = D3DFMT_INDEX32;
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
+
+	m_pIndices = new FACEINDICES32[m_iNumPrimitive];
+	ZeroMemory(m_pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	FACEINDICES32*		pIndices = nullptr;
 
@@ -79,7 +86,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(_uint iNumVerticesX, _uint 
 			++iNumPrimitive;
 		}
 	}
-
+	memcpy(m_pIndices, pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 	m_pIB->Unlock();
 
 	return S_OK;
@@ -98,7 +105,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar * pHeightMapFi
 	ReadFile(hFile, &fh, sizeof(BITMAPFILEHEADER), &dwByte, nullptr);
 	ReadFile(hFile, &ih, sizeof(BITMAPINFOHEADER), &dwByte, nullptr);
 
-	_ulong*		pPixel = new _ulong[ih.biWidth * ih.biHeight];
+	_ulong* pPixel = new _ulong[ih.biWidth * ih.biHeight];
 	ZeroMemory(pPixel, sizeof(_ulong) * ih.biWidth * ih.biHeight);
 
 	ReadFile(hFile, pPixel, sizeof(_ulong) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
@@ -119,7 +126,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar * pHeightMapFi
 	m_pVertices = new VTXTEX[m_iNumVertices];
 	ZeroMemory(m_pVertices, sizeof(VTXTEX) * m_iNumVertices);
 
-	VTXTEX*			pVertices = nullptr;
+	VTXTEX* pVertices = nullptr;
 
 	m_pVB->Lock(0, 0, (void**)&pVertices, 0);
 
@@ -146,7 +153,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar * pHeightMapFi
 	m_pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(m_pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
-	FACEINDICES32*		pIndices = nullptr;
+	FACEINDICES32* pIndices = nullptr;
 
 	m_pIB->Lock(0, 0, (void**)&pIndices, 0);
 

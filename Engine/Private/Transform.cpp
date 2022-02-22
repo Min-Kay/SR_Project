@@ -170,6 +170,39 @@ void CTransform::Scaled(_float3 vScale)
 	Set_State(CTransform::STATE_LOOK, vLook);
 }
 
+void CTransform::Jump(_float fJumpForce, _float fTimeDelta)
+{
+	m_vJumpPos = Get_State(CTransform::STATE_POSITION);
+	_float3		vUp = Get_State(CTransform::STATE_UP);
+
+	m_vJumpPos += *D3DXVec3Normalize(&vUp, &vUp) * m_TransformDesc.fSpeedPerSec * fTimeDelta * fJumpForce;
+
+	Set_State(CTransform::STATE_POSITION, m_vJumpPos);
+}
+
+void CTransform::Gravity(_float fTimeDelta)
+{
+	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
+	_float3		vUp = Get_State(CTransform::STATE_UP);
+
+	vPosition += *D3DXVec3Normalize(&vUp, &vUp) * m_fGravity * fTimeDelta;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
+_float3 CTransform::Get_JumpPos(_float fTimeDelta)
+{
+	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
+	_float3		vUp = Get_State(CTransform::STATE_UP);
+
+	vPosition += *D3DXVec3Normalize(&vUp, &vUp) * m_fGravity * fTimeDelta;
+
+	vPosition += m_vJumpPos;
+
+	return vPosition;
+}
+
+
 HRESULT CTransform::Bind_OnGraphicDevice()
 {
 	if (nullptr == m_pGraphic_Device)

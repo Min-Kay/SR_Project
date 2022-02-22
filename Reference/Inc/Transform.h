@@ -29,8 +29,11 @@ public:
 
 	_float3 Get_Scale();
 
+	_float4x4 Get_WorldMatrix() const { return m_WorldMatrix; }
+
 	_float4x4 Get_WorldMatrixInverse();
 	
+	_float	Get_Gravity() const { return m_fGravity; }
 
 	void Set_State(STATE eState, const _float3& vState) {
 		memcpy(&m_WorldMatrix.m[eState][0], &vState, sizeof(_float3));
@@ -52,6 +55,11 @@ public:
 	void Turn(_float3 vAxis, _float fTimeDelta);
 	void Rotation(_float3 vAxis, _float fRadian);
 	void Scaled(_float3 vScale);
+
+public:
+	void Jump(_float fJumpForce, _float fTimeDelta);
+	void Gravity(_float fTimeDelta);
+	_float3 Get_JumpPos(_float fTimeDelta);
 	
 
 public:
@@ -60,6 +68,10 @@ public:
 private:
 	_float4x4			m_WorldMatrix;
 	TRANSFORMDESC		m_TransformDesc;
+
+private:
+	_float				m_fGravity;
+	_float3				m_vJumpPos;
 
 public:
 	static CTransform* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

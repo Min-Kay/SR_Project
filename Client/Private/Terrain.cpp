@@ -30,6 +30,7 @@ HRESULT CTerrain::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(-10.f, -10.f, -10.f));
 
 	return S_OK;
 }
@@ -66,7 +67,11 @@ HRESULT CTerrain::Render()
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
+	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
 	m_pVIBufferCom->Render();
+
+	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
 	return S_OK;
 }
@@ -89,7 +94,7 @@ HRESULT CTerrain::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, PROTO_TERRAIN, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */

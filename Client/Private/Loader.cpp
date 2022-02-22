@@ -14,6 +14,7 @@
 #include "UI_BackUI.h"
 #include "Button_Continue.h"
 #include "Button_Exit.h"
+#include "Terrain.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -67,6 +68,13 @@ HRESULT CLoader::Loading_ForGamePlay()
 	/* 원형컴포넌트를 생성한다. */
 #pragma region PROTOTYPE_COMPONENT
 
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, PROTO_TERRAIN, CVIBuffer_Terrain::Create(m_pGraphic_Device, 129, 129))))
+	{
+		MSGBOX("Failed to create terrain in Loader");
+		return E_FAIL;
+	}
+
 	/* For.Prototype_Component_VIBuffer_Portal */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_PORTAL, CVIBuffer_Portal::Create(m_pGraphic_Device))))
 		return E_FAIL;
@@ -79,6 +87,15 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX, g_iWinCY))))
 		return E_FAIL;
 
+
+
+	/* For.Prototype_Component_Texture_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Grass_%d.tga"), 2))))
+	{
+		MSGBOX("Failed to create terrain_texture in Loader");
+		return E_FAIL;
+	}
+
 	/* For.Prototype_Component_Portal_Orange */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Orange"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Portal_Orange.png")/*129, 129*/))))
 		return E_FAIL;
@@ -86,7 +103,6 @@ HRESULT CLoader::Loading_ForGamePlay()
 	/* For.Prototype_Component_Portal_Blue */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Blue"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Portal_Blue.png")/*129, 129*/))))
 		return E_FAIL;
-
 
 	/* For.Prototype_Component_Texture_Default */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Default.jpg")))))
@@ -157,7 +173,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Exit"), CButton_Exit::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CTerrain::Create(m_pGraphic_Device))))
+		return E_FAIL;
 
 #pragma endregion
 

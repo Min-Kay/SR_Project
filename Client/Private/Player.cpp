@@ -69,6 +69,12 @@ _int CPlayer::Tick(_float fTimeDelta)
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
 
+	if (pGameInstance->Get_Key_Down(DIK_SPACE))
+	{
+		m_bJump = true;
+		m_pTransformCom->Jump(m_fJumpForce,fTimeDelta);
+	}
+
 	if (nullptr == m_pPortalCtrl)
 	{
 		if (pGameInstance->Get_Key_Down(DIK_I))
@@ -94,7 +100,7 @@ _int CPlayer::Tick(_float fTimeDelta)
 			m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_BLUE);
 		}
 
-		if (pGameInstance->Get_Key_Up(DIK_SPACE))
+		if (pGameInstance->Get_Key_Up(DIK_C))
 		{
 			m_pPortalCtrl->Erase_Portal(LEVEL_GAMEPLAY);
 		}
@@ -119,8 +125,21 @@ _int CPlayer::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return -1;
 
-	/*if (FAILED(SetUp_OnTerrain()))
-		return -1;*/
+	if (nullptr == m_pTransformCom)
+		return -1;
+
+	m_pTransformCom->Gravity(fTimeDelta);
+
+	if (FAILED(Check_Terrain()))
+		return -1;
+	if (m_bJump == false)
+	{
+		if (FAILED(SetUp_OnTerrain()))
+		{
+			MSGBOX("Failed to Set_OnTerrain in CPlayer");
+			return -1;
+		}
+	}
 
 	if(m_Camera)
 	{
@@ -202,22 +221,51 @@ HRESULT CPlayer::SetUp_Components()
 
 HRESULT CPlayer::SetUp_OnTerrain()
 {
-	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CVIBuffer_Terrain*	pVIBuffer_Terrain = (CVIBuffer_Terrain*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), COM_BUFFER);
+	CVIBuffer_Terrain* pVIBuffer_Terrain = (CVIBuffer_Terrain*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), COM_BUFFER);
 	if (nullptr == pVIBuffer_Terrain)
 		return E_FAIL;
 
 	_float3		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	CTransform* pTerrainTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), COM_TRANSFORM, 0);
+	if (nullptr == pTerrainTransform)
+		return E_FAIL;
 
-	vPosition.y = pVIBuffer_Terrain->Compute_Y(vPosition);
+	_float4x4	WorldMatrixInverse = pTerrainTransform->Get_WorldMatrixInverse();
 
+	_float3		vLocalPos;
+	D3DXVec3TransformCoord(&vLocalPos, &vPosition, &WorldMatrixInverse);
+
+	/* 지형의 로컬스페이스 내에서의 높이를 구했다. */
+	vLocalPos.y = pVIBuffer_Terrain->Compute_Y(vLocalPos);
+
+	/* 월드스페이스 상으로 표현해주기위해, 지형의 월드행렬을 곱해서 표현한다. */
+	D3DXVec3TransformCoord(&vPosition, &vLocalPos, &pTerrainTransform->Get_WorldMatrix());
+	vPosition.y += 0.5f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	return S_OK; 
+	return S_OK;
+}
+
+HRESULT CPlayer::Check_Terrain()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pTerrainTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), COM_TRANSFORM, 0);
+	if (nullptr == pTerrainTransform)
+		return E_FAIL;
+
+	_float3 Terrain_Position = pTerrainTransform->Get_State(CTransform::STATE_POSITION);
+
+	if (Terrain_Position.y >= m_pTransformCom->Get_State(CTransform::STATE_POSITION).y)
+		m_bJump = false;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
 }
 
 HRESULT CPlayer::SetUp_RenderState()

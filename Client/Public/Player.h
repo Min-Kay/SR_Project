@@ -48,6 +48,8 @@ private:
 
 private:
 	_float				m_fFrame = 0.f;
+	_bool				m_bJump = false;
+	_float				m_fJumpForce = 20.f;
 
 private:
 	CPortalControl*		m_pPortalCtrl = nullptr;
@@ -55,6 +57,7 @@ private:
 private:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_OnTerrain();
+	HRESULT Check_Terrain();
 
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();

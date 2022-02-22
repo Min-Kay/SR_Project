@@ -335,12 +335,12 @@ void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 	else
 	{
 		RECT rc;
-		ShowCursor(false);
 		GetWindowRect(_hwnd,&rc);
 		rc.top = rc.top + GetSystemMetrics(SM_CYCAPTION) + 10;
 		rc.left = rc.left + 10;
 		rc.right = rc.right - 10;
 		rc.bottom = rc.bottom - 10;
+		ShowCursor(false);
 		ClipCursor(&rc);
 	}
 	
