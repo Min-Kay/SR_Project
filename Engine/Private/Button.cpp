@@ -22,10 +22,10 @@ HRESULT CButton::NativeConstruct(void* pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
-	m_Rect.left = (_long)m_fX - m_fSizeX * 0.5f;
-	m_Rect.top = (_long)m_fY - m_fSizeY * 0.5f;
-	m_Rect.right = (_long)m_fX + m_fSizeX * 0.5f;
-	m_Rect.bottom = (_long)m_fY + m_fSizeY * 0.5f;
+	m_Rect.left = (_long)(m_fX - m_fSizeX * 0.5f);
+	m_Rect.top = (_long)(m_fY - m_fSizeY * 0.5f);
+	m_Rect.right = (_long)(m_fX + m_fSizeX * 0.5f);
+	m_Rect.bottom = (_long)(m_fY + m_fSizeY * 0.5f);
 }
 
 _int CButton::Tick(_float fTimeDelta)
@@ -97,4 +97,5 @@ _bool CButton::OnEnter()
 void CButton::Free()
 {
 	__super::Free();
+	Safe_Release(m_Parent);
 }

@@ -2,6 +2,7 @@
 #include "Camera_Player.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "UI_BackUI.h"
 
 CCamera_Player::CCamera_Player(LPDIRECT3DDEVICE9 pGraphic_Device)
     :CCamera(pGraphic_Device)
@@ -72,7 +73,15 @@ _int CCamera_Player::Tick(_float fTimeDelta)
         return 0;
 
     CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-    _long		MouseMove = 0;
+
+    if (!m_BackUI)
+    {
+        m_BackUI = static_cast<CUI_BackUI*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("BackUI"), 0));
+        m_BackUI->Off_Menu();
+        m_BackUI->Set_Cam(this);
+    }
+
+	_long		MouseMove = 0;
 
     if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
     {
@@ -83,6 +92,11 @@ _int CCamera_Player::Tick(_float fTimeDelta)
     if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
     {
         Locked_Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+    }
+
+    if (pGameInstance->Get_Key_Down(DIK_ESCAPE))
+    {
+        Control_Menu();
     }
 
     RELEASE_INSTANCE(CGameInstance);
@@ -153,4 +167,24 @@ HRESULT CCamera_Player::Locked_Turn(_float3& axis, _float fTimeDelta)
     m_pTransform->Set_State(CTransform::STATE_UP, vUp);
     m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
     return S_OK;
+}
+
+void CCamera_Player::Control_Menu()
+{
+    CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+    if (isCursorOn)
+    {
+        pGameInstance->SetMouseMode(false, g_hWnd);
+        m_BackUI->Off_Menu();
+        Set_Break(false);
+        isCursorOn = false;
+    }
+    else
+    {
+        pGameInstance->SetMouseMode(true);
+        m_BackUI->Open_Menu();
+        Set_Break(true);
+        isCursorOn = true;
+    }
+    RELEASE_INSTANCE(CGameInstance);
 }

@@ -29,9 +29,6 @@ protected:
 	void OnEnter_Overlay() override;
 	void OnEnter_UnOverlay() override;
 
-private:
-	CUI* m_Parent = nullptr; 
-
 public:
 	static CButton_Continue* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

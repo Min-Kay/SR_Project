@@ -117,5 +117,4 @@ CGameObject* CButton_Continue::Clone(void* pArg)
 void CButton_Continue::Free()
 {
 	__super::Free();
-	Safe_Release(m_Parent);
 }

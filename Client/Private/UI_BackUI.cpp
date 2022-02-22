@@ -2,6 +2,7 @@
 #include "UI_BackUI.h"
 #include "Button.h"
 #include "GameInstance.h"
+#include "Camera_Player.h"
 
 CUI_BackUI::CUI_BackUI(LPDIRECT3DDEVICE9 pGraphic_Device)
 	:CUI(pGraphic_Device)
@@ -35,7 +36,7 @@ HRESULT CUI_BackUI::NativeConstruct(void* pArg)
 		desc3.WinCX = g_iWinCX;
 		desc3.WinCY = g_iWinCY;
 		desc3.PosX = g_iWinCX * 0.8f;
-		desc3.PosY = g_iWinCY * 0.8f;
+		desc3.PosY = g_iWinCY * 0.6f;
 		desc3.SizeX = 300;
 		desc3.SizeY = 100;
 		desc3.Alpha = ALPHA_BLEND;
@@ -47,26 +48,32 @@ HRESULT CUI_BackUI::NativeConstruct(void* pArg)
 
 		m_Continue = static_cast<CButton*>(p_instance->Get_GameObject(LEVEL_STATIC, TEXT("Continue"), 0));
 	}
-	
+	m_Continue->Set_HWND(g_hWnd);
+	m_Continue->Set_ParentUI(this);
+
 
 	m_Exit = static_cast<CButton*>(p_instance->Get_GameObject(LEVEL_STATIC, TEXT("Exit"), 0));
 
 	if (nullptr == p_instance->Get_GameObject(LEVEL_STATIC, TEXT("Exit"), 0))
 	{
 		UIDESC desc4;
+		desc4.WinCX = g_iWinCX;
+		desc4.WinCY = g_iWinCY;
 		desc4.PosX = g_iWinCX * 0.8f;
-		desc4.PosY = g_iWinCY * 0.9f;
+		desc4.PosY = g_iWinCY * 0.8f;
 		desc4.SizeX = 300;
 		desc4.SizeY = 100;
 		desc4.Alpha = ALPHA_BLEND;
 		desc4.FrameCount = 2;
 		desc4.Texture = TEXT("Prototype_Component_Texture_Exit");
 
-		if (FAILED(p_instance->Add_GameObject(LEVEL_STATIC, TEXT("Exit"), PROTO_BUTTON, &desc4)))
+		if (FAILED(p_instance->Add_GameObject(LEVEL_STATIC, TEXT("Exit"), TEXT("Prototype_GameObject_Exit"), &desc4)))
 			return E_FAIL;
 
 		m_Exit = static_cast<CButton*>(p_instance->Get_GameObject(LEVEL_STATIC, TEXT("Exit"), 0));
 	}
+	m_Exit->Set_HWND(g_hWnd);
+	m_Exit->Set_ParentUI(this);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -109,6 +116,19 @@ void CUI_BackUI::Open_Menu()
 
 }
 
+void CUI_BackUI::Off_Menu()
+{
+	__super::Set_Vaild(false);
+	m_Exit->Set_Vaild(false);
+	m_Continue->Set_Vaild(false);
+}
+
+void CUI_BackUI::Set_Cam(CCamera_Player* _cam)
+{
+	cam = _cam;
+	Safe_AddRef(cam);
+}
+
 HRESULT CUI_BackUI::Tick_UI(_float fTimeDelta)
 {
 	return CUI::Tick_UI(fTimeDelta);
@@ -146,13 +166,12 @@ CGameObject* CUI_BackUI::Clone(void* pArg)
 void CUI_BackUI::Free()
 {
 	__super::Free();
+	Safe_Release(cam);
 }
 
 void CUI_BackUI::Continue_Game()
 {
-	__super::Set_Vaild(false);
-	m_Continue->Set_Vaild(false);
-	m_Exit->Set_Vaild(false);
+	cam->Control_Menu();
 }
 
 void CUI_BackUI::Exit_Game()

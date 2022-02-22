@@ -12,6 +12,8 @@
 #include "Camera_Player.h"
 #include "PortalControl.h"
 #include "UI_BackUI.h"
+#include "Button_Continue.h"
+#include "Button_Exit.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -143,8 +145,16 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_BackGround */
+	/* For.Prototype_GameObject_BackUI */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackUI"), CUI_BackUI::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_BackUI */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Continue"), CButton_Continue::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_BackUI */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Exit"), CButton_Exit::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	

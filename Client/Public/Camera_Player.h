@@ -3,7 +3,7 @@
 #include "Camera.h"
 BEGIN(Client)
 class CPlayer;
-
+class CUI_BackUI;
 class CCamera_Player :
 	public CCamera
 {
@@ -30,9 +30,14 @@ public:
 public:
 	void Set_Break(_bool _bool) { m_Break = _bool; }
 
+public:
+	void Control_Menu();
+
 private:
 	CPlayer* m_pPlayer = nullptr;
 	_bool	m_Break = false;
+	CUI_BackUI* m_BackUI = nullptr;
+	_bool isCursorOn = false;
 
 public:
 	static CCamera_Player* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

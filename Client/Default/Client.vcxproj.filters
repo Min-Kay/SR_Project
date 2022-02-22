@@ -150,11 +150,11 @@
     <ClInclude Include="..\Public\Button_Continue.h">
       <Filter>02.GameObjects\UI\Button\Continue</Filter>
     </ClInclude>
-    <ClInclude Include="Button_Exit.h">
-      <Filter>02.GameObjects\UI\Button\Exit</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_BackUI.h">
       <Filter>02.GameObjects\UI\BackUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Button_Exit.h">
+      <Filter>02.GameObjects\UI\Button\Exit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,11 +215,11 @@
     <ClCompile Include="..\Private\Button_Continue.cpp">
       <Filter>02.GameObjects\UI\Button\Continue</Filter>
     </ClCompile>
-    <ClCompile Include="Button_Exit.cpp">
-      <Filter>02.GameObjects\UI\Button\Exit</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UI_BackUI.cpp">
       <Filter>02.GameObjects\UI\BackUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Button_Exit.cpp">
+      <Filter>02.GameObjects\UI\Button\Exit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

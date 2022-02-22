@@ -7,7 +7,7 @@ class CButton;
 END
 
 BEGIN(Client)
-
+class CCamera_Player;
 class CUI_BackUI :
     public CUI
 {
@@ -21,17 +21,25 @@ public:
 	_int Tick(_float fTimeDelta) override;
 	_int LateTick(_float fTimeDelta) override;
 	HRESULT Render() override;
+
 protected:
 	HRESULT SetUp_Components(const _tchar* _texture) override;
 
 public:
 	void Open_Menu();
+	void Off_Menu();
 	void Continue_Game();
 	void Exit_Game();
 
 private:
 	CButton* m_Continue = nullptr;
 	CButton* m_Exit = nullptr;
+
+private:
+	CCamera_Player* cam = nullptr;
+
+public:
+	void Set_Cam(CCamera_Player* _cam);
 
 public:
 	HRESULT Tick_UI(_float fTimeDelta) override;

@@ -100,7 +100,8 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	CUI::UIDESC desc;
 	ZeroMemory(&desc,sizeof(CUI::UIDESC));
-
+	desc.WinCX = g_iWinCX;
+	desc.WinCY = g_iWinCY;
 	desc.PosX = g_iWinCX * 0.5f;
 	desc.PosY = g_iWinCY * 0.5f;
 	desc.SizeX = g_iWinCX;
@@ -114,7 +115,8 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	CUI::UIDESC desc2;
 	ZeroMemory(&desc2, sizeof(desc2));
-
+	desc2.WinCX = g_iWinCX;
+	desc2.WinCY = g_iWinCY;
 	desc2.Alpha = CUI::ALPHA_BLEND;
 	desc2.PosX = g_iWinCX * 0.5f;
 	desc2.PosY = g_iWinCY * 0.8f;

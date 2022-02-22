@@ -27,11 +27,12 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -136,6 +137,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 
 	Engine::CUI::UIDESC desc;
+	ZeroMemory(&desc,sizeof(desc));
 	desc.WinCX = g_iWinCX;
 	desc.WinCY = g_iWinCY;
 	desc.PosX = g_iWinCX * 0.5f;
@@ -152,6 +154,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 
 	Engine::CUI::UIDESC desc2;
+	ZeroMemory(&desc, sizeof(desc2));
 	desc2.WinCX = g_iWinCX;
 	desc2.WinCY = g_iWinCY;
 	desc2.PosX = g_iWinCX * 0.5f;
