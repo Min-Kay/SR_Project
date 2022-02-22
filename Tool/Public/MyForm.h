@@ -4,7 +4,6 @@
 #include "UnitTool.h"
 #include "MapTool.h"
 #include "MySheet.h"
-#include "PathFind.h"
 
 // CMyForm 폼 뷰입니다.
 
@@ -32,7 +31,6 @@ public:
 	CUnitTool	m_UnitTool;
 	CMapTool	m_MapTool;
 	CMySheet	m_PopUp;
-	CPathFind	m_PathFind;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

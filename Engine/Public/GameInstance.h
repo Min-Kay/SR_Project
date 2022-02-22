@@ -79,7 +79,7 @@ private:
 	CComponent_Manager*		m_pComponent_Manager = nullptr;
 	CInput_Device*			m_pInput_Device = nullptr;
 	CCamera_Manager*		m_pCamera_Manager = nullptr;
-	CPicking* m_pPicking = nullptr;
+	CPicking*				m_pPicking = nullptr;
 
 public:
 	static void Release_Engine();

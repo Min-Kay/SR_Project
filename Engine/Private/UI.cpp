@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "UI.h"
 #include "GameInstance.h"
 
@@ -44,13 +43,16 @@ HRESULT CUI::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components(desc.Texture)))
 		return E_FAIL;	
 	
-	Set_UI(m_fX, m_fY, m_fSizeX, m_fSizeY);
+	Set_UI(desc.WinCX, desc.WinCY, m_fX, m_fY, m_fSizeX, m_fSizeY);
 	
 	return S_OK;
 }
 
 _int CUI::Tick(_float fTimeDelta)
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
@@ -61,6 +63,9 @@ _int CUI::Tick(_float fTimeDelta)
 
 _int CUI::LateTick(_float fTimeDelta)
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
@@ -74,6 +79,9 @@ _int CUI::LateTick(_float fTimeDelta)
 
 HRESULT CUI::Render()
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
@@ -93,19 +101,19 @@ HRESULT CUI::SetUp_Components(const _tchar* _texture)
 	TransformDesc.fSpeedPerSec = 5.f;
 	TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransformCom, &TransformDesc)))
+	if (FAILED(__super::Add_Component(0, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
 	/* For.Com_Renderer */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RENDERER, COM_RENDERER, (CComponent**)&m_pRendererCom)))
+	if (FAILED(__super::Add_Component(0, PROTO_RENDERER, COM_RENDERER, (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Component(0, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, _texture,COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Component(0, _texture,COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -121,9 +129,9 @@ HRESULT CUI::Set_CurrFrameIndex(_uint iIndex)
 	return S_OK;
 }
 
-HRESULT CUI::Set_UI(_float x, _float y, _float sizeX, _float sizeY)
+HRESULT CUI::Set_UI(_uint iWinCX, _uint iWinCY, _float x, _float y, _float sizeX, _float sizeY)
 {
-	D3DXMatrixOrthoLH(&m_ProjMatrix, g_iWinCX, g_iWinCY, 0.0f, 1.f);
+	D3DXMatrixOrthoLH(&m_ProjMatrix, iWinCX, iWinCY, 0.0f, 1.f);
 
 	m_fSizeX = sizeX;
 	m_fSizeY = sizeY;
@@ -132,7 +140,7 @@ HRESULT CUI::Set_UI(_float x, _float y, _float sizeX, _float sizeY)
 	m_fY = y;
 
 	m_pTransformCom->Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_fX - g_iWinCX * 0.5f, -m_fY + g_iWinCY * 0.5f, 0.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_fX - iWinCX * 0.5f, -m_fY + iWinCY * 0.5f, 0.f));
 
 	return S_OK;
 }
@@ -220,6 +228,16 @@ HRESULT CUI::Set_RenderState()
 	}
 
 	return S_OK;
+}
+
+void CUI::Set_Vaild(_bool _bool)
+{
+	m_Vaild = _bool;
+}
+
+const _bool CUI::Get_Vaild() const
+{
+	return m_Vaild;
 }
 
 void CUI::Set_AlphaTest(D3DCMPFUNC _func, _uint ref)

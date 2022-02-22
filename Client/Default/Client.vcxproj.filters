@@ -55,9 +55,6 @@
     <Filter Include="02.GameObjects\Sky">
       <UniqueIdentifier>{213568ae-1777-46ee-a9c4-45d1e40a51e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\UI">
-      <UniqueIdentifier>{6e31ccb4-e96c-406a-9af9-fc7d913d2cd3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Camera\Cam_St">
       <UniqueIdentifier>{fe3e3377-5199-4bd4-89e5-52eb3a7916fd}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,21 @@
     </Filter>
     <Filter Include="02.GameObjects\Camera\Cam_Player">
       <UniqueIdentifier>{ca01fc62-bf22-4e4b-a539-f292101c1377}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI">
+      <UniqueIdentifier>{ff6815c8-8c03-4054-bf0e-d98228edcc3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\Button">
+      <UniqueIdentifier>{0ce8aafa-6865-43ea-bb90-ff10ce580947}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\Button\Continue">
+      <UniqueIdentifier>{2f8786ee-1d42-469f-9f09-1da82633be62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\Button\Exit">
+      <UniqueIdentifier>{29ef61f1-3154-42f1-b39a-7fe4b1035eb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\BackUI">
+      <UniqueIdentifier>{af5a82ac-7c7e-4ec4-99ad-f092f47bf8ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +138,6 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\Sky</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI.h">
-      <Filter>02.GameObjects\UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Camera_Static.h">
       <Filter>02.GameObjects\Camera\Cam_St</Filter>
     </ClInclude>
@@ -137,6 +146,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Camera_Player.h">
       <Filter>02.GameObjects\Camera\Cam_Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Button_Continue.h">
+      <Filter>02.GameObjects\UI\Button\Continue</Filter>
+    </ClInclude>
+    <ClInclude Include="Button_Exit.h">
+      <Filter>02.GameObjects\UI\Button\Exit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BackUI.h">
+      <Filter>02.GameObjects\UI\BackUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,9 +203,6 @@
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObjects\Sky</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI.cpp">
-      <Filter>02.GameObjects\UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Camera_Static.cpp">
       <Filter>02.GameObjects\Camera\Cam_St</Filter>
     </ClCompile>
@@ -196,6 +211,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Player.cpp">
       <Filter>02.GameObjects\Camera\Cam_Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Button_Continue.cpp">
+      <Filter>02.GameObjects\UI\Button\Continue</Filter>
+    </ClCompile>
+    <ClCompile Include="Button_Exit.cpp">
+      <Filter>02.GameObjects\UI\Button\Exit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BackUI.cpp">
+      <Filter>02.GameObjects\UI\BackUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

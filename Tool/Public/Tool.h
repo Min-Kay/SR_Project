@@ -13,12 +13,12 @@
 // CToolApp:
 // 이 클래스의 구현에 대해서는 Tool.cpp을 참조하십시오.
 //
-
+class CToolView;
 class CToolApp : public CWinAppEx
 {
 public:
 	CToolApp();
-
+	CToolView* pToolView;
 
 // 재정의입니다.
 public:
@@ -28,6 +28,7 @@ public:
 // 구현입니다.
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
+	virtual BOOL OnIdle(LONG lCount);
 };
 
 extern CToolApp theApp;

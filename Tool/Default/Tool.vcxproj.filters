@@ -37,12 +37,6 @@
     <Filter Include="00. Special\01. View\00. MyForm\01. MapTool">
       <UniqueIdentifier>{55151d52-ea5b-49f1-a12e-5a5d03e3063e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Etc">
-      <UniqueIdentifier>{90697169-e63a-4408-af4a-8b44b0743268}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Etc\00. FileInfo">
-      <UniqueIdentifier>{ec48caa4-a157-4b0a-a84f-379add35a130}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. Special\01. View\00. MyForm\02. PopUpWnd">
       <UniqueIdentifier>{ea971879-6799-40ca-b3d6-71a0aa9e92ce}</UniqueIdentifier>
     </Filter>
@@ -55,14 +49,8 @@
     <Filter Include="00. Special\01. View\00. MyForm\02. PopUpWnd\00. Sheet\01. MyPage2">
       <UniqueIdentifier>{faf693b5-77f2-4be9-bd93-bb4423ed1914}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. Special\01. View\00. MyForm\03. PathFind">
-      <UniqueIdentifier>{099e32db-2a44-4167-8120-80f8b66a3666}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Include">
       <UniqueIdentifier>{7f2ca14c-fce0-419d-a940-cd4bd31407bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Camera">
-      <UniqueIdentifier>{da3ffab2-2c14-4624-b801-e61aa1126b17}</UniqueIdentifier>
     </Filter>
     <Filter Include="05.Obj">
       <UniqueIdentifier>{fe8892f6-66d9-4ee5-876c-bda74dd86802}</UniqueIdentifier>
@@ -73,8 +61,11 @@
     <Filter Include="05.Obj\01.Cube">
       <UniqueIdentifier>{2b064782-f0f5-4ba4-b842-d3773c641749}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. Special\03.RunTime">
-      <UniqueIdentifier>{12850050-d7ab-4c10-9eb5-6fd7cf90a556}</UniqueIdentifier>
+    <Filter Include="04. Camera">
+      <UniqueIdentifier>{da3ffab2-2c14-4624-b801-e61aa1126b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Obj\02.Terrain">
+      <UniqueIdentifier>{7b2a0d98-8528-4f5d-a0b8-c92277e17124}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -102,17 +93,11 @@
     <ClInclude Include="..\Public\MyForm.h">
       <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PathFind.h">
-      <Filter>00. Special\01. View\00. MyForm\03. PathFind</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ToolView.h">
       <Filter>00. Special\01. View</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolDoc.h">
       <Filter>00. Special\02. Document</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\FileInfo.h">
-      <Filter>03. Etc\00. FileInfo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\resource.h">
       <Filter>헤더 파일</Filter>
@@ -147,8 +132,14 @@
     <ClInclude Include="..\Public\BackGround.h">
       <Filter>05.Obj\00.BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Runtime.h">
-      <Filter>00. Special\03.RunTime</Filter>
+    <ClInclude Include="..\Public\Cube.h">
+      <Filter>05.Obj\01.Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>05.Obj\02.Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -170,17 +161,11 @@
     <ClCompile Include="..\Private\MyForm.cpp">
       <Filter>00. Special\01. View\00. MyForm\02. PopUpWnd</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\PathFind.cpp">
-      <Filter>00. Special\01. View\00. MyForm\03. PathFind</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\ToolView.cpp">
       <Filter>00. Special\01. View</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolDoc.cpp">
       <Filter>00. Special\02. Document</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\FileInfo.cpp">
-      <Filter>03. Etc\00. FileInfo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool.cpp">
       <Filter>소스 파일</Filter>
@@ -200,8 +185,11 @@
     <ClCompile Include="..\Private\BackGround.cpp">
       <Filter>05.Obj\00.BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Runtime.cpp">
-      <Filter>00. Special\03.RunTime</Filter>
+    <ClCompile Include="..\Private\Cube.cpp">
+      <Filter>05.Obj\01.Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>05.Obj\02.Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

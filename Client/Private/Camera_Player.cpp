@@ -66,6 +66,11 @@ _int CCamera_Player::Tick(_float fTimeDelta)
     if (0 > __super::Tick(fTimeDelta))
         return -1;
 
+    __super::Use_Pick(1);
+
+    if (m_Break)
+        return 0;
+
     CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
     _long		MouseMove = 0;
 
@@ -81,7 +86,6 @@ _int CCamera_Player::Tick(_float fTimeDelta)
     }
 
     RELEASE_INSTANCE(CGameInstance);
-    __super::Use_Pick(1);
 
     return _int();
 }

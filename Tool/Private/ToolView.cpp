@@ -17,8 +17,10 @@
 #include "GameInstance.h"
 #include "Renderer.h"
 #include "Camera_Dynamic.h"
-#include "Runtime.h"
 
+#include "BackGround.h"
+#include "Cube.h"
+#include "Terrain.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,9 +37,11 @@ BEGIN_MESSAGE_MAP(CToolView, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
-//	ON_WM_CHAR()
+	//	ON_WM_CHAR()
 	ON_WM_KEYDOWN()
 	ON_WM_KEYUP()
+	ON_WM_ERASEBKGND()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
@@ -54,6 +58,7 @@ CToolView::~CToolView()
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_device);
+
 	CGameInstance::Release_Engine();
 
 
@@ -69,23 +74,17 @@ BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
 
 // CToolView 그리기
 
-void CToolView::OnDraw(CDC* /*pDC*/)
+void CToolView::OnDraw(CDC* pDC)
 {
 	CToolDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-
-	//틱호출
+	/* For.Timer_Default */
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	Tick(1.f);
-//Render
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		pInstance->Render_Camera(m_pRenderer);
-		
-		RELEASE_INSTANCE(CGameInstance);
-
-	
-
+	pInstance->Render_Camera(m_pRenderer);
+	RELEASE_INSTANCE(CGameInstance);
 
 }
 
@@ -94,7 +93,7 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 
 _int CToolView::Tick(_float fTimeDelta)
 {
-	
+
 	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	if (0 > m_pGameInstance->Tick_Tool(fTimeDelta))
 		return -1;
@@ -158,11 +157,9 @@ void CToolView::OnInitialUpdate()
 	//  MM_TEXT: 픽셀 단위로 사이즈를 조정하겠다는 인자값
 	// 2인자 : 사이즈를 표현하는 클래스
 
-	//SetScrollSizes(MM_TEXT, CSize(TILECX * TILEX, (TILECY * TILEY / 2)));
-	//MM_TEXT
+
+	//////////////////////////////////////////////////////기본설정
 	g_hWnd = m_hWnd;
-	m_bReady = true;
-	//HINSTANCE hInst = GetModuleHandle(NULL);
 
 	CGraphic_Device::GRAPHICDESC		GraphicDesc;
 	ZeroMemory(&GraphicDesc, sizeof(CGraphic_Device::GRAPHICDESC));
@@ -171,61 +168,36 @@ void CToolView::OnInitialUpdate()
 	GraphicDesc.iWinCX = g_iWinCX;
 	GraphicDesc.iWinCY = g_iWinCY;
 	GraphicDesc.eScreenMode = CGraphic_Device::TYPE_WINMODE;
-	
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(nullptr, GraphicDesc,2, &m_device)))//g_hInst = nullptr;
+	if (FAILED(m_pGameInstance->Initialize_Engine(nullptr, GraphicDesc, 2, &m_device)))//g_hInst = nullptr;
 	{
 		AfxMessageBox(L"Device Init Failed");
 		return;
 	}
 
-	////Ready_Prototype_GameObject
-	if (FAILED(m_pGameInstance->Add_Prototype(0, TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_device))))
-		return;
-
-	m_device->SetRenderState(D3DRS_LIGHTING,false);
-
-	m_pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera"),CCamera_Dynamic::Create(m_device));
-	m_pGameInstance->Add_Camera_Object(TEXT("Prototype_GameObject_Camera"),TEXT("Camera"));
-
-
-	////Ready_Prototype_Component
-
-
-	if (nullptr == m_pGameInstance)
+	if (FAILED(DefaultSetting()))
 	{
-		AfxMessageBox(L"Device Init Failed");
+		AfxMessageBox(L"DefaultSetting Init Failed");
 		return;
 	}
 
-	/* For.Prototype_Component_Transform */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), CTransform::Create(m_device))))
-		return ;
+	if (FAILED(Ready_Prototype_Component()))
+	{
+		AfxMessageBox(L"Ready_Prototype_Component Init Failed");
+		return;
+	}
 
-	/* For.Prototype_Component_VIBuffer_Rect */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_device))))
-	//	return ;
+	if (FAILED(Ready_Prototype_GameObject()))
+	{
+		AfxMessageBox(L"Ready_Prototype_GameObject Init Failed");
+		return;
+	}
 
-	/* For.Prototype_Component_VIBuffer_Cube */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_device))))
-		return ;
-
-
-	/* For.Prototype_Component_Texture_Default */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/SkyBox/burger%d.dds"),4))))
-		return ;
+	//////////////////////////////////////////////////////
 
 
-	/* For.Prototype_Component_Texture_Default */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_device, g_iWinCX, g_iWinCY))))
-
-	Safe_AddRef(m_pRenderer);
-	//RELEASE_INSTANCE(CGameInstance);
-
-
-		// AfxGetMainWnd : 현재 메인 윈도우를 반환하는 전역 함수
-		// 반환타입이 부모타입이어서 자식 타입으로 형변환 했음
+	// AfxGetMainWnd : 현재 메인 윈도우를 반환하는 전역 함수
+	// 반환타입이 부모타입이어서 자식 타입으로 형변환 했음
 	CMainFrame*	pMainFrm = (CMainFrame*)AfxGetMainWnd();
 
 	RECT	rcWindow{};
@@ -247,62 +219,121 @@ void CToolView::OnInitialUpdate()
 
 	// SetWindowPos : 윈도우 창의 위치 및 크기를 재조정하는 함수
 	// 1인자 : 배치할 윈도우의 z순서에 대한 포인터
-	 //x좌표, y좌표, 가로 크기, 세로 크기
+	//x좌표, y좌표, 가로 크기, 세로 크기
 	// SWP_NOZORDER : 현재 z순서를 유지하겠다는 플래그 값
 	//pMainFrm->SetWindowPos(NULL, 0,0, int(g_iWinCX + fRowFrm), int(g_iWinCY + fColFrm), SWP_NOZORDER);
-	
+
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	
+
 
 	//사본 객체 생성
-	if (FAILED(Ready_Prototype_GameObject()))
-	{
-		AfxMessageBox(L"Ready_Prototype_GameObject create Failed");
-		return;
-
-	}
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 	{
+
+
 		AfxMessageBox(L"Ready_Layer_Camera create Failed");
 		return;
 
 	}
-
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 	{
 		AfxMessageBox(L"Ready_Layer_BackGround create Failed");
 		return;
 	}
-		
-		//Safe_Release(m_device);
+	//if (FAILED(Ready_Layer_Cube(TEXT("Layer_Cube"))))
+	//{
+	//	AfxMessageBox(L"Ready_Layer_Cube create Failed");
+	//	return;
+	//}
+	if (FAILED(Ready_Layer_Terrain(TEXT("Layer_Terrain"))))
+	{
+		AfxMessageBox(L"Ready_Layer_Terrain create Failed");
+		return;
+	}
 
 
 }
 
 
+HRESULT CToolView::DefaultSetting()
+{
+	if (nullptr == m_device)
+		return E_FAIL;
+
+	/* 바인딩되어있는 텍스쳐로부터 픽셀값을 얻어오는 작업을 수행할때에 대한 설정. */
+	m_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	m_device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	m_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+
+	m_device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+	m_device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+
+	/* 그리는 상태를 셋팅한다. */
+	m_device->SetRenderState(D3DRS_LIGHTING, false);
+	//m_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+
+	return S_OK;
+}
+
 HRESULT CToolView::Ready_Prototype_GameObject()
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
 	/* 원본객체 생성 */
 	if (FAILED(pGameInstance->Add_Camera_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_device))))
 		return E_FAIL;
-	/* For.Prototype_GameObject_BackGround */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_device))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cube"), CCube::Create(m_device))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CTerrain::Create(m_device))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
-
 	return S_OK;
 }
 
 HRESULT CToolView::Ready_Prototype_Component()
 {
-	return E_NOTIMPL;
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* For.Prototype_Component_Renderer */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(m_device))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Transform */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), CTransform::Create(m_device))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Rect */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_device))))
+		return E_FAIL;
+	/* For.Prototype_Component_Texture_Default */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_device))))
+		return E_FAIL;
+	/* For.Prototype_Component_Texture_Cube */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_device,16,16 )/*TEXT("../../Resources/Textures/Terrain/Height.bmp")*//*129, 129*/)))
+		return E_FAIL;
+	/* For.Prototype_Component_Texture_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
 }
+
 
 HRESULT CToolView::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
@@ -310,6 +341,34 @@ HRESULT CToolView::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	/* 사본객체를 생성ㅎ나다. */
 	if (FAILED(pGameInstance->Add_GameObject(1, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CToolView::Ready_Layer_Terrain(const _tchar * pLayerTag)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* 사본객체를 생성ㅎ나다. */
+	if (FAILED(pGameInstance->Add_GameObject(1, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CToolView::Ready_Layer_Cube(const _tchar * pLayerTag)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* 사본객체를 생성ㅎ나다. */
+
+	if (FAILED(pGameInstance->Add_GameObject(1, pLayerTag, TEXT("Prototype_GameObject_Cube"))))
 		return E_FAIL;
 
 
@@ -326,8 +385,8 @@ HRESULT CToolView::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERADESC		CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CameraDesc));
 
-	CameraDesc.vEye = _float3(0.f, 0.f, -30.f);
-	CameraDesc.vAt = _float3(0.f, 0.f,0.f);
+	CameraDesc.vEye = _float3(0.f, 30.f, -30.f);
+	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.fFovy = D3DXToRadian(60.0f);
@@ -349,86 +408,28 @@ HRESULT CToolView::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 }
 
-void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+//void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
+//{
+//}
 
-	CView::OnLButtonDown(nFlags, point);
-
-	/*if (GetAsyncKeyState(VK_LBUTTON))
-	{
-		OnDraw(nullptr);
-	}*/
-	Invalidate(FALSE);
-	////Invalidate : 호출 시 윈도우 wm_paint와 wm_erasebkgnd 메세지를 발생시킴
-	//// ondraw 함수를 다시 한 번 호출
-	//// 인자값이 FALSE일때는 wm_paint만 메시지만 발생
-	//// 인자값이 true일때 wm_paint와 wm_erasebkgnd 두 메세지를 동시에 발생
-	//// wm_erasebkgnd 메세지 : 배경을 지우라는 메시지
-	//Invalidate(FALSE);
-
-
-	//CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-	////CMainFrame*	pMain = dynamic_cast<CMainFrame*>(GetParentFrame());
-
-	//CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
-
-	//CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
-
-	//CMapTool*	pMapTool = &pMyForm->m_MapTool;
-
-	//
-	//pMiniView->Invalidate(FALSE);
-}
 
 
 //void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 //{
-//	//// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+//	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 //
 //	CView::OnMouseMove(nFlags, point);
 //
-//	Invalidate(FALSE);
+//	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
 //
+//	CToolView *pView = (CToolView *)pFrame->GetActiveView();
 //
-//	//	Invalidate(FALSE);
-//
-//		//CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-//		//CSubView*	pMiniView = dynamic_cast<CSubView*>(pMain->m_SecondSplitter.GetPane(0, 0));
-//		//CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_SecondSplitter.GetPane(1, 0));
-//		//CMapTool*	pMapTool = &pMyForm->m_MapTool;
-//
-//		//pMiniView->Invalidate(FALSE);
-//	//}
+//	GetCursorPos(&m_MousePos_ToolView);
+//	ScreenToClient(pView->m_hWnd, &m_MousePos_ToolView);
+//	//m_MousePos_ToolView
+//	//Invalidate(false);
 //}
-void CToolView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
-	CView::OnKeyDown(nChar, nRepCnt, nFlags);
-	Invalidate(FALSE);
-//	if (GetKeyState('W') & 0x0800)
-//	{
-//		int a = 10;
-//	}
-
-}
-void CToolView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
-	CView::OnKeyUp(nChar, nRepCnt, nFlags);
-	Invalidate(FALSE);
-}
 
 
 
-BOOL CToolView::OnIdle(LONG lCount)
-{
-	//CWinApp::OnIdle(lCount);
-
-	//AfxGetMainWnd()->Invalidate(false);
-
-	return TRUE;
-}
-
+//

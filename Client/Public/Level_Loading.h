@@ -3,6 +3,10 @@
 #include "Client_Defines.h"
 #include "Level.h"
 
+BEGIN(Engine)
+class CUI;
+END
+
 /* 로더를 개체화하여 보관하낟. */
 
 BEGIN(Client)

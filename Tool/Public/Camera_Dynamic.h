@@ -21,6 +21,9 @@ public:
 	virtual HRESULT BeforeRender();
 	virtual HRESULT AfterRender();
 
+private:
+		POINT m_MousePos;
+		POINT m_HoldMousePos;
 public:
 	static CCamera_Dynamic* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg);

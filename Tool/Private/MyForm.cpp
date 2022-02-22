@@ -109,10 +109,5 @@ void CMyForm::OnProperty()
 
 void CMyForm::OnPathFind()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
-	if (nullptr == m_PathFind.GetSafeHwnd())
-		m_PathFind.Create(IDD_PATHFIND);	// 해당 id 에 맞는 다이얼로그 생성
-
-	m_PathFind.ShowWindow(SW_SHOW);  // 창 모양으로 출력
+	
 }

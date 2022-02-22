@@ -27,13 +27,12 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -41,21 +40,6 @@ _int CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
-
-
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	if (pInstance->Get_Key_Down(DIK_Y))
-	{
-		pInstance->SetMouseMode(false, g_hWnd);
-	}
-
-	if (pInstance->Get_Key_Down(DIK_U))
-	{
-		pInstance->SetMouseMode(true);
-	}
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	return 0;
 }
@@ -65,7 +49,6 @@ _int CLevel_GamePlay::LateTick(_float fTimeDelta)
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
-	
 	return 0;
 }
 
@@ -152,17 +135,33 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 		return E_FAIL;
 
 
-	CUI::UIDESC desc;
+	Engine::CUI::UIDESC desc;
+	desc.WinCX = g_iWinCX;
+	desc.WinCY = g_iWinCY;
 	desc.PosX = g_iWinCX * 0.5f;
 	desc.PosY = g_iWinCY * 0.5f;
 	desc.SizeX = 50.f;
 	desc.SizeY = 50.f;
-	desc.Alpha = CUI::ALPHA_TEST;
+	desc.Alpha = Engine::CUI::ALPHA_TEST;
 	desc.Func = D3DCMP_GREATER;
 	desc.Ref = 70;
 	desc.Texture = TEXT("Prototype_Component_Texture_Crosshair");
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Crosshair"), PROTO_UI,&desc)))
+		return E_FAIL;
+
+
+	Engine::CUI::UIDESC desc2;
+	desc2.WinCX = g_iWinCX;
+	desc2.WinCY = g_iWinCY;
+	desc2.PosX = g_iWinCX * 0.5f;
+	desc2.PosY = g_iWinCY * 0.5f;
+	desc2.SizeX = g_iWinCX;
+	desc2.SizeY = g_iWinCY;
+	desc2.Alpha = Engine::CUI::ALPHA_BLEND;
+	desc2.Texture = TEXT("Prototype_Component_Texture_BackUI");
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("BackUI"), TEXT("Prototype_GameObject_BackUI"), &desc2)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

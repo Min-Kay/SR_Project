@@ -43,12 +43,14 @@ using namespace std;
 #define COM_TRANSFORM TEXT("Com_Transform")
 #define COM_RENDERER TEXT("Com_Renderer")
 #define COM_BUFFER TEXT("Com_VIBuffer")
+#define COM_COLLIDER TEXT("Com_Collider")
 
 #define PROTO_TRANSFORM TEXT("Prototype_Component_Transform")
 #define PROTO_RENDERER TEXT("Prototype_Component_Renderer")
 #define PROTO_RECT TEXT("Prototype_Component_VIBuffer_Rect")
 #define PROTO_PORTAL TEXT("Prototype_Component_VIBuffer_Portal")
 #define PROTO_CUBE TEXT("Prototype_Component_VIBuffer_Cube")
+#define PROTO_COLLIDER TEXT("Prototype_Component_Collider")
 
 
 

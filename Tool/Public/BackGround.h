@@ -8,7 +8,6 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
-class CVIBuffer_Cube;
 END
 
 BEGIN(Tool)
@@ -31,8 +30,8 @@ private:
 	CTexture*			m_pTextureCom = nullptr;
 
 	/* 모델 */
-	//CVIBuffer_Rect*		m_pVIBufferCom = nullptr;
-	CVIBuffer_Cube*		m_pVIBufferCom = nullptr;
+	CVIBuffer_Rect*		m_pVIBufferCom = nullptr;
+
 	/* 상태 (위치, 크기, 회전) */
 	CTransform*			m_pTransformCom = nullptr;
 
@@ -43,6 +42,11 @@ private:
 	HRESULT SetUp_Components();
 
 
+	_float3 m_Rect;
+	_int m_TextNum = 0;
+private:
+	POINT m_MousePos;
+	POINT m_HoldMousePos;
 
 public:
 	static CBackGround* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

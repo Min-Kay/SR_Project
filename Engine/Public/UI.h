@@ -1,6 +1,4 @@
 #pragma once
-
-#include "Client_Defines.h"
 #include "GameObject.h"
 
 BEGIN(Engine)
@@ -8,11 +6,8 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
-END
 
-BEGIN(Client)
-
-class CUI : public CGameObject
+class ENGINE_DLL CUI  : public CGameObject
 {
 protected:
 	explicit CUI(LPDIRECT3DDEVICE9 pGraphic_Device);
@@ -35,6 +30,7 @@ public:
 	}ALPHA;
 
 	typedef struct taguidesc {
+		_uint WinCX, WinCY;
 		_uint Layer;
 		_float PosX, PosY, SizeX, SizeY;
 		_uint FrameCount;
@@ -62,6 +58,7 @@ protected:
 
 protected:
 	_bool				m_wave = false;
+	_bool				m_Vaild = true;
 
 protected:
 	/* 텍스쳐 */
@@ -76,11 +73,11 @@ protected:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
-private:
+protected:
 	virtual HRESULT SetUp_Components(const _tchar* _texture);
 
 public:
-	HRESULT Set_UI(_float x,_float y, _float sizeX, _float sizeY);
+	HRESULT Set_UI(_uint iWinCX, _uint iWinCY, _float x,_float y, _float sizeX, _float sizeY);
 	HRESULT Set_CurrFrameIndex(_uint iIndex);
 	HRESULT Set_Style(STYLE _style);
 	void Set_AlphaTest(D3DCMPFUNC _func, _uint ref = 0);
@@ -88,6 +85,11 @@ public:
 public:
 	virtual HRESULT Tick_UI(_float fTimeDelta);
 	virtual HRESULT Set_RenderState();
+
+public:
+	void Set_Vaild(_bool _bool);
+	const _bool Get_Vaild() const;
+
 protected:
 	HRESULT Bind_UI();
 

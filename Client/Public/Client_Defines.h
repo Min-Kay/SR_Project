@@ -18,6 +18,7 @@ extern HWND		g_hWnd;
 
 
 #define PROTO_UI TEXT("Prototype_GameObject_UI")
+#define PROTO_BUTTON TEXT("Prototype_GameObject_Button")
 
 
 namespace Client {}

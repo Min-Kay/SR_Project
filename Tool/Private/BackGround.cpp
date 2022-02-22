@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\BackGround.h"
 #include "GameInstance.h"
-#include "VIBuffer_Cube.h"
+#include "ToolView.h"
+#include "MainFrm.h"
+#include "MyForm.h"
+
 
 CBackGround::CBackGround(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -31,10 +34,8 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaled(_float3(3.f, 3.f, 3.f));
-//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(rand() % 100 - 50, rand() % 100 - 50, 0.f) );
+	m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 0.f));
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 	return S_OK;
 }
 
@@ -42,37 +43,7 @@ _int CBackGround::Tick(_float fTimeDelta)
 {
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
-	if (GetKeyState('W') & 0x8000)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta*0.1f);
-	}
-	if (GetKeyState('S') & 0x8000)
-	{
-		m_pTransformCom->Go_BackWard(fTimeDelta*0.1f);
-	}
 
-	if (GetKeyState('A') & 0x8000)
-	{
-		m_pTransformCom->Go_Left(fTimeDelta*0.1f);
-	}
-	if (GetKeyState('D') & 0x8000)
-	{
-		m_pTransformCom->Go_Right(fTimeDelta*0.1f);
-	}
-	if (GetKeyState('Q') & 0x8000)
-	{
-		m_pTransformCom->Turn(_float3(0.f,1.f,0.f), fTimeDelta*0.1f);
-	}
-	
-	if (GetKeyState('E') & 0x8000)
-	{
-		m_pTransformCom->Turn(_float3(1.f, 0.f, 0.f), fTimeDelta*0.1f);
-	}
-
-	if (GetKeyState('R') & 0x8000)
-	{
-		m_pTransformCom->Turn(_float3(0.f, 0.f, 1.f), fTimeDelta*0.1f);
-	}
 	return _int();
 }
 
@@ -83,8 +54,26 @@ _int CBackGround::LateTick(_float fTimeDelta)
 
 	if (nullptr == m_pRendererCom)
 		return -1;
-	
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+
+	//메인에서부터 포인터들고오는 과정
+	CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	CMyForm*	pMyForm = dynamic_cast<CMyForm*>(pMain->m_MainSplitter.GetPane(0, 0));
+	CMapTool*	pMapTool = &pMyForm->m_MapTool;
+
+	if (pMapTool->m_bRectText)
+		m_TextNum = pMapTool->m_iDrawID;
+
+
+	if (GetKeyState(VK_MBUTTON) & 0x8000)
+	{
+
+		CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+		CToolView *pView = (CToolView *)pFrame->GetActiveView();
+
+		GetCursorPos(&m_HoldMousePos);
+		ScreenToClient(pView->m_hWnd, &m_HoldMousePos);
+	}
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
 }
@@ -97,12 +86,11 @@ HRESULT CBackGround::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(3)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_TextNum)))
 		return E_FAIL;
-	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 	m_pVIBufferCom->Render();
-	//m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	//m_pVIBufferCom_Cube->Render();
+
 	return S_OK;
 }
 
@@ -123,17 +111,14 @@ HRESULT CBackGround::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	//if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
-	//	return E_FAIL;
-
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
+		return E_FAIL;
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
-	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
-		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -151,7 +136,7 @@ CBackGround * CBackGround::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject * CBackGround::Clone(void* pArg )
+CGameObject * CBackGround::Clone(void* pArg)
 {
 	/* 새로운객체를 복제하여 생성한다. */
 	CBackGround*	pInstance = new CBackGround(*this);
@@ -169,7 +154,7 @@ void CBackGround::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTextureCom); 
+	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);

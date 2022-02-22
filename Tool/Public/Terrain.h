@@ -1,54 +1,57 @@
 #pragma once
 
-#include "Tool_Include.h"
+#include "Tool_Define.h"
 #include "GameObject.h"
 
 BEGIN(Engine)
+class CTexture;
 class CRenderer;
+class CTransform;
+class CVIBuffer_Terrain;
+
 END
 
-class CToolView;
-class CTerrain : public CGameObject
+BEGIN(Tool)
+
+class CTerrain final : public CGameObject
 {
-protected:
-	CTerrain(LPDIRECT3DDEVICE9 pGraphic_Device);
-	CTerrain(const CTerrain& rhs);
+private:
+	explicit CTerrain(LPDIRECT3DDEVICE9 pGraphic_Device);
+	explicit CTerrain(const CTerrain& rhs);
 	virtual ~CTerrain() = default;
-
 public:
-	virtual HRESULT NativeConstruct_Prototype();
-	virtual HRESULT NativeConstruct(void* pArg);
-	virtual _int Tick(_float fTimeDelta);
-	virtual _int LateTick(_float fTimeDelta);
-	virtual HRESULT Render();
-
-public:
-	HRESULT MiniRender();
-
-public:
-	vector<TILE*>&		Get_Tile(void) { return m_vecTile; }
-	void	TileChange(const D3DXVECTOR3& vPos, const int& iTileIdx);
-	void	SetMainView(CToolView* pMainView) { m_pMainView = pMainView;  }
+	virtual HRESULT NativeConstruct_Prototype() override;
+	virtual HRESULT NativeConstruct(void* pArg) override;
+	virtual _int Tick(_float fTimeDelta) override;
+	virtual _int LateTick(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
 
 private:
-	int		GetTileIndex(const D3DXVECTOR3& vPos);
-	// bool	Picking(const D3DXVECTOR3& vPos, const int& iIndex); // 직선의 방정식
-	bool	Picking(const D3DXVECTOR3& vPos, const int& iIndex);
+	/* 텍스쳐 */
+	CTexture*				m_pTextureCom = nullptr;
 
-	void	SetRatio(D3DXMATRIX* pOut, float fRatioX, float fRatioY);
-public:
-	static CTerrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
-	virtual void Free() override;
+	/* 모델 */
+	CVIBuffer_Terrain*		m_pVIBufferCom = nullptr;
 
-private:
-	vector<TILE*>		m_vecTile;
-	CToolView*			m_pMainView = nullptr;
+	/* 상태 (위치, 크기, 회전) */
+	CTransform*			m_pTransformCom = nullptr;
+
+	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
-
 private:
-	// CGameObject을(를) 통해 상속됨
-	virtual CGameObject* Clone(void* pArg) override;
+	HRESULT SetUp_Components();
 
+public:
+	_int m_TextNum = 0;
+	_float3 vOut;
+	_int m_iTest = 1;
+	_float3 Get_vOut() { return vOut; }
+
+public:
+	static CTerrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void Free() override;
 };
 
+END

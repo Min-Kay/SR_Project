@@ -202,11 +202,11 @@
   <ItemGroup>
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
-    <ClInclude Include="..\Public\Runtime.h" />
+    <ClInclude Include="..\Public\Cube.h" />
     <ClInclude Include="..\Public\SubView.h" />
+    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Tool_Define.h" />
     <ClInclude Include="..\Public\Tool_Enum.h" />
-    <ClInclude Include="..\Public\FileInfo.h" />
     <ClInclude Include="..\Public\Tool_Functor.h" />
     <ClInclude Include="..\Public\Tool_Include.h" />
     <ClInclude Include="..\Public\MainFrm.h" />
@@ -215,7 +215,6 @@
     <ClInclude Include="..\Public\MyPage1.h" />
     <ClInclude Include="..\Public\MyPage2.h" />
     <ClInclude Include="..\Public\MySheet.h" />
-    <ClInclude Include="..\Public\PathFind.h" />
     <ClInclude Include="..\Public\resource.h" />
     <ClInclude Include="..\Public\stdafx.h" />
     <ClInclude Include="..\Public\Tool_Struct.h" />
@@ -223,21 +222,21 @@
     <ClInclude Include="..\Public\ToolDoc.h" />
     <ClInclude Include="..\Public\ToolView.h" />
     <ClInclude Include="..\Public\UnitTool.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
-    <ClCompile Include="..\Private\FileInfo.cpp" />
+    <ClCompile Include="..\Private\Cube.cpp" />
     <ClCompile Include="..\Private\MainFrm.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\Private\MyForm.cpp" />
     <ClCompile Include="..\Private\MyPage1.cpp" />
     <ClCompile Include="..\Private\MyPage2.cpp" />
     <ClCompile Include="..\Private\MySheet.cpp" />
-    <ClCompile Include="..\Private\PathFind.cpp" />
-    <ClCompile Include="..\Private\Runtime.cpp" />
     <ClCompile Include="..\Private\stdafx.cpp" />
     <ClCompile Include="..\Private\SubView.cpp" />
+    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Tool.cpp" />
     <ClCompile Include="..\Private\ToolDoc.cpp" />
     <ClCompile Include="..\Private\ToolView.cpp" />

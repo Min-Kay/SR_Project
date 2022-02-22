@@ -36,6 +36,8 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_ListBox);
 	DDX_Control(pDX, IDC_PICTURE, m_Picture);
+	DDX_Control(pDX, IDC_CHECK1, m_TerrainText);
+	DDX_Control(pDX, IDC_CHECK2, m_RectText);
 }
 
 
@@ -43,6 +45,8 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_LBN_SELCHANGE(IDC_LIST1, &CMapTool::OnLbnSelchangeList1)
 	ON_WM_DROPFILES()
 	ON_BN_CLICKED(IDC_BUTTON1, &CMapTool::OnSaveData)
+	ON_BN_CLICKED(IDC_CHECK1, &CMapTool::OnBnClickedCheck1)
+	ON_BN_CLICKED(IDC_CHECK2, &CMapTool::OnBnClickedCheck2)
 END_MESSAGE_MAP()
 
 
@@ -105,34 +109,6 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 
 	TCHAR szFileName[64] = L"";
 
-	for (int i = 0; i < iFileCnt; ++i)
-	{
-		DragQueryFile(hDropInfo, i, szFilePath, MAX_PATH);
-
-		CString		strRelative = CFileInfo::ConvertRelativePath(szFilePath);
-
-		// 경로 중 파일 이름만 추출하는 함수
-		CString		strFileName = PathFindFileName(strRelative);
-
-		lstrcpy(szFileName, strFileName.GetString());
-		// 확장자명을 잘라내는 함수
-		PathRemoveExtension(szFileName);
-
-		// 키값과 일치하는 문자열을 넣어주기 위해 확장자명 까지 잘라낸 파일이름을 다시 strFileName에 저장해주고 있음
-		strFileName = szFileName;
-
-		auto	iter = m_MapPngImage.find(strFileName);
-
-		if (iter == m_MapPngImage.end())
-		{
-			CImage*		pPngImage = new  CImage;
-			pPngImage->Load(strRelative); // 해당 경로 이미지를 로드
-
-			m_MapPngImage.emplace(strFileName, pPngImage);
-			m_ListBox.AddString(strFileName);
-		}			
-		
-	}
 	HorizontalScroll();
 
 
@@ -153,7 +129,7 @@ void CMapTool::HorizontalScroll(void)
 	for (int i = 0; i < m_ListBox.GetCount(); ++i)
 	{
 		m_ListBox.GetText(i, strName);
-		
+
 		// 현재 문자열의 길이를 픽셀단위로 변환
 		size = pDC->GetTextExtent(strName);
 
@@ -203,9 +179,34 @@ void CMapTool::OnSaveData()
 
 		CMainFrame*	pMain = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
 		CToolView*	pToolView = dynamic_cast<CToolView*>(pMain->m_MainSplitter.GetPane(0, 1));
-	
+
 		DWORD	dwByte = 0;
 
 		CloseHandle(hFile);
+	}
+}
+
+
+void CMapTool::OnBnClickedCheck1()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_TerrainText.GetCheck() == BST_CHECKED)
+	{
+		m_RectText.SetCheck(BST_UNCHECKED);
+		m_bTerrainText = true;
+		m_bRectText = false;
+	}
+
+	m_itest = m_itest * 2;
+}
+
+void CMapTool::OnBnClickedCheck2()
+{
+
+	if (m_RectText.GetCheck() == BST_CHECKED)
+	{
+		m_TerrainText.SetCheck(BST_UNCHECKED);
+		m_bTerrainText = false;
+		m_bRectText = true;
 	}
 }

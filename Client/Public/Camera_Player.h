@@ -27,8 +27,12 @@ public:
 public:
 	HRESULT Locked_Turn(_float3& axis, _float fTimeDelta);
 
+public:
+	void Set_Break(_bool _bool) { m_Break = _bool; }
+
 private:
 	CPlayer* m_pPlayer = nullptr;
+	_bool	m_Break = false;
 
 public:
 	static CCamera_Player* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

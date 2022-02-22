@@ -1,10 +1,9 @@
 #include "stdafx.h"
-#include "..\Public\Loader.h"
+#include "Loader.h"
 #include "GameInstance.h"
 
 #include "Player.h"
 #include "Portal.h"
-#include "Terrain.h"
 #include "BackGround.h"
 #include "UI.h"
 #include "Sky.h"
@@ -12,6 +11,7 @@
 #include "Camera_Dynamic.h"
 #include "Camera_Player.h"
 #include "PortalControl.h"
+#include "UI_BackUI.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -100,6 +100,15 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"),4))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BackUI"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Default/BackUI.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Continue"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Text/Continue_%d.png"),2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Exit"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Text/Exit_%d.png"), 2))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma  region PROTOTYPE_GAMEOBJECT
@@ -134,12 +143,15 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackUI"), CUI_BackUI::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	
+
 #pragma endregion
 
 	RELEASE_INSTANCE(CGameInstance);
-
-	for (_uint i = 0; i < 999999999; ++i)
-		int a = 10;
 
 	m_isFinished = true;
 

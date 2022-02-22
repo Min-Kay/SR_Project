@@ -66,6 +66,7 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pCamera_Manager->Tick(fTimeDelta))
 		return -1;
 
+
 	if (0 > m_pObject_Manager->LateTick(fTimeDelta))
 		return -1;	
 

@@ -14,6 +14,7 @@ END
 BEGIN(Client)
 class CCamera_Player;
 class CPortalControl;
+class CUI_BackUI;
 
 class CPlayer final : public CGameObject
 {
@@ -51,6 +52,10 @@ private:
 
 private:
 	CPortalControl*		m_pPortalCtrl = nullptr;
+	CUI_BackUI*				m_BackUI = nullptr;
+
+private:
+	_bool isCursorOn = false;
 
 private:
 	HRESULT SetUp_Components();

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Camera_Player.h"
 #include "PortalControl.h"
+#include "UI_BackUI.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -44,6 +45,13 @@ _int CPlayer::Tick(_float fTimeDelta)
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	if(!m_BackUI)
+	{
+		m_BackUI = static_cast<CUI_BackUI*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("BackUI"), 0));
+		m_BackUI->Set_Vaild(false);
+
+	}
+
 	m_fFrame += 12.0f * fTimeDelta;
 
 	if (m_fFrame >= 12.0f)
@@ -68,6 +76,27 @@ _int CPlayer::Tick(_float fTimeDelta)
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
+
+	if (pGameInstance->Get_Key_Down(DIK_ESCAPE))
+	{
+
+		if(isCursorOn)
+		{
+			pGameInstance->SetMouseMode(false, g_hWnd);
+			m_BackUI->Set_Vaild(false);
+
+			static_cast<CCamera_Player*>(m_Camera)->Set_Break(false);
+			isCursorOn = false;
+		}
+		else
+		{
+			pGameInstance->SetMouseMode(true);
+			m_BackUI->Set_Vaild(true);
+			static_cast<CCamera_Player*>(m_Camera)->Set_Break(true);
+			isCursorOn = true;
+		}
+	}
+
 
 	if (nullptr == m_pPortalCtrl)
 	{
@@ -272,6 +301,8 @@ CGameObject * CPlayer::Clone(void* pArg )
 void CPlayer::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_BackUI);
 
 	Safe_Release(m_pPortalCtrl);
 	Safe_Release(m_pTextureCom); 

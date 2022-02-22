@@ -3,7 +3,12 @@
 #include "Client_Defines.h"
 #include "Level.h"
 
+BEGIN(Engine)
+class CUI;
+END
+
 BEGIN(Client)
+class CUI;
 
 class CLevel_GamePlay final : public CLevel
 {

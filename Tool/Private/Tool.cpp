@@ -184,4 +184,23 @@ void CToolApp::OnAppAbout()
 // CToolApp 메시지 처리기
 
 
+BOOL CToolApp::OnIdle(LONG lCount)
+{
+	CWinAppEx::OnIdle(lCount);
+	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+	CToolView *pView = (CToolView *)pFrame->GetActiveView();
 
+	if (pFrame->IsIconic())
+	{
+		return TRUE;
+	}
+	else
+	{
+		
+		if(nullptr != pView)
+			pView->Invalidate(false);
+		return FALSE;
+	}
+
+	return TRUE;
+}
