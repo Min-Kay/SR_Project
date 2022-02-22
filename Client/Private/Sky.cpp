@@ -40,6 +40,21 @@ _int CSky::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	if(!m_pTarget)
+	{
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		m_pTarget = pInstance->Find_Camera_Object(MAIN_CAM)->Get_CameraTransform();
+		//_float4x4		ViewMatrix;
+		//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+		//D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
+
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, *(_float3*)&ViewMatrix.m[3][0]);
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
+
 	return _int();
 }
 
@@ -48,19 +63,12 @@ _int CSky::LateTick(_float fTimeDelta)
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
+	if(m_pTarget)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTarget->Get_State(CTransform::STATE_POSITION));
+
 	if (nullptr == m_pRendererCom)
 		return -1;
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//_float4x4		ViewMatrix;
-	//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
-	//D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, *(_float3*)&ViewMatrix.m[3][0]);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION,pInstance->Find_Camera_Object(MAIN_CAM)->Get_CameraTransform()->Get_State(CTransform::STATE_POSITION));
-	
-	RELEASE_INSTANCE(CGameInstance);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SKYBOX, this);
 
 	return _int();

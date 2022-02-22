@@ -64,6 +64,22 @@ _int CCamera_Player::Tick(_float fTimeDelta)
     if (0 > __super::Tick(fTimeDelta))
         return -1;
 
+    CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+    _long		MouseMove = 0;
+
+    if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
+    {
+        m_pTransform->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
+    }
+
+    if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
+    {
+        m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+    }
+
+    RELEASE_INSTANCE(CGameInstance);
+    __super::Use_Pick(1);
+
     return _int();
 }
 

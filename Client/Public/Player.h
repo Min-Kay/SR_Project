@@ -8,10 +8,12 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
+class CCamera;
 END
 
 BEGIN(Client)
 class CCamera_Player;
+class CPortalControl;
 
 class CPlayer final : public CGameObject
 {
@@ -27,7 +29,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	HRESULT Set_Cam(CCamera_Player* cam);
+	HRESULT Set_Cam(CCamera* cam);
 
 private:
 	/* 텍스쳐 */
@@ -42,10 +44,13 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
-	CCamera_Player*		m_Camera = nullptr;
+	CCamera*		m_Camera = nullptr;
 
 private:
 	_float			m_fFrame = 0.f;
+
+private:
+	CPortalControl* portalCtl = nullptr;
 
 private:
 	HRESULT SetUp_Components();

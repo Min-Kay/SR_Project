@@ -12,22 +12,19 @@ protected:
 	explicit CCamera_Dynamic(const CCamera_Dynamic& rhs);
 	virtual ~CCamera_Dynamic() = default;
 public:
-	virtual HRESULT NativeConstruct_Prototype();
-	virtual HRESULT NativeConstruct(void* pArg);
-	virtual _int Tick(_float fTimeDelta);
-	virtual _int LateTick(_float fTimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT NativeConstruct_Prototype() override;
+	virtual HRESULT NativeConstruct(void* pArg) override;
+	virtual _int Tick(_float fTimeDelta) override;
+	virtual _int LateTick(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
 
 public:
-	virtual HRESULT BeforeRender();
-	virtual HRESULT AfterRender();
-
-private:
-	CPortalControl* portalCtl = nullptr; 
+	virtual HRESULT BeforeRender() override;
+	virtual HRESULT AfterRender() override;
 
 public:
 	static CCamera_Dynamic* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
-	virtual CGameObject* Clone(void* pArg);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
 

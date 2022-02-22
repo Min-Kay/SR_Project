@@ -16,9 +16,9 @@ protected:
 	virtual ~CFPS() = default;
 
 public:
-	virtual HRESULT NativeConstruct_Prototype();
-	virtual HRESULT NativeConstruct(void* pArg);
-	virtual _int Tick(_float fTimeDelta);
+	HRESULT NativeConstruct_Prototype() override;
+	HRESULT NativeConstruct(void* pArg) override;
+	_int Tick(_float fTimeDelta) override;
 	virtual _int LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
@@ -30,4 +30,5 @@ public:
 private:
     //CCamera* m_pCamera = nullptr;
 };
+
 END

@@ -3,8 +3,6 @@
 #include "GameInstance.h"
 #include "Camera.h"
 #include "Camera_Player.h"
-#include "Cam_Portal.h"
-#include "Portal.h"
 #include "UI.h"
 #include "Player.h"
 
@@ -99,7 +97,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 	CameraDesc.iLevel = LEVEL_GAMEPLAY;
 
-	if (FAILED(pGameInstance->Add_Camera_Object(CAM_DYNAMIC, MAIN_CAM, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_Camera_Object(CAM_PLAYER, MAIN_CAM, &CameraDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -178,7 +176,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
 		return E_FAIL;
 
-	static_cast<CPlayer*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY,pLayerTag,0))->Set_Cam(static_cast<CCamera_Player*>(pGameInstance->Find_Camera_Object(MAIN_CAM)));
+	static_cast<CPlayer*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY,pLayerTag,0))->Set_Cam(pGameInstance->Find_Camera_Object(MAIN_CAM));
 
 	RELEASE_INSTANCE(CGameInstance);
 

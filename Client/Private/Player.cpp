@@ -2,6 +2,7 @@
 #include "..\Public\Player.h"
 #include "GameInstance.h"
 #include "Camera_Player.h"
+#include "PortalControl.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -68,25 +69,43 @@ _int CPlayer::Tick(_float fTimeDelta)
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
 
-	_long		MouseMove = 0;
-
-	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
+	if (nullptr == portalCtl)
 	{
-		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
+		if (pGameInstance->Get_DIKeyState(DIK_I) & 0x80)
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), TEXT("Prototype_GameObject_PortalCtrl"))))
+				return E_FAIL;
+
+			portalCtl = static_cast<CPortalControl*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), 0));
+			portalCtl->Set_Player(m_pTransformCom);
+			Safe_AddRef(portalCtl);
+		}
 	}
 
-	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
+	if (nullptr != portalCtl)
 	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+		if (pGameInstance->Get_DIMouseButtonState(CInput_Device::MBS_LBUTTON) & 0x80)
+		{
+			portalCtl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_ORANGE);
+		}
+
+		if (pGameInstance->Get_DIMouseButtonState(CInput_Device::MBS_RBUTTON) & 0x80)
+		{
+			portalCtl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_BLUE);
+		}
+
+		if (pGameInstance->Get_DIKeyState(DIK_SPACE) & 0x80)
+		{
+			portalCtl->Erase_Portal(LEVEL_GAMEPLAY);
+		}
 	}
 
 
 	if (m_Camera)
 	{
 		m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		//m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 	}
-
+	
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -104,20 +123,22 @@ _int CPlayer::LateTick(_float fTimeDelta)
 	/*if (FAILED(SetUp_OnTerrain()))
 		return -1;*/
 
-
-	if (GetKeyState(VK_RBUTTON) & 0x8000)
+	if(m_Camera)
 	{
-		_float3 pout;
-		if (true == m_pVIBufferCom->Pick(0, m_pTransformCom->Get_WorldMatrixInverse(), &pout))
-		{
-			int a = 0;
-		}
 
-		_float3 pout2;
-		if (true == m_pVIBufferCom->Pick(1, m_pTransformCom->Get_WorldMatrixInverse(), &pout2))
-		{
-			int a = 0;
-		}
+		_float3 vRight, vUp , vLook;
+
+		vRight = m_Camera->Get_CameraTransform()->Get_State(CTransform::STATE_RIGHT);
+		D3DXVec3Normalize(&vRight, &vRight);
+
+		vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+		vLook = *D3DXVec3Cross(&vLook, &vRight, &vUp);
+		D3DXVec3Normalize(&vLook,&vLook);
+		_float3 vScale = m_pTransformCom->Get_Scale();
+
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT,vRight * vScale.x);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
 	}
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -133,7 +154,7 @@ HRESULT CPlayer::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(_uint(m_fFrame))))
 		return E_FAIL;
 
 	if (FAILED(SetUp_RenderState()))
@@ -147,9 +168,10 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Set_Cam(CCamera_Player* cam)
+HRESULT CPlayer::Set_Cam(CCamera* cam)
 {
 	m_Camera = cam;
+	Safe_AddRef(m_Camera);
 	return S_OK;
 }
 
@@ -177,7 +199,6 @@ HRESULT CPlayer::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
-	
 
 	return S_OK;
 }
@@ -263,6 +284,8 @@ void CPlayer::Free()
 {
 	__super::Free();
 
+	Safe_Release(portalCtl);
+	Safe_Release(m_Camera);
 	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

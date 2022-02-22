@@ -43,6 +43,9 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 
 private:
+	CTransform*		m_pTarget = nullptr; 
+
+private:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
