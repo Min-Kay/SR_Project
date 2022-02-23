@@ -117,7 +117,7 @@ _int CCam_Portal::LateTick(_float fTimeDelta)
     }
     else
     {
-        m_pRender->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
+        m_pRender->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
         __super::Set_Vaild(true);
     }
 
@@ -220,7 +220,7 @@ void CCam_Portal::Set_ExitPortal(CPortal* _exit)
       
       D3DXVec3Normalize(&vLook,&vLook);
 
-      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.005f );
+      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.01f );
     }
 }
 

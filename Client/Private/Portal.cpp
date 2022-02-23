@@ -174,7 +174,16 @@ HRESULT CPortal::Render()
     if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
         return E_FAIL;
 
+
+  /* m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
+    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
+
+
     m_pVIBuffer->Render();
+
+
+    //m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
     return S_OK;
 }

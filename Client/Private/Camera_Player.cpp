@@ -69,10 +69,12 @@ _int CCamera_Player::Tick(_float fTimeDelta)
 
     __super::Use_Pick(1);
 
+
     if (m_Break)
         return 0;
 
     CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
 
     if (!m_BackUI)
     {
@@ -94,9 +96,10 @@ _int CCamera_Player::Tick(_float fTimeDelta)
         Locked_Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
     }
 
+
     if (pGameInstance->Get_Key_Down(DIK_ESCAPE))
     {
-        Control_Menu();
+        Control_Menu(!isCursorOn);
     }
 
     RELEASE_INSTANCE(CGameInstance);
@@ -169,10 +172,10 @@ HRESULT CCamera_Player::Locked_Turn(_float3& axis, _float fTimeDelta)
     return S_OK;
 }
 
-void CCamera_Player::Control_Menu()
+void CCamera_Player::Control_Menu(_bool _bool)
 {
     CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-    if (isCursorOn)
+    if (!_bool)
     {
         pGameInstance->SetMouseMode(false, g_hWnd);
         m_BackUI->Off_Menu();

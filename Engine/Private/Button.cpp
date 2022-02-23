@@ -33,6 +33,9 @@ _int CButton::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	if (!m_Vaild)
+		return 0;
+
 	OnClick();
 }
 

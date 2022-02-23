@@ -67,11 +67,11 @@ HRESULT CTerrain::Render()
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	m_pVIBufferCom->Render();
 
-	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
 	return S_OK;
 }

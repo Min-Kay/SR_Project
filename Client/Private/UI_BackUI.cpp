@@ -33,6 +33,9 @@ HRESULT CUI_BackUI::NativeConstruct(void* pArg)
 	if(nullptr == m_Continue)
 	{
 		UIDESC desc3;
+		ZeroMemory(&desc3, sizeof(desc3));
+
+		desc3.Layer = 0;
 		desc3.WinCX = g_iWinCX;
 		desc3.WinCY = g_iWinCY;
 		desc3.PosX = g_iWinCX * 0.8f;
@@ -57,6 +60,8 @@ HRESULT CUI_BackUI::NativeConstruct(void* pArg)
 	if (nullptr == p_instance->Get_GameObject(LEVEL_STATIC, TEXT("Exit"), 0))
 	{
 		UIDESC desc4;
+		ZeroMemory(&desc4,sizeof(desc4));
+		desc4.Layer = 0;
 		desc4.WinCX = g_iWinCX;
 		desc4.WinCY = g_iWinCY;
 		desc4.PosX = g_iWinCX * 0.8f;
@@ -119,8 +124,8 @@ void CUI_BackUI::Open_Menu()
 void CUI_BackUI::Off_Menu()
 {
 	__super::Set_Vaild(false);
-	m_Exit->Set_Vaild(false);
 	m_Continue->Set_Vaild(false);
+	m_Exit->Set_Vaild(false);
 }
 
 void CUI_BackUI::Set_Cam(CCamera_Player* _cam)
@@ -171,7 +176,7 @@ void CUI_BackUI::Free()
 
 void CUI_BackUI::Continue_Game()
 {
-	cam->Control_Menu();
+	cam->Control_Menu(false);
 }
 
 void CUI_BackUI::Exit_Game()

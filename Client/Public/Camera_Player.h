@@ -31,7 +31,7 @@ public:
 	void Set_Break(_bool _bool) { m_Break = _bool; }
 
 public:
-	void Control_Menu();
+	void Control_Menu(_bool _bool);
 
 private:
 	CPlayer* m_pPlayer = nullptr;

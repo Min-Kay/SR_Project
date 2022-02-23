@@ -160,6 +160,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	Engine::CUI::UIDESC desc2;
 	ZeroMemory(&desc, sizeof(desc2));
+	desc2.Layer = 1;
 	desc2.WinCX = g_iWinCX;
 	desc2.WinCY = g_iWinCY;
 	desc2.PosX = g_iWinCX * 0.5f;
