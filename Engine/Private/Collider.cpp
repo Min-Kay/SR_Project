@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 CCollider::CCollider(LPDIRECT3DDEVICE9 pGraphic_Device)
-	:CComponent(m_pGraphic_Device)
+	:CComponent(pGraphic_Device)
 {
 }
 
@@ -52,6 +52,16 @@ const CCollider::COLLTYPE& CCollider::Get_Type() const
 const list<_float3>& CCollider::Get_IndexList() const
 {
 	return m_IndexList;
+}
+
+HRESULT CCollider::Bind_OnCollider()
+{
+	if (nullptr == m_pGraphic_Device)
+		return E_FAIL;
+
+	return m_pGraphic_Device->SetTransform(D3DTS_WORLD, &m_WorldMatrix);
+
+	return E_NOTIMPL;
 }
 
 void CCollider::Free()

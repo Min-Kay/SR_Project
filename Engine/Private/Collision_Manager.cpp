@@ -20,17 +20,7 @@ list<CGameObject*> CCollision_Manager::Collision_Box()
 	return objList;
 }
 
-list<CGameObject*> CCollision_Manager::Collision_Box_Sphere()
-{
-	list<CGameObject*> objList;
-	return objList;
-}
 
-list<CGameObject*> CCollision_Manager::Collision_Sphere()
-{
-	list<CGameObject*> objList;
-	return objList;
-}
 
 HRESULT CCollision_Manager::Add_Collider(COLLIDER _type,CCollider* collider)
 {

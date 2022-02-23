@@ -3,6 +3,7 @@
 
 BEGIN(Engine)
 class CTransform;
+class CUI;
 END
 
 BEGIN(Client)
@@ -34,6 +35,10 @@ private:
 	CTransform* m_pPlayerTransform = nullptr;
 	CPortal* m_pPortal_Orange = nullptr;
 	CPortal* m_pPortal_Blue = nullptr;
+
+	CUI* m_pPortal_Orange_UI = nullptr;
+	CUI* m_pPortal_Blue_UI = nullptr;
+
 
 public:
 	static CPortalControl* Create(LPDIRECT3DDEVICE9 pGraphicDevice);

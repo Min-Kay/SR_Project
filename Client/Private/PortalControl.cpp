@@ -3,6 +3,7 @@
 #include "Portal.h"
 #include "GameInstance.h"
 #include "Cam_Portal.h"
+#include "UI.h"
 
 CPortalControl* CPortalControl::Create(LPDIRECT3DDEVICE9 pGraphicDevice)
 {
@@ -53,6 +54,56 @@ HRESULT CPortalControl::NativeConstruct_Prototype()
 
 HRESULT CPortalControl::NativeConstruct(void* pArg)
 {
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	CUI::UIDESC desc ,desc2;
+	ZeroMemory(&desc,sizeof(desc));
+	ZeroMemory(&desc2, sizeof(desc2));
+	desc.WinCX = g_iWinCX;
+	desc.WinCY = g_iWinCY;
+	desc.Layer = 2;
+	desc.FrameCount = 2;
+	desc.Alpha = CUI::ALPHA_BLEND;
+	desc.PosX = g_iWinCX * 0.495f;
+	desc.PosY = g_iWinCY * 0.47f;
+	desc.SizeX = 70.f;
+	desc.SizeY = 70.f;
+	desc.Style = CUI::STYLE_FIX;
+	desc.Texture = TEXT("Prototype_Component_Texture_Portal_Orange_UI");
+
+
+	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange_UI"), PROTO_UI, &desc)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pPortal_Orange_UI = static_cast<CUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange_UI")));
+
+	desc2.WinCX = g_iWinCX;
+	desc2.WinCY = g_iWinCY;
+
+	desc2.Layer = 2;
+	desc2.FrameCount = 2;
+	desc2.Alpha = CUI::ALPHA_BLEND;
+	desc2.PosX = g_iWinCX * 0.505f;
+	desc2.PosY = g_iWinCY * 0.53f;
+	desc2.SizeX = 70.f;
+	desc2.SizeY = 70.f;
+	desc2.Style = CUI::STYLE_FIX;
+	desc2.Texture = TEXT("Prototype_Component_Texture_Portal_Blue_UI");
+
+
+	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue_UI"), PROTO_UI, &desc2)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pPortal_Blue_UI = static_cast<CUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue_UI")));
+
+	RELEASE_INSTANCE(CGameInstance);
+
     return S_OK;
 }
 
@@ -123,6 +174,8 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 		}
 
 		m_pPortal_Orange = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Orange"), 0));
+
+		m_pPortal_Orange_UI->Set_CurrFrameIndex(1);
 	}
 	else if (iIndex == PORTAL_BLUE)
 	{
@@ -156,6 +209,7 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 		}
 
 		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Blue"), 0));
+		m_pPortal_Blue_UI->Set_CurrFrameIndex(1);
 	}
 	RELEASE_INSTANCE(CGameInstance);
    
@@ -189,6 +243,10 @@ HRESULT CPortalControl::Erase_Portal(_uint iLevelIndex)
 		pGameInstance->Release_GameObject(iLevelIndex, TEXT("Portal_Orange"), m_pPortal_Orange);
 		m_pPortal_Orange = nullptr;
 	}
+
+	m_pPortal_Blue_UI->Set_CurrFrameIndex(0);
+	m_pPortal_Orange_UI->Set_CurrFrameIndex(0);
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
