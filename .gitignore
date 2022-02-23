@@ -32,3 +32,5 @@
 #Ignore Folder
 AutoPCH/
 .vs/
+x86/
+x64/
