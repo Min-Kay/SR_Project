@@ -27,15 +27,15 @@ HRESULT CEffect::SetUp_Components()
     TransformDesc.fSpeedPerSec = 5.f;
     TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
-    if (FAILED(__super::Add_Component(0, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
+    if (FAILED(__super::Add_Component(0, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransformCom, &TransformDesc)))
         return E_FAIL;
 
     /* For.Com_Renderer */
-    if (FAILED(__super::Add_Component(0, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
+    if (FAILED(__super::Add_Component(0, PROTO_RENDERER,COM_RENDERER, (CComponent**)&m_pRendererCom)))
         return E_FAIL;
 
     /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(0, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
+    if (FAILED(__super::Add_Component(0, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
         return E_FAIL;
 
     return S_OK;
@@ -53,6 +53,28 @@ HRESULT CEffect::Release_RenderState()
 {
     if (nullptr == m_pGraphic_Device)
         return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CEffect::Set_Texture(const _tchar* _tag)
+{
+    /* For.Com_VIBuffer */
+    if (FAILED(__super::Add_Component(0, _tag, COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+        return E_FAIL;
+    return S_OK;
+}
+
+HRESULT CEffect::FaceOn_Camera(_bool fixY)
+{
+    _float4x4		ViewMatrix;
+    m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+    D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
+
+    m_pTransformCom->Set_State(CTransform::STATE_RIGHT, (*(_float3*)&ViewMatrix.m[0][0]) * m_pTransformCom->Get_Scale().x);
+    if(!fixY)
+		m_pTransformCom->Set_State(CTransform::STATE_UP, (*(_float3*)&ViewMatrix.m[1][0]) * m_pTransformCom->Get_Scale().y);
+    m_pTransformCom->Set_State(CTransform::STATE_LOOK, (*(_float3*)&ViewMatrix.m[2][0]) * m_pTransformCom->Get_Scale().z);
 
     return S_OK;
 }
@@ -136,8 +158,17 @@ HRESULT CEffect::Render()
     if (nullptr == m_pVIBufferCom)
         return E_FAIL;
 
+    SetUp_RenderState();
+
     if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
         return E_FAIL;
+
+    if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
+        return E_FAIL;
+
+    m_pVIBufferCom->Render();
+
+    Release_RenderState();
 
 
     return S_OK;

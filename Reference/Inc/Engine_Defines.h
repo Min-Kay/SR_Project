@@ -39,6 +39,11 @@ using namespace std;
 #include "Engine_Struct.h"
 
 
+#include <io.h>
+#include "../../fmod/64/inc/fmod.h"
+#pragma comment(lib, "../../fmod/64/fmod_vc.lib")
+
+
 #define COM_TEXTURE TEXT("Com_Texture")
 #define COM_TRANSFORM TEXT("Com_Transform")
 #define COM_RENDERER TEXT("Com_Renderer")

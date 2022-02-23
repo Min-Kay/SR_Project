@@ -231,6 +231,9 @@
     <ClInclude Include="..\Public\Button.h">
       <Filter>01.Utility\03.GameObject\UI\Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SoundMgr.h">
+      <Filter>00.System\00.Devices\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -331,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Button.cpp">
       <Filter>01.Utility\03.GameObject\UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoundMgr.cpp">
+      <Filter>00.System\00.Devices\Sound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

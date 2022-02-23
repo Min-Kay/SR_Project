@@ -36,6 +36,13 @@ _int CLevel_Logo::Tick(_float fTimeDelta)
 		return -1;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (pInstance->Get_Key_Down(DIK_ESCAPE))
+	{
+		pInstance->PlayBGM(TEXT("Girl.mp3"));
+	}
+
+
 	if (pInstance->Get_Key_Down(DIK_RETURN))
 	{
 		if (FAILED(pInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_GAMEPLAY))))
@@ -148,6 +155,4 @@ CLevel_Logo * CLevel_Logo::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 void CLevel_Logo::Free()
 {
 	__super::Free();
-	//Safe_Release(m_pLoader);
-
 }

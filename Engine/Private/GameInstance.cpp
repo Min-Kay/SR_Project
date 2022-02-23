@@ -10,6 +10,8 @@ CGameInstance::CGameInstance()
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pCamera_Manager(CCamera_Manager::GetInstance())
 	, m_pPicking(CPicking::GetInstance())
+	, m_Sound_Manager(CSoundMgr::GetInstance())
+
 {
 	Safe_AddRef(m_pPicking);
 	Safe_AddRef(m_pComponent_Manager);
@@ -19,6 +21,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pCamera_Manager);
+	Safe_AddRef(m_Sound_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Device::GRAPHICDESC & GraphicDesc, _uint iNumLevels, LPDIRECT3DDEVICE9* ppOut)
@@ -43,6 +46,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Dev
 		return E_FAIL;
 
 	if (FAILED(m_pPicking->NativeConstruct(*ppOut, GraphicDesc.hWnd)))
+		return E_FAIL;
+
+	if (FAILED(m_Sound_Manager->NativeConstruct()))
 		return E_FAIL;
 
 	return S_OK;
@@ -325,6 +331,78 @@ CCamera* CGameInstance::Find_Camera_Object(const _tchar* _ObjTag)
 	return m_pCamera_Manager->Find_Camera_Object(_ObjTag);
 }
 
+int CGameInstance::VolumeUp(CSoundMgr::CHANNELID eID, _float _vol)
+{
+	if (nullptr == m_Sound_Manager)
+		return 0;
+
+	return m_Sound_Manager->VolumeUp(eID,_vol);
+}
+
+int CGameInstance::VolumeDown(CSoundMgr::CHANNELID eID, _float _vol)
+{
+	if (nullptr == m_Sound_Manager)
+		return 0;
+
+	return m_Sound_Manager->VolumeDown(eID, _vol);
+}
+
+int CGameInstance::BGMVolumeUp(_float _vol)
+{
+	if (nullptr == m_Sound_Manager)
+		return 0;
+
+	return m_Sound_Manager->BGMVolumeUp(_vol);
+}
+
+int CGameInstance::BGMVolumeDown(_float _vol)
+{
+	if (nullptr == m_Sound_Manager)
+		return 0;
+
+	return m_Sound_Manager->BGMVolumeDown(_vol);
+}
+
+int CGameInstance::Pause(CSoundMgr::CHANNELID eID)
+{
+	if (nullptr == m_Sound_Manager)
+		return 0;
+
+	return m_Sound_Manager->Pause(eID);
+}
+
+void CGameInstance::PlaySoundW(TCHAR* pSoundKey, CSoundMgr::CHANNELID eID, _float _vol)
+{
+	if (nullptr == m_Sound_Manager)
+		return;
+
+	return m_Sound_Manager->PlaySoundW(pSoundKey,eID,_vol);
+}
+
+void CGameInstance::PlayBGM(TCHAR* pSoundKey)
+{
+	if (nullptr == m_Sound_Manager)
+		return;
+
+	return m_Sound_Manager->PlayBGM(pSoundKey);
+}
+
+void CGameInstance::StopSound(CSoundMgr::CHANNELID eID)
+{
+	if (nullptr == m_Sound_Manager)
+		return;
+
+	return m_Sound_Manager->StopSound(eID);
+}
+
+void CGameInstance::StopAll()
+{
+	if (nullptr == m_Sound_Manager)
+		return;
+
+	return m_Sound_Manager->StopAll();
+}
+
 void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 {
 	if (setting == true)
@@ -349,6 +427,8 @@ void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 
 void CGameInstance::Release_Engine()
 {
+	if (0 != CSoundMgr::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Delete CGraphic_Device ");
 
 	if (0 != CGameInstance::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CGameInstance ");
@@ -382,6 +462,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_Sound_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
@@ -390,4 +471,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pTimer_Manager);
+
 }

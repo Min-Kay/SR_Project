@@ -8,6 +8,9 @@ enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_BOSS
 extern HINSTANCE	g_hInst;
 extern HWND		g_hWnd;
 
+//#include <io.h>
+//#include "../../fmod/64/inc/fmod.h"
+//#pragma comment(lib, "../../fmod/64/fmod_vc.lib")
 
 #define MAIN_CAM TEXT("Main_Camera")
 

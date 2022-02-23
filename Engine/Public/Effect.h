@@ -37,10 +37,16 @@ private:
 private:
 	_float				m_fFrame = 0.f;
 
-private:
+protected:
 	virtual HRESULT SetUp_Components();
 	virtual HRESULT SetUp_RenderState();
 	virtual HRESULT Release_RenderState();
+
+public:
+	HRESULT Set_Texture(const _tchar* _tag);
+
+protected:
+	virtual HRESULT FaceOn_Camera(_bool fixY);
 
 public:
 	static CEffect* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

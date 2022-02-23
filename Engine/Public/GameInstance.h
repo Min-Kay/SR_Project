@@ -8,6 +8,7 @@
 #include "Component_Manager.h"
 #include "Camera_Manager.h"
 #include "Picking.h"
+#include "SoundMgr.h"
 
 /* 엔진내에 모든(클라이언트에 보여주기위한) 매니져 클래스를 보관한다. */
 
@@ -68,6 +69,18 @@ public: /* For.Camera_Manager*/
 	HRESULT Release_Camera(const _tchar * _tag);
 	CCamera* Find_Camera_Object(const _tchar* _ObjTag);
 
+	/*For. Sound Manager*/
+public:
+	int  VolumeUp(CSoundMgr::CHANNELID eID, _float _vol);
+	int  VolumeDown(CSoundMgr::CHANNELID eID, _float _vol);
+	int  BGMVolumeUp(_float _vol);
+	int  BGMVolumeDown(_float _vol);
+	int  Pause(CSoundMgr::CHANNELID eID);
+	void PlaySound(TCHAR * pSoundKey, CSoundMgr::CHANNELID eID, _float _vol);
+	void PlayBGM(TCHAR * pSoundKey);
+	void StopSound(CSoundMgr::CHANNELID eID);
+	void StopAll();
+
 public: // 마우스 커서 설정
 	void SetMouseMode(_bool setting, HWND _hwnd = nullptr);
 
@@ -80,7 +93,7 @@ private:
 	CInput_Device*			m_pInput_Device = nullptr;
 	CCamera_Manager*		m_pCamera_Manager = nullptr;
 	CPicking*				m_pPicking = nullptr;
-
+	CSoundMgr*				m_Sound_Manager = nullptr;
 public:
 	static void Release_Engine();
 	virtual void Free() override;
