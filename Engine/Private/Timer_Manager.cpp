@@ -32,20 +32,8 @@ HRESULT CTimer_Manager::Add_Timer(const _tchar * pTimerTag)
 	return S_OK;
 }
 
-//bool Function(CTimer_Manager::TIMERS::value_type Pair)
-//{
-//	if (Pair.first, )
-//		return true;
-//
-//	return false;
-//}
-
 CTimer * CTimer_Manager::Find_Timer(const _tchar * pTimerTag)
 {
-	/*CTagFinder			TagFinder(pTimerTag);	
-
-	find_if(m_Timers.begin(), m_Timers.end(), TagFinder);*/
-
 	auto	iter = find_if(m_Timers.begin(), m_Timers.end(), CTagFinder(pTimerTag));
 	if (iter == m_Timers.end())
 		return nullptr;
@@ -59,6 +47,4 @@ void CTimer_Manager::Free()
 		Safe_Release(Pair.second);
 
 	m_Timers.clear();
-
-	
 }

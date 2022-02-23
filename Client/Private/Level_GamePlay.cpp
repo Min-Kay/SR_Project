@@ -140,6 +140,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Ball"), TEXT("Prototype_GameObject_Ball"))))
+		return E_FAIL;
+
 
 	Engine::CUI::UIDESC desc;
 	ZeroMemory(&desc,sizeof(desc));

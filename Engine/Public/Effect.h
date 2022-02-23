@@ -10,10 +10,11 @@ class CVIBuffer_Rect;
 class ENGINE_DLL CEffect :
     public CGameObject
 {
-private:
+protected:
 	explicit CEffect(LPDIRECT3DDEVICE9 pGraphic_Device);
 	explicit CEffect(const CEffect& rhs);
 	virtual ~CEffect() = default;
+
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
@@ -21,7 +22,7 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-private:
+protected:
 	/* 텍스쳐 */
 	CTexture* m_pTextureCom = nullptr;
 
@@ -34,7 +35,7 @@ private:
 	/* 그려진다. */
 	CRenderer* m_pRendererCom = nullptr;
 
-private:
+protected:
 	_float				m_fFrame = 0.f;
 
 protected:
@@ -46,7 +47,7 @@ public:
 	HRESULT Set_Texture(const _tchar* _tag);
 
 protected:
-	virtual HRESULT FaceOn_Camera(_bool fixY);
+	HRESULT FaceOn_Camera(_bool fixY);
 
 public:
 	static CEffect* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

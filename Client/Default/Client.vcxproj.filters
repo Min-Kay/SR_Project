@@ -79,6 +79,9 @@
     <Filter Include="02.GameObjects\UI\BackUI">
       <UniqueIdentifier>{af5a82ac-7c7e-4ec4-99ad-f092f47bf8ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect">
+      <UniqueIdentifier>{1476a028-af6d-4db1-8a4f-7e3c869cbd18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -156,6 +159,9 @@
     <ClInclude Include="..\Public\Button_Exit.h">
       <Filter>02.GameObjects\UI\Button\Exit</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Ball.h">
+      <Filter>02.GameObjects\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -220,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Button_Exit.cpp">
       <Filter>02.GameObjects\UI\Button\Exit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ball.cpp">
+      <Filter>02.GameObjects\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

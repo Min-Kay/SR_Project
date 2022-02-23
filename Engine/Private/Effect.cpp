@@ -71,10 +71,22 @@ HRESULT CEffect::FaceOn_Camera(_bool fixY)
     m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
     D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
 
-    m_pTransformCom->Set_State(CTransform::STATE_RIGHT, (*(_float3*)&ViewMatrix.m[0][0]) * m_pTransformCom->Get_Scale().x);
-    if(!fixY)
-		m_pTransformCom->Set_State(CTransform::STATE_UP, (*(_float3*)&ViewMatrix.m[1][0]) * m_pTransformCom->Get_Scale().y);
-    m_pTransformCom->Set_State(CTransform::STATE_LOOK, (*(_float3*)&ViewMatrix.m[2][0]) * m_pTransformCom->Get_Scale().z);
+    if (nullptr == m_pTransformCom)
+        return E_FAIL;
+    _float3 vScale = m_pTransformCom->Get_Scale();
+
+    _float3 vRight = (*(_float3*)&ViewMatrix.m[0][0]);
+    _float3 vUp = (*(_float3*)&ViewMatrix.m[1][0]);
+    _float3 vLook = (*(_float3*)&ViewMatrix.m[2][0]);
+
+    D3DXVec3Normalize(&vRight, &vRight);
+    D3DXVec3Normalize(&vUp, &vUp);
+    D3DXVec3Normalize(&vLook, &vLook);
+
+    m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+    if (!fixY)
+        m_pTransformCom->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+    m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
 
     return S_OK;
 }
@@ -162,6 +174,7 @@ HRESULT CEffect::Render()
 
     if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
         return E_FAIL;
+
 
     if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
         return E_FAIL;

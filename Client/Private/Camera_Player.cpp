@@ -79,6 +79,8 @@ _int CCamera_Player::Tick(_float fTimeDelta)
     if (!m_BackUI)
     {
         m_BackUI = static_cast<CUI_BackUI*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("BackUI"), 0));
+        if (!m_BackUI)
+            return -1;
         m_BackUI->Off_Menu();
         m_BackUI->Set_Cam(this);
     }

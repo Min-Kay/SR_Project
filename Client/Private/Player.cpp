@@ -128,9 +128,9 @@ _int CPlayer::LateTick(_float fTimeDelta)
 	if (nullptr == m_pTransformCom)
 		return -1;
 
-	m_pTransformCom->Gravity(fTimeDelta);
+	//m_pTransformCom->Gravity(fTimeDelta);
 
-	if (FAILED(Check_Terrain()))
+	/*if (FAILED(Check_Terrain()))
 		return -1;
 	if (m_bJump == false)
 	{
@@ -139,7 +139,7 @@ _int CPlayer::LateTick(_float fTimeDelta)
 			MSGBOX("Failed to Set_OnTerrain in CPlayer");
 			return -1;
 		}
-	}
+	}*/
 
 	if(m_Camera)
 	{

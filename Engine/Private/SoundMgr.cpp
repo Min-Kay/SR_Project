@@ -5,9 +5,7 @@
 IMPLEMENT_SINGLETON(CSoundMgr)
 
 CSoundMgr::CSoundMgr()
-{
-	m_pSystem = nullptr;
-}
+{}
 
 HRESULT CSoundMgr::NativeConstruct()
 {
