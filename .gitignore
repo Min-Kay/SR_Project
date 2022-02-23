@@ -34,3 +34,5 @@ AutoPCH/
 .vs/
 x86/
 x64/
+ipch/
+Debug/
