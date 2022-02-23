@@ -427,11 +427,11 @@ void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 
 void CGameInstance::Release_Engine()
 {
-	if (0 != CSoundMgr::GetInstance()->DestroyInstance())
-		MSGBOX("Failed to Delete CGraphic_Device ");
-
 	if (0 != CGameInstance::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CGameInstance ");
+
+	if (0 != CSoundMgr::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Delete CSoundMgr ");
 
 	if (0 != CTimer_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CTimer_Manager ");
@@ -457,7 +457,6 @@ void CGameInstance::Release_Engine()
 	if (0 != CGraphic_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CGraphic_Device ");
 
-
 }
 
 void CGameInstance::Free()
@@ -468,8 +467,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pCamera_Manager);
-	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pGraphic_Device);
 
 }
