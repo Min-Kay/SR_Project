@@ -15,6 +15,7 @@ HRESULT CCollider::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
+	return S_OK;
 
 }
 
@@ -22,12 +23,13 @@ HRESULT CCollider::NativeConstruct(void* pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
+	return S_OK;
 }
 
 HRESULT CCollider::Set_Parent(CGameObject* _obj)
 {
 	m_Parent = _obj;
-	Safe_AddRef(m_Parent);
+	//Safe_AddRef(m_Parent);
 	return S_OK;
 }
 
@@ -42,6 +44,7 @@ HRESULT CCollider::Set_Type(COLLTYPE _type)
 		return E_FAIL;
 
 	m_type = _type;
+	return S_OK;
 }
 
 const CCollider::COLLTYPE& CCollider::Get_Type() const
@@ -49,24 +52,10 @@ const CCollider::COLLTYPE& CCollider::Get_Type() const
 	return m_type;
 }
 
-const list<_float3>& CCollider::Get_IndexList() const
-{
-	return m_IndexList;
-}
-
-HRESULT CCollider::Bind_OnCollider()
-{
-	if (nullptr == m_pGraphic_Device)
-		return E_FAIL;
-
-	return m_pGraphic_Device->SetTransform(D3DTS_WORLD, &m_WorldMatrix);
-
-	return E_NOTIMPL;
-}
 
 void CCollider::Free()
 {
+	//Safe_Release(m_Parent);
 	__super::Free();
-	m_IndexList.clear();
-	Safe_Release(m_Parent);
+	
 }

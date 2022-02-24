@@ -57,7 +57,6 @@ HRESULT CCollision_Manager::Collision_Box()
 
 HRESULT CCollision_Manager::Add_Collider(CBoxCollider* collider)
 {
-
 	m_CollList.push_back(collider);
 	return S_OK;
 }
@@ -75,17 +74,71 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 		(vMyMin.y <= vOtherMax.y && vMyMax.y >= vOtherMin.y) &&
 		(vMyMin.z <= vOtherMax.z && vMyMax.z >= vOtherMin.z))
 	{
+		if (vMyMin.x <= vOtherMax.x) // 왼쪽 충돌
+		{
+			_float3 vFirst = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z);
+			_float3 vSecond = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z);
+			D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
+		}
+		else if (vMyMax.x >= vOtherMin.x) // 오른쪽 충돌
+		{
+			_float3 vFirst = _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
+			_float3 vSecond = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
+			D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
+		}
 
+		if (vMyMin.y <= vOtherMax.y) // 아랫면 충돌
+		{
+			_float3 vFirst = _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMin.z);
+			_float3 vSecond = _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z);
+			D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
+		}
+		else if (vMyMax.y >= vOtherMin.y) // 윗면 충돌
+		{
+			_float3 vFirst = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMax.y, vOtherMin.z);
+			_float3 vSecond = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z);
+			D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
+		}
+
+		if (vMyMin.z <= vOtherMax.z) // 뒷면 충돌
+		{
+			_float3 vFirst = _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
+			_float3 vSecond = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z);
+			D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
+		}
+		else if (vMyMax.z >= vOtherMin.z) // 앞면 충돌
+		{
+			_float3 vFirst = _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z);
+			_float3 vSecond = _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z) - _float3(vOtherMax.x, vOtherMax.y, vOtherMin.z);
+			D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
+		}
 		
-		return true;
+		m_bAABB = true;
+		return m_bAABB;
 	}
 	else
 	{
-		//MSGBOX("Collider!!!!");
-		return false;
+		MSGBOX("Collider!!!!");
+		m_bAABB = false;
+		return m_bAABB;
 	}
 	
 
+}
+
+_float3 CCollision_Manager::Reflect_Direction()
+{
+	if (m_bAABB == true)
+	{
+		//m_vPushDir;
+		D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
+
+		_float radius = CBoxCollider::COLLIDERINFO::COLL_SIZE * 0.5;
+		m_vPushDir *= radius;
+		return m_vPushDir;
+	}
+	else
+		return _float3{ 0.f, 0.f, 0.f };
 }
 
 

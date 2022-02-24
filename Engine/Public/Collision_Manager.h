@@ -21,12 +21,14 @@ public:
 	
 public:
 	HRESULT Add_Collider(CBoxCollider* collider);
-
+	_float3 Reflect_Direction();
 private:
 	_bool AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCollider);
 
 private:
 	list<CBoxCollider*> m_CollList ;
+	_float3 m_vPushDir;
+	_bool	m_bAABB = false;
 public:
 	virtual void Free() override;
 };
