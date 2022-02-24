@@ -33,14 +33,9 @@ public:
 public:
 	virtual HRESULT Update()PURE;
 
-public:
-	const 	list<_float3>& Get_IndexList() const;
-
-	HRESULT Bind_OnCollider();
 
 protected:
-	_float4x4  m_WorldMatrix;
-	list<_float3> m_IndexList;
+
 	CGameObject* m_Parent = nullptr;
 	COLLTYPE m_type;
 

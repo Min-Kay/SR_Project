@@ -57,15 +57,26 @@ private:
 	_uint m_iCurrBulletCount = 0;
 	_uint m_iFullBulletCount = 40;
 
-	_float m_fSpread = 0.f;
-	_float m_fCurrSpread = 0.f;
+	_uint m_iCurrSpread = 0;
+	_uint m_iSpread = 3;
+	_uint m_test = 0;
+
+	_float m_fRange = 10.f; 
 
 	_float m_fRebound = 1.f;
 
 	_float m_fTickShoot = 0.f;
+	_float m_fTickSpread = 0.f;
+
 	_float m_fTickReload = 0.f;
 
+private:
+	_float3 m_vRayDirCH;
+	_float3 m_vRayPosCH; 
 
+
+private:
+	random_device rd;
 public:
 	static CGun* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

@@ -57,6 +57,8 @@ HRESULT CCamera::BeforeRender()
 	_float4x4		ProjMatrix;
 
 	D3DXMatrixPerspectiveFovLH(&ProjMatrix, m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+
+
 	if (FAILED(m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &ProjMatrix)))
 		return E_FAIL;
 
@@ -125,6 +127,11 @@ void CCamera::Set_Vaild(_bool _bool)
 const _bool CCamera::Get_Vaild() const
 {
 	return isVaild;
+}
+
+const CCamera::CAMERADESC& CCamera::Get_Desc() const
+{
+	return m_CameraDesc;
 }
 
 void CCamera::Set_State(const CCamera::CAMERADESC& desc)

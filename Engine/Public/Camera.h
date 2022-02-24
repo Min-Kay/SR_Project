@@ -48,6 +48,8 @@ public:
 	CTransform* Get_CameraTransform();
 	const _bool Get_Vaild() const;
 
+	const CAMERADESC& Get_Desc() const;
+
 protected:
 	class CTransform*			m_pTransform = nullptr;
 	HWND						hWnd = nullptr;

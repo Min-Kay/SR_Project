@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "UI.h"
 #include "Camera_Player.h"
+#include "Ball.h"
 
 CGun::CGun(LPDIRECT3DDEVICE9 pGraphic_Device)
 	:CGameObject(pGraphic_Device)
@@ -43,7 +44,13 @@ _int CGun::Tick(_float fTimeDelta)
 
 	Animate(fTimeDelta);
 	m_fTickShoot += fTimeDelta;
-
+	m_fTickSpread += fTimeDelta * 10.f;
+	if(m_iCurrSpread > 0 && m_fTickSpread > 0.4f)
+	{
+		--m_iCurrSpread;
+		m_fTickSpread = 0.f; 
+	}
+	
 	return 0;
 }
 
@@ -59,7 +66,6 @@ _int CGun::LateTick(_float fTimeDelta)
 
 HRESULT CGun::Render()
 {
-
 	if (!m_Vaild)
 		return S_OK;
 
@@ -89,6 +95,58 @@ void CGun::Shoot(_float fTimeDelta)
 void CGun::Fire()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
+	mt19937 ranX(rd());
+	mt19937 ranY(rd());
+
+	uniform_int_distribution<_uint> spread(0, m_iCurrSpread); 
+
+	_float randomPos[2];
+
+	randomPos[0] = spread(ranX);
+	randomPos[1] = spread(ranY);
+
+	for(auto& i : randomPos)
+	{
+		if ((int)i % 2 == 0)
+			i *= -1.f; 
+	}
+
+	m_iCurrSpread += m_iSpread;
+
+	_float4		vTargetPos = { randomPos[0] * 0.001f,randomPos[1] * 0.001f,0.f,1.f};
+	//_float4		vTargetPos = { 0.5f,0.5f,0.f,1.f };
+
+	/* 뷰스페이스 상의 위치로 변환한다. */
+	/* 로컬위치 * 월드 * 뷰 */
+
+	_float4x4		ProjMatrix;
+	CCamera::CAMERADESC camDesc = m_camera_->Get_Desc();
+	D3DXMatrixPerspectiveFovLH(&ProjMatrix, camDesc.fFovy, camDesc.fAspect, camDesc.fNear, camDesc.fFar);
+	D3DXMatrixInverse(&ProjMatrix, nullptr, &ProjMatrix);
+	D3DXVec4Transform(&vTargetPos, &vTargetPos, &ProjMatrix);
+	memcpy(&m_vRayDirCH, &(vTargetPos - _float4(0.f, 0.f, 0.f, 1.f)), sizeof(_float3));
+
+	m_vRayPosCH = _float3(0.f, 0.f, 0.f);
+
+	/* 월드스페이스 상의 위치로 변환한다. */
+	/* 로컬위치 * 월드 */
+	_float4x4		ViewMatrixInverse = m_camera_->Get_CameraTransform()->Get_WorldMatrix();
+	D3DXVec3TransformNormal(&m_vRayDirCH, &m_vRayDirCH, &ViewMatrixInverse);
+	D3DXVec3TransformCoord(&m_vRayPosCH, &m_vRayPosCH, &ViewMatrixInverse);
+
+	D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
+
+	//충돌 처리하기
+	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Bullet"), TEXT("Prototype_GameObject_Ball"))))
+		return;
+
+	CGameObject* p_ball = p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Bullet"), m_test++);
+
+	CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
+	tr->Scaled(_float3(0.5f,0.5f,0.5f));
+	tr->Set_State(CTransform::STATE_POSITION, m_vRayPosCH + m_vRayDirCH * m_fRange);
+
 	p_instance->StopSound(CSoundMgr::SYSTEM_EFFECT2);
 	p_instance->Play_Sound(TEXT("Rifle_Fire.mp3"), CSoundMgr::SYSTEM_EFFECT2,1.0f);
 	RELEASE_INSTANCE(CGameInstance);
