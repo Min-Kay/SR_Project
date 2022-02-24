@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Cam_Portal.h"
 #include "UI.h"
+#include "PortalGunUI.h"
 
 CPortalControl* CPortalControl::Create(LPDIRECT3DDEVICE9 pGraphicDevice)
 {
@@ -55,60 +56,16 @@ HRESULT CPortalControl::NativeConstruct_Prototype()
 HRESULT CPortalControl::NativeConstruct(void* pArg)
 {
 
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	CUI::UIDESC desc ,desc2;
-	ZeroMemory(&desc,sizeof(desc));
-	ZeroMemory(&desc2, sizeof(desc2));
-	desc.WinCX = g_iWinCX;
-	desc.WinCY = g_iWinCY;
-	desc.Layer = 2;
-	desc.FrameCount = 2;
-	desc.Alpha = CUI::ALPHA_BLEND;
-	desc.PosX = g_iWinCX * 0.495f;
-	desc.PosY = g_iWinCY * 0.47f;
-	desc.SizeX = 70.f;
-	desc.SizeY = 70.f;
-	desc.Style = CUI::STYLE_FIX;
-	desc.Texture = TEXT("Prototype_Component_Texture_Portal_Orange_UI");
-
-
-	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange_UI"), PROTO_UI, &desc)))
-	{
-		RELEASE_INSTANCE(CGameInstance);
+	if (FAILED(SetUp_UI()))
 		return E_FAIL;
-	}
-
-	m_pPortal_Orange_UI = static_cast<CUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange_UI")));
-
-	desc2.WinCX = g_iWinCX;
-	desc2.WinCY = g_iWinCY;
-
-	desc2.Layer = 2;
-	desc2.FrameCount = 2;
-	desc2.Alpha = CUI::ALPHA_BLEND;
-	desc2.PosX = g_iWinCX * 0.505f;
-	desc2.PosY = g_iWinCY * 0.53f;
-	desc2.SizeX = 70.f;
-	desc2.SizeY = 70.f;
-	desc2.Style = CUI::STYLE_FIX;
-	desc2.Texture = TEXT("Prototype_Component_Texture_Portal_Blue_UI");
-
-
-	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue_UI"), PROTO_UI, &desc2)))
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return E_FAIL;
-	}
-
-	m_pPortal_Blue_UI = static_cast<CUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue_UI")));
-
-	RELEASE_INSTANCE(CGameInstance);
 
     return S_OK;
 }
 
 _int CPortalControl::Tick(_float fTimeDelta)
 {
+	Animate_Gun(fTimeDelta);
+
     return _int();
 }
 
@@ -256,4 +213,116 @@ void CPortalControl::Set_Player(CTransform* pPlayer)
 {
 	m_pPlayerTransform = pPlayer;	
 	Safe_AddRef(m_pPlayerTransform);
+}
+
+HRESULT CPortalControl::SetUp_UI()
+{
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	CUI::UIDESC desc, desc2, desc3;
+	ZeroMemory(&desc, sizeof(desc));
+	ZeroMemory(&desc2, sizeof(desc2));
+	ZeroMemory(&desc3, sizeof(desc3));
+
+	desc.WinCX = g_iWinCX;
+	desc.WinCY = g_iWinCY;
+	desc.Layer = 2;
+	desc.FrameCount = 2;
+	desc.Alpha = CUI::ALPHA_BLEND;
+	desc.PosX = g_iWinCX * 0.495f;
+	desc.PosY = g_iWinCY * 0.47f;
+	desc.SizeX = 70.f;
+	desc.SizeY = 70.f;
+	desc.Style = CUI::STYLE_FIX;
+	desc.Texture = TEXT("Prototype_Component_Texture_Portal_Orange_UI");
+
+
+	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange_UI"), PROTO_UI, &desc)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pPortal_Orange_UI = static_cast<CUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Orange_UI")));
+
+	desc2.WinCX = g_iWinCX;
+	desc2.WinCY = g_iWinCY;
+	desc2.Layer = 2;
+	desc2.FrameCount = 2;
+	desc2.Alpha = CUI::ALPHA_BLEND;
+	desc2.PosX = g_iWinCX * 0.505f;
+	desc2.PosY = g_iWinCY * 0.53f;
+	desc2.SizeX = 70.f;
+	desc2.SizeY = 70.f;
+	desc2.Style = CUI::STYLE_FIX;
+	desc2.Texture = TEXT("Prototype_Component_Texture_Portal_Blue_UI");
+
+
+	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue_UI"), PROTO_UI, &desc2)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pPortal_Blue_UI = static_cast<CUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Blue_UI")));
+
+
+	desc3.WinCX = g_iWinCX;
+	desc3.WinCY = g_iWinCY;
+		
+	desc3.Layer = 2;
+	desc3.Alpha = CUI::ALPHA_BLEND;
+	desc3.PosX = g_iWinCX * 0.90f;
+	desc3.PosY = g_iWinCY * 0.82f;
+	desc3.SizeX = 500.f;
+	desc3.SizeY = 350.f;
+	desc3.Style = CUI::STYLE_FIX;
+	desc3.Texture = TEXT("Prototype_Component_Texture_Portal_Gun_UI");
+
+
+	m_fGun_fx = desc3.PosX;
+	m_fGun_fy = desc3.PosY;
+
+
+	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Gun_UI"), TEXT("Prototype_GameObject_Portal_Gun_UI"), &desc3)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pPortal_Gun_UI = static_cast<CPortalGunUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Gun_UI")));
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPortalControl::Animate_Gun(_float fTimeDelta)
+{
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	if(p_instance->Get_Key_Press(DIK_W) || p_instance->Get_Key_Press(DIK_D) || p_instance->Get_Key_Press(DIK_A) || p_instance->Get_Key_Press(DIK_S))
+	{
+		m_fFrWalk += fTimeDelta * 400.f; 
+	}
+	else
+	{
+		m_fFrWalk -= fTimeDelta * 400.f;
+	}
+
+	if (m_fFrWalk >= 180.f || m_fFrWalk <= 0.f)
+		m_fFrWalk = 0.f;
+
+	if (p_instance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON) || p_instance->Get_Mouse_Down(CInput_Device::MBS_LBUTTON))
+	{
+		m_fFrShoot += fTimeDelta * 700.f;
+	}
+	else
+	{
+		m_fFrShoot -= fTimeDelta * 200.f;
+	}
+
+	if (m_fFrShoot >= 180.f || m_fFrShoot <= 0.f)
+		m_fFrShoot = 0.f;
+
+
+	m_pPortal_Gun_UI->Set_Pos(m_fGun_fx + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.3f, m_fGun_fy + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.3f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }

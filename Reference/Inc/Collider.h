@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 class CGameObject;
-class CCollider :
+class ENGINE_DLL CCollider :
     public CComponent
 {
 protected:
@@ -15,7 +15,7 @@ protected:
 public:
 	typedef enum tagType
 	{
-		COLLTYPE_ENTER,COLLTYPE_TRIGGER, COLLTYPE_END
+		COLLTYPE_ENTER,COLLTYPE_TRIGGER, COLLTYPE_END//실제 충돌 , 범위충돌(레이더)
 	}COLLTYPE;
 
 public:
@@ -36,7 +36,10 @@ public:
 public:
 	const list<_float3>& Get_IndexList() const;
 
+	HRESULT Bind_OnCollider();
+
 protected:
+	_float4x4  m_WorldMatrix;
 	list<_float3> m_IndexList;
 	CGameObject* m_Parent = nullptr;
 	COLLTYPE m_type;

@@ -13,10 +13,7 @@ _bool CInput_Device::Get_Key_Press(_ubyte eKeyID)
 {
 	_byte currState = Get_DIKeyState(eKeyID);
 	if (currState & 0x80)
-	{
-		m_byFormalState[eKeyID] = currState;
 		return true;
-	}
 	return false;
 }
 
@@ -24,10 +21,7 @@ _bool CInput_Device::Get_Key_Down(_ubyte eKeyID)
 {
 	_byte currState = Get_DIKeyState(eKeyID);
 	if ((currState & 0x80) && currState != m_byFormalState[eKeyID])
-	{
-		m_byFormalState[eKeyID] = currState;
 		return true;
-	}
 	return false;
 }
 
@@ -35,10 +29,7 @@ _bool CInput_Device::Get_Key_Up(_ubyte eKeyID)
 {
 	_byte currState = Get_DIKeyState(eKeyID);
 	if (!(currState & 0x80) && currState != m_byFormalState[eKeyID])
-	{
-		m_byFormalState[eKeyID] = currState;
 		return true;
-	}
 	return false;
 }
 
@@ -46,10 +37,7 @@ _bool CInput_Device::Get_Mouse_Button_Down(MOUSEBUTTONSTATE eButtonID)
 {
 	_byte currState = Get_DIMouseButtonState(eButtonID);
 	if ((currState & 0x80) && currState != m_MouseFormalState[eButtonID])
-	{
-		m_MouseFormalState[eButtonID] = currState;
 		return true;
-	}
 	return false;
 }
 
@@ -57,10 +45,7 @@ _bool CInput_Device::Get_Mouse_Button_Up(MOUSEBUTTONSTATE eButtonID)
 {
 	_byte currState = Get_DIMouseButtonState(eButtonID);
 	if (!(currState & 0x80) && currState != m_MouseFormalState[eButtonID])
-	{
-		m_MouseFormalState[eButtonID] = currState;
 		return true;
-	}
 	return false;
 }
 
@@ -68,10 +53,7 @@ _bool CInput_Device::Get_Mouse_Button_Press(MOUSEBUTTONSTATE eButtonID)
 {
 	_byte currState = Get_DIMouseButtonState(eButtonID);
 	if (currState & 0x80)
-	{
-		m_MouseFormalState[eButtonID] = currState;
 		return true;
-	}
 	return false;
 }
 

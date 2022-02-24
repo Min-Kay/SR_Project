@@ -26,6 +26,8 @@ HRESULT CUI::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	UIDESC desc = *static_cast<UIDESC*>(pArg);
+	m_WinCY = desc.WinCY;
+	m_WinCX = desc.WinCX;
 	m_fSizeX = desc.SizeX;
 	m_fSizeY = desc.SizeY;
 	m_fX = desc.PosX;
@@ -244,6 +246,25 @@ void CUI::Set_AlphaTest(D3DCMPFUNC _func, _uint ref)
 {
 	m_func = _func;
 	m_AlphaRef = ref;
+}
+
+HRESULT CUI::Set_Pos(_float fx, _float fy)
+{
+	m_fX = fx;
+	m_fY = fy;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_fX - m_WinCX * 0.5f, -m_fY + m_WinCY * 0.5f, 0.f));
+
+	return S_OK;
+}
+
+HRESULT CUI::Set_Size(_float sizeX, _float sizeY)
+{
+	m_fSizeX = sizeX;
+	m_fSizeY = sizeY;
+
+	m_pTransformCom->Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
+	return S_OK;
 }
 
 HRESULT CUI::Bind_UI()	

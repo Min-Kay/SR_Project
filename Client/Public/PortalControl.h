@@ -8,6 +8,7 @@ END
 
 BEGIN(Client)
 class CPortal;
+class CPortalGunUI;
 class CPortalControl :
     public CGameObject
 {
@@ -32,6 +33,10 @@ public:
 	void Set_Player(CTransform* pPlayer);
 
 private:
+	HRESULT SetUp_UI();
+	void	Animate_Gun(_float fTimeDelta);
+
+private:
 	CTransform* m_pPlayerTransform = nullptr;
 	CPortal* m_pPortal_Orange = nullptr;
 	CPortal* m_pPortal_Blue = nullptr;
@@ -39,6 +44,13 @@ private:
 	CUI* m_pPortal_Orange_UI = nullptr;
 	CUI* m_pPortal_Blue_UI = nullptr;
 
+	CPortalGunUI* m_pPortal_Gun_UI = nullptr;
+
+private:
+	_float m_fGun_fx = 0.f;
+	_float m_fGun_fy = 0.f;
+	_float m_fFrWalk = 0.f;
+	_float m_fFrShoot = 0.f;
 
 public:
 	static CPortalControl* Create(LPDIRECT3DDEVICE9 pGraphicDevice);

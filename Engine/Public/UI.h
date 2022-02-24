@@ -44,7 +44,7 @@ public:
 
 protected:
 	_float4x4			m_ProjMatrix;
-	_float				m_fX, m_fY, m_fSizeX, m_fSizeY;
+	_float				m_WinCX, m_WinCY, m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float				m_fFrame = 0.f;
 	_float				m_AnimSpd = 0.f;
 	_uint				m_FrameCount = 0;
@@ -81,6 +81,10 @@ public:
 	HRESULT Set_CurrFrameIndex(_uint iIndex);
 	HRESULT Set_Style(STYLE _style);
 	void Set_AlphaTest(D3DCMPFUNC _func, _uint ref = 0);
+
+public:
+	HRESULT Set_Pos(_float fx, _float fy);
+	HRESULT Set_Size(_float sizeX, _float sizeY);
 
 public:
 	virtual HRESULT Tick_UI(_float fTimeDelta);

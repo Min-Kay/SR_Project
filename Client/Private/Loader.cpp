@@ -16,6 +16,7 @@
 #include "Button_Exit.h"
 #include "Terrain.h"
 #include "Ball.h"
+#include "PortalGunUI.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -136,6 +137,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Blue_UI"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Gun UI/Portal_Blue_%d.png"), 2))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Gun_UI"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Player/Portal_Gun.png")))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma  region PROTOTYPE_GAMEOBJECT
@@ -188,6 +192,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	/* For.Prototype_GameObject_Terrain */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ball"), CBall::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Portal_Gun_UI"), CPortalGunUI::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma endregion
