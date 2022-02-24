@@ -61,5 +61,5 @@ using namespace std;
 #define PROTO_COLLIDER TEXT("Prototype_Component_Collider")
 
 
-
+namespace Engine {}
 using namespace Engine;

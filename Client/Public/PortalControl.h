@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "UI.h"
 
 BEGIN(Engine)
 class CTransform;

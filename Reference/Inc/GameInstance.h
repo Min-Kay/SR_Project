@@ -76,7 +76,7 @@ public:
 	int  BGMVolumeUp(_float _vol);
 	int  BGMVolumeDown(_float _vol);
 	int  Pause(CSoundMgr::CHANNELID eID);
-	void PlaySound(TCHAR * pSoundKey, CSoundMgr::CHANNELID eID, _float _vol);
+	void Play_Sound(TCHAR * pSoundKey, CSoundMgr::CHANNELID eID, _float _vol);
 	void PlayBGM(TCHAR * pSoundKey);
 	void StopSound(CSoundMgr::CHANNELID eID);
 	void StopAll();

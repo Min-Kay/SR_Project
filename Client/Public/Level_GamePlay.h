@@ -8,8 +8,6 @@ class CUI;
 END
 
 BEGIN(Client)
-class CUI;
-
 class CLevel_GamePlay final : public CLevel
 {
 public:

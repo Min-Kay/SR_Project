@@ -48,7 +48,7 @@ _int CPlayer::Tick(_float fTimeDelta)
 
 	if (m_fFrame >= 12.0f)
 		m_fFrame = 0.f;
-	
+
 	if (pGameInstance->Get_Key_Press(DIK_W))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
@@ -67,6 +67,15 @@ _int CPlayer::Tick(_float fTimeDelta)
 	if (pGameInstance->Get_Key_Press(DIK_D))
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+
+	if(pGameInstance->Get_Key_Press(DIK_W) || pGameInstance->Get_Key_Press(DIK_S) || pGameInstance->Get_Key_Press(DIK_D) || pGameInstance->Get_Key_Press(DIK_A))
+	{
+		pGameInstance->Play_Sound(TEXT("Walk.mp3"), CSoundMgr::CHANNELID::PLAYER, 1.f);
+	}
+	else
+	{
+		pGameInstance->StopSound(CSoundMgr::PLAYER);
 	}
 
 	if (pGameInstance->Get_Key_Down(DIK_SPACE))

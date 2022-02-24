@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Button_Continue.h"
 #include "UI_BackUI.h"
+#include "GameInstance.h"
 CButton_Continue::CButton_Continue(LPDIRECT3DDEVICE9 pGraphic_Device)
 	:CButton(pGraphic_Device)
 {
@@ -84,12 +85,17 @@ HRESULT CButton_Continue::OnClick_Action()
 void CButton_Continue::OnEnter_Overlay()
 {
 	Set_CurrFrameIndex(1);
-
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Play_Sound(TEXT("Button_Overlay.mp3"), CSoundMgr::UI, 1.0f);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CButton_Continue::OnEnter_UnOverlay()
 {
 	Set_CurrFrameIndex(0);
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->StopSound(CSoundMgr::UI);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 CButton_Continue* CButton_Continue::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

@@ -371,12 +371,12 @@ int CGameInstance::Pause(CSoundMgr::CHANNELID eID)
 	return m_Sound_Manager->Pause(eID);
 }
 
-void CGameInstance::PlaySoundW(TCHAR* pSoundKey, CSoundMgr::CHANNELID eID, _float _vol)
+void CGameInstance::Play_Sound(TCHAR* pSoundKey, CSoundMgr::CHANNELID eID, _float _vol)
 {
 	if (nullptr == m_Sound_Manager)
 		return;
 
-	return m_Sound_Manager->PlaySoundW(pSoundKey,eID,_vol);
+	return m_Sound_Manager->Play_Sound(pSoundKey,eID,_vol);
 }
 
 void CGameInstance::PlayBGM(TCHAR* pSoundKey)

@@ -87,12 +87,18 @@ _bool CButton::OnEnter()
 
 	if (PtInRect(&m_Rect, ptMouse))
 	{
-		OnEnter_Overlay();
+		if(!isOverlayed)
+			OnEnter_Overlay();
+		isOverlayed = true;
 		return true;
 	}
-	else
+	else 
 	{
-		OnEnter_UnOverlay();
+		if (isOverlayed)
+		{
+			isOverlayed = false; 
+			OnEnter_UnOverlay();
+		}
 		return false;
 	}
 }

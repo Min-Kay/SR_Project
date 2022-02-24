@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Button_Exit.h"
 #include "UI_BackUI.h"
+#include "GameInstance.h"
 
 CButton_Exit::CButton_Exit(LPDIRECT3DDEVICE9 pGraphic_Device)
 	:CButton(pGraphic_Device)
@@ -83,11 +84,17 @@ HRESULT CButton_Exit::OnClick_Action()
 void CButton_Exit::OnEnter_Overlay()
 {
 	Set_CurrFrameIndex(1);
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Play_Sound(TEXT("Button_Overlay.mp3"), CSoundMgr::UI, 1.0f);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CButton_Exit::OnEnter_UnOverlay()
 {
 	Set_CurrFrameIndex(0);
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->StopSound(CSoundMgr::UI);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 CButton_Exit* CButton_Exit::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

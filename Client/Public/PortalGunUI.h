@@ -3,8 +3,7 @@
 #include "UI.h"
 
 BEGIN(Client)
-class CPortalGunUI :
-    public CUI
+class CPortalGunUI : public CUI
 {
 private:
 	explicit CPortalGunUI(LPDIRECT3DDEVICE9 pGraphic_Device);

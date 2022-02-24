@@ -85,6 +85,9 @@
     <Filter Include="02.GameObjects\UI\PotalGunUI">
       <UniqueIdentifier>{04b1ed20-6d31-4cb2-98ad-039998d15e4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Gun">
+      <UniqueIdentifier>{3e0e4d98-17ac-4783-8d41-69e0d3c9dce8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -168,6 +171,9 @@
     <ClInclude Include="..\Public\PortalGunUI.h">
       <Filter>02.GameObjects\UI\PotalGunUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Gun.h">
+      <Filter>02.GameObjects\Gun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -238,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PortalGunUI.cpp">
       <Filter>02.GameObjects\UI\PotalGunUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gun.cpp">
+      <Filter>02.GameObjects\Gun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

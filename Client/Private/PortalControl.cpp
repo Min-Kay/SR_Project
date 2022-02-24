@@ -3,7 +3,7 @@
 #include "Portal.h"
 #include "GameInstance.h"
 #include "Cam_Portal.h"
-#include "UI.h"
+#include "Level_GamePlay.h"
 #include "PortalGunUI.h"
 
 CPortalControl* CPortalControl::Create(LPDIRECT3DDEVICE9 pGraphicDevice)
@@ -133,6 +133,8 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 		m_pPortal_Orange = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Orange"), 0));
 
 		m_pPortal_Orange_UI->Set_CurrFrameIndex(1);
+		pGameInstance->StopSound(CSoundMgr::EFFECT);
+		pGameInstance->Play_Sound(TEXT("Portal_Orange_Fire.mp3"), CSoundMgr::EFFECT, 1.f);
 	}
 	else if (iIndex == PORTAL_BLUE)
 	{
@@ -167,6 +169,9 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 
 		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Blue"), 0));
 		m_pPortal_Blue_UI->Set_CurrFrameIndex(1);
+		pGameInstance->StopSound(CSoundMgr::EFFECT);
+		pGameInstance->Play_Sound(TEXT("Portal_Blue_Fire.mp3"), CSoundMgr::EFFECT, 1.f);
+
 	}
 	RELEASE_INSTANCE(CGameInstance);
    
@@ -228,8 +233,8 @@ HRESULT CPortalControl::SetUp_UI()
 	desc.Layer = 2;
 	desc.FrameCount = 2;
 	desc.Alpha = CUI::ALPHA_BLEND;
-	desc.PosX = g_iWinCX * 0.495f;
-	desc.PosY = g_iWinCY * 0.47f;
+	desc.PosX = g_iWinCX * 0.47f;
+	desc.PosY = g_iWinCY * 0.46f;
 	desc.SizeX = 70.f;
 	desc.SizeY = 70.f;
 	desc.Style = CUI::STYLE_FIX;
@@ -249,8 +254,8 @@ HRESULT CPortalControl::SetUp_UI()
 	desc2.Layer = 2;
 	desc2.FrameCount = 2;
 	desc2.Alpha = CUI::ALPHA_BLEND;
-	desc2.PosX = g_iWinCX * 0.505f;
-	desc2.PosY = g_iWinCY * 0.53f;
+	desc2.PosX = g_iWinCX * 0.53f;
+	desc2.PosY = g_iWinCY * 0.54f;
 	desc2.SizeX = 70.f;
 	desc2.SizeY = 70.f;
 	desc2.Style = CUI::STYLE_FIX;

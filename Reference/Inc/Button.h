@@ -40,7 +40,7 @@ public:
 
 protected:
 	CUI* m_Parent = nullptr;
-
+	bool isOverlayed = false;
 private:
 	RECT m_Rect;
 	HWND m_Hwnd;

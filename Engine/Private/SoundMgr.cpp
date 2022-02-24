@@ -71,7 +71,7 @@ int CSoundMgr::Pause(CHANNELID eID)
 	return 0;
 }
 
-void CSoundMgr::PlaySound(TCHAR * pSoundKey, CHANNELID eID, _float _vol)
+void CSoundMgr::Play_Sound(TCHAR * pSoundKey, CHANNELID eID, _float _vol)
 {
 	map<TCHAR*, FMOD_SOUND*>::iterator iter;
 
