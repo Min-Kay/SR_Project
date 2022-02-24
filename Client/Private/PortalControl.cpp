@@ -4,7 +4,6 @@
 #include "GameInstance.h"
 #include "Cam_Portal.h"
 #include "Level_GamePlay.h"
-#include "PortalGunUI.h"
 
 CPortalControl* CPortalControl::Create(LPDIRECT3DDEVICE9 pGraphicDevice)
 {
@@ -64,6 +63,9 @@ HRESULT CPortalControl::NativeConstruct(void* pArg)
 
 _int CPortalControl::Tick(_float fTimeDelta)
 {
+	if (!m_Vaild)
+		return 0;
+
 	Animate_Gun(fTimeDelta);
 
     return _int();
@@ -71,6 +73,9 @@ _int CPortalControl::Tick(_float fTimeDelta)
 
 _int CPortalControl::LateTick(_float fTimeDelta)
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (nullptr != m_pPortal_Orange && nullptr != m_pPortal_Blue)
 	{
 		if(nullptr == m_pPortal_Orange->Get_Link_Portal())
@@ -93,6 +98,9 @@ _int CPortalControl::LateTick(_float fTimeDelta)
 
 HRESULT CPortalControl::Render()
 {
+	if (!m_Vaild)
+		return S_OK;
+
     return S_OK;
 }
 
@@ -288,13 +296,13 @@ HRESULT CPortalControl::SetUp_UI()
 	m_fGun_fy = desc3.PosY;
 
 
-	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Gun_UI"), TEXT("Prototype_GameObject_Portal_Gun_UI"), &desc3)))
+	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Gun_UI"), PROTO_UI, &desc3)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
-	m_pPortal_Gun_UI = static_cast<CPortalGunUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Gun_UI")));
+	m_pPortal_Gun_UI = static_cast<CUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Gun_UI")));
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -331,4 +339,12 @@ void CPortalControl::Animate_Gun(_float fTimeDelta)
 	m_pPortal_Gun_UI->Set_Pos(m_fGun_fx + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.3f, m_fGun_fy + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.3f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPortalControl::Set_Vaild(_bool _bool)
+{
+	m_Vaild = _bool;
+	m_pPortal_Orange_UI->Set_Vaild(m_Vaild);
+	m_pPortal_Blue_UI->Set_Vaild(m_Vaild);
+	m_pPortal_Gun_UI->Set_Vaild(m_Vaild);
 }

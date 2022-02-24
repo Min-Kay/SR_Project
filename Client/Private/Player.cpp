@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Camera_Player.h"
 #include "PortalControl.h"
+#include "Gun.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -97,22 +98,70 @@ _int CPlayer::Tick(_float fTimeDelta)
 		}
 	}
 
-	if (nullptr != m_pPortalCtrl)
+	if(nullptr == m_pGun)
 	{
-		if (pGameInstance->Get_Mouse_Up(CInput_Device::MBS_LBUTTON))
+		if (pGameInstance->Get_Key_Down(DIK_I))
 		{
-			m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_ORANGE);
-		}
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Gun"), TEXT("Prototype_GameObject_Gun"))))
+				return E_FAIL;
 
-		if (pGameInstance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON))
-		{
-			m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_BLUE);
+			m_pGun = static_cast<CGun*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Gun")));
+			Safe_AddRef(m_pGun);
 		}
+	}
 
-		if (pGameInstance->Get_Key_Up(DIK_C))
+	if (nullptr != m_pGun && nullptr != m_pPortalCtrl)
+	{
+		if (pGameInstance->Get_Key_Down(DIKEYBOARD_1))
 		{
-			m_pPortalCtrl->Erase_Portal(LEVEL_GAMEPLAY);
+			m_iCurrIndex = 0;
+			m_pPortalCtrl->Set_Vaild(true);
+			m_pGun->Set_Vaild(false);
+
 		}
+		else if (pGameInstance->Get_Key_Down(DIKEYBOARD_2))
+		{
+			m_iCurrIndex = 1;
+			m_pPortalCtrl->Set_Vaild(false);
+			m_pGun->Set_Vaild(true);
+		}
+	}
+
+	switch (m_iCurrIndex)
+	{
+	case 0:
+		if (nullptr != m_pPortalCtrl)
+		{
+			if (pGameInstance->Get_Mouse_Up(CInput_Device::MBS_LBUTTON))
+			{
+				m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_ORANGE);
+			}
+
+			if (pGameInstance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON))
+			{
+				m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_BLUE);
+			}
+
+			if (pGameInstance->Get_Key_Up(DIK_C))
+			{
+				m_pPortalCtrl->Erase_Portal(LEVEL_GAMEPLAY);
+			}
+		}
+		break;
+	case 1:
+		if (nullptr != m_pGun)
+		{
+			if (pGameInstance->Get_Mouse_Press(CInput_Device::MBS_LBUTTON))
+			{
+				m_pGun->Shoot(fTimeDelta);
+			}
+
+			if (pGameInstance->Get_Key_Down(DIK_R))
+			{
+				m_pGun->Reload();
+			}
+		}
+		break;
 	}
 
 
@@ -328,6 +377,7 @@ void CPlayer::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pGun);
 	Safe_Release(m_pPortalCtrl);
 	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);

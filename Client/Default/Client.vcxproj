@@ -176,7 +176,6 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Portal.h" />
     <ClInclude Include="..\Public\PortalControl.h" />
-    <ClInclude Include="..\Public\PortalGunUI.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UI_BackUI.h" />
@@ -204,7 +203,6 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Portal.cpp" />
     <ClCompile Include="..\Private\PortalControl.cpp" />
-    <ClCompile Include="..\Private\PortalGunUI.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI_BackUI.cpp" />

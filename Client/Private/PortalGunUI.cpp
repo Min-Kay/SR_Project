@@ -29,6 +29,9 @@ HRESULT CPortalGunUI::NativeConstruct(void* pArg)
 
 _int CPortalGunUI::Tick(_float fTimeDelta)
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (0 > __super::Tick(fTimeDelta))
 			return -1;
 
@@ -37,14 +40,20 @@ _int CPortalGunUI::Tick(_float fTimeDelta)
 
 _int CPortalGunUI::LateTick(_float fTimeDelta)
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (0 > __super::LateTick(fTimeDelta))
-	return -1;
+		return -1;
 
 	return 0;
 }
 
 HRESULT CPortalGunUI::Render()
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -69,6 +78,10 @@ HRESULT CPortalGunUI::Tick_UI(_float fTimeDelta)
 
 HRESULT CPortalGunUI::Set_RenderState()
 {
+
+	if (!m_Vaild)
+		return 0;
+
 	if (FAILED(__super::Set_RenderState()))
 		return E_FAIL;
 

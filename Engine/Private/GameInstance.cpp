@@ -457,6 +457,9 @@ void CGameInstance::Release_Engine()
 	if (0 != CGameInstance::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CGameInstance ");
 
+	if (0 != CCollision_Manager::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Delete Collision_Manager ");
+
 	if (0 != CSoundMgr::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Delete CSoundMgr ");
 

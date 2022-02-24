@@ -7,6 +7,7 @@
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Portal.h"
 #include "VIBuffer_Cube.h"
+#include "BoxCollider.h"
 /* 컴포넌트 원형들을 모아놓는다. */
 
 BEGIN(Engine)

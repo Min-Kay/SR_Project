@@ -14,6 +14,7 @@ END
 BEGIN(Client)
 class CCamera_Player;
 class CPortalControl;
+class CGun;
 
 class CPlayer final : public CGameObject
 {
@@ -52,8 +53,9 @@ private:
 	_float				m_fJumpForce = 20.f;
 
 private:
+	_uint				m_iCurrIndex = 0; 
 	CPortalControl*		m_pPortalCtrl = nullptr;
-
+	CGun*					m_pGun = nullptr;
 private:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_OnTerrain();
