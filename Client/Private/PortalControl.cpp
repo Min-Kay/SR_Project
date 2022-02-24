@@ -297,6 +297,7 @@ HRESULT CPortalControl::SetUp_UI()
 	m_pPortal_Gun_UI = static_cast<CPortalGunUI*>(p_instance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Portal_Gun_UI")));
 
 	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
 }
 
 void CPortalControl::Animate_Gun(_float fTimeDelta)

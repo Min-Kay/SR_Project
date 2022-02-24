@@ -84,6 +84,18 @@ HRESULT CBoxCollider::Set_Coilider()
 	return S_OK;
 }
 
+void CBoxCollider::Draw_Box()
+{
+	LPD3DXMESH box;
+	D3DXCreateBox(m_pGraphic_Device, m_CollInfo[COLLIDERINFO::COLL_SIZE].x, m_CollInfo[COLLIDERINFO::COLL_SIZE].y, m_CollInfo[COLLIDERINFO::COLL_SIZE].z, &box, NULL);
+	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	box->DrawSubset(0);
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	Safe_Release(box);
+}
+
 CBoxCollider* CBoxCollider::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CBoxCollider* pInstance = new CBoxCollider(pGraphic_Device);

@@ -11,6 +11,7 @@ CGameInstance::CGameInstance()
 	, m_pCamera_Manager(CCamera_Manager::GetInstance())
 	, m_pPicking(CPicking::GetInstance())
 	, m_Sound_Manager(CSoundMgr::GetInstance())
+	, m_Collision_Manager(CCollision_Manager::GetInstance())
 
 {
 	Safe_AddRef(m_pPicking);
@@ -22,6 +23,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pCamera_Manager);
 	Safe_AddRef(m_Sound_Manager);
+	Safe_AddRef(m_Collision_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Device::GRAPHICDESC & GraphicDesc, _uint iNumLevels, LPDIRECT3DDEVICE9* ppOut)
@@ -81,6 +83,9 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	if (0 > m_pCamera_Manager->LateTick(fTimeDelta))
 		return -1;
+
+	if (FAILED(m_Collision_Manager->Collision_Box()))
+		return -1; 
 
 	m_pInput_Device->Tick_KeyState();
 
@@ -403,6 +408,28 @@ void CGameInstance::StopAll()
 	return m_Sound_Manager->StopAll();
 }
 
+HRESULT CGameInstance::Add_Collider(CBoxCollider* collider)
+{
+	if (nullptr == m_Collision_Manager)
+	{
+		MSGBOX("Empty m_pCollision_Manager in CGameInstance");
+		return E_FAIL;
+	}
+
+	return m_Collision_Manager->Add_Collider(collider);
+}
+
+HRESULT CGameInstance::Collision_Box()
+{
+	if (nullptr == m_Collision_Manager)
+	{
+		MSGBOX("Empty m_pCollision_Manager in CGameInstance");
+		return E_FAIL;
+	}
+
+	return m_Collision_Manager->Collision_Box();
+}
+
 void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 {
 	if (setting == true)
@@ -465,6 +492,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_Collision_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pInput_Device);

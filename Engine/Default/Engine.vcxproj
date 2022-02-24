@@ -185,7 +185,6 @@
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\Public\SoundMgr.h" />
-    <ClInclude Include="..\Public\SphereCollider.h" />
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\public\Timer_Manager.h" />
@@ -221,7 +220,6 @@
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\Private\SoundMgr.cpp" />
-    <ClCompile Include="..\Private\SphereCollider.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\private\Timer_Manager.cpp" />

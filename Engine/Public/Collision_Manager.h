@@ -4,11 +4,10 @@
 BEGIN(Engine)
 class CCollider;
 class CBoxCollider;
-class CSphereCollider;
 class CGameObject;
 
 class CCollision_Manager :
-    public CBase
+	public CBase
 {
 	DECLARE_SINGLETON(CCollision_Manager)
 
@@ -17,24 +16,20 @@ protected:
 	virtual ~CCollision_Manager() = default;
 
 public:
-	typedef enum tagCollider
-	{
-		COLL_BOX,COLL_END
-	}COLLIDER;
-
-
-public:
 	list<CGameObject*> Collision_All();
-	list<CGameObject*> Collision_Box();
-
-public:
-	HRESULT Add_Collider(COLLIDER _type, CCollider* collider);
+	HRESULT Collision_Box();
 	
-private:
-	list<CCollider*>* m_CollList = nullptr;
+public:
+	HRESULT Add_Collider(CBoxCollider* collider);
 
+private:
+	_bool AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCollider);
+
+private:
+	list<CBoxCollider*> m_CollList ;
 public:
 	virtual void Free() override;
 };
 END
+
 

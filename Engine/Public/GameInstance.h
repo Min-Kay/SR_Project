@@ -9,6 +9,7 @@
 #include "Camera_Manager.h"
 #include "Picking.h"
 #include "SoundMgr.h"
+#include "Collision_Manager.h"
 
 /* 엔진내에 모든(클라이언트에 보여주기위한) 매니져 클래스를 보관한다. */
 
@@ -81,6 +82,10 @@ public:
 	void StopSound(CSoundMgr::CHANNELID eID);
 	void StopAll();
 
+public:
+	HRESULT Add_Collider(CBoxCollider * collider);
+	HRESULT Collision_Box();
+
 public: // 마우스 커서 설정
 	void SetMouseMode(_bool setting, HWND _hwnd = nullptr);
 
@@ -94,6 +99,7 @@ private:
 	CCamera_Manager*		m_pCamera_Manager = nullptr;
 	CPicking*				m_pPicking = nullptr;
 	CSoundMgr*				m_Sound_Manager = nullptr;
+	CCollision_Manager*		m_Collision_Manager = nullptr;
 public:
 	static void Release_Engine();
 	virtual void Free() override;

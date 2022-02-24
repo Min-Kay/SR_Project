@@ -38,6 +38,7 @@ public:
 	HRESULT Set_State(COLLIDERINFO info , _float3 Input);
 	HRESULT Get_Parentcom();
 	HRESULT Set_Coilider();
+	void Draw_Box();
 	
 	//_float3 m_VerticesIndex[];
 	//부모위치 받고 내 정점 위치 바꾸고

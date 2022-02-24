@@ -106,9 +106,6 @@
     <Filter Include="01.Utility\04.Components\Collider\Box">
       <UniqueIdentifier>{161df6bf-3539-4aec-8cc7-c7d1bce1b5b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Components\Collider\Sphere">
-      <UniqueIdentifier>{27e2433f-462c-42c9-b9c6-1194c2b5c4ed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.GameObject\UI">
       <UniqueIdentifier>{d2d3e843-95b3-4670-b528-26730da5c043}</UniqueIdentifier>
     </Filter>
@@ -216,9 +213,6 @@
     <ClInclude Include="..\Public\Collider.h">
       <Filter>01.Utility\04.Components\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SphereCollider.h">
-      <Filter>01.Utility\04.Components\Collider\Sphere</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\BoxCollider.h">
       <Filter>01.Utility\04.Components\Collider\Box</Filter>
     </ClInclude>
@@ -319,9 +313,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Collider.cpp">
       <Filter>01.Utility\04.Components\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SphereCollider.cpp">
-      <Filter>01.Utility\04.Components\Collider\Sphere</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BoxCollider.cpp">
       <Filter>01.Utility\04.Components\Collider\Box</Filter>

@@ -34,7 +34,7 @@ public:
 	virtual HRESULT Update()PURE;
 
 public:
-	const list<_float3>& Get_IndexList() const;
+	const 	list<_float3>& Get_IndexList() const;
 
 	HRESULT Bind_OnCollider();
 
