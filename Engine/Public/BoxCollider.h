@@ -16,7 +16,7 @@ protected:
 
 public:
 	typedef enum taginfo {
-		COLL_CENTER,COLL_SIZE,COLL_MIN,COLL_MAX
+		COLL_CENTER,COLL_SIZE,COLL_MIN,COLL_MAX,COLL_END
 	}COLLIDERINFO;
 
 	//typedef struct tagDesc {
@@ -40,16 +40,13 @@ public:
 	HRESULT Set_Coilider();
 	void Draw_Box();
 	
-	//_float3 m_VerticesIndex[];
-	//부모위치 받고 내 정점 위치 바꾸고
-	//state 가져오는거 까지
-	//열거체로 이름 지정해주고 v
-	//구조체로 중점 , size ,min , max v
-	//
+	_float3 Reflect_Direction(_float3& _vDir);
+
 private:
 	CTransform* m_ParentPos = nullptr;
 	_float3 m_CollInfo[4];
-	
+	_float3 m_vDir;
+
 public:
 	static CBoxCollider* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CComponent* Clone(void* pArg) override;
