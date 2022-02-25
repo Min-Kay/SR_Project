@@ -40,6 +40,14 @@ _int CTerrain::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	if (nullptr != m_pBoxColliderCom)
+	{
+		m_pBoxColliderCom->Set_Coilider();
+		pGameInstance->Add_Collider(m_pBoxColliderCom);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
@@ -50,6 +58,11 @@ _int CTerrain::LateTick(_float fTimeDelta)
 
 	if (nullptr == m_pRendererCom)
 		return -1;
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->Collision_Box();
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -64,7 +77,8 @@ HRESULT CTerrain::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+	m_pBoxColliderCom->Draw_Box();
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(4)))
 		return E_FAIL;
 
 	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
@@ -101,6 +115,16 @@ HRESULT CTerrain::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
+
+	m_pBoxColliderCom->Set_Parent(this);
+	m_pBoxColliderCom->Get_Parentcom();
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(150.f, 0.005f, 150.f));
+	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP);
+
+
 	return S_OK;
 }
 
@@ -134,7 +158,7 @@ CGameObject * CTerrain::Clone(void* pArg )
 void CTerrain::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

@@ -8,6 +8,7 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
+class CBoxCollider;
 END
 
 BEGIN(Client)
@@ -38,10 +39,14 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
+	/* 충돌정보*/
+	CBoxCollider* m_pBoxColliderCom = nullptr;
+
+
 private:
 	HRESULT SetUp_Components();
 
-
+	_float3 testGravity;
 
 public:
 	static CBackGround* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

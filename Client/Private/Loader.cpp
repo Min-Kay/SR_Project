@@ -92,7 +92,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 
 	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Grass_%d.tga"), 2))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
 	{
 		MSGBOX("Failed to create terrain_texture in Loader");
 		return E_FAIL;
@@ -107,7 +107,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Default */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Default.jpg")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"),6))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Player */

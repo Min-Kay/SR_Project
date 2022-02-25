@@ -103,45 +103,73 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("SkyBox"), TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
-
+	
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Ball"), TEXT("Prototype_GameObject_Ball"))))
 		return E_FAIL;
+
+	//for (int i = 0 ;i < 10; ++i)
+	//{
+	//	for (int j = 0; j < 10; ++j)
+	//	{
+	//		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Bottom"), TEXT("Prototype_GameObject_BackGround"))))
+	//			return E_FAIL;
+	//		CGameObject* object_Bottom = pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Bottom"), i*10 + j);
+	//		CTransform * Transform_Bottom = (CTransform*)object_Bottom->Get_Component(COM_TRANSFORM);
+	//		Transform_Bottom->Set_State(CTransform::STATE_POSITION, _float3((j )* 1.f , 0.f, (i )* 1.f));
+	//		Transform_Bottom->Rotation(_float3(1.f, 0.f, 0.f), 1.5708);
+
+	//	}
+	//}
+
+
+
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("left"), TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;
+
+	CGameObject* object_left = pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("left"));
+	CTransform* Transform_left = (CTransform*)object_left->Get_Component(COM_TRANSFORM);
+	Transform_left->Set_State(CTransform::STATE_POSITION, _float3(0.f, 2.f, (1 * 2) * 1.f));
+	Transform_left->Rotation(_float3(0.f, 1.f, 0.f), -1.5708);*/
+
+	////¿”Ω√ ∫Æ
+	//for (int z = 0; z < 20; ++z)
+	//{
+	//
+	//	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("left"), TEXT("Prototype_GameObject_BackGround"))))
+	//		return E_FAIL;
+	//
+	//	CGameObject* object_left = pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("left"), z);
+	//	CTransform * Transform_left = (CTransform*)object_left->Get_Component(COM_TRANSFORM);
+	//	Transform_left->Set_State(CTransform::STATE_POSITION, _float3(0.f, 2.f, (z * 4)* 1.f));
+	//	Transform_left->Rotation(_float3(0.f, 1.f, 0.f), -1.5708);
+	//
+	//
+	//	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("right"), TEXT("Prototype_GameObject_BackGround"))))
+	//		return E_FAIL;*/
+	//
+	///*	CGameObject* object_right = pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("right"), z);
+	//	CTransform * Transform_right = (CTransform*)object_right->Get_Component(COM_TRANSFORM);
+	//	Transform_right->Set_State(CTransform::STATE_POSITION, _float3((z * 2)* 1.f, 2.f, 0.f));
+	//	Transform_right->Rotation(_float3(0.f, 1.f, 0.f), -3.14159);*/
+	//
+	//
+	//	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("up"), TEXT("Prototype_GameObject_BackGround"))))
+	//	//	return E_FAIL;
+	//
+	//	//CGameObject* object_up = pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("up"), z);
+	//	//CTransform * Transform_up = (CTransform*)object_up->Get_Component(COM_TRANSFORM);
+	//	//Transform_up->Set_State(CTransform::STATE_POSITION, _float3((20 * 2)* 1.f, 2.f, (z * 2)* 1.f));
+	//	//Transform_up->Rotation(_float3(0.f, 1.f, 0.f), 1.5708);
+	//
+	//	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("down"), TEXT("Prototype_GameObject_BackGround"))))
+	//	//	return E_FAIL;
+	//
+	//	//CGameObject* object_down = pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("down"), z);
+	//	//CTransform * Transform_down = (CTransform*)object_down->Get_Component(COM_TRANSFORM);
+	//	//Transform_down->Set_State(CTransform::STATE_POSITION, _float3((z * 2)* 1.f, 2.f, (20 * 2)* 1.f));
+	//	//Transform_down->Rotation(_float3(0.f, 1.f, 0.f), 0);
+	//
+	//}
 
 
 	Engine::CUI::UIDESC desc;

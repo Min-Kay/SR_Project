@@ -8,6 +8,7 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Terrain;
+class CBoxCollider;
 
 END
 
@@ -38,6 +39,9 @@ private:
 
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
+
+	/* 충돌정보*/
+	CBoxCollider*		m_pBoxColliderCom = nullptr;
 
 private:
 	HRESULT SetUp_Components();

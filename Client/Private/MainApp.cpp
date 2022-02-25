@@ -158,6 +158,9 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_RECT, CVIBuffer_Rect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Box */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_COLLIDER, CBoxCollider::Create(m_pGraphic_Device))))
+		return E_FAIL;
 
 
 

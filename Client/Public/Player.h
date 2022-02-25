@@ -9,6 +9,7 @@ class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
 class CCamera;
+class CBoxCollider;
 END
 
 BEGIN(Client)
@@ -47,6 +48,8 @@ private:
 
 	CCamera*			m_Camera = nullptr;
 
+	/* 충돌정보*/
+	CBoxCollider* m_pBoxColliderCom = nullptr;
 private:
 	_float				m_fFrame = 0.f;
 	_bool				m_bJump = false;
@@ -56,6 +59,8 @@ private:
 	_uint				m_iCurrIndex = 0; 
 	CPortalControl*		m_pPortalCtrl = nullptr;
 	CGun*					m_pGun = nullptr;
+
+	_float3				testGravity;
 private:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_OnTerrain();

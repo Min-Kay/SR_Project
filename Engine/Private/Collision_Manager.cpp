@@ -30,12 +30,12 @@ HRESULT CCollision_Manager::Collision_Box()
 			if (pCollider == pCollider2)
 				continue;
 
-			if (CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider->Get_ObjType() && CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider2->Get_ObjType())
+			if (CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider->Get_ObjType() )
 				continue;
 			
 			if (CCollider::COLLOBJTYPE::COLLOBJTYPE_PLAYER == pCollider->Get_ObjType() && CCollider::COLLOBJTYPE::COLLOBJTYPE_OBJ == pCollider2->Get_ObjType())
 			{
-					AABB(pCollider, pCollider2);
+				AABB(pCollider, pCollider2);
 			}
 			
 			if (CCollider::COLLOBJTYPE::COLLOBJTYPE_PLAYER == pCollider->Get_ObjType()&& CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider2->Get_ObjType())
@@ -44,7 +44,7 @@ HRESULT CCollision_Manager::Collision_Box()
 			}
 			else if (CCollider::COLLOBJTYPE::COLLOBJTYPE_OBJ == pCollider->Get_ObjType() && CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider2->Get_ObjType())
 			{
-					AABB_TOP(pCollider, pCollider2);
+				AABB_TOP(pCollider, pCollider2);
 			}
 
 		}
@@ -66,21 +66,29 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 {
 	_float3 vMyMax = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
 	_float3 vMyMin = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
-
+	_float3 MySize = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_SIZE);
+	
 	_float3 vOtherMax = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
 	_float3 vOtherMin = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
-
+	_float3 OtherSize = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_SIZE);
 
 	if ((vMyMin.x <= vOtherMax.x && vMyMax.x >= vOtherMin.x) &&
 		(vMyMin.y <= vOtherMax.y && vMyMax.y >= vOtherMin.y) &&
 		(vMyMin.z <= vOtherMax.z && vMyMax.z >= vOtherMin.z))
 	{
+
+		_float3 Collsize = MySize + OtherSize;
+
 		_float3 depth = vMyMin - vOtherMax;
 		depth.x = abs(depth.x);
 		depth.y = abs(depth.y);
 		depth.z = abs(depth.z);
 
-		if (depth.x >= depth.y &&depth.x >= depth.z)
+		Collsize.x =depth.x / Collsize.x;
+		Collsize.y = depth.y / Collsize.y;
+		Collsize.z = depth.z / Collsize.z;
+
+		if (Collsize.x >= Collsize.y && Collsize.x >= Collsize.z)
 		{
 			if (vMyMin.x <= vOtherMax.x) // ¿ÞÂÊ Ãæµ¹
 			{
@@ -96,10 +104,10 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 				D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
 			}
 			D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-			m_vPushDir *= depth.x;	
+			m_vPushDir.x *= depth.x;	
 			_MyCollider->Reflect_Direction(m_vPushDir);
 		}
-		else if (depth.y >= depth.x &&depth.y >= depth.z)
+		else if (Collsize.y >= Collsize.x && Collsize.y >= Collsize.z)
 		{
 				if (vMyMin.y <= vOtherMax.y) // ¾Æ·§¸é Ãæµ¹
 				{
@@ -114,10 +122,10 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 					D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
 				}
 				D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-				m_vPushDir *= depth.y;
+				m_vPushDir.y *= depth.y;
 				_MyCollider->Reflect_Direction(m_vPushDir);
 		}
-		else if (depth.z >= depth.y &&depth.z >= depth.x)
+		else if (Collsize.z >= Collsize.y && Collsize.z >= Collsize.x)
 		{
 			if (vMyMin.z <= vOtherMax.z) // µÞ¸é Ãæµ¹
 			{
@@ -132,7 +140,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 				D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
 			}
 			D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-			m_vPushDir *= depth.z;
+			m_vPushDir.z *= depth.z;
 			_MyCollider->Reflect_Direction(m_vPushDir);
 		}
 

@@ -33,7 +33,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaled(_float3(2.f, 2.f, 2.f));
+	m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(5.f, 5.f, 5.f));
 
 	return S_OK;
 }
@@ -170,6 +171,15 @@ _int CPlayer::Tick(_float fTimeDelta)
 		m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
 
+
+	if(nullptr != m_pBoxColliderCom)
+	{
+		m_pBoxColliderCom->Set_Coilider();
+		pGameInstance->Add_Collider(m_pBoxColliderCom);
+	}
+	testGravity = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	testGravity.y -= 4.5 * (fTimeDelta);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, testGravity);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();
@@ -215,6 +225,10 @@ _int CPlayer::LateTick(_float fTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
 	}
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->Collision_Box();
+	RELEASE_INSTANCE(CGameInstance);
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
@@ -227,6 +241,8 @@ HRESULT CPlayer::Render()
 
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
+
+	m_pBoxColliderCom->Draw_Box();
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(_uint(m_fFrame))))
 		return E_FAIL;
@@ -273,6 +289,14 @@ HRESULT CPlayer::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
+
+	m_pBoxColliderCom->Set_Parent(this);
+	m_pBoxColliderCom->Get_Parentcom();
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_PLAYER);
 
 	return S_OK;
 }
@@ -379,6 +403,7 @@ void CPlayer::Free()
 
 	Safe_Release(m_pGun);
 	Safe_Release(m_pPortalCtrl);
+	Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

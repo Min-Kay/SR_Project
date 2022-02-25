@@ -18,6 +18,7 @@ HRESULT CBackGround::NativeConstruct_Prototype()
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
 
+	
 	return S_OK;
 }
 
@@ -30,8 +31,7 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(rand() % 50 - 25, rand() % 50 - 25, 0.f) );
+	m_pTransformCom->Scaled(_float3(2.f, 2.f, 2.f));
 	return S_OK;
 }
 
@@ -40,6 +40,19 @@ _int CBackGround::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	if (nullptr != m_pBoxColliderCom)
+	{
+		m_pBoxColliderCom->Set_Coilider();
+		pGameInstance->Add_Collider(m_pBoxColliderCom);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
+
+	/*testGravity = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	testGravity.y -= 4.5 * fTimeDelta * 0.1f;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, testGravity);*/
 	return _int();
 }
 
@@ -50,6 +63,10 @@ _int CBackGround::LateTick(_float fTimeDelta)
 
 	if (nullptr == m_pRendererCom)
 		return -1;
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->Collision_Box();
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -64,7 +81,9 @@ HRESULT CBackGround::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+	m_pBoxColliderCom->Draw_Box();
+
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(2)))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
@@ -96,7 +115,14 @@ HRESULT CBackGround::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Default"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
-	
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
+
+	m_pBoxColliderCom->Set_Parent(this);
+	m_pBoxColliderCom->Get_Parentcom();
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP);
 
 	return S_OK;
 }
@@ -131,7 +157,7 @@ CGameObject * CBackGround::Clone(void* pArg )
 void CBackGround::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
