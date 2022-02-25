@@ -63,7 +63,7 @@ void CTransform::Go_Straight(_float fTimeDelta)
 	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
 	_float3		vLook = Get_State(CTransform::STATE_LOOK);
 
-	vPosition += *D3DXVec3Normalize(&vLook, &vLook) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+	vPosition += *D3DXVec3Normalize(&vLook, &vLook) * m_TransformDesc.fSpeedPerSec  * fTimeDelta;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
@@ -73,7 +73,7 @@ void CTransform::Go_BackWard(_float fTimeDelta)
 	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
 	_float3		vLook = Get_State(CTransform::STATE_LOOK);
 
-	vPosition -= *D3DXVec3Normalize(&vLook, &vLook) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+	vPosition -= *D3DXVec3Normalize(&vLook, &vLook) * m_TransformDesc.fSpeedPerSec  * fTimeDelta;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
@@ -93,7 +93,7 @@ void CTransform::Go_Right(_float fTimeDelta)
 	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
 	_float3		vRight = Get_State(CTransform::STATE_RIGHT);
 
-	vPosition += *D3DXVec3Normalize(&vRight, &vRight) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+	vPosition += *D3DXVec3Normalize(&vRight, &vRight) * m_TransformDesc.fSpeedPerSec* fTimeDelta;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
@@ -170,38 +170,30 @@ void CTransform::Scaled(_float3 vScale)
 	Set_State(CTransform::STATE_LOOK, vLook);
 }
 
-void CTransform::Jump(_float fJumpForce, _float fTimeDelta)
-{
-	m_vJumpPos = Get_State(CTransform::STATE_POSITION);
-	_float3		vUp = Get_State(CTransform::STATE_UP);
-
-	m_vJumpPos += *D3DXVec3Normalize(&vUp, &vUp) * m_TransformDesc.fSpeedPerSec * fTimeDelta * fJumpForce;
-
-	Set_State(CTransform::STATE_POSITION, m_vJumpPos);
-}
-
-void CTransform::Gravity(_float fTimeDelta)
+void CTransform::Gravity(_float fWeight, _float fTimeDelta)
 {
 	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
 	_float3		vUp = Get_State(CTransform::STATE_UP);
 
-	vPosition += *D3DXVec3Normalize(&vUp, &vUp) * m_fGravity * fTimeDelta;
+	vPosition -= *D3DXVec3Normalize(&vUp, &vUp) * (fWeight + m_fVelocity + m_fGravity) * fTimeDelta ;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
-_float3 CTransform::Get_JumpPos(_float fTimeDelta)
+void CTransform::Add_Velocity(_float _add)
 {
-	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
-	_float3		vUp = Get_State(CTransform::STATE_UP);
-
-	vPosition += *D3DXVec3Normalize(&vUp, &vUp) * m_fGravity * fTimeDelta;
-
-	vPosition += m_vJumpPos;
-
-	return vPosition;
+	m_fVelocity = m_fVelocity + _add >= 0.f ? m_fVelocity + _add : 0.f;
 }
 
+void CTransform::Set_Velocity(_float _vel)
+{
+	m_fVelocity = _vel >= 0.f ? _vel : m_fVelocity;
+}
+
+const _float& CTransform::Get_Velocity() const
+{
+	return m_fVelocity; 
+}
 
 HRESULT CTransform::Bind_OnGraphicDevice()
 {

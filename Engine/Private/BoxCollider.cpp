@@ -79,8 +79,8 @@ HRESULT CBoxCollider::Set_Coilider()
 	}
  
 	m_CollInfo[COLLIDERINFO::COLL_CENTER] = m_ParentPos->Get_State(CTransform::STATE_POSITION);
-	m_CollInfo[COLLIDERINFO::COLL_MIN] = m_CollInfo[COLLIDERINFO::COLL_CENTER] - (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5);
-	m_CollInfo[COLLIDERINFO::COLL_MAX] = m_CollInfo[COLLIDERINFO::COLL_CENTER] + (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5);
+	m_CollInfo[COLLIDERINFO::COLL_MIN] = m_CollInfo[COLLIDERINFO::COLL_CENTER] - (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5f);
+	m_CollInfo[COLLIDERINFO::COLL_MAX] = m_CollInfo[COLLIDERINFO::COLL_CENTER] + (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5f);
 	
 	return S_OK;
 }
@@ -89,25 +89,22 @@ void CBoxCollider::Draw_Box()
 {
 	LPD3DXMESH box;
 	D3DXCreateBox(m_pGraphic_Device, m_CollInfo[COLLIDERINFO::COLL_SIZE].x, m_CollInfo[COLLIDERINFO::COLL_SIZE].y, m_CollInfo[COLLIDERINFO::COLL_SIZE].z, &box, NULL);
+	
 	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 	box->DrawSubset(0);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
+	
 	Safe_Release(box);
 }
 
-_float3 CBoxCollider::Reflect_Direction(_float3& _vDir)
+void CBoxCollider::Reflect_Direction(_float3& _vDir)
 {
-
-	//D3DXVec3Normalize(&_vDir, &_vDir);
-
-	// 방향벡터 * 상수값해서 일단은 그렇게 
-	//_float3 radius = m_CollInfo[CBoxCollider::COLLIDERINFO::COLL_SIZE] * 0.5;
-
 	m_ParentPos->Set_State(CTransform::STATE_POSITION, m_ParentPos->Get_State(CTransform::STATE_POSITION) +  _vDir);
-	//
-	return _float3{ 0.f, 0.f, 0.f };
+	Set_Coilider();
 }
 
 

@@ -100,6 +100,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+	{
+		MSGBOX("Failed to add terrain clone in LevelGamePlay");
+		return E_FAIL;
+	}
+
+	static_cast<CTransform*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, pLayerTag, 0)->Get_Component(COM_TRANSFORM))->Set_State(CTransform::STATE_POSITION, _float3(9.f,-5.f,0.f));
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("SkyBox"), TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 

@@ -27,7 +27,7 @@ public:
 
 public:
 	HRESULT Set_Parent(CGameObject* _obj);
-	const CGameObject* Get_Parent() const ;
+	CGameObject* Get_Parent();
 
 public:
 	HRESULT Set_CollType(COLLTYPE _type);

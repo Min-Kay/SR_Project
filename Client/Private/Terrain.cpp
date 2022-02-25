@@ -44,9 +44,8 @@ _int CTerrain::Tick(_float fTimeDelta)
 	if (nullptr != m_pBoxColliderCom)
 	{
 		m_pBoxColliderCom->Set_Coilider();
-		pGameInstance->Add_Collider(m_pBoxColliderCom);
-	}
 
+	}
 	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
@@ -59,10 +58,6 @@ _int CTerrain::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return -1;
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->Collision_Box();
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -121,9 +116,12 @@ HRESULT CTerrain::SetUp_Components()
 
 	m_pBoxColliderCom->Set_Parent(this);
 	m_pBoxColliderCom->Get_Parentcom();
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(150.f, 0.005f, 150.f));
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(5.f, 5.f, 5.f));
 	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP);
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->Add_Collider(CCollider::COLLOBJTYPE_MAP, m_pBoxColliderCom);
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

@@ -57,10 +57,10 @@ public:
 	void Scaled(_float3 vScale);
 
 public:
-	void Jump(_float fJumpForce, _float fTimeDelta);
-	void Gravity(_float fTimeDelta);
-	_float3 Get_JumpPos(_float fTimeDelta);
-	
+	void Gravity(_float weight , _float fTimeDelta);
+	void Add_Velocity(_float _add);
+	void Set_Velocity(_float _vel);
+	const _float& Get_Velocity() const;
 
 public:
 	HRESULT Bind_OnGraphicDevice();
@@ -70,8 +70,8 @@ private:
 	TRANSFORMDESC		m_TransformDesc;
 
 private:
-	_float				m_fGravity;
-	_float3				m_vJumpPos;
+	_float				m_fGravity = 5.f;
+	_float				m_fVelocity = 0.f;
 
 public:
 	static CTransform* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

@@ -84,9 +84,12 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pCamera_Manager->LateTick(fTimeDelta))
 		return -1;
 
-	if (FAILED(m_Collision_Manager->Collision_Box()))
-		return -1; 
 
+	if (FAILED(m_Collision_Manager->Collision(CCollider::COLLOBJTYPE_OBJ, CCollider::COLLOBJTYPE_OBJ)))
+		return -1;
+
+	if (FAILED(m_Collision_Manager->Collision(CCollider::COLLOBJTYPE_OBJ, CCollider::COLLOBJTYPE_MAP)))
+		return -1;
 
 	m_pInput_Device->Tick_KeyState();
 
@@ -409,7 +412,7 @@ void CGameInstance::StopAll()
 	return m_Sound_Manager->StopAll();
 }
 
-HRESULT CGameInstance::Add_Collider(CBoxCollider* collider)
+HRESULT CGameInstance::Add_Collider(CCollider::COLLOBJTYPE _type, CBoxCollider* collider)
 {
 	if (nullptr == m_Collision_Manager)
 	{
@@ -417,18 +420,34 @@ HRESULT CGameInstance::Add_Collider(CBoxCollider* collider)
 		return E_FAIL;
 	}
 
-	return m_Collision_Manager->Add_Collider(collider);
+	return m_Collision_Manager->Add_Collider(_type, collider);
 }
 
-HRESULT CGameInstance::Collision_Box()
+HRESULT CGameInstance::Release_Collider(CCollider::COLLOBJTYPE _type, CBoxCollider* collider)
 {
 	if (nullptr == m_Collision_Manager)
-	{
-		MSGBOX("Empty m_pCollision_Manager in CGameInstance");
 		return E_FAIL;
-	}
 
-	return m_Collision_Manager->Collision_Box();
+	return m_Collision_Manager->Release_Collider(_type,collider);
+
+}
+
+HRESULT CGameInstance::Release_ColliderList()
+{
+	if (nullptr == m_Collision_Manager)
+		return E_FAIL;
+
+	return m_Collision_Manager->Release_ColliderList();
+}
+
+list<CGameObject*>& CGameInstance::Get_Collision_List(CBoxCollider* target)
+{
+	return m_Collision_Manager->Get_Collision_List(target);
+}
+
+list<CGameObject*>& CGameInstance::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float& dis)
+{
+	return m_Collision_Manager->Get_Ray_Collision_List(dir,pos,dis);
 }
 
 void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)

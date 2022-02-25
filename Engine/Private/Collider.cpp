@@ -33,7 +33,7 @@ HRESULT CCollider::Set_Parent(CGameObject* _obj)
 	return S_OK;
 }
 
-const CGameObject* CCollider::Get_Parent() const
+CGameObject* CCollider::Get_Parent() 
 {
 	return m_Parent;
 }

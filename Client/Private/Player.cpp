@@ -33,8 +33,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(5.f, 5.f, 5.f));
+	//m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(5.f, 5.f, 5.f));
 
 	return S_OK;
 }
@@ -71,6 +71,16 @@ _int CPlayer::Tick(_float fTimeDelta)
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
 
+	if (pGameInstance->Get_Key_Press(DIK_Q))
+	{
+		_float3 m_vJumpPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float3 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+		m_vJumpPos += *D3DXVec3Normalize(&vUp, &vUp) * fTimeDelta * m_fJumpForce * 100.f;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vJumpPos);
+	}
+
 	if(pGameInstance->Get_Key_Press(DIK_W) || pGameInstance->Get_Key_Press(DIK_S) || pGameInstance->Get_Key_Press(DIK_D) || pGameInstance->Get_Key_Press(DIK_A))
 	{
 		pGameInstance->Play_Sound(TEXT("Walk.mp3"), CSoundMgr::CHANNELID::PLAYER, 1.f);
@@ -80,11 +90,15 @@ _int CPlayer::Tick(_float fTimeDelta)
 		pGameInstance->StopSound(CSoundMgr::PLAYER);
 	}
 
-	if (pGameInstance->Get_Key_Down(DIK_SPACE))
-	{
+	if (!m_bJump && pGameInstance->Get_Key_Down(DIK_SPACE))
 		m_bJump = true;
-		m_pTransformCom->Jump(m_fJumpForce,fTimeDelta);
+
+
+	if(m_bJump)
+	{
+		Tick_JumpState(fTimeDelta);
 	}
+
 
 	if (nullptr == m_pPortalCtrl)
 	{
@@ -165,21 +179,16 @@ _int CPlayer::Tick(_float fTimeDelta)
 		break;
 	}
 
+	m_pTransformCom->Gravity(1.f, fTimeDelta);
 
 	if (m_Camera)
-	{
 		m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	}
-
 
 	if(nullptr != m_pBoxColliderCom)
 	{
 		m_pBoxColliderCom->Set_Coilider();
-		pGameInstance->Add_Collider(m_pBoxColliderCom);
 	}
-	testGravity = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	testGravity.y -= 4.5 * (fTimeDelta);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, testGravity);
+	
 	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();
@@ -195,19 +204,6 @@ _int CPlayer::LateTick(_float fTimeDelta)
 
 	if (nullptr == m_pTransformCom)
 		return -1;
-
-	//m_pTransformCom->Gravity(fTimeDelta);
-
-	/*if (FAILED(Check_Terrain()))
-		return -1;
-	if (m_bJump == false)
-	{
-		if (FAILED(SetUp_OnTerrain()))
-		{
-			MSGBOX("Failed to Set_OnTerrain in CPlayer");
-			return -1;
-		}
-	}*/
 
 	if(m_Camera)
 	{
@@ -225,9 +221,6 @@ _int CPlayer::LateTick(_float fTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
 	}
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->Collision_Box();
-	RELEASE_INSTANCE(CGameInstance);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -298,57 +291,32 @@ HRESULT CPlayer::SetUp_Components()
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_PLAYER);
 
-	return S_OK;
-}
-
-HRESULT CPlayer::SetUp_OnTerrain()
-{
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	CVIBuffer_Terrain* pVIBuffer_Terrain = (CVIBuffer_Terrain*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), COM_BUFFER);
-	if (nullptr == pVIBuffer_Terrain)
-		return E_FAIL;
-
-	_float3		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	CTransform* pTerrainTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), COM_TRANSFORM, 0);
-	if (nullptr == pTerrainTransform)
-		return E_FAIL;
-
-	_float4x4	WorldMatrixInverse = pTerrainTransform->Get_WorldMatrixInverse();
-
-	_float3		vLocalPos;
-	D3DXVec3TransformCoord(&vLocalPos, &vPosition, &WorldMatrixInverse);
-
-	/* 지형의 로컬스페이스 내에서의 높이를 구했다. */
-	vLocalPos.y = pVIBuffer_Terrain->Compute_Y(vLocalPos);
-
-	/* 월드스페이스 상으로 표현해주기위해, 지형의 월드행렬을 곱해서 표현한다. */
-	D3DXVec3TransformCoord(&vPosition, &vLocalPos, &pTerrainTransform->Get_WorldMatrix());
-	vPosition.y += 0.5f;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Add_Collider(CCollider::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CPlayer::Check_Terrain()
+void CPlayer::Tick_JumpState(_float fTimeDelta)
 {
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CTransform* pTerrainTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), COM_TRANSFORM, 0);
-	if (nullptr == pTerrainTransform)
-		return E_FAIL;
+	_float3 m_vJumpPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float3 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 
-	_float3 Terrain_Position = pTerrainTransform->Get_State(CTransform::STATE_POSITION);
+	m_vJumpPos += *D3DXVec3Normalize(&vUp, &vUp) * fTimeDelta * m_fJumpForce * m_pTransformCom->Get_Gravity();
 
-	if (Terrain_Position.y >= m_pTransformCom->Get_State(CTransform::STATE_POSITION).y)
+	m_CurrJumpForce += m_fJumpForce;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vJumpPos);
+
+	if (m_CurrJumpForce >= m_fMaxJumpForce )
+	{
 		m_bJump = false;
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	return S_OK;
+		m_CurrJumpForce = 0.f; 
+	}
 }
+
 
 HRESULT CPlayer::SetUp_RenderState()
 {
@@ -365,7 +333,6 @@ HRESULT CPlayer::SetUp_RenderState()
 HRESULT CPlayer::Release_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
 	return S_OK;
 }

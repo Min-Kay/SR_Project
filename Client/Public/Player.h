@@ -33,6 +33,10 @@ public:
 public:
 	HRESULT Set_Cam(CCamera* cam);
 
+public:
+	void Tick_JumpState(_float fTimeDelta);
+
+
 private:
 	/* 텍스쳐 */
 	CTexture*			m_pTextureCom = nullptr;
@@ -50,17 +54,20 @@ private:
 
 	/* 충돌정보*/
 	CBoxCollider* m_pBoxColliderCom = nullptr;
+
 private:
 	_float				m_fFrame = 0.f;
 	_bool				m_bJump = false;
-	_float				m_fJumpForce = 20.f;
+	_float				m_CurrJumpForce = 0.f;
+	_float				m_fJumpForce = 3.f;
+	_float				m_fMaxJumpForce = 100.f;
+	_bool				m_OnGround = false;
 
 private:
 	_uint				m_iCurrIndex = 0; 
 	CPortalControl*		m_pPortalCtrl = nullptr;
-	CGun*					m_pGun = nullptr;
+	CGun*				m_pGun = nullptr;
 
-	_float3				testGravity;
 private:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_OnTerrain();

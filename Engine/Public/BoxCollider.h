@@ -40,7 +40,7 @@ public:
 	HRESULT Set_Coilider();
 	void Draw_Box();
 	
-	_float3 Reflect_Direction(_float3& _vDir);
+	void Reflect_Direction(_float3& _vDir);
 
 private:
 	CTransform* m_ParentPos = nullptr;

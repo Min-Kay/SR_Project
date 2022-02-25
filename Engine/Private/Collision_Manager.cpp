@@ -8,141 +8,171 @@ CCollision_Manager::CCollision_Manager()
 {
 }
 
-list<CGameObject*> CCollision_Manager::Collision_All()
+list<CGameObject*>& CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 {
-	list<CGameObject*> objList;
-	return objList;
-}
+	list<CGameObject*> list;
 
-HRESULT CCollision_Manager::Collision_Box()
-{
-	// 들어오는  collider의 max값과 min값을 찾아서 6축을 비교 world 상에서 비교를 해야겠지
-	// object collider component를 각각 줄거고 그 component manager를 
-	//collision box들을 불러와서 모든 collision을 비교?
-
-	for (auto& pCollider : m_CollList)
+	for (auto& collList : m_CollList)
 	{
-		//if (m_CollList)
-		//	return E_FAIL;
-
-		for (auto& pCollider2 : m_CollList)
+		for(auto& coll : collList)
 		{
-			if (pCollider == pCollider2)
+			if (coll == target)
 				continue;
 
-			if (CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider->Get_ObjType() )
-				continue;
-			
-			if (CCollider::COLLOBJTYPE::COLLOBJTYPE_PLAYER == pCollider->Get_ObjType() && CCollider::COLLOBJTYPE::COLLOBJTYPE_OBJ == pCollider2->Get_ObjType())
+			if (AABB(target, coll, true))
 			{
-				AABB(pCollider, pCollider2);
+				list.push_back(coll->Get_Parent());
 			}
-			
-			if (CCollider::COLLOBJTYPE::COLLOBJTYPE_PLAYER == pCollider->Get_ObjType()&& CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider2->Get_ObjType())
-			{
-					AABB_TOP(pCollider, pCollider2);
-			}
-			else if (CCollider::COLLOBJTYPE::COLLOBJTYPE_OBJ == pCollider->Get_ObjType() && CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP == pCollider2->Get_ObjType())
-			{
-				AABB_TOP(pCollider, pCollider2);
-			}
-
 		}
 	}
 
-	m_CollList.clear();
-	return S_OK;
+	return list; 
 }
 
-
-
-HRESULT CCollision_Manager::Add_Collider(CBoxCollider* collider)
+list<CGameObject*>& CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float& dis)
 {
-	m_CollList.push_back(collider);
+	list<CGameObject*> list;
+
+	for (auto& collList : m_CollList)
+	{
+		for (auto& coll : collList)
+		{
+			if (RayCollision(dir, pos, coll, dis))
+			{
+				list.push_back(coll->Get_Parent());
+			}
+		}
+	}
+
+	return list;
+}
+
+HRESULT CCollision_Manager::Collision(CCollider::COLLOBJTYPE _first, CCollider::COLLOBJTYPE _second)
+{
+	for (auto& pCollider : m_CollList[_first])
+	{
+		for (auto& pCollider2 : m_CollList[_second])
+		{
+			if (pCollider2 == pCollider)
+				continue;
+
+			AABB(pCollider, pCollider2, false);
+		}
+	}
 	return S_OK;
 }
 
-_bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCollider)
+HRESULT CCollision_Manager::Add_Collider(CCollider::COLLOBJTYPE _type,  CBoxCollider* collider)
+{
+	auto iter = find_if(m_CollList[_type].begin(), m_CollList[_type].end(), [collider](CBoxCollider* a) {return a == collider; });
+
+	if (iter != m_CollList[_type].end())
+		return E_FAIL;
+
+	Safe_AddRef(collider);
+	m_CollList[_type].push_back(collider);
+	return S_OK;
+}
+
+HRESULT CCollision_Manager::Release_Collider(CCollider::COLLOBJTYPE _type, CBoxCollider* collider)
+{
+	auto iter = find_if(m_CollList[_type].begin(), m_CollList[_type].end(), [collider](CBoxCollider* a) {return a == collider; });
+
+	if (iter != m_CollList[_type].end())
+		return E_FAIL;
+
+	Safe_Release(collider);
+	m_CollList[_type].erase(iter);
+	return S_OK;
+
+}
+
+HRESULT CCollision_Manager::Release_ColliderList()
+{
+	for (auto& collList : m_CollList)
+	{
+		for (auto& pBoxCollider : collList)
+			Safe_Release(pBoxCollider);
+		collList.clear();
+	}
+	return S_OK; 
+}
+
+_bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCollider, _bool justReturn)
 {
 	_float3 vMyMax = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
 	_float3 vMyMin = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
-	_float3 MySize = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_SIZE);
-	
+
 	_float3 vOtherMax = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
 	_float3 vOtherMin = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
-	_float3 OtherSize = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_SIZE);
+	//_float3 vOtherSize = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_SIZE);
 
 	if ((vMyMin.x <= vOtherMax.x && vMyMax.x >= vOtherMin.x) &&
 		(vMyMin.y <= vOtherMax.y && vMyMax.y >= vOtherMin.y) &&
 		(vMyMin.z <= vOtherMax.z && vMyMax.z >= vOtherMin.z))
 	{
+		if (justReturn)
+			return true; 
 
-		_float3 Collsize = MySize + OtherSize;
+		_float3 diff = vMyMax - vOtherMin;
 
-		_float3 depth = vMyMin - vOtherMax;
-		depth.x = abs(depth.x);
-		depth.y = abs(depth.y);
-		depth.z = abs(depth.z);
+		_float3 vMyCenter = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_CENTER);
+		_float3 vOtherCenter = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_CENTER);
 
-		Collsize.x =depth.x / Collsize.x;
-		Collsize.y = depth.y / Collsize.y;
-		Collsize.z = depth.z / Collsize.z;
+		_float3 vMyCenterDir =  vOtherCenter - vMyCenter;
+		_float3 vOtherCenterDir = vMyCenter - vOtherCenter;
 
-		if (Collsize.x >= Collsize.y && Collsize.x >= Collsize.z)
+		D3DXVec3Normalize(&vMyCenterDir,&vMyCenterDir);
+		D3DXVec3Normalize(&vOtherCenterDir, &vOtherCenterDir);
+
+		_float3 vMyPoint[8], vOtherPoint[8];
+
+		int index[12][3] = { {0,1,2}, {0,2,3},{0,1,5},{0,4,5},{1,3,6},{1,5,6},{2,3,7},{2,6,7},{3,0,4},{3,7,4},{4,5,6},{4,7,6} };
+
+		vMyPoint[0] = vMyMin;
+		vMyPoint[1] = _float3(vMyMax.x, vMyMin.y, vMyMin.z);
+		vMyPoint[2] = _float3(vMyMax.x, vMyMin.y, vMyMax.z);
+		vMyPoint[3] = _float3(vMyMin.x, vMyMin.y, vMyMax.z);
+		vMyPoint[4] = _float3(vMyMin.x, vMyMax.y, vMyMin.z);
+		vMyPoint[5] = _float3(vMyMax.x, vMyMax.y, vMyMin.z);
+		vMyPoint[6] = vMyMax;
+		vMyPoint[7] = _float3(vMyMin.x, vMyMax.y, vMyMax.z);
+
+		vOtherPoint[0] = vOtherMin;
+		vOtherPoint[1] = _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z);
+		vOtherPoint[2] = _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
+		vOtherPoint[3] = _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z);
+		vOtherPoint[4] = _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z);
+		vOtherPoint[5] = _float3(vOtherMax.x, vOtherMax.y, vOtherMin.z);
+		vOtherPoint[6] = vOtherMax;
+		vOtherPoint[7] = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z);
+
+		_float u, v, myDis, otherDis;
+
+		for(auto& i : index)
 		{
-			if (vMyMin.x <= vOtherMax.x) // 왼쪽 충돌
-			{
-				_float3 vFirst = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z);
-				_float3 vSecond = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z);
-				D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-			
-			}
-			else if (vMyMax.x >= vOtherMin.x) // 오른쪽 충돌
-			{
-				_float3 vFirst = _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
-				_float3 vSecond = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
-				D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-			}
-			D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-			m_vPushDir.x *= depth.x;	
-			_MyCollider->Reflect_Direction(m_vPushDir);
+			D3DXIntersectTri(&vMyPoint[i[0]], &vMyPoint[i[1]], &vMyPoint[i[2]], &vMyCenter, &vMyCenterDir, &u, &v, &myDis);
+			D3DXIntersectTri(&vOtherPoint[i[0]], &vOtherPoint[i[1]], &vOtherPoint[i[2]], &vOtherCenter, &vOtherCenterDir, &u, &v, &otherDis);
 		}
-		else if (Collsize.y >= Collsize.x && Collsize.y >= Collsize.z)
-		{
-				if (vMyMin.y <= vOtherMax.y) // 아랫면 충돌
-				{
-					_float3 vFirst = _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMin.z);
-					_float3 vSecond = _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z);
-					D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-				}
-				else if (vMyMax.y >= vOtherMin.y) // 윗면 충돌
-				{
-					_float3 vFirst = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMax.y, vOtherMin.z);
-					_float3 vSecond = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z);
-					D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-				}
-				D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-				m_vPushDir.y *= depth.y;
-				_MyCollider->Reflect_Direction(m_vPushDir);
-		}
-		else if (Collsize.z >= Collsize.y && Collsize.z >= Collsize.x)
-		{
-			if (vMyMin.z <= vOtherMax.z) // 뒷면 충돌
-			{
-				_float3 vFirst = _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
-				_float3 vSecond = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z);
-				D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-			}
-			else if (vMyMax.z >= vOtherMin.z) // 앞면 충돌
-			{
-				_float3 vFirst = _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z);
-				_float3 vSecond = _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z) - _float3(vOtherMax.x, vOtherMax.y, vOtherMin.z);
-				D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-			}
-			D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-			m_vPushDir.z *= depth.z;
-			_MyCollider->Reflect_Direction(m_vPushDir);
-		}
+
+		_float3 myCollPos = vMyCenterDir * myDis;
+		_float3 otherCollPos = vOtherCenterDir * otherDis;
+
+		_float3 myCollPoint = myCollPos + vMyCenter;
+		_float3 otherCollPoint = otherCollPos + vOtherCenter;
+
+		_float3 resultDir= otherCollPoint - myCollPoint;
+
+
+		if (diff.x < diff.y && diff.z < diff.y)
+			_MyCollider->Reflect_Direction(_float3(0.f, resultDir.y, 0.f));
+
+		else if (diff.y < diff.x && diff.z < diff.x)
+			_MyCollider->Reflect_Direction(_float3(resultDir.x, 0.f, 0.f));
+
+		else if (diff.x < diff.z && diff.y < diff.z)
+			_MyCollider->Reflect_Direction(_float3(0.f, 0.f, resultDir.z ));
+
 
 		return true;
 	}
@@ -153,74 +183,50 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 }
 
-_bool CCollision_Manager::AABB_TOP(CBoxCollider * _MyCollider, CBoxCollider * _OtherCollider)
+_bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float& dis)
 {
-	_float3 vMyMax = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
-	_float3 vMyMin = (_MyCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
+	_float3 vOtherPoint[8];
 
 	_float3 vOtherMax = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
 	_float3 vOtherMin = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
 
+	int index[12][3] = { {0,1,2}, {0,2,3},{0,1,5},{0,4,5},{1,3,6},{1,5,6},{2,3,7},{2,6,7},{3,0,4},{3,7,4},{4,5,6},{4,7,6} };
 
-	if ((vMyMin.x <= vOtherMax.x && vMyMax.x >= vOtherMin.x) &&
-		(vMyMin.y <= vOtherMax.y && vMyMax.y >= vOtherMin.y) &&
-		(vMyMin.z <= vOtherMax.z && vMyMax.z >= vOtherMin.z))
+	vOtherPoint[0] = vOtherMin;
+	vOtherPoint[1] = _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z);
+	vOtherPoint[2] = _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z);
+	vOtherPoint[3] = _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z);
+	vOtherPoint[4] = _float3(vOtherMin.x, vOtherMax.y, vOtherMin.z);
+	vOtherPoint[5] = _float3(vOtherMax.x, vOtherMax.y, vOtherMin.z);
+	vOtherPoint[6] = vOtherMax;
+	vOtherPoint[7] = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z);
+
+	dis = 0.f;
+	_float u, v, otherDis;
+
+	for (auto& i : index)
 	{
-		_float3 depth = vMyMin - vOtherMax;
-
-		depth.x = abs(depth.x);
-		depth.y = abs(depth.y);
-		depth.z = abs(depth.z);
-
-
-		
-				if (vMyMin.y <= vOtherMax.y) // 아랫면 충돌
-				{
-					_float3 vFirst = _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMin.z);
-					_float3 vSecond = _float3(vOtherMax.x, vOtherMin.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMin.y, vOtherMax.z);
-					D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-				}
-				else if (vMyMax.y >= vOtherMin.y) // 윗면 충돌
-				{
-					_float3 vFirst = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMax.x, vOtherMax.y, vOtherMin.z);
-					_float3 vSecond = _float3(vOtherMax.x, vOtherMax.y, vOtherMax.z) - _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z);
-					D3DXVec3Cross(&m_vPushDir, &vFirst, &vSecond);
-				}
-				D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-				m_vPushDir *= depth.y;
-				_MyCollider->Reflect_Direction(m_vPushDir);
-				
-		
-
-		return true;
+		if (D3DXIntersectTri(&vOtherPoint[i[0]], &vOtherPoint[i[1]], &vOtherPoint[i[2]], &pos, &dir, &u, &v, &otherDis))
+		{
+			if(dis == 0.f || dis > otherDis)
+				dis = otherDis;
+		}
 	}
 
-	return false;
+	if (dis > 0.f)
+		return true;
+	return false; 
 }
-
-//_float3 CCollision_Manager::Reflect_Direction()
-//{
-//	if (m_bAABB == true)
-//	{
-//		//m_vPushDir;
-//		D3DXVec3Normalize(&m_vPushDir, &m_vPushDir);
-//
-//		_float radius = CBoxCollider::COLLIDERINFO::COLL_SIZE * 0.5;
-//		m_vPushDir *= radius;
-//		return m_vPushDir;
-//	}
-//	else
-//		return _float3{ 0.f, 0.f, 0.f };
-//}
-
 
 void CCollision_Manager::Free()
 {
-	
-	for (auto& pBoxCollider : m_CollList)
-		Safe_Release(pBoxCollider);
 
-	m_CollList.clear();
+	for(auto& collList : m_CollList)
+	{
+		for (auto& pBoxCollider : collList)
+			Safe_Release(pBoxCollider);
+		collList.clear();
+	}
 
 }
 
