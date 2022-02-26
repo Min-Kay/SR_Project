@@ -1,6 +1,8 @@
 #include "Collision_Manager.h"
 #include "BoxCollider.h"
 #include "Collider.h"
+#include "GameObject.h"
+#include "Transform.h"
 
 IMPLEMENT_SINGLETON(CCollision_Manager)
 
@@ -8,43 +10,52 @@ CCollision_Manager::CCollision_Manager()
 {
 }
 
-list<CGameObject*>& CCollision_Manager::Get_Collision_List(CBoxCollider* target)
+list<CGameObject*>* CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 {
-	list<CGameObject*> list;
+	list<CGameObject*>* collList = new list<CGameObject*>;
 
-	for (auto& collList : m_CollList)
+	for (auto& cl : m_CollList)
 	{
-		for(auto& coll : collList)
+		for(auto& coll : cl)
 		{
 			if (coll == target)
 				continue;
 
 			if (AABB(target, coll, true))
 			{
-				list.push_back(coll->Get_Parent());
+				collList->push_back(coll->Get_Parent());
 			}
 		}
 	}
 
-	return list; 
+	return collList;
 }
 
-list<CGameObject*>& CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float& dis)
+list<CGameObject*>* CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
 {
-	list<CGameObject*> list;
+	list<CGameObject*>* colllist = new list<CGameObject*>;
 
-	for (auto& collList : m_CollList)
+	for (auto& cl : m_CollList)
 	{
-		for (auto& coll : collList)
+		for (auto& coll : cl)
 		{
 			if (RayCollision(dir, pos, coll, dis))
 			{
-				list.push_back(coll->Get_Parent());
+				colllist->push_back(coll->Get_Parent());
 			}
 		}
 	}
 
-	return list;
+	colllist->sort([pos](CGameObject* a, CGameObject* b)->bool
+		{
+			D3DXVECTOR3 dir1 = pos - (static_cast<CTransform*>(a->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION));
+
+			D3DXVECTOR3 dir2 = pos - (static_cast<CTransform*>(b->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION));
+
+			return D3DXVec3Length(&dir1) < D3DXVec3Length(&dir2);
+		});
+
+	return colllist;
 }
 
 HRESULT CCollision_Manager::Collision(CCollider::COLLOBJTYPE _first, CCollider::COLLOBJTYPE _second)
@@ -183,7 +194,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 }
 
-_bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float& dis)
+_bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis)
 {
 	_float3 vOtherPoint[8];
 
@@ -201,20 +212,17 @@ _bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _
 	vOtherPoint[6] = vOtherMax;
 	vOtherPoint[7] = _float3(vOtherMin.x, vOtherMax.y, vOtherMax.z);
 
-	dis = 0.f;
 	_float u, v, otherDis;
 
 	for (auto& i : index)
 	{
 		if (D3DXIntersectTri(&vOtherPoint[i[0]], &vOtherPoint[i[1]], &vOtherPoint[i[2]], &pos, &dir, &u, &v, &otherDis))
 		{
-			if(dis == 0.f || dis > otherDis)
-				dis = otherDis;
+			if (dis >= otherDis)
+				return true;
 		}
 	}
 
-	if (dis > 0.f)
-		return true;
 	return false; 
 }
 

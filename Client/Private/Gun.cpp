@@ -99,7 +99,7 @@ void CGun::Fire()
 	mt19937 ranX(rd());
 	mt19937 ranY(rd());
 
-	uniform_int_distribution<_uint> spread(0, m_iCurrSpread); 
+	const uniform_int_distribution<_uint> spread(0, m_iCurrSpread); 
 
 	_float randomPos[2];
 
@@ -121,7 +121,7 @@ void CGun::Fire()
 	/* 로컬위치 * 월드 * 뷰 */
 
 	_float4x4		ProjMatrix;
-	CCamera::CAMERADESC camDesc = m_camera_->Get_Desc();
+	const CCamera::CAMERADESC camDesc = m_camera_->Get_Desc();
 	D3DXMatrixPerspectiveFovLH(&ProjMatrix, camDesc.fFovy, camDesc.fAspect, camDesc.fNear, camDesc.fFar);
 	D3DXMatrixInverse(&ProjMatrix, nullptr, &ProjMatrix);
 	D3DXVec4Transform(&vTargetPos, &vTargetPos, &ProjMatrix);
@@ -131,11 +131,24 @@ void CGun::Fire()
 
 	/* 월드스페이스 상의 위치로 변환한다. */
 	/* 로컬위치 * 월드 */
-	_float4x4		ViewMatrixInverse = m_camera_->Get_CameraTransform()->Get_WorldMatrix();
+	const _float4x4		ViewMatrixInverse = m_camera_->Get_CameraTransform()->Get_WorldMatrix();
 	D3DXVec3TransformNormal(&m_vRayDirCH, &m_vRayDirCH, &ViewMatrixInverse);
 	D3DXVec3TransformCoord(&m_vRayPosCH, &m_vRayPosCH, &ViewMatrixInverse);
 
 	D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
+
+	p_instance->StopSound(CSoundMgr::SYSTEM_EFFECT2);
+	p_instance->Play_Sound(TEXT("Rifle_Fire.mp3"), CSoundMgr::SYSTEM_EFFECT2, 1.0f);
+
+	list<CGameObject*>* hitList = p_instance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, m_fRange);
+
+	if (hitList->empty())
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return;
+	}
+
+	const _float3 pos = static_cast<CTransform*>(hitList->front()->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION);
 
 	//충돌 처리하기
 	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Bullet"), TEXT("Prototype_GameObject_Ball"))))
@@ -145,10 +158,11 @@ void CGun::Fire()
 
 	CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
 	tr->Scaled(_float3(0.5f,0.5f,0.5f));
-	tr->Set_State(CTransform::STATE_POSITION, m_vRayPosCH + m_vRayDirCH * m_fRange);
+	tr->Set_State(CTransform::STATE_POSITION, pos);
 
-	p_instance->StopSound(CSoundMgr::SYSTEM_EFFECT2);
-	p_instance->Play_Sound(TEXT("Rifle_Fire.mp3"), CSoundMgr::SYSTEM_EFFECT2,1.0f);
+	hitList->clear();
+	delete hitList;
+
 	RELEASE_INSTANCE(CGameInstance);
 }
 
