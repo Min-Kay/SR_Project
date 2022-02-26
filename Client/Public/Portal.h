@@ -23,6 +23,7 @@ protected:
 public:
 	typedef struct tagPortalDesc {
 		_float3		vEye, vAt, vAxisY;
+		_float3		vSubAxis;
 		
 		_uint iLevel;
 		_uint iPortalColor;

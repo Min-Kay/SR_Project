@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "PortalControl.h"
+
+#include "Camera_Player.h"
 #include "Portal.h"
 #include "GameInstance.h"
 #include "Cam_Portal.h"
@@ -33,7 +35,6 @@ void CPortalControl::Free()
 {
 	Safe_Release(m_pPortal_Orange);
 	Safe_Release(m_pPortal_Blue);
-	Safe_Release(m_pPlayerTransform);
 	__super::Free();
 }
 
@@ -83,12 +84,12 @@ _int CPortalControl::LateTick(_float fTimeDelta)
 		if (nullptr == m_pPortal_Blue->Get_Link_Portal())
 			m_pPortal_Blue->Link_Portal(m_pPortal_Orange);
 
-		if (nullptr != m_pPlayerTransform)
+		if (nullptr != m_camera)
 		{
 			if (nullptr != m_pPortal_Orange->Get_Link_Portal() && nullptr != m_pPortal_Blue->Get_Link_Portal())
 			{
-				m_pPortal_Blue->Set_Cam_Angle(m_pPlayerTransform);
-				m_pPortal_Orange->Set_Cam_Angle(m_pPlayerTransform);
+				m_pPortal_Blue->Set_Cam_Angle(m_camera->Get_CameraTransform());
+				m_pPortal_Orange->Set_Cam_Angle(m_camera->Get_CameraTransform());
 			}
 		}
 	}
@@ -104,11 +105,47 @@ HRESULT CPortalControl::Render()
     return S_OK;
 }
 
-HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalColor iIndex)
+HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, PortalColor iIndex)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (iIndex == PORTAL_ORANGE)
 	{
+		/* 뷰스페이스 상의 위치로 변환한다. */
+		/* 로컬위치 * 월드 * 뷰 */
+
+		_float3 m_vRayDirCH, m_vRayPosCH;
+		_float4		vTargetPos = { 0.f,0.f,0.f,1.f };
+
+		_float4x4		ProjMatrix;
+		const CCamera::CAMERADESC camDesc = m_camera->Get_Desc();
+		D3DXMatrixPerspectiveFovLH(&ProjMatrix, camDesc.fFovy, camDesc.fAspect, camDesc.fNear, camDesc.fFar);
+		D3DXMatrixInverse(&ProjMatrix, nullptr, &ProjMatrix);
+		D3DXVec4Transform(&vTargetPos, &vTargetPos, &ProjMatrix);
+		memcpy(&m_vRayDirCH, &(vTargetPos - _float4(0.f, 0.f, 0.f, 1.f)), sizeof(_float3));
+
+		m_vRayPosCH = _float3(0.f, 0.f, 0.f);
+
+		/* 월드스페이스 상의 위치로 변환한다. */
+		/* 로컬위치 * 월드 */
+		const _float4x4		ViewMatrixInverse = m_camera->Get_CameraTransform()->Get_WorldMatrix();
+		D3DXVec3TransformNormal(&m_vRayDirCH, &m_vRayDirCH, &ViewMatrixInverse);
+		D3DXVec3TransformCoord(&m_vRayPosCH, &m_vRayPosCH, &ViewMatrixInverse);
+
+		D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
+
+		pGameInstance->StopSound(CSoundMgr::EFFECT);
+		pGameInstance->Play_Sound(TEXT("Portal_Orange_Fire.mp3"), CSoundMgr::EFFECT, 1.f);
+
+		_float range = 100.f;
+
+		list<CCollision_Manager::COLLPOINT>* hitList = pGameInstance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, range);
+
+		if (hitList->empty() || (hitList->size() == 1 && hitList->front().CollObj->Get_Type() == OBJ_PLAYER))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return S_OK;
+		} 
+
 		if (nullptr != m_pPortal_Orange)
 		{
 			if (nullptr != m_pPortal_Blue)
@@ -126,10 +163,27 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 		portalDesc.iPortalColor = 0;
 		portalDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
-		_float3 nor = _tr->Get_State(CTransform::STATE_LOOK);
-		D3DXVec3Normalize(&nor,&nor);
-		portalDesc.vEye = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.f;
-		portalDesc.vAt = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.1f;
+
+		_float3 point, normal;
+		for (auto& target : *hitList)
+		{
+			if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
+				continue;
+			else
+			{
+				point = target.Point;
+				normal = target.NormalVec;
+				m_pPortal_Orange_UI->Set_CurrFrameIndex(1);
+				break;
+			}
+		}
+
+		hitList->clear();
+		delete hitList;
+		//충돌 처리하기
+
+		portalDesc.vEye = point;
+		portalDesc.vAt = point - normal;
 		portalDesc.portalCam = TEXT("Portal_Orange");
 
 		if (FAILED(pGameInstance->Add_GameObject(iLevelIndex, TEXT("Portal_Orange"), TEXT("Prototype_GameObject_Portal"), &portalDesc)))
@@ -140,12 +194,45 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 
 		m_pPortal_Orange = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Orange"), 0));
 
-		m_pPortal_Orange_UI->Set_CurrFrameIndex(1);
-		pGameInstance->StopSound(CSoundMgr::EFFECT);
-		pGameInstance->Play_Sound(TEXT("Portal_Orange_Fire.mp3"), CSoundMgr::EFFECT, 1.f);
 	}
 	else if (iIndex == PORTAL_BLUE)
 	{
+		/* 뷰스페이스 상의 위치로 변환한다. */
+		/* 로컬위치 * 월드 * 뷰 */
+
+		_float3 m_vRayDirCH, m_vRayPosCH;
+		_float4		vTargetPos = { 0.f,0.f,0.f,1.f };
+
+		_float4x4		ProjMatrix;
+		const CCamera::CAMERADESC camDesc = m_camera->Get_Desc();
+		D3DXMatrixPerspectiveFovLH(&ProjMatrix, camDesc.fFovy, camDesc.fAspect, camDesc.fNear, camDesc.fFar);
+		D3DXMatrixInverse(&ProjMatrix, nullptr, &ProjMatrix);
+		D3DXVec4Transform(&vTargetPos, &vTargetPos, &ProjMatrix);
+		memcpy(&m_vRayDirCH, &(vTargetPos - _float4(0.f, 0.f, 0.f, 1.f)), sizeof(_float3));
+
+		m_vRayPosCH = _float3(0.f, 0.f, 0.f);
+
+		/* 월드스페이스 상의 위치로 변환한다. */
+		/* 로컬위치 * 월드 */
+		const _float4x4		ViewMatrixInverse = m_camera->Get_CameraTransform()->Get_WorldMatrix();
+		D3DXVec3TransformNormal(&m_vRayDirCH, &m_vRayDirCH, &ViewMatrixInverse);
+		D3DXVec3TransformCoord(&m_vRayPosCH, &m_vRayPosCH, &ViewMatrixInverse);
+
+		D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
+
+		pGameInstance->StopSound(CSoundMgr::EFFECT);
+		pGameInstance->Play_Sound(TEXT("Portal_Blue_Fire.mp3"), CSoundMgr::EFFECT, 1.f);
+
+		_float range = 100.f;
+
+		list<CCollision_Manager::COLLPOINT>* hitList = pGameInstance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, range);
+
+		if (hitList->empty() || (hitList->size() == 1 && hitList->front().CollObj->Get_Type() == OBJ_PLAYER ))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return S_OK;
+		}
+
 		if (nullptr != m_pPortal_Blue)
 		{
 			if (nullptr != m_pPortal_Orange)
@@ -162,23 +249,36 @@ HRESULT CPortalControl::Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalC
 		portalDesc2.iLevel = iLevelIndex;
 		portalDesc2.iPortalColor = 1;
 		portalDesc2.vAxisY = _float3(0.f, 1.f, 0.f);
-		_float3 nor = _tr->Get_State(CTransform::STATE_LOOK);
-		D3DXVec3Normalize(&nor, &nor);
-		portalDesc2.vEye = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.f;
-		portalDesc2.vAt = _tr->Get_State(CTransform::STATE_POSITION) + nor * 2.1f;
 
-		portalDesc2.portalCam = TEXT("Portal_Blue");
+		_float3 point, normal;
+		for (auto& target : *hitList)
+		{
+			if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
+				continue;
+			else
+			{
+				point = target.Point;
+				normal = target.NormalVec;
+				m_pPortal_Blue_UI->Set_CurrFrameIndex(1);
+				break;
+			}
+		}
+
+		hitList->clear();
+		delete hitList;
+		//충돌 처리하기
+		portalDesc2.vEye = point;
+		portalDesc2.vAt = point - normal;
+
+ 		portalDesc2.portalCam = TEXT("Portal_Blue");
 
 		if (FAILED(pGameInstance->Add_GameObject(iLevelIndex, TEXT("Portal_Blue"), TEXT("Prototype_GameObject_Portal"), &portalDesc2)))
-		{
+		{  
 			RELEASE_INSTANCE(CGameInstance);
 			return E_FAIL;
 		}
 
-		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Blue"), 0));
-		m_pPortal_Blue_UI->Set_CurrFrameIndex(1);
-		pGameInstance->StopSound(CSoundMgr::EFFECT);
-		pGameInstance->Play_Sound(TEXT("Portal_Blue_Fire.mp3"), CSoundMgr::EFFECT, 1.f);
+ 		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(iLevelIndex, TEXT("Portal_Blue"), 0));
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -222,10 +322,9 @@ HRESULT CPortalControl::Erase_Portal(_uint iLevelIndex)
 	return S_OK;
 }
 
-void CPortalControl::Set_Player(CTransform* pPlayer)
+void CPortalControl::Set_Camera(CCamera* _cam)
 {
-	m_pPlayerTransform = pPlayer;	
-	Safe_AddRef(m_pPlayerTransform);
+	m_camera = _cam;	
 }
 
 HRESULT CPortalControl::SetUp_UI()

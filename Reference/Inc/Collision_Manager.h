@@ -25,6 +25,7 @@ public:
 	{
 		CGameObject* CollObj;
 		_float3 Point;
+		_float3 NormalVec;
 	}COLLPOINT;
 
 public:
@@ -39,7 +40,7 @@ public:
 private:
 	_bool AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCollider, _bool justReturn = true);
 	
-	_bool RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis, _float3& pOut);
+	_bool RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis, _float3& pPoint, _float3& pNor);
 private:
 	list<CBoxCollider*> m_CollList[COLLOBJTYPE_END];
 

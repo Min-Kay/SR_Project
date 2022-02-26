@@ -148,13 +148,17 @@ void CGun::Fire()
 		return;
 	}
 
-	_float3 point; 
+	_float3 point,nor; 
 	for(auto& target : *hitList)
 	{
 		if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
 			continue;
 		else
+		{
 			point = target.Point;
+			nor = target.NormalVec;
+			break;
+		}
 			
 	}
 

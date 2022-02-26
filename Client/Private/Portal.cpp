@@ -90,6 +90,11 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     D3DXVec3Normalize(&vLook, &vLook);
 
     _float3		vRight = *D3DXVec3Cross(&vRight, &portalDesc.vAxisY, &vLook);
+    if(vRight.x == 0.f && vRight.y == 0.f && vRight.z == 0.f)
+    {
+        vRight = *D3DXVec3Cross(&vRight, &(_float3(0.f,0.f,1.f)), &vLook);
+        portalDesc.vAxisY = _float3(0.f, 0.f, 1.f);
+    }
     D3DXVec3Normalize(&vRight, &vRight);
 
     _float3		vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);
@@ -116,19 +121,17 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
     CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
     tag = portalDesc.portalCam;
-    if (nullptr == static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(portalDesc.portalCam)))
+
+
+    m_pCam_Portal = static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(tag));
+    if (nullptr == m_pCam_Portal)
     {
         if (FAILED(pInstance->Add_Camera_Object(CAM_PORTAL, portalDesc.portalCam, &camDesc)))
             return E_FAIL;
-
         m_pCam_Portal = static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(tag));
     }
-    else
-    {
-        m_pCam_Portal = static_cast<CCam_Portal*>(pInstance->Find_Camera_Object(tag));
 
-        m_pCam_Portal->Set_State(camDesc);
-    }
+    m_pCam_Portal->Set_State(camDesc);
 
     /* For.Com_Renderer */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RENDERER, COM_RENDERER, (CComponent**)&m_pRenderer)))
@@ -158,7 +161,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
 _int CPortal::Tick(_float fTimeDelta)
 {
-    return _int();
+     return _int();
 }
 
 _int CPortal::LateTick(_float fTimeDelta)
@@ -192,7 +195,7 @@ HRESULT CPortal::Render()
 
 void CPortal::Link_Portal(CPortal* opponent)
 {
-    m_pOpponent = opponent;
+    m_pOpponent = opponent; 
 
     if (nullptr == m_pOpponent)
     {

@@ -39,12 +39,13 @@ list<CCollision_Manager::COLLPOINT>* CCollision_Manager::Get_Ray_Collision_List(
 	{
 		for (auto& coll : cl)
 		{
-			_float3 point;
-			if (RayCollision(dir, pos, coll, dis, point))
+			_float3 point, nor;
+			if (RayCollision(dir, pos, coll, dis, point,nor))
 			{
 				COLLPOINT cp;
 				cp.CollObj = coll->Get_Parent();
-				cp.Point = point; 
+				cp.Point = point;
+				cp.NormalVec = nor;
 				colllist->push_back(cp);
 			}
 		}
@@ -142,7 +143,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 		_float3 vMyPoint[8], vOtherPoint[8];
 
-		int index[12][3] = { {0,1,2}, {0,2,3},{0,1,5},{0,4,5},{1,3,6},{1,5,6},{2,3,7},{2,6,7},{3,0,4},{3,7,4},{4,5,6},{4,7,6} };
+		int index[12][3] = { {1,0,5}, {4,5,0},{2,1,6},{5,6,1},{3,2,7},{6,7,2},{0,3,4},{7,4,3},{5,4,6},{7,6,4},{2,3,1},{0,1,3} };
 
 		vMyPoint[0] = vMyMin;
 		vMyPoint[1] = _float3(vMyMax.x, vMyMin.y, vMyMin.z);
@@ -198,14 +199,14 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 }
 
-_bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis, _float3& pOut)
+_bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis, _float3& pPoint, _float3& pNor)
 {
 	_float3 vOtherPoint[8];
 
 	_float3 vOtherMax = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
 	_float3 vOtherMin = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
 
-	int index[12][3] = { {0,1,2}, {0,2,3},{0,1,5},{0,4,5},{1,3,6},{1,5,6},{2,3,7},{2,6,7},{3,0,4},{3,7,4},{4,5,6},{4,7,6} };
+	int index[12][3] = { {1,0,5}, {4,5,0},{2,1,6},{5,6,1},{3,2,7},{6,7,2},{0,3,4},{7,4,3},{5,4,6},{7,6,4},{2,3,1},{0,1,3}};
 
 	vOtherPoint[0] = vOtherMin;
 	vOtherPoint[1] = _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z);
@@ -219,6 +220,7 @@ _bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _
 	_float u, v, otherDis;
 
 	_float shortest = 0.f;
+	_float3 normal;
 	for (auto& i : index)
 	{
 		if (D3DXIntersectTri(&vOtherPoint[i[0]], &vOtherPoint[i[1]], &vOtherPoint[i[2]], &pos, &dir, &u, &v, &otherDis))
@@ -226,13 +228,19 @@ _bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _
 			if (dis >= otherDis && (shortest > otherDis || shortest == 0.f))
 			{
 				shortest = otherDis;
+
+				_float3 vU = vOtherPoint[i[1]] - vOtherPoint[i[0]];
+				_float3 vV = vOtherPoint[i[2]] - vOtherPoint[i[0]];
+				D3DXVec3Cross(&normal,&vU,&vV);
 			}
 		}
 	}
 
 	if (shortest > 0.f)
 	{
-		pOut = pos + dir * shortest;
+		pPoint = pos + dir * shortest;
+		D3DXVec3Normalize(&normal, &normal);
+		pNor = normal;
 		return true;
 	}
 

@@ -111,9 +111,12 @@ _int CPlayer::Tick(_float fTimeDelta)
 				return E_FAIL;
 
 			m_pPortalCtrl = static_cast<CPortalControl*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("PortalCtrl"), 0));
-			m_pPortalCtrl->Set_Player(m_pTransformCom);
+			m_pPortalCtrl->Set_Camera(m_Camera);
 			Safe_AddRef(m_pPortalCtrl);
+			m_pPortalCtrl->Set_Vaild(false);
+			m_iCurrIndex = 0;
 		}
+
 	}
 
 	if(nullptr == m_pGun)
@@ -125,6 +128,7 @@ _int CPlayer::Tick(_float fTimeDelta)
 
 			m_pGun = static_cast<CGun*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Gun")));
 			Safe_AddRef(m_pGun);
+			m_pGun->Set_Vaild(false);
 		}
 	}
 
@@ -152,12 +156,12 @@ _int CPlayer::Tick(_float fTimeDelta)
 		{
 			if (pGameInstance->Get_Mouse_Up(CInput_Device::MBS_LBUTTON))
 			{
-				m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_ORANGE);
+				m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, CPortalControl::PORTAL_ORANGE);
 			}
 
 			if (pGameInstance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON))
 			{
-				m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, m_Camera->Get_CameraTransform(), CPortalControl::PORTAL_BLUE);
+				m_pPortalCtrl->Spawn_Portal(LEVEL_GAMEPLAY, CPortalControl::PORTAL_BLUE);
 			}
 
 			if (pGameInstance->Get_Key_Up(DIK_C))

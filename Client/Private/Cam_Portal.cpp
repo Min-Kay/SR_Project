@@ -209,18 +209,20 @@ void CCam_Portal::Set_ExitPortal(CPortal* _exit)
        
       _float3 vRight, vUp, vLook;
 
-      vRight = *D3DXVec3Normalize(&vRight, &opponent->Get_State(CTransform::STATE_RIGHT)) * vScale.x;
+		vRight = *D3DXVec3Normalize(&vRight, &opponent->Get_State(CTransform::STATE_RIGHT)) * vScale.x;
 
-      vUp = *D3DXVec3Normalize(&vUp, &opponent->Get_State(CTransform::STATE_UP)) * vScale.y;
+		vUp = *D3DXVec3Normalize(&vUp, &opponent->Get_State(CTransform::STATE_UP)) * vScale.y;
 
-      vLook = *D3DXVec3Normalize(&vLook, &opponent->Get_State(CTransform::STATE_LOOK)) * vScale.z;
+		vLook = *D3DXVec3Normalize(&vLook, &opponent->Get_State(CTransform::STATE_LOOK)) * vScale.z;
+
       m_pRenderTransform->Set_State(CTransform::STATE_RIGHT, vRight);
       m_pRenderTransform->Set_State(CTransform::STATE_UP, vUp);
       m_pRenderTransform->Set_State(CTransform::STATE_LOOK, vLook);
       
       D3DXVec3Normalize(&vLook,&vLook);
 
-      m_pRenderTransform->Set_State(CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.01f );
+       m_pRenderTransform->Set_State (CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.01f );
     }
 }
 
+ 

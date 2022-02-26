@@ -3,8 +3,8 @@
 #include "UI.h"
 
 BEGIN(Engine)
-class CTransform;
 class CUI;
+class CCamera;
 END
 
 BEGIN(Client)
@@ -29,9 +29,9 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	HRESULT Spawn_Portal(_uint iLevelIndex, CTransform* _tr, PortalColor iIndex);
+	HRESULT Spawn_Portal(_uint iLevelIndex,PortalColor iIndex);
 	HRESULT Erase_Portal(_uint iLevelIndex);
-	void Set_Player(CTransform* pPlayer);
+	void Set_Camera(CCamera* _cam);
 
 private:
 	HRESULT SetUp_UI();
@@ -41,7 +41,7 @@ public:
 	void Set_Vaild(_bool _bool);
 
 private:
-	CTransform* m_pPlayerTransform = nullptr;
+	CCamera* m_camera = nullptr;
 	CPortal* m_pPortal_Orange = nullptr;
 	CPortal* m_pPortal_Blue = nullptr;
 
