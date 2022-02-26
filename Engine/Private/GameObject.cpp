@@ -71,6 +71,19 @@ const _uint CGameObject::Get_Layer() const
 	return m_Layer;
 }
 
+void CGameObject::Set_Type(OBJTYPE _type)
+{
+	if (_type >= OBJ_END)
+		return;
+
+	m_Type = _type; 
+}
+
+const CGameObject::OBJTYPE& CGameObject::Get_Type() const
+{
+	return m_Type; 
+}
+
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
 {

@@ -21,7 +21,7 @@ public:
 
 	//typedef struct tagDesc {
 	//	_float3 CollInfo[4];
-	//	COLLTYPE Type;
+	//	COLLSTYLE Type;
 	//	CGameObject* Parent;
 	//}COLLDESC;
 

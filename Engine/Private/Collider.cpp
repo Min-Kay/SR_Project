@@ -38,32 +38,18 @@ CGameObject* CCollider::Get_Parent()
 	return m_Parent;
 }
 
-HRESULT CCollider::Set_CollType(COLLTYPE _type)
+HRESULT CCollider::Set_CollStyle(COLLSTYLE _type)
 {
-	if (_type >= COLLTYPE_END)
+	if (_type >= COLLSTYLE_END)
 		return E_FAIL;
 
-	m_CoLLtype = _type;
+	m_CollStyle = _type;
 	return S_OK;
 }
 
-const CCollider::COLLTYPE& CCollider::Get_CollType() const
+const CCollider::COLLSTYLE& CCollider::Get_CollStyle() const
 {
-	return m_CoLLtype;
-}
-
-HRESULT CCollider::Set_ObjType(COLLOBJTYPE _type)
-{
-	if (_type >= COLLOBJTYPE_END)
-		return E_FAIL;
-
-	m_ObjType = _type;
-	return S_OK;
-}
-
-const CCollider::COLLOBJTYPE & CCollider::Get_ObjType() const
-{
-	return m_ObjType;
+	return m_CollStyle;
 }
 
 

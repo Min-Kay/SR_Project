@@ -28,6 +28,8 @@ HRESULT CCamera::NativeConstruct(void * pArg)
 
 	Set_State(m_CameraDesc);
 
+	Set_Type(OBJ_STATIC);
+
 	return S_OK;
 }
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Player.h"
+#include "GameObject.h"
 #include "GameInstance.h"
 #include "Camera_Player.h"
 #include "PortalControl.h"
@@ -32,6 +33,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	/* 현재 객체에게 추가되어야할 컴포넌트들을 복제(or 참조)하여 멤버변수에 보관한다.  */
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
+
+	Set_Type(OBJ_PLAYER);
 
 	//m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(5.f, 5.f, 5.f));
@@ -289,10 +292,9 @@ HRESULT CPlayer::SetUp_Components()
 	m_pBoxColliderCom->Set_Parent(this);
 	m_pBoxColliderCom->Get_Parentcom();
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_PLAYER);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->Add_Collider(CCollider::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
+	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

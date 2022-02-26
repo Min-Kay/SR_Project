@@ -85,10 +85,10 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 		return -1;
 
 
-	if (FAILED(m_Collision_Manager->Collision(CCollider::COLLOBJTYPE_OBJ, CCollider::COLLOBJTYPE_OBJ)))
+	if (FAILED(m_Collision_Manager->Collision(CCollision_Manager::COLLOBJTYPE_OBJ, CCollision_Manager::COLLOBJTYPE_OBJ)))
 		return -1;
 
-	if (FAILED(m_Collision_Manager->Collision(CCollider::COLLOBJTYPE_OBJ, CCollider::COLLOBJTYPE_MAP)))
+	if (FAILED(m_Collision_Manager->Collision(CCollision_Manager::COLLOBJTYPE_OBJ, CCollision_Manager::COLLOBJTYPE_STATIC)))
 		return -1;
 
 	m_pInput_Device->Tick_KeyState();
@@ -412,7 +412,7 @@ void CGameInstance::StopAll()
 	return m_Sound_Manager->StopAll();
 }
 
-HRESULT CGameInstance::Add_Collider(CCollider::COLLOBJTYPE _type, CBoxCollider* collider)
+HRESULT CGameInstance::Add_Collider(CCollision_Manager::COLLOBJTYPE _type, CBoxCollider* collider)
 {
 	if (nullptr == m_Collision_Manager)
 	{
@@ -423,7 +423,7 @@ HRESULT CGameInstance::Add_Collider(CCollider::COLLOBJTYPE _type, CBoxCollider* 
 	return m_Collision_Manager->Add_Collider(_type, collider);
 }
 
-HRESULT CGameInstance::Release_Collider(CCollider::COLLOBJTYPE _type, CBoxCollider* collider)
+HRESULT CGameInstance::Release_Collider(CCollision_Manager::COLLOBJTYPE _type, CBoxCollider* collider)
 {
 	if (nullptr == m_Collision_Manager)
 		return E_FAIL;
@@ -445,7 +445,7 @@ list<CGameObject*>* CGameInstance::Get_Collision_List(CBoxCollider* target)
 	return m_Collision_Manager->Get_Collision_List(target);
 }
 
-list<CGameObject*>* CGameInstance::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float& dis)
+list<CCollision_Manager::COLLPOINT>* CGameInstance::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float& dis)
 {
 	return m_Collision_Manager->Get_Ray_Collision_List(dir, pos, dis);
 }

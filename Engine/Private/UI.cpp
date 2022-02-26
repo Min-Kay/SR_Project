@@ -25,6 +25,8 @@ HRESULT CUI::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
+	Set_Type(OBJ_UI);
+
 	UIDESC desc = *static_cast<UIDESC*>(pArg);
 	m_WinCY = desc.WinCY;
 	m_WinCX = desc.WinCX;

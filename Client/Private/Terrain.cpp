@@ -18,6 +18,8 @@ HRESULT CTerrain::NativeConstruct_Prototype()
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
 
+	Set_Type(OBJ_STATIC);
+
 	return S_OK;
 }
 
@@ -117,10 +119,9 @@ HRESULT CTerrain::SetUp_Components()
 	m_pBoxColliderCom->Set_Parent(this);
 	m_pBoxColliderCom->Get_Parentcom();
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(5.f, 5.f, 5.f));
-	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->Add_Collider(CCollider::COLLOBJTYPE_MAP, m_pBoxColliderCom);
+	pGameInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

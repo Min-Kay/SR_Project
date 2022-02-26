@@ -32,6 +32,9 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Scaled(_float3(2.f, 2.f, 2.f));
+
+	Set_Type(OBJ_STATIC);
+
 	return S_OK;
 }
 
@@ -117,12 +120,11 @@ HRESULT CBackGround::SetUp_Components()
 	m_pBoxColliderCom->Set_Parent(this);
 	m_pBoxColliderCom->Get_Parentcom();
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-	m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (nullptr != m_pBoxColliderCom)
 	{
-		pGameInstance->Add_Collider(CCollider::COLLOBJTYPE_MAP,m_pBoxColliderCom);
+		pGameInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC,m_pBoxColliderCom);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

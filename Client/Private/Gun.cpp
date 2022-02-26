@@ -140,7 +140,7 @@ void CGun::Fire()
 	p_instance->StopSound(CSoundMgr::SYSTEM_EFFECT2);
 	p_instance->Play_Sound(TEXT("Rifle_Fire.mp3"), CSoundMgr::SYSTEM_EFFECT2, 1.0f);
 
-	list<CGameObject*>* hitList = p_instance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, m_fRange);
+	list<CCollision_Manager::COLLPOINT>* hitList = p_instance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, m_fRange);
 
 	if (hitList->empty())
 	{
@@ -148,7 +148,15 @@ void CGun::Fire()
 		return;
 	}
 
-	const _float3 pos = static_cast<CTransform*>(hitList->front()->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION);
+	_float3 point; 
+	for(auto& target : *hitList)
+	{
+		if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
+			continue;
+		else
+			point = target.Point;
+			
+	}
 
 	//충돌 처리하기
 	if (FAILED(p_instance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Bullet"), TEXT("Prototype_GameObject_Ball"))))
@@ -158,7 +166,7 @@ void CGun::Fire()
 
 	CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
 	tr->Scaled(_float3(0.5f,0.5f,0.5f));
-	tr->Set_State(CTransform::STATE_POSITION, pos);
+	tr->Set_State(CTransform::STATE_POSITION, point);
 
 	hitList->clear();
 	delete hitList;

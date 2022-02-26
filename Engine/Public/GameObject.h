@@ -15,6 +15,11 @@ public:
 	class CComponent* Get_Component(const _tchar* pComponentTag);
 
 public:
+	typedef enum tagObj{
+		OBJ_PLAYER,OBJ_UI,OBJ_ENEMY,OBJ_INTERACTION, OBJ_STATIC, OBJ_END
+	}OBJTYPE;
+
+public:
 	virtual HRESULT NativeConstruct_Prototype();
 	virtual HRESULT NativeConstruct(void* pArg);
 	virtual _int Tick(_float fTimeDelta);
@@ -45,8 +50,13 @@ public:
 	void Set_Layer(_uint _layer);
 	const _uint Get_Layer() const;
 
+public:
+	void Set_Type(OBJTYPE _type);
+	const OBJTYPE& Get_Type() const;
+
 private:
 	_uint				m_Layer = 0;
+	OBJTYPE				m_Type;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

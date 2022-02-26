@@ -70,6 +70,8 @@ HRESULT CPortal::NativeConstruct_Prototype()
     if (FAILED(__super::NativeConstruct_Prototype()))
         return E_FAIL;
 
+    Set_Type(OBJ_STATIC);
+
     return S_OK;
 }
 

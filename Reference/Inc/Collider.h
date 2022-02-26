@@ -15,12 +15,9 @@ protected:
 public:
 	typedef enum tagCollType
 	{
-		COLLTYPE_ENTER,COLLTYPE_TRIGGER, COLLTYPE_END//실제 충돌 , 범위충돌(레이더)
-	}COLLTYPE;
+		COLLSTYLE_ENTER,COLLSTYLE_TRIGGER, COLLSTYLE_END//실제 충돌 , 범위충돌(레이더)
+	}COLLSTYLE;
 
-	typedef enum tagobjtype {
-		COLLOBJTYPE_PLAYER, COLLOBJTYPE_OBJ, COLLOBJTYPE_MAP, COLLOBJTYPE_END
-	}COLLOBJTYPE;
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
@@ -30,11 +27,8 @@ public:
 	CGameObject* Get_Parent();
 
 public:
-	HRESULT Set_CollType(COLLTYPE _type);
-	const COLLTYPE& Get_CollType() const;
-
-	HRESULT Set_ObjType(COLLOBJTYPE _type);
-	const COLLOBJTYPE& Get_ObjType() const;
+	HRESULT Set_CollStyle(COLLSTYLE _style);
+	const COLLSTYLE& Get_CollStyle() const;
 public:
 	virtual HRESULT Update()PURE;
 
@@ -42,8 +36,7 @@ public:
 protected:
 
 	CGameObject* m_Parent = nullptr;
-	COLLTYPE m_CoLLtype;
-	COLLOBJTYPE m_ObjType;
+	COLLSTYLE m_CollStyle;
 
 public:
 	virtual CComponent* Clone(void* pArg = nullptr) = 0;

@@ -142,6 +142,8 @@ HRESULT CEffect::NativeConstruct(void* pArg)
     if (FAILED(SetUp_Components()))
         return E_FAIL;
 
+    Set_Type(OBJ_STATIC);
+
     return S_OK;
 }
 

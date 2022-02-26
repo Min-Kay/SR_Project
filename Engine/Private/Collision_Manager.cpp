@@ -31,26 +31,30 @@ list<CGameObject*>* CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 	return collList;
 }
 
-list<CGameObject*>* CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
+list<CCollision_Manager::COLLPOINT>* CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
 {
-	list<CGameObject*>* colllist = new list<CGameObject*>;
+	list<COLLPOINT>* colllist = new list<COLLPOINT>;
 
 	for (auto& cl : m_CollList)
 	{
 		for (auto& coll : cl)
 		{
-			if (RayCollision(dir, pos, coll, dis))
+			_float3 point;
+			if (RayCollision(dir, pos, coll, dis, point))
 			{
-				colllist->push_back(coll->Get_Parent());
+				COLLPOINT cp;
+				cp.CollObj = coll->Get_Parent();
+				cp.Point = point; 
+				colllist->push_back(cp);
 			}
 		}
 	}
 
-	colllist->sort([pos](CGameObject* a, CGameObject* b)->bool
+	colllist->sort([pos](COLLPOINT a, COLLPOINT b)->bool
 		{
-			D3DXVECTOR3 dir1 = pos - (static_cast<CTransform*>(a->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION));
+			D3DXVECTOR3 dir1 = pos - a.Point;
 
-			D3DXVECTOR3 dir2 = pos - (static_cast<CTransform*>(b->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION));
+			D3DXVECTOR3 dir2 = pos - b.Point;
 
 			return D3DXVec3Length(&dir1) < D3DXVec3Length(&dir2);
 		});
@@ -58,7 +62,7 @@ list<CGameObject*>* CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _flo
 	return colllist;
 }
 
-HRESULT CCollision_Manager::Collision(CCollider::COLLOBJTYPE _first, CCollider::COLLOBJTYPE _second)
+HRESULT CCollision_Manager::Collision(COLLOBJTYPE _first, COLLOBJTYPE _second)
 {
 	for (auto& pCollider : m_CollList[_first])
 	{
@@ -73,7 +77,7 @@ HRESULT CCollision_Manager::Collision(CCollider::COLLOBJTYPE _first, CCollider::
 	return S_OK;
 }
 
-HRESULT CCollision_Manager::Add_Collider(CCollider::COLLOBJTYPE _type,  CBoxCollider* collider)
+HRESULT CCollision_Manager::Add_Collider(COLLOBJTYPE _type,  CBoxCollider* collider)
 {
 	auto iter = find_if(m_CollList[_type].begin(), m_CollList[_type].end(), [collider](CBoxCollider* a) {return a == collider; });
 
@@ -85,7 +89,7 @@ HRESULT CCollision_Manager::Add_Collider(CCollider::COLLOBJTYPE _type,  CBoxColl
 	return S_OK;
 }
 
-HRESULT CCollision_Manager::Release_Collider(CCollider::COLLOBJTYPE _type, CBoxCollider* collider)
+HRESULT CCollision_Manager::Release_Collider(COLLOBJTYPE _type, CBoxCollider* collider)
 {
 	auto iter = find_if(m_CollList[_type].begin(), m_CollList[_type].end(), [collider](CBoxCollider* a) {return a == collider; });
 
@@ -194,7 +198,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 }
 
-_bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis)
+_bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis, _float3& pOut)
 {
 	_float3 vOtherPoint[8];
 
@@ -214,13 +218,22 @@ _bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _
 
 	_float u, v, otherDis;
 
+	_float shortest = 0.f;
 	for (auto& i : index)
 	{
 		if (D3DXIntersectTri(&vOtherPoint[i[0]], &vOtherPoint[i[1]], &vOtherPoint[i[2]], &pos, &dir, &u, &v, &otherDis))
 		{
-			if (dis >= otherDis)
-				return true;
+			if (dis >= otherDis && (shortest > otherDis || shortest == 0.f))
+			{
+				shortest = otherDis;
+			}
 		}
+	}
+
+	if (shortest > 0.f)
+	{
+		pOut = pos + dir * shortest;
+		return true;
 	}
 
 	return false; 
@@ -235,6 +248,5 @@ void CCollision_Manager::Free()
 			Safe_Release(pBoxCollider);
 		collList.clear();
 	}
-
 }
 
