@@ -183,13 +183,13 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 		_float3 resultDir= otherCollPoint - myCollPoint;
 
 
-		if (diff.x < diff.y && diff.z < diff.y)
+		if (diff.x <= diff.y && diff.z <= diff.y)
 			_MyCollider->Reflect_Direction(_float3(0.f, resultDir.y, 0.f));
 
-		else if (diff.y < diff.x && diff.z < diff.x)
+		else if (diff.y <= diff.x && diff.z <= diff.x)
 			_MyCollider->Reflect_Direction(_float3(resultDir.x, 0.f, 0.f));
 
-		else if (diff.x < diff.z && diff.y < diff.z)
+		else if (diff.x <= diff.z && diff.y <= diff.z)
 			_MyCollider->Reflect_Direction(_float3(0.f, 0.f, resultDir.z ));
 
 

@@ -228,7 +228,7 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 		_float3 m_vJumpPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		_float3 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 
-		m_vJumpPos += *D3DXVec3Normalize(&vUp, &vUp) * fTimeDelta * m_fMaxForce * 30.f;
+		m_vJumpPos += *D3DXVec3Normalize(&vUp, &vUp) * fTimeDelta * m_fMaxForce ;
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vJumpPos);
 	}
@@ -294,6 +294,8 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 			{
 				m_pGun->Shoot(fTimeDelta);
 			}
+			else
+				m_pGun->Set_OnFire(false);
 
 			if (pGameInstance->Get_Key_Down(DIK_R))
 			{
@@ -370,6 +372,13 @@ HRESULT CPlayer::SetUp_Weapons()
 	return S_OK;
 }
 
+CCamera* CPlayer::Get_Camera()
+{
+	if (!m_Camera)
+		return nullptr;
+	return m_Camera;
+}
+
 CPlayer * CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CPlayer*	pInstance = new CPlayer(pGraphic_Device);
@@ -399,10 +408,10 @@ CGameObject * CPlayer::Clone(void* pArg )
 
 void CPlayer::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pGun);
 	Safe_Release(m_pPortalCtrl);
+	__super::Free();
+
 	Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);

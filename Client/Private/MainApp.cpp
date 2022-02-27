@@ -171,7 +171,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		return E_FAIL;
 
 
-
 	if (FAILED(m_pGameInstance->Add_Camera_Prototype(CAM_STATIC, CCamera_Static::Create(m_pGraphic_Device))))
 		return E_FAIL;
 

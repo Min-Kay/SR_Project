@@ -7,21 +7,19 @@ BEGIN(Engine)
 class CTexture;
 class CRenderer;
 class CTransform;
-class CVIBuffer_Cube;
+class CVIBuffer_Rect;
 class CBoxCollider;
+
 END
 
 BEGIN(Client)
 
-class CDoor_right final : public CGameObject
+class CTile final : public CGameObject
 {
 private:
-	explicit CDoor_right(LPDIRECT3DDEVICE9 pGraphic_Device);
-	explicit CDoor_right(const CDoor_right& rhs);
-	virtual ~CDoor_right() = default;
-
-public:
-	
+	explicit CTile(LPDIRECT3DDEVICE9 pGraphic_Device);
+	explicit CTile(const CTile& rhs);
+	virtual ~CTile() = default;
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
@@ -34,7 +32,7 @@ private:
 	CTexture*				m_pTextureCom = nullptr;
 
 	/* 모델 */
-	CVIBuffer_Cube*		m_pVIBufferCom = nullptr;
+	CVIBuffer_Rect*		m_pVIBufferCom = nullptr;
 
 	/* 상태 (위치, 크기, 회전) */
 	CTransform*			m_pTransformCom = nullptr;
@@ -42,19 +40,23 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
-	/* 충돌체 */
-	//CBoxCollider*		m_pBoxColliderCom = nullptr;
-	
-	_uint m_Count = 0;
+	/* 충돌정보*/
+	CBoxCollider*		m_pBoxColliderCom = nullptr;
+
+private:
+	_uint				m_iTextureIndex = 2;
 
 private:
 	HRESULT SetUp_Components();
-public:
-
-	HRESULT Open(_bool IsOpen, _float fTimeDelta);
 
 public:
-	static CDoor_right* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	void	Set_TextureIndex(_uint _iTextureIndex)
+	{
+		m_iTextureIndex = _iTextureIndex;
+	}
+
+public:
+	static CTile* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

@@ -17,6 +17,12 @@
 #include "Terrain.h"
 #include "Gun.h"
 #include "Effect.h"
+#include "Door_left.h"
+#include "Door_Right.h"
+#include "Tile.h"
+#include "Tile_Cube.h"
+#include "Water.h"
+
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -154,7 +160,25 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gun_BulletHole"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Gun/Effect/bulletHoles_%d.png"), 4))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Tile*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Tile"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
+		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Door_left*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Left"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_left.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Door_right*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Right"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_right.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Water*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Water"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Water/Water_%d.dds"), 4))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Tile_Cube*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Block"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Block/Block_%d.dds"), 2))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma  region PROTOTYPE_GAMEOBJECT
@@ -209,6 +233,25 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Gun"), CGun::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Tile */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tile"), CTile::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Left_Door*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Left_Door"), CDoor_left::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Right_Door*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Right_Door"), CDoor_right::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Water*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Water"), CWater::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Tile_Cube*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Block"), CTile_Cube::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion
 
 	RELEASE_INSTANCE(CGameInstance);

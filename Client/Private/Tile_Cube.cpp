@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include "Door_left.h"
+#include "Tile_Cube.h"
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
 
-CDoor_left::CDoor_left(LPDIRECT3DDEVICE9 pGraphic_Device)
+CTile_Cube::CTile_Cube(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
 {
 
 }
 
-CDoor_left::CDoor_left(const CDoor_left & rhs)
+CTile_Cube::CTile_Cube(const CTile_Cube & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CDoor_left::NativeConstruct_Prototype()
+HRESULT CTile_Cube::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
@@ -22,7 +22,7 @@ HRESULT CDoor_left::NativeConstruct_Prototype()
 	return S_OK;
 }
 
-HRESULT CDoor_left::NativeConstruct(void * pArg)
+HRESULT CTile_Cube::NativeConstruct(void * pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
@@ -31,7 +31,7 @@ HRESULT CDoor_left::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-
+	Set_Type(OBJ_STATIC);
 	/*if (m_pBoxColliderCom == nullptr)
 	{
 		MSGBOX("Empty BoxCollider component in CDoorLeft");
@@ -42,7 +42,7 @@ HRESULT CDoor_left::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CDoor_left::Tick(_float fTimeDelta)
+_int CTile_Cube::Tick(_float fTimeDelta)
 {
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
@@ -62,7 +62,7 @@ _int CDoor_left::Tick(_float fTimeDelta)
 	return _int();
 }
 
-_int CDoor_left::LateTick(_float fTimeDelta)
+_int CTile_Cube::LateTick(_float fTimeDelta)
 {
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
@@ -76,7 +76,7 @@ _int CDoor_left::LateTick(_float fTimeDelta)
 	return _int();
 }
 
-HRESULT CDoor_left::Render()
+HRESULT CTile_Cube::Render()
 {
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
@@ -86,7 +86,7 @@ HRESULT CDoor_left::Render()
 
 	//m_pBoxColliderCom->Draw_Box();
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
 		return E_FAIL;
 
 
@@ -96,7 +96,7 @@ HRESULT CDoor_left::Render()
 	return S_OK;
 }
 
-HRESULT CDoor_left::SetUp_Components()
+HRESULT CTile_Cube::SetUp_Components()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -118,7 +118,7 @@ HRESULT CDoor_left::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Left"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Block"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	/* For.Com_Collider */
@@ -130,63 +130,36 @@ HRESULT CDoor_left::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CDoor_left::Open(_bool IsOpen, _float fTimeDelta)
+
+
+CTile_Cube * CTile_Cube::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	if (IsOpen)
-	{
-		++m_Count;
-
-		if (m_Count > 23)
-		{
-		
-			return S_OK;
-		}
-		
-	/*	_float3 vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_float3 vDir = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	
-		D3DXVec3Normalize(&vDir, &vDir);
-		vPos += *D3DXVec3Normalize(&vDir, &vDir) * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta;
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);*/
-		
-		m_pTransformCom->Go_Left(fTimeDelta);
-
-	}
-
-	return S_OK;
-}
-
-
-
-CDoor_left * CDoor_left::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
-{
-	CDoor_left*	pInstance = new CDoor_left(pGraphic_Device);
+	CTile_Cube*	pInstance = new CTile_Cube(pGraphic_Device);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSGBOX("Failed to Creating CDoor_left");
+		MSGBOX("Failed to Creating CTile_Cube");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CDoor_left::Clone(void* pArg )
+CGameObject * CTile_Cube::Clone(void* pArg )
 {
 	/* 새로운객체를 복제하여 생성한다. */
-	CDoor_left*	pInstance = new CDoor_left(*this);
+	CTile_Cube*	pInstance = new CTile_Cube(*this);
 
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSGBOX("Failed to Clone CDoor_left");
+		MSGBOX("Failed to Clone CTile_Cube");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CDoor_left::Free()
+void CTile_Cube::Free()
 {
 	__super::Free();
 

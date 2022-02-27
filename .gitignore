@@ -28,6 +28,7 @@
 *.exe
 *.out
 *.app
+*.pdb
 
 #Ignore Folder
 AutoPCH/

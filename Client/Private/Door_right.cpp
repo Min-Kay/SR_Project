@@ -31,24 +31,12 @@ HRESULT CDoor_right::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	_float3 vPos = { 1.5f, 0.f, 4.f };
-
-	m_pTransformCom->Scaled(_float3(0.5f, 1.f, 0.2f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-	m_pTransformCom->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(30));
-	if (m_pBoxColliderCom == nullptr)
-	{
-		MSGBOX("Empty BoxCollider component in CDoorLeft");
-		return E_FAIL;
-	}
-
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	pGameInstance->Add_Collider( CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
-	RELEASE_INSTANCE(CGameInstance);
-
-
+	
+	//if (m_pBoxColliderCom == nullptr)
+	//{
+	//	MSGBOX("Empty BoxCollider component in CDoorLeft");
+	//	return E_FAIL;
+	//}
 
 
 	return S_OK;
@@ -63,7 +51,13 @@ _int CDoor_right::Tick(_float fTimeDelta)
 		return -1;
 	}*/
 
-	m_pBoxColliderCom->Set_Coilider();
+	/*CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pGameInstance->Add_Collider(m_pBoxColliderCom);
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pBoxColliderCom->Set_Coilider();*/
+	
 	
 	return _int();
 }
@@ -90,7 +84,7 @@ HRESULT CDoor_right::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	m_pBoxColliderCom->Draw_Box();
+	//m_pBoxColliderCom->Draw_Box();
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
@@ -108,7 +102,7 @@ HRESULT CDoor_right::SetUp_Components()
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 
-	TransformDesc.fSpeedPerSec = 2.0f;
+	TransformDesc.fSpeedPerSec = 5.0f;
 	TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
 	/* For.Com_Transform */
@@ -124,14 +118,15 @@ HRESULT CDoor_right::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STAGEONE, TEXT("Prototype_Component_Texture_Door_Right"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Right"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	/* For.Com_Collider */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Collider"), COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+	/*if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Collider"), COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
 		return E_FAIL;
-	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	m_pBoxColliderCom->Set_Parent(this);
+	m_pBoxColliderCom->Get_Parentcom();
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));*/
 	return S_OK;
 }
 
@@ -141,7 +136,7 @@ HRESULT CDoor_right::Open(_bool IsOpen, _float fTimeDelta)
 	{
 		++m_Count;
 
-		if (m_Count > 10)
+		if (m_Count > 23)
 		{
 
 			return S_OK;
@@ -186,7 +181,7 @@ void CDoor_right::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pBoxColliderCom);
+	//Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

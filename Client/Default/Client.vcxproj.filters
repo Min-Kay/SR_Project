@@ -106,6 +106,12 @@
     <Filter Include="01.Levels\StageOne">
       <UniqueIdentifier>{5df5ff31-7b54-4a05-8cab-d06886d65f60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Tile">
+      <UniqueIdentifier>{8c51bf67-4f4a-41ea-888a-0a3bac014414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Tile\Tile_Cube">
+      <UniqueIdentifier>{8083c978-b672-4ef3-ab84-f8fc8c963cb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -198,6 +204,12 @@
     <ClInclude Include="..\Public\Door_right.h">
       <Filter>02.GameObjects\Door\Right</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tile_Cube.h">
+      <Filter>02.GameObjects\Tile\Tile_Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tile.h">
+      <Filter>02.GameObjects\Tile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -277,6 +289,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Door_right.cpp">
       <Filter>02.GameObjects\Door\Right</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tile.cpp">
+      <Filter>02.GameObjects\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tile_Cube.cpp">
+      <Filter>02.GameObjects\Tile\Tile_Cube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

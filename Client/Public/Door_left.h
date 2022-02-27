@@ -43,7 +43,7 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 
 	/* �浹ü */
-	CBoxCollider*		m_pBoxColliderCom = nullptr;
+	//CBoxCollider*		m_pBoxColliderCom = nullptr;
 
 	_uint m_Count = 0;
 

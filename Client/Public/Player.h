@@ -77,6 +77,9 @@ private:
 	HRESULT Release_RenderState();
 
 	HRESULT SetUp_Weapons();
+
+public:
+	CCamera* Get_Camera();
 private:
 	_int Player_Control(_float fTimeDelta);
 	HRESULT Synchronize_Camera();

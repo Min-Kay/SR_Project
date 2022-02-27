@@ -176,7 +176,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 		}
 	}
 
-	portalDesc.vEye = point;
+	portalDesc.vEye = point + normal * 0.01f;
 	portalDesc.vAt = point - normal;
 	portalDesc.portalCam = iIndex == CPortal::PORTAL_ORANGE ? TEXT("Portal_Orange") : TEXT("Portal_Blue");
 

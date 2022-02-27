@@ -7,6 +7,8 @@
 #include "VIBuffer_Rect.h"
 #include "GameInstance.h"
 #include "BoxCollider.h"
+#include "Player.h"
+
 CPortal::CPortal(LPDIRECT3DDEVICE9 pGraphic_Device)
     :CGameObject(pGraphic_Device)
 {
@@ -94,7 +96,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
     m_Collider->Set_ParentInfo(this);
     m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-    m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.05f,0.05f,0.05f));
+    m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.1f,0.1f,0.1f));
     pInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_Collider);
   
 
@@ -254,12 +256,18 @@ void CPortal::Portaling()
 	    {
             CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
             CTransform* opponentTr = static_cast<CTransform*>(m_pOpponent->Get_Component(COM_TRANSFORM));
-            _float3 vLook = opponentTr->Get_State(CTransform::STATE_LOOK);
+            _float3 vLook = objTr->Get_State(CTransform::STATE_LOOK);
             D3DXVec3Normalize(&vLook, &vLook);
 
             objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.f);
 
-            //objTr->LookAt(opponentTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.1f);
+           if( obj->Get_Type() == OBJ_PLAYER)
+           {
+               CTransform* camTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
+           		camTr->LookAt(camTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.1f);
+           }
+           else 
+			 objTr->LookAt(objTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.1f);
 	    }
     }
 

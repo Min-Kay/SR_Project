@@ -23,10 +23,9 @@ public:
 	_int LateTick(_float fTimeDelta) override;
 	HRESULT Render() override;
 
-
 public:
 	void Set_Vaild(_bool _bool);
-
+	void Set_OnFire(_bool _bool);
 public:
 	void Shoot(_float fTimeDelta);
 	void Rebound(_float fTimeDelta);
@@ -72,6 +71,7 @@ private:
 	_float m_fTickReload = 0.f;
 
 	_bool m_Reloading = false;
+	_bool m_OnFire = false;
 private:
 	_float3 m_vRayDirCH;
 	_float3 m_vRayPosCH; 

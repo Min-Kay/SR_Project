@@ -37,6 +37,10 @@ public:
 	_float3 Get_State(COLLIDERINFO info);
 	HRESULT Set_State(COLLIDERINFO info , _float3 Input);
 	HRESULT Set_ParentInfo(CGameObject* obj);
+
+public:
+	void Set_AdditionalPos(_float3 pos);
+	const _float3& Get_AdditionalPos() const;
 	HRESULT Set_Coilider();
 	void Draw_Box();
 	
@@ -45,7 +49,7 @@ public:
 private:
 	CTransform* m_ParentPos = nullptr;
 	_float3 m_CollInfo[4];
-	_float3 m_vDir;
+	_float3 m_AdditionaPos = _float3(0.f,0.f,0.f);
 
 public:
 	static CBoxCollider* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

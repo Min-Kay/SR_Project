@@ -39,16 +39,19 @@ _float3 CBoxCollider::Get_State(COLLIDERINFO info)
 
 HRESULT CBoxCollider::Set_State(COLLIDERINFO info, _float3 Input)
 {
-	if (info == COLLIDERINFO::COLL_SIZE)
+	switch (info)
 	{
+	case COLL_SIZE:
 		m_CollInfo[info].x = abs(Input.x);
 		m_CollInfo[info].y = abs(Input.y);
 		m_CollInfo[info].z = abs(Input.z);
-	}
-	else 
+		break;
+	case COLL_CENTER:
+		return S_OK;
+	default:
 		m_CollInfo[info] = Input;
-
-	
+		break;
+	}
 	return S_OK;
 }
 
@@ -67,7 +70,15 @@ HRESULT CBoxCollider::Set_ParentInfo(CGameObject* obj)
 	
 }
 
+void CBoxCollider::Set_AdditionalPos(_float3 pos)
+{
+	m_AdditionaPos = pos;
+}
 
+const _float3& CBoxCollider::Get_AdditionalPos() const
+{
+	return m_AdditionaPos;
+}
 
 
 HRESULT CBoxCollider::Set_Coilider()
@@ -78,7 +89,7 @@ HRESULT CBoxCollider::Set_Coilider()
 		return E_FAIL;
 	}
  
-	m_CollInfo[COLLIDERINFO::COLL_CENTER] = m_ParentPos->Get_State(CTransform::STATE_POSITION);
+	m_CollInfo[COLLIDERINFO::COLL_CENTER] = m_ParentPos->Get_State(CTransform::STATE_POSITION) + m_AdditionaPos;
 	m_CollInfo[COLLIDERINFO::COLL_MIN] = m_CollInfo[COLLIDERINFO::COLL_CENTER] - (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5f);
 	m_CollInfo[COLLIDERINFO::COLL_MAX] = m_CollInfo[COLLIDERINFO::COLL_CENTER] + (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5f);
 	

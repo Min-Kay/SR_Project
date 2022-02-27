@@ -29,6 +29,7 @@ public:
 public:
 	HRESULT Set_CollStyle(COLLSTYLE _style);
 	const COLLSTYLE& Get_CollStyle() const;
+
 public:
 	virtual HRESULT Update()PURE;
 

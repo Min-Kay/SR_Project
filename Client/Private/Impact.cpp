@@ -1,7 +1,6 @@
-#include "stdafx.h"
+ #include "stdafx.h"
 #include "..\Public\Impact.h"
 #include "GameInstance.h"
-#include "VIBuffer_Color.h"
 
 CImpact::CImpact(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -32,10 +31,31 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaled(_float3(1.f, 1.f, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION ,_float3(rand() % 20 + 2, rand() % 20 + 2, rand() % 20 + 2));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, _float3(0.f, 0.f, rand() % 30));
-	m_fLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(5, 5, 5));
+	m_pTransformCom->Scaled(_float3(0.05f,0.05f,0.05f));
+
+
+	_float3 centerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);//임시로 만든 퍼지는점 중심
+
+	mt19937 ranX(rd());
+	mt19937 ranY(rd());
+	mt19937 ranZ(rd());
+
+	uniform_real_distribution <_double> spread(-5, 5);
+
+	_float randomPos[3];
+
+	randomPos[0] = spread(ranX);
+	randomPos[1] = spread(ranY);
+	randomPos[2] = spread(ranZ);
+
+
+
+
+	m_fvecdir = _float3((centerPos.x + randomPos[0]), (centerPos.y + randomPos[1]), (centerPos.z + spread(ranZ))) - centerPos;
+	D3DXVec3Normalize(&m_fvecdir, &m_fvecdir);
+
+	//m_pVIBufferCom->ChangeColor(D3DXCOLOR(1.0,1.0,1.0,0.0));//rgba
 	return S_OK;
 }
 
@@ -44,28 +64,28 @@ _int CImpact::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	m_fFrame += 90.0f * fTimeDelta;
+		m_fFrame +=  fTimeDelta;
 
-	if (m_fFrame >= 90.0f)
-		m_fFrame = 0.f;
-
-	/*m_lColor += 90.0f * fTimeDelta;
-
-	if (m_lColor >= 90.0f)
-		m_lColor = 0.f;*/
+	//if (m_fFrame == 5)
+	//{
+	//	m_fFrame = 0.f;
+	//	m_lColor = D3DXCOLOR(0, 0, 0, 0);
+	//	m_pVIBufferCom->ChangeColor(D3DXCOLOR(1, 0.9, 0, 0));//rgba
+	//}
+	//else 
+	//{
+	//	m_lColor -= D3DXCOLOR(0,0.1,0,0);
+	//	m_pVIBufferCom->ChangeColor(m_lColor);
+	//	//m_fFrame = 0.f;
+	//
+	//}
 
 	
-		
-
-		m_lColor = D3DXCOLOR(1.f, 0.f, 1.f, 1.f);
-
-	m_pVIBufferCom->ChangeColor(m_lColor);
+	
+	
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	if (nullptr != m_pBoxColliderCom)
-	{
-		m_pBoxColliderCom->Set_Coilider();
-	}
+
 
 	if (!m_pTarget)
 	{
@@ -74,12 +94,14 @@ _int CImpact::Tick(_float fTimeDelta)
 	
 		
 	}
+	
+
+
 	RELEASE_INSTANCE(CGameInstance);
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_fvecdir * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta);
 
-	/*testGravity = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	testGravity.y -= 4.5 * fTimeDelta * 0.1f;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, testGravity);*/
+
 	return _int();
 }
 
@@ -93,20 +115,13 @@ _int CImpact::LateTick(_float fTimeDelta)
 
 	
 
-	//if (m_pTarget)
-	//{
-	//	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTarget->Get_State(CTransform::STATE_RIGHT));
-	//	m_pTransformCom->Set_State(CTransform::STATE_UP, m_pTarget->Get_State(CTransform::STATE_UP));
-	//	m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTarget->Get_State(CTransform::STATE_LOOK));
-	//}
+	if (m_pTarget)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTarget->Get_State(CTransform::STATE_RIGHT) * m_pTransformCom->Get_Scale().x);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, m_pTarget->Get_State(CTransform::STATE_UP) * m_pTransformCom->Get_Scale().y);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTarget->Get_State(CTransform::STATE_LOOK) * m_pTransformCom->Get_Scale().z);
+	}
 
-	//_float4x4		ViewMatrix;
-	//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
-	//D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, (*(_float3*)&ViewMatrix.m[0][0]) * m_pTransformCom->Get_Scale().x);
-	////m_pTransformCom->Set_State(CTransform::STATE_UP, (*(_float3*)&ViewMatrix.m[1][0]) * m_pTransformCom->Get_Scale().y);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, (*(_float3*)&ViewMatrix.m[2][0]) * m_pTransformCom->Get_Scale().z);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
 
@@ -121,10 +136,10 @@ HRESULT CImpact::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 	
-	m_pBoxColliderCom->Draw_Box();
+	//m_pBoxColliderCom->Draw_Box();
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
 	if (FAILED(SetUp_RenderState()))
 		return E_FAIL;
@@ -143,8 +158,10 @@ HRESULT CImpact::SetUp_Components()
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 
-	TransformDesc.fSpeedPerSec = 5.f;
+	TransformDesc.fSpeedPerSec = 10.f;
 	TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
+
+
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
@@ -157,17 +174,19 @@ HRESULT CImpact::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLOR, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
-	///* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Impact"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
-		return E_FAIL;
+	////* For.Com_Texture */
+	//if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Impact"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+	//	return E_FAIL;
 
-	/* For.Com_Box */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
-		return E_FAIL;
-
-	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-
+	//* For.Com_Box */
+	//if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+	//	return E_FAIL;
+	//
+	//m_pBoxColliderCom->Set_Parent(this);
+	//m_pBoxColliderCom->Get_Parentcom();
+	//m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(0.01f, 0.01f, 0.01f));
+	//m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP);
+	//
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (nullptr != m_pBoxColliderCom)
 	{

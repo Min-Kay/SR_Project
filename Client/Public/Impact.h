@@ -46,12 +46,16 @@ private:
 
 private:
 	_float				m_fFrame = 0.f;
-	DWORD			m_lColor ;
+	DWORD			m_lColor = 0;;
+	_float3			m_fvecdir;
 	CTransform*		m_pTarget = nullptr;
-	_float3			m_fLook;
+	_float3			m_size;
 private:
 	HRESULT SetUp_Components();
 
+	_uint m_iCurrSpread = 0;
+	_uint m_iSpread = 3;
+	random_device rd;
 	_float3 testGravity;
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();

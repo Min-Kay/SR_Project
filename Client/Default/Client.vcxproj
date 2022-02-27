@@ -180,6 +180,8 @@
     <ClInclude Include="..\Public\PortalControl.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\Tile.h" />
+    <ClInclude Include="..\Public\Tile_Cube.h" />
     <ClInclude Include="..\Public\UI_BackUI.h" />
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="Client.h" />
@@ -210,6 +212,8 @@
     <ClCompile Include="..\Private\PortalControl.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\Tile.cpp" />
+    <ClCompile Include="..\Private\Tile_Cube.cpp" />
     <ClCompile Include="..\Private\UI_BackUI.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="Client.cpp" />

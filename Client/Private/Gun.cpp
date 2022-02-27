@@ -49,7 +49,8 @@ _int CGun::Tick(_float fTimeDelta)
 		--m_iCurrSpread;
 		m_fTickSpread = 0.f; 
 	}
-	
+
+
 	return 0;
 }
 
@@ -61,6 +62,7 @@ _int CGun::LateTick(_float fTimeDelta)
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
+	m_pMuzzle_UI->Set_Vaild(m_OnFire);
 	Animate(fTimeDelta);
 
 	return 0;
@@ -84,18 +86,23 @@ void CGun::Set_Vaild(_bool _bool)
 	m_pMuzzle_UI->Set_Vaild(false);
 }
 
+void CGun::Set_OnFire(_bool _bool)
+{
+	m_OnFire = _bool;
+}
+
 void CGun::Shoot(_float fTimeDelta)
 {
-	if(!m_Reloading && m_fTickShoot > 0.1f && m_iCurrBulletCount > 0 )
+	if (!m_Reloading && m_fTickShoot > 0.1f && m_iCurrBulletCount > 0)
 	{
-		m_pMuzzle_UI->Set_Vaild(true);
+		Set_OnFire(true);
 		Fire();
 		Rebound(fTimeDelta);
 		--m_iCurrBulletCount;
 		m_fTickShoot = 0.f;
 	}
-	else
-		m_pMuzzle_UI->Set_Vaild(false);
+	else if (m_Reloading || m_iCurrBulletCount <= 0)
+		Set_OnFire(false);
 }
 
 void CGun::Fire()
@@ -154,13 +161,10 @@ void CGun::Fire()
 	{
 		if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
 			continue;
-		else
-		{
-			point = target.Point;
-			nor = target.NormalVec;
-			break;
-		}
-			
+
+		point = target.Point;
+		nor = target.NormalVec;
+		break;
 	}
 
 
@@ -181,7 +185,7 @@ void CGun::Fire()
 
 	CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
 	tr->Scaled(_float3(0.1f,0.1f,0.1f));
-	tr->Set_State(CTransform::STATE_POSITION, point);
+	tr->Set_State(CTransform::STATE_POSITION, point + nor * 0.01f);
 	tr->LookAt(tr->Get_State(CTransform::STATE_POSITION) - nor * 0.1f);
 	RELEASE_INSTANCE(CGameInstance);
 }
