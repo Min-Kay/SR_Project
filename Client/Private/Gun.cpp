@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "UI.h"
 #include "Camera_Player.h"
-#include "Ball.h"
+#include "Effect.h"
 
 CGun::CGun(LPDIRECT3DDEVICE9 pGraphic_Device)
 	:CGameObject(pGraphic_Device)
@@ -81,38 +81,37 @@ void CGun::Set_Vaild(_bool _bool)
 {
 	m_Vaild = _bool;
 	m_pGun_UI->Set_Vaild(m_Vaild);
+	m_pMuzzle_UI->Set_Vaild(false);
 }
 
 void CGun::Shoot(_float fTimeDelta)
 {
 	if(!m_Reloading && m_fTickShoot > 0.1f && m_iCurrBulletCount > 0 )
 	{
+		m_pMuzzle_UI->Set_Vaild(true);
 		Fire();
 		Rebound(fTimeDelta);
 		--m_iCurrBulletCount;
 		m_fTickShoot = 0.f;
 	}
+	else
+		m_pMuzzle_UI->Set_Vaild(false);
 }
 
 void CGun::Fire()
 {
+
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
 	mt19937 ranX(rd());
 	mt19937 ranY(rd());
 
-	const uniform_int_distribution<_uint> spread(0, m_iCurrSpread); 
+	const uniform_int_distribution<_int> spread(-m_iCurrSpread, m_iCurrSpread);
 
 	_float randomPos[2];
 
 	randomPos[0] = spread(ranX);
 	randomPos[1] = spread(ranY);
-
-	for(auto& i : randomPos)
-	{
-		if ((int)i % 2 == 0)
-			i *= -1.f; 
-	}
 
 	m_iCurrSpread += m_iSpread;
 
@@ -164,16 +163,26 @@ void CGun::Fire()
 			
 	}
 
-	//충돌 처리하기
-	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Bullet"), TEXT("Prototype_GameObject_Ball"))))
+
+	CEffect::EFFECTDESC eDesc;
+	ZeroMemory(&eDesc,sizeof(eDesc));
+
+	eDesc.Texture = TEXT("Prototype_Component_Texture_Gun_BulletHole");
+	eDesc.FrameCount = 4;
+	eDesc.Alpha = CEffect::EFFECTALPHA_BLEND;
+	eDesc.Bilboard = false;
+	eDesc.Style = CEffect::EFFECTSTYLE_FIX;
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BulletHole"), PROTO_EFFECT,&eDesc)))
 		return;
 
-	CGameObject* p_ball = p_instance->Get_GameObject(g_CurrLevel, TEXT("Bullet"), m_test++);
+	CGameObject* p_ball = p_instance->Get_GameObject(g_CurrLevel, TEXT("BulletHole"), m_test++);
+	static_cast<CEffect*>(p_ball)->Set_CurrentFrameIndex(rand() % eDesc.FrameCount);
 
 	CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
-	tr->Scaled(_float3(0.5f,0.5f,0.5f));
+	tr->Scaled(_float3(0.1f,0.1f,0.1f));
 	tr->Set_State(CTransform::STATE_POSITION, point);
-
+	tr->LookAt(tr->Get_State(CTransform::STATE_POSITION) - nor * 0.1f);
 	RELEASE_INSTANCE(CGameInstance);
 }
 
@@ -227,6 +236,32 @@ HRESULT CGun::SetUp_UI()
 
 	m_pGun_UI = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Gun_UI")));
 
+
+	CUI::UIDESC desc2;
+	ZeroMemory(&desc2, sizeof(desc2));
+	desc2.WinCX = g_iWinCX;
+	desc2.WinCY = g_iWinCY;
+		
+	desc2.Layer = 3;
+	desc2.FrameCount = 4;
+	desc2.Alpha = CUI::ALPHA_BLEND;
+	desc2.PosX = m_fGun_fx - 100.f;
+	desc2.PosY = m_fGun_fy - 20.f;
+	desc2.SizeX = 400.f;
+	desc2.SizeY = 400.f;
+	desc2.AnimateSpeed = 100.f;
+	desc2.Style = CUI::STYLE_REPEAT;
+	desc2.Texture = TEXT("Prototype_Component_Texture_Gun_Muzzle");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Muzzle_UI"), PROTO_UI, &desc2)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pMuzzle_UI = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Muzzle_UI")));
+
+
 	m_camera_ = static_cast<CCamera_Player*>(p_instance->Find_Camera_Object(MAIN_CAM));
 	
 	if (!m_camera_)
@@ -279,7 +314,9 @@ void CGun::Animate(_float fTimeDelta)
 		}
 	}
 
-	m_pGun_UI->Set_Pos(m_fGun_fx + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.1f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
+	m_pGun_UI->Set_Pos(m_fGun_fx + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
+
+	m_pMuzzle_UI->Set_Pos(m_fGun_fx - 100.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy - 20.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
 }
 

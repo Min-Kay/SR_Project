@@ -182,7 +182,7 @@ _int CPortal::Tick(_float fTimeDelta)
 
 _int CPortal::LateTick(_float fTimeDelta)
 {
-    m_pRenderer->Add_RenderGroup(CRenderer::RENDER_ALPHA,this);
+    m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA,this);
 
     return _int();
 }
@@ -196,15 +196,15 @@ HRESULT CPortal::Render()
         return E_FAIL;
 
 
-  /* m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 20);
+    m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 
     m_pVIBuffer->Render();
 
 
-    //m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
     return S_OK;
 }

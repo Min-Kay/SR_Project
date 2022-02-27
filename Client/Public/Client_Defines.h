@@ -16,10 +16,6 @@ extern LEVEL	g_CurrLevel;
 #define CAM_PORTAL TEXT("Prototype_GameObject_Camera_Portal")
 #define CAM_PLAYER TEXT("Prototype_GameObject_Camera_Player")
 
-
-#define PROTO_UI TEXT("Prototype_GameObject_UI")
-#define PROTO_BUTTON TEXT("Prototype_GameObject_Button")
-
 #define	GRAVITY float -9.8f;
 
 namespace Client {}

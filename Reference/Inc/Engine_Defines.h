@@ -63,5 +63,9 @@ using namespace std;
 #define PROTO_COLLIDER TEXT("Prototype_Component_Collider")
 
 
+#define PROTO_UI TEXT("Prototype_GameObject_UI")
+#define PROTO_BUTTON TEXT("Prototype_GameObject_Button")
+#define PROTO_EFFECT TEXT("Prototype_GameObject_Effect")
+
 namespace Engine {}
 using namespace Engine;

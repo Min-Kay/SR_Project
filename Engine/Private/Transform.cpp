@@ -109,6 +109,9 @@ void CTransform::LookAt(_float3 vTargetPos)
 	vLook = *D3DXVec3Normalize(&vLook, &vLook) * vScale.z;
 
 	vRight = *D3DXVec3Cross(&vRight, &_float3(0.f, 1.f, 0.f), &vLook);
+	if(vRight.x == 0.f && vRight.y == 0.f && vRight.z ==0.f)
+		D3DXVec3Cross(&vRight, &_float3(0.f, 0.f, 1.f), &vLook);
+
 	vRight = *D3DXVec3Normalize(&vRight, &vRight) * vScale.x;
 
 	vUp = *D3DXVec3Cross(&vUp, &vLook, &vRight);

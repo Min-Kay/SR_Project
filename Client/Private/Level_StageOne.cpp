@@ -115,9 +115,9 @@ HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("SkyBox"), TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 
-	
+	/*
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Ball"), TEXT("Prototype_GameObject_Ball"))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 
 	Engine::CUI::UIDESC desc2;

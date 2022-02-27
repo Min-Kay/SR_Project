@@ -269,12 +269,14 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 	case 0:
 		if (nullptr != m_pPortalCtrl)
 		{
+			if (pGameInstance->Get_Mouse_Up(CInput_Device::MBS_LBUTTON) && pGameInstance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON))
+				break;
+
 			if (pGameInstance->Get_Mouse_Up(CInput_Device::MBS_LBUTTON))
 			{
 				m_pPortalCtrl->Spawn_Portal(CPortal::PORTAL_ORANGE);
 			}
-
-			if (pGameInstance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON))
+			else if (pGameInstance->Get_Mouse_Down(CInput_Device::MBS_RBUTTON))
 			{
 				m_pPortalCtrl->Spawn_Portal( CPortal::PORTAL_BLUE);
 			}

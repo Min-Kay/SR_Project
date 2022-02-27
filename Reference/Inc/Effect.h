@@ -22,6 +22,29 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+private:
+	void Tick_Effect(_float fTimeDelta);
+
+public:
+	typedef enum tagEffectStyle { EFFECTSTYLE_FIX, EFFECTSTYLE_STRAIGHT,EFFECTSTYLE_REPEAT,EFFECTSTYLE_WAVE, EFFECTSTYLE_END} EFFECTSTYLE;
+	typedef enum tagEffectAlpha {
+		EFFECTALPHA_DEFAULT, EFFECTALPHA_TEST, EFFECTALPHA_BLEND, EFFECTALPHA_END
+	}EFFECTALPHA;
+
+public:
+	typedef struct tagEffect
+	{
+		EFFECTSTYLE Style;
+		_float AnimateSpeed;
+		_uint FrameCount;
+		EFFECTALPHA Alpha;
+		D3DCMPFUNC Func;
+		_uint	Ref;
+		_bool Bilboard;
+		_bool FixY;
+		const _tchar* Texture;
+	}EFFECTDESC;
+
 protected:
 	/* ÅØ½ºÃÄ */
 	CTexture* m_pTextureCom = nullptr;
@@ -36,7 +59,11 @@ protected:
 	CRenderer* m_pRendererCom = nullptr;
 
 protected:
+	EFFECTDESC			m_Desc;
+	_uint				m_iCurrFrameIndex = 0;
 	_float				m_fFrame = 0.f;
+
+	_bool				m_Wave = false;
 
 protected:
 	virtual HRESULT SetUp_Components();
@@ -44,10 +71,14 @@ protected:
 	virtual HRESULT Release_RenderState();
 
 public:
-	HRESULT Set_Texture(const _tchar* _tag);
+	void Set_CurrentFrameIndex(_uint iIndex);
+	void Set_Style(EFFECTSTYLE _style);
+
+	const _uint& Get_CurrentFrameIndex() const;
+	
 
 protected:
-	HRESULT FaceOn_Camera(_bool fixY);
+	HRESULT FaceOn_Camera();
 
 public:
 	static CEffect* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

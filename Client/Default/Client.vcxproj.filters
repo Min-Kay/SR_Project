@@ -183,9 +183,6 @@
     <ClInclude Include="..\Public\Button_Exit.h">
       <Filter>02.GameObjects\UI\Button\Exit</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Ball.h">
-      <Filter>02.GameObjects\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Gun.h">
       <Filter>02.GameObjects\Gun</Filter>
     </ClInclude>
@@ -265,9 +262,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Button_Exit.cpp">
       <Filter>02.GameObjects\UI\Button\Exit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Ball.cpp">
-      <Filter>02.GameObjects\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Gun.cpp">
       <Filter>02.GameObjects\Gun</Filter>

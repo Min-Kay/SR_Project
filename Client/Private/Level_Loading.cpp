@@ -105,7 +105,7 @@ HRESULT CLevel_Loading::Ready()
 	if (FAILED(pGameInstance->Add_Camera_Object(CAM_STATIC, TEXT("Loading_Camera"), &CameraDesc)))
 		return E_FAIL;
 
-	Engine::CUI::UIDESC desc;
+	CUI::UIDESC desc;
 	ZeroMemory(&desc, sizeof(Engine::CUI::UIDESC));
 	desc.WinCX = g_iWinCX;
 	desc.WinCY = g_iWinCY;
@@ -116,7 +116,7 @@ HRESULT CLevel_Loading::Ready()
 	desc.Texture = TEXT("Prototype_Component_Texture_Loading");
 	desc.FrameCount = 100;
 	desc.AnimateSpeed = 100.f;
-	desc.Style = Engine::CUI::STYLE_REPEAT;
+	desc.Style = CUI::STYLE_REPEAT;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Loading"), PROTO_UI, &desc)))
 		return E_FAIL;

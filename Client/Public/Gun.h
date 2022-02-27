@@ -44,6 +44,7 @@ private:
 
 private:
 	CUI*	m_pGun_UI = nullptr;
+	CUI*	m_pMuzzle_UI = nullptr;
 
 	_float m_fGun_fx = 0.f;
 	_float m_fGun_fy = 0.f;
@@ -57,7 +58,7 @@ private:
 	_uint m_iCurrBulletCount = 0;
 	_uint m_iFullBulletCount = 40;
 
-	_uint m_iCurrSpread = 0;
+	_int m_iCurrSpread = 0;
 	_uint m_iSpread = 3;
 	_uint m_test = 0;
 
@@ -78,6 +79,7 @@ private:
 
 private:
 	random_device rd;
+
 public:
 	static CGun* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

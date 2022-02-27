@@ -6,6 +6,7 @@
 #include "UI.h"
 #include "LoadingLoader.h"
 #include "Camera_Static.h"
+#include "Effect.h"
 #include <Vfw.h>
 
 LEVEL g_CurrLevel;
@@ -174,8 +175,12 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Camera_Prototype(CAM_STATIC, CCamera_Static::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(PROTO_UI, Engine::CUI::Create(m_pGraphic_Device))))
-		return E_FAIL; 
+	if (FAILED(m_pGameInstance->Add_Prototype(PROTO_UI, CUI::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(m_pGameInstance->Add_Prototype(PROTO_EFFECT, CEffect::Create(m_pGraphic_Device))))
+		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Logo */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Main/Main.jpg")))))

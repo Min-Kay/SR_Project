@@ -39,6 +39,9 @@ list<CCollision_Manager::COLLPOINT> CCollision_Manager::Get_Ray_Collision_List(_
 	{
 		for (auto& coll : cl)
 		{
+			if (coll->Get_CollStyle() == CCollider::COLLSTYLE_TRIGGER)
+				continue;
+
 			_float3 point, nor;
 			if (RayCollision(dir, pos, coll, dis, point,nor))
 			{
