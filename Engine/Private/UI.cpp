@@ -129,8 +129,14 @@ HRESULT CUI::Set_CurrFrameIndex(_uint iIndex)
 		return E_FAIL;
 
 	m_CurrFrame = iIndex;
+	m_fFrame = (_float)m_CurrFrame;
 
 	return S_OK;
+}
+
+const _uint& CUI::Get_CurrFrameIndex() const
+{
+	return m_CurrFrame;
 }
 
 HRESULT CUI::Set_UI(_uint iWinCX, _uint iWinCY, _float x, _float y, _float sizeX, _float sizeY)
@@ -166,7 +172,7 @@ HRESULT CUI::Tick_UI(_float fTimeDelta)
 	case STYLE_FIX:
 		break;
 	case STYLE_STRAIGHT:
-		if ((_uint)m_fFrame >= m_FrameCount - 1)
+		if ((_uint)m_fFrame >= m_FrameCount)
 			break;
 
 		m_CurrFrame = (_uint)m_fFrame;
@@ -174,7 +180,7 @@ HRESULT CUI::Tick_UI(_float fTimeDelta)
 
 		break;
 	case STYLE_REPEAT:
-		if ((_uint)m_fFrame >= m_FrameCount - 1)
+		if ((_uint)m_fFrame >= m_FrameCount)
 			m_fFrame = 0.f;
 
 		m_CurrFrame = (_uint)m_fFrame;
@@ -182,7 +188,7 @@ HRESULT CUI::Tick_UI(_float fTimeDelta)
 
 		break;
 	case STYLE_WAVE:
-		if ((_uint)m_fFrame >= m_FrameCount - 1)
+		if ((_uint)m_fFrame >= m_FrameCount)
 			m_wave = true;
 		else if ((_uint)m_fFrame <= 0)
 			m_wave = false;

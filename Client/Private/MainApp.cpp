@@ -8,6 +8,8 @@
 #include "Camera_Static.h"
 #include <Vfw.h>
 
+LEVEL g_CurrLevel;
+
 //#ifdef _DEBUG
 //	m_fTimerAcc += fTimeDelta;
 //#endif // _DEBUG
@@ -57,6 +59,8 @@ HRESULT CMainApp::NativeConstruct()
 
 	Play_Intro();
 
+	
+	g_CurrLevel = LEVEL_LOGO;
 	return S_OK;
 }
 
@@ -102,11 +106,14 @@ HRESULT CMainApp::OpenLevel(LEVEL eLevelID)
 	{
 	case LEVEL_LOGO: /* 바로 로고레벨로 할당들어간다. */
 		pLevel = CLevel_Logo::Create(m_pGraphic_Device);
+		g_CurrLevel = LEVEL_LOGO;
 		break;
-	case LEVEL_GAMEPLAY: /* 바로 로딩레벨로 선할당. 로딩레벨안에서 로딩이 끝나면 게임플레이로 할당들어간다. */
-	case LEVEL_BOSS:		
+	case LEVEL_STAGEONE: /* 바로 로딩레벨로 선할당. 로딩레벨안에서 로딩이 끝나면 게임플레이로 할당들어간다. */
+	case LEVEL_STAGETWO:
+	case LEVEL_STAGETHREE:
 		pLevel = CLevel_Loading::Create(m_pGraphic_Device, eLevelID);		
 		eLevelID = LEVEL_LOADING;
+		g_CurrLevel = eLevelID;
 		break;
 	}	
 

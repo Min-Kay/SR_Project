@@ -70,7 +70,7 @@ private:
 	TRANSFORMDESC		m_TransformDesc;
 
 private:
-	_float				m_fGravity = 5.f;
+	_float				m_fGravity = 9.8f;
 	_float				m_fVelocity = 0.f;
 
 public:

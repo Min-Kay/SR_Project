@@ -79,6 +79,8 @@ protected:
 public:
 	HRESULT Set_UI(_uint iWinCX, _uint iWinCY, _float x,_float y, _float sizeX, _float sizeY);
 	HRESULT Set_CurrFrameIndex(_uint iIndex);
+	const _uint& Get_CurrFrameIndex() const;
+
 	HRESULT Set_Style(STYLE _style);
 	void Set_AlphaTest(D3DCMPFUNC _func, _uint ref = 0);
 

@@ -10,9 +10,9 @@ CCollision_Manager::CCollision_Manager()
 {
 }
 
-list<CGameObject*>* CCollision_Manager::Get_Collision_List(CBoxCollider* target)
+list<CGameObject*> CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 {
-	list<CGameObject*>* collList = new list<CGameObject*>;
+	list<CGameObject*> collList;
 
 	for (auto& cl : m_CollList)
 	{
@@ -23,7 +23,7 @@ list<CGameObject*>* CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 
 			if (AABB(target, coll, true))
 			{
-				collList->push_back(coll->Get_Parent());
+				collList.push_back(coll->Get_Parent());
 			}
 		}
 	}
@@ -31,9 +31,9 @@ list<CGameObject*>* CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 	return collList;
 }
 
-list<CCollision_Manager::COLLPOINT>* CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
+list<CCollision_Manager::COLLPOINT> CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
 {
-	list<COLLPOINT>* colllist = new list<COLLPOINT>;
+	list<COLLPOINT> colllist;// = new list<COLLPOINT>;
 
 	for (auto& cl : m_CollList)
 	{
@@ -46,12 +46,12 @@ list<CCollision_Manager::COLLPOINT>* CCollision_Manager::Get_Ray_Collision_List(
 				cp.CollObj = coll->Get_Parent();
 				cp.Point = point;
 				cp.NormalVec = nor;
-				colllist->push_back(cp);
+				colllist.push_back(cp);
 			}
 		}
 	}
 
-	colllist->sort([pos](COLLPOINT a, COLLPOINT b)->bool
+	colllist.sort([pos](COLLPOINT a, COLLPOINT b)->bool
 		{
 			D3DXVECTOR3 dir1 = pos - a.Point;
 
@@ -127,7 +127,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 		(vMyMin.y <= vOtherMax.y && vMyMax.y >= vOtherMin.y) &&
 		(vMyMin.z <= vOtherMax.z && vMyMax.z >= vOtherMin.z))
 	{
-		if (justReturn)
+		if (justReturn || _OtherCollider->Get_CollStyle() == CCollider::COLLSTYLE_TRIGGER || _MyCollider->Get_CollStyle() == CCollider::COLLSTYLE_TRIGGER)
 			return true; 
 
 		_float3 diff = vMyMax - vOtherMin;

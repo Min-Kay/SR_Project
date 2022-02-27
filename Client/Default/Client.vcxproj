@@ -166,8 +166,11 @@
     <ClInclude Include="..\Public\Camera_Static.h" />
     <ClInclude Include="..\Public\Cam_Portal.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Door_left.h" />
+    <ClInclude Include="..\Public\Door_right.h" />
     <ClInclude Include="..\Public\Gun.h" />
-    <ClInclude Include="..\Public\Level_GamePlay.h" />
+    <ClInclude Include="..\Public\Impact.h" />
+    <ClInclude Include="..\Public\Level_StageOne.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -179,6 +182,7 @@
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UI_BackUI.h" />
+    <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -193,8 +197,11 @@
     <ClCompile Include="..\Private\Camera_Player.cpp" />
     <ClCompile Include="..\Private\Camera_Static.cpp" />
     <ClCompile Include="..\Private\Cam_Portal.cpp" />
+    <ClCompile Include="..\Private\Door_left.cpp" />
+    <ClCompile Include="..\Private\Door_right.cpp" />
     <ClCompile Include="..\Private\Gun.cpp" />
-    <ClCompile Include="..\Private\Level_GamePlay.cpp" />
+    <ClCompile Include="..\Private\Impact.cpp" />
+    <ClCompile Include="..\Private\Level_StageOne.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
@@ -206,6 +213,7 @@
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI_BackUI.cpp" />
+    <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

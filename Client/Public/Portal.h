@@ -7,6 +7,7 @@ class CTransform;
 class CRenderer;
 class CTexture;
 class CVIBuffer_Rect;
+class CBoxCollider;
 END
 
 BEGIN(Client)
@@ -19,6 +20,10 @@ protected:
 	explicit CPortal(LPDIRECT3DDEVICE9 pGraphic_Device);
 	explicit CPortal(const CPortal& rhs);
 	virtual ~CPortal() = default;
+
+
+public:
+	typedef enum tagColor { PORTAL_ORANGE, PORTAL_BLUE, PORTAL_END }PORTALCOLOR;
 
 public:
 	typedef struct tagPortalDesc {
@@ -45,6 +50,9 @@ public:
 	void Set_Cam_Angle(CTransform* target);
 
 private:
+	void Portaling();
+
+private:
 	CTransform* m_pTransform = nullptr;
 	CRenderer* m_pRenderer = nullptr;
 	CTexture* m_pTexture = nullptr;
@@ -52,8 +60,10 @@ private:
 
 	CPortal* m_pOpponent = nullptr;
 	CCam_Portal* m_pCam_Portal = nullptr;
+	CBoxCollider* m_Collider = nullptr; 
 
 	const _tchar* tag = nullptr;
+
 public:
 	static CPortal* Create(LPDIRECT3DDEVICE9 pGraphicDevice);
 	virtual CGameObject* Clone(void* pArg) override;

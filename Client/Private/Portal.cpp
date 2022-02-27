@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "VIBuffer_Rect.h"
 #include "GameInstance.h"
-
+#include "BoxCollider.h"
 CPortal::CPortal(LPDIRECT3DDEVICE9 pGraphic_Device)
     :CGameObject(pGraphic_Device)
 {
@@ -18,7 +18,9 @@ CPortal::CPortal(const CPortal& rhs)
     , m_pTexture(rhs.m_pTexture)
     , m_pTransform(rhs.m_pTransform)
     , m_pVIBuffer(rhs.m_pVIBuffer)
+    , m_Collider(rhs.m_Collider)
 {
+    Safe_AddRef(m_Collider);
     Safe_AddRef(m_pRenderer);
     Safe_AddRef(m_pTexture);
     Safe_AddRef(m_pTransform);
@@ -55,10 +57,10 @@ CGameObject* CPortal::Clone(void* pArg)
 void CPortal::Free()
 {
     __super::Free();
-   // Safe_Release(m_pCam_Portal);
-    
+
     if(nullptr != m_pCam_Portal)
         m_pCam_Portal->Set_ExitPortal(nullptr);
+    Safe_Release(m_Collider);
     Safe_Release(m_pRenderer);
     Safe_Release(m_pTexture);
     Safe_Release(m_pVIBuffer);
@@ -82,7 +84,19 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
     if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransform)))
         return E_FAIL;
-    
+
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_Collider)))
+        return E_FAIL;
+
+    CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+    Set_Type(OBJ_STATIC);
+
+    m_Collider->Set_ParentInfo(this);
+    m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
+    m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.05f,0.05f,0.05f));
+    pInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_Collider);
+  
 
     PORTALDESC portalDesc = *static_cast<PORTALDESC*>(pArg);
 
@@ -119,7 +133,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     D3DXVec3Normalize(&nor,&nor);
     camDesc.vAt = portalDesc.vEye - nor;
 
-    CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+ 
     tag = portalDesc.portalCam;
 
 
@@ -142,7 +156,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
         return E_FAIL;
 
 
-    if (portalDesc.iPortalColor == 0)
+    if (portalDesc.iPortalColor == PORTAL_ORANGE)
     {
         /* For.Com_Texture */
         if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Orange"), COM_TEXTURE, (CComponent**)&m_pTexture)))
@@ -161,6 +175,8 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
 _int CPortal::Tick(_float fTimeDelta)
 {
+    m_Collider->Set_Coilider();
+    Portaling();
      return _int();
 }
 
@@ -222,4 +238,30 @@ void CPortal::Set_Cam_Angle(CTransform* target)
         return; 
     
     m_pCam_Portal->Set_Cam_Angle(m_pTransform,target);
+}
+
+void CPortal::Portaling()
+{
+    if (!m_pOpponent)
+        return;
+
+    CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+    list<CGameObject*> collList = p_instance->Get_Collision_List(m_Collider);
+
+    for(auto& obj : collList)
+    {
+	    if(obj->Get_Type() != CGameObject::OBJ_STATIC )
+	    {
+            CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
+            CTransform* opponentTr = static_cast<CTransform*>(m_pOpponent->Get_Component(COM_TRANSFORM));
+            _float3 vLook = opponentTr->Get_State(CTransform::STATE_LOOK);
+            D3DXVec3Normalize(&vLook, &vLook);
+
+            objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.f);
+
+            //objTr->LookAt(opponentTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.1f);
+	    }
+    }
+
+	RELEASE_INSTANCE(CGameInstance);
 }

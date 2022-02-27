@@ -440,14 +440,25 @@ HRESULT CGameInstance::Release_ColliderList()
 	return m_Collision_Manager->Release_ColliderList();
 }
 
-list<CGameObject*>* CGameInstance::Get_Collision_List(CBoxCollider* target)
+list<CGameObject*> CGameInstance::Get_Collision_List(CBoxCollider* target)
 {
 	return m_Collision_Manager->Get_Collision_List(target);
 }
 
-list<CCollision_Manager::COLLPOINT>* CGameInstance::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float& dis)
+list<CCollision_Manager::COLLPOINT> CGameInstance::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
 {
 	return m_Collision_Manager->Get_Ray_Collision_List(dir, pos, dis);
+}
+
+list<_int>* CGameInstance::test()
+{
+	list<_int> a;
+	a.push_back(1);
+	a.push_back(12);
+	a.push_back(145);
+	a.push_back(15);
+
+	return &a;
 }
 
 void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)

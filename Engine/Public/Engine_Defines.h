@@ -54,6 +54,8 @@ using namespace std;
 #define PROTO_RENDERER TEXT("Prototype_Component_Renderer")
 
 #define PROTO_RECT TEXT("Prototype_Component_VIBuffer_Rect")
+#define PROTO_COLOR TEXT("Prototype_Component_VIBuffer_Color")
+
 #define PROTO_PORTAL TEXT("Prototype_Component_VIBuffer_Portal")
 #define PROTO_CUBE TEXT("Prototype_Component_VIBuffer_Cube")
 #define PROTO_TERRAIN TEXT("Prototype_Component_VIBuffr_Terrain")

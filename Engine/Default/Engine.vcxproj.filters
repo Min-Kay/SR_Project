@@ -112,6 +112,9 @@
     <Filter Include="01.Utility\03.GameObject\UI\Button">
       <UniqueIdentifier>{26f520a9-54cd-4a3f-995c-1e6e60aeb65a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Components\Model\Color">
+      <UniqueIdentifier>{29d9e12a-975a-4047-ae6c-3550661bb466}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -228,6 +231,9 @@
     <ClInclude Include="..\Public\SoundMgr.h">
       <Filter>00.System\00.Devices\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Color.h">
+      <Filter>01.Utility\04.Components\Model\Color</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -328,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SoundMgr.cpp">
       <Filter>00.System\00.Devices\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Color.cpp">
+      <Filter>01.Utility\04.Components\Model\Color</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

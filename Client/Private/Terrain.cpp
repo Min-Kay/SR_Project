@@ -105,19 +105,20 @@ HRESULT CTerrain::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, PROTO_TERRAIN, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STAGEONE, PROTO_TERRAIN, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STAGEONE, TEXT("Prototype_Component_Texture_Terrain"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	/* For.Com_Box */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
 		return E_FAIL;
 
-	m_pBoxColliderCom->Set_Parent(this);
-	m_pBoxColliderCom->Get_Parentcom();
+	Set_Type(OBJ_STATIC);
+
+	m_pBoxColliderCom->Set_ParentInfo(this);
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(5.f, 5.f, 5.f));
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);

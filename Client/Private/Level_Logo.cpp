@@ -45,7 +45,7 @@ _int CLevel_Logo::Tick(_float fTimeDelta)
 
 	if (pInstance->Get_Key_Down(DIK_RETURN))
 	{
-		if (FAILED(pInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_GAMEPLAY))))
+		if (FAILED(pInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_STAGEONE))))
 			return E_FAIL;
 
 	}

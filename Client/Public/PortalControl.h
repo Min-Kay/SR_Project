@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "UI.h"
+#include "Portal.h"
 
 BEGIN(Engine)
 class CUI;
@@ -8,7 +9,6 @@ class CCamera;
 END
 
 BEGIN(Client)
-class CPortal;
 
 class CPortalControl :
     public CGameObject
@@ -19,9 +19,6 @@ protected:
 	virtual ~CPortalControl() = default;
 
 public:
-	enum PortalColor{ PORTAL_ORANGE,PORTAL_BLUE,PORTAL_END};
-
-public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
 	virtual _int Tick(_float fTimeDelta) override;
@@ -29,12 +26,13 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	HRESULT Spawn_Portal(_uint iLevelIndex,PortalColor iIndex);
-	HRESULT Erase_Portal(_uint iLevelIndex);
+	HRESULT Spawn_Portal(CPortal::PORTALCOLOR iIndex);
+	HRESULT Erase_Portal();
 	void Set_Camera(CCamera* _cam);
 
 private:
 	HRESULT SetUp_UI();
+	HRESULT Synchronize_Camera_Angle();
 	void	Animate_Gun(_float fTimeDelta);
 
 public:

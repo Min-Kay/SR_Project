@@ -35,11 +35,14 @@ unsigned int APIENTRY ThreadFunction(void* pArg)
 
 	switch (pLoader->Get_LevelID())
 	{
-	case LEVEL_GAMEPLAY:
-		pLoader->Loading_ForGamePlay();
+	case LEVEL_STAGEONE:
+		pLoader->Loading_ForStageOne();
 		break;
-	case LEVEL_BOSS:
-		pLoader->Loading_ForBoss();
+	case LEVEL_STAGETWO:
+		pLoader->Loading_ForStageTwo();
+		break;
+	case LEVEL_STAGETHREE:
+		pLoader->Loading_ForStageThree();
 		break;
 	}	
 
@@ -63,7 +66,7 @@ HRESULT CLoader::NativeConstruct(LEVEL eNextLevel)
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_ForGamePlay()
+HRESULT CLoader::Loading_ForStageOne()
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -71,7 +74,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 #pragma region PROTOTYPE_COMPONENT
 
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, PROTO_TERRAIN, CVIBuffer_Terrain::Create(m_pGraphic_Device, 129, 129))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STAGEONE, PROTO_TERRAIN, CVIBuffer_Terrain::Create(m_pGraphic_Device, 129, 129))))
 	{
 		MSGBOX("Failed to create terrain in Loader");
 		return E_FAIL;
@@ -92,7 +95,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 
 	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STAGEONE, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
 	{
 		MSGBOX("Failed to create terrain_texture in Loader");
 		return E_FAIL;
@@ -111,7 +114,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Player */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Player/AKIHA_AKI00_00%d.png"), 12))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STAGEONE, TEXT("Prototype_Component_Texture_Player"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Player/AKIHA_AKI00_00%d.png"), 12))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Crosshair"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Crosshair.png")))))
@@ -141,7 +144,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Gun_UI"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Player/Portal_Gun.png")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gun_UI"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Gun/Rifle_%d.png"),2))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gun_Reload"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Gun/Reload/Reload_%d.png"),76))))
 		return E_FAIL;
 
 #pragma endregion
@@ -211,7 +214,18 @@ HRESULT CLoader::Loading_ForGamePlay()
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_ForBoss()
+
+HRESULT CLoader::Loading_ForStageTwo()
+{
+	for (_uint i = 0; i < 9999999999; ++i)
+		int a = 10;
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_ForStageThree()
 {
 	for (_uint i = 0; i < 9999999999; ++i)
 		int a = 10;

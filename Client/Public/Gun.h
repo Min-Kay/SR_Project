@@ -70,6 +70,7 @@ private:
 
 	_float m_fTickReload = 0.f;
 
+	_bool m_Reloading = false;
 private:
 	_float3 m_vRayDirCH;
 	_float3 m_vRayPosCH; 

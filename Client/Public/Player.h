@@ -58,9 +58,9 @@ private:
 private:
 	_float				m_fFrame = 0.f;
 	_bool				m_bJump = false;
-	_float				m_CurrJumpForce = 0.f;
-	_float				m_fJumpForce = 3.f;
-	_float				m_fMaxJumpForce = 100.f;
+	_float				m_fMaxForce = 40.f;
+	_float				m_fForce = 2.f;
+	_float				m_CurrForce = 0.f;
 	_bool				m_OnGround = false;
 
 private:
@@ -76,6 +76,11 @@ private:
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
 
+	HRESULT SetUp_Weapons();
+private:
+	_int Player_Control(_float fTimeDelta);
+	HRESULT Synchronize_Camera();
+	void Check_OnGround();
 public:
 	static CPlayer* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

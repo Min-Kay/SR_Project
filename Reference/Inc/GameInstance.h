@@ -86,10 +86,11 @@ public:
 	HRESULT Add_Collider(CCollision_Manager::COLLOBJTYPE _type , CBoxCollider * collider);
 	HRESULT Release_Collider(CCollision_Manager::COLLOBJTYPE _type, CBoxCollider * collider);
 	HRESULT Release_ColliderList();
-	list<CGameObject*>* Get_Collision_List(CBoxCollider * target);
-	_bool RayCollision(_float3 dir, _float3 pos, CBoxCollider * _OtherCollider, _float & dis);
-	list<CCollision_Manager::COLLPOINT>* Get_Ray_Collision_List(_float3 dir, _float3 pos, _float & dis);
+	list<CGameObject*> Get_Collision_List(CBoxCollider * target);
+	list<CCollision_Manager::COLLPOINT> Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis);
 
+
+	list<_int>* test();
 public: // 마우스 커서 설정
 	void SetMouseMode(_bool setting, HWND _hwnd = nullptr);
 

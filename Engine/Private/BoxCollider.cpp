@@ -53,9 +53,9 @@ HRESULT CBoxCollider::Set_State(COLLIDERINFO info, _float3 Input)
 }
 
 
-HRESULT CBoxCollider::Get_Parentcom()
+HRESULT CBoxCollider::Set_ParentInfo(CGameObject* obj)
 {
-	
+	Set_Parent(obj);
 	m_ParentPos = (CTransform*)m_Parent->Get_Component(COM_TRANSFORM);
 
 	if (!m_ParentPos)

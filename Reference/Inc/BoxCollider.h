@@ -36,7 +36,7 @@ public:
 
 	_float3 Get_State(COLLIDERINFO info);
 	HRESULT Set_State(COLLIDERINFO info , _float3 Input);
-	HRESULT Get_Parentcom();
+	HRESULT Set_ParentInfo(CGameObject* obj);
 	HRESULT Set_Coilider();
 	void Draw_Box();
 	

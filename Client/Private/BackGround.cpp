@@ -117,8 +117,7 @@ HRESULT CBackGround::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
 		return E_FAIL;
 
-	m_pBoxColliderCom->Set_Parent(this);
-	m_pBoxColliderCom->Get_Parentcom();
+	m_pBoxColliderCom->Set_ParentInfo(this);
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -126,7 +125,7 @@ HRESULT CBackGround::SetUp_Components()
 	{
 		pGameInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC,m_pBoxColliderCom);
 	}
-
+	Set_Type(OBJ_STATIC);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

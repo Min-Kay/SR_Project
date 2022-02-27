@@ -175,7 +175,7 @@ void CTransform::Gravity(_float fWeight, _float fTimeDelta)
 	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
 	_float3		vUp = Get_State(CTransform::STATE_UP);
 
-	vPosition -= *D3DXVec3Normalize(&vUp, &vUp) * (fWeight + m_fVelocity + m_fGravity) * fTimeDelta ;
+	vPosition -= *D3DXVec3Normalize(&vUp, &vUp) * (fWeight + m_fVelocity)  * m_fGravity * fTimeDelta ;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }

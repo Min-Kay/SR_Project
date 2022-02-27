@@ -16,9 +16,6 @@
     <Filter Include="01.Levels\Logo">
       <UniqueIdentifier>{0f8de14b-2c66-4418-990f-7da0f8afcbb5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\GamePlay">
-      <UniqueIdentifier>{5df5ff31-7b54-4a05-8cab-d06886d65f60}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\Loading">
       <UniqueIdentifier>{a0efb36e-59cf-4005-830d-596c27ef6a8a}</UniqueIdentifier>
     </Filter>
@@ -85,6 +82,30 @@
     <Filter Include="02.GameObjects\Gun">
       <UniqueIdentifier>{3e0e4d98-17ac-4783-8d41-69e0d3c9dce8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Impact">
+      <UniqueIdentifier>{d8ed2e41-328d-4af2-864f-6b60661a78e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Water">
+      <UniqueIdentifier>{8c9cc998-e45b-49fc-a970-72050261307e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Door">
+      <UniqueIdentifier>{ca1a26a0-d99e-45f1-a3b0-f2c6051386a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Door\Left">
+      <UniqueIdentifier>{c43df459-1249-4ff5-bb8a-ec0a991fc3ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Door\Right">
+      <UniqueIdentifier>{e474a6bd-5fcf-46ba-9ce8-5ba518876fd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\StageTwo">
+      <UniqueIdentifier>{8501afef-63c3-42fe-aa1d-283a0ed5d594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\StageThree">
+      <UniqueIdentifier>{6f527e95-e10e-4c28-999e-d138eaf889f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\StageOne">
+      <UniqueIdentifier>{5df5ff31-7b54-4a05-8cab-d06886d65f60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -111,8 +132,8 @@
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>01.Levels\Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
-      <Filter>01.Levels\GamePlay</Filter>
+    <ClInclude Include="..\Public\Level_StageOne.h">
+      <Filter>01.Levels\StageOne</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Levels\Loading</Filter>
@@ -168,6 +189,18 @@
     <ClInclude Include="..\Public\Gun.h">
       <Filter>02.GameObjects\Gun</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Impact.h">
+      <Filter>02.GameObjects\Impact</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Water.h">
+      <Filter>02.GameObjects\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Door_left.h">
+      <Filter>02.GameObjects\Door\Left</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Door_right.h">
+      <Filter>02.GameObjects\Door\Right</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -182,8 +215,8 @@
     <ClCompile Include="..\private\Level_Logo.cpp">
       <Filter>01.Levels\Logo</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
-      <Filter>01.Levels\GamePlay</Filter>
+    <ClCompile Include="..\Private\Level_StageOne.cpp">
+      <Filter>01.Levels\StageOne</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
       <Filter>01.Levels\Loading</Filter>
@@ -238,6 +271,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Gun.cpp">
       <Filter>02.GameObjects\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Impact.cpp">
+      <Filter>02.GameObjects\Impact</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Water.cpp">
+      <Filter>02.GameObjects\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Door_left.cpp">
+      <Filter>02.GameObjects\Door\Left</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Door_right.cpp">
+      <Filter>02.GameObjects\Door\Right</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

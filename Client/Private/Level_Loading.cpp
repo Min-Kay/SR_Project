@@ -2,7 +2,7 @@
 #include "..\Public\Level_Loading.h"
 #include "Loader.h"
 #include "GameInstance.h"
-#include "Level_GamePlay.h"
+#include "Level_StageOne.h"
 #include "UI.h"
 
 CLevel_Loading::CLevel_Loading(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -46,11 +46,19 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 
 		switch (m_eNextLevel)
 		{
-		case LEVEL_GAMEPLAY:
-			pLevel = CLevel_GamePlay::Create(m_pGraphic_Device);
+		case LEVEL_STAGEONE:
+			g_CurrLevel = LEVEL_STAGEONE;
+			pLevel = CLevel_StageOne::Create(m_pGraphic_Device);
 			break;
-		case LEVEL_BOSS:
-			// pLevel = CLevel_GamePlay::Create(m_pGraphic_Device);
+
+		case LEVEL_STAGETWO:
+			g_CurrLevel = LEVEL_STAGETWO;
+			pLevel = CLevel_StageOne::Create(m_pGraphic_Device);
+			break;
+
+		case LEVEL_STAGETHREE:
+			g_CurrLevel = LEVEL_STAGETHREE;
+			pLevel = CLevel_StageOne::Create(m_pGraphic_Device);
 			break;
 		}				
 
