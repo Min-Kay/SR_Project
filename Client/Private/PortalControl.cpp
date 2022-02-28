@@ -213,7 +213,7 @@ HRESULT CPortalControl::Erase_Portal()
 			m_pPortal_Orange->Link_Portal(nullptr);
 		}
 		m_pPortal_Blue->Link_Portal(nullptr);
-
+		Safe_Release(m_pPortal_Blue);
 		pGameInstance->Release_GameObject(g_CurrLevel, TEXT("Portal_Blue"), m_pPortal_Blue);
 		m_pPortal_Blue = nullptr;
 	}
@@ -225,7 +225,7 @@ HRESULT CPortalControl::Erase_Portal()
 			m_pPortal_Blue->Link_Portal(nullptr);
 		}
 		m_pPortal_Orange->Link_Portal(nullptr);
-
+		Safe_Release(m_pPortal_Orange);
 		pGameInstance->Release_GameObject(g_CurrLevel, TEXT("Portal_Orange"), m_pPortal_Orange);
 		m_pPortal_Orange = nullptr;
 	}
