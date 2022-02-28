@@ -30,10 +30,8 @@ CGameObject* CPortalControl::Clone(void* pArg)
 
 void CPortalControl::Free()
 {
-	if (m_pPortal_Orange)
-		Safe_Release(m_pPortal_Orange);
-	if(m_pPortal_Blue)
-		Safe_Release(m_pPortal_Blue);
+	Safe_Release(m_pPortal_Orange);
+	Safe_Release(m_pPortal_Blue);
 	__super::Free();
 }
 
@@ -134,6 +132,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 				m_pPortal_Blue->Link_Portal(nullptr);
 
 			m_pPortal_Orange->Link_Portal(nullptr);
+			Safe_Release(m_pPortal_Orange);
 			pGameInstance->Release_GameObject(g_CurrLevel, TEXT("Portal_Orange"), m_pPortal_Orange);
 			m_pPortal_Orange = nullptr;
 		}
@@ -146,6 +145,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 				m_pPortal_Orange->Link_Portal(nullptr);
 
 			m_pPortal_Blue->Link_Portal(nullptr);
+			Safe_Release(m_pPortal_Blue);
 			pGameInstance->Release_GameObject(g_CurrLevel, TEXT("Portal_Blue"), m_pPortal_Blue);
 			m_pPortal_Blue = nullptr;
 		}
@@ -187,9 +187,15 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 	}
 
 	if(iIndex == CPortal::PORTAL_ORANGE)
+	{
 		m_pPortal_Orange = static_cast<CPortal*>(pGameInstance->Get_GameObject(g_CurrLevel, portalDesc.portalCam, 0));
+		Safe_AddRef(m_pPortal_Orange);
+	}
 	else
+	{
 		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(g_CurrLevel, portalDesc.portalCam, 0));
+		Safe_AddRef(m_pPortal_Blue);
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
    

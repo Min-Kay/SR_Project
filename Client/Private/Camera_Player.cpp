@@ -85,7 +85,7 @@ _int CCamera_Player::Tick(_float fTimeDelta)
     if (0 > __super::Tick(fTimeDelta))
         return -1;
 
-    __super::Use_Pick(1);
+    // __super::Use_Pick(1);
 
     if (m_Break)
         return 0;
@@ -102,18 +102,18 @@ _int CCamera_Player::Tick(_float fTimeDelta)
         m_BackUI->Set_Cam(this);
     }
 
-	_long		MouseMove = 0;
+	    _long		MouseMove = 0;
 
-    if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
-    {
+	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_X))
+	{
 
-        Locked_Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
-    }
+	    Locked_Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * MouseMove * 0.1f);
+	}
 
-    if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
-    {
-        Locked_Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
-    }
+	if (MouseMove = pGameInstance->Get_DIMouseMoveState(CInput_Device::MMS_Y))
+	{
+	    Locked_Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+	}
 
 
     if (pGameInstance->Get_Key_Down(DIK_ESCAPE))
@@ -176,7 +176,6 @@ HRESULT CCamera_Player::Locked_Turn(_float3& axis, _float fTimeDelta)
     D3DXVec3TransformNormal(&vUp, &vUp, &RotationMatrix);
     D3DXVec3TransformNormal(&vLook, &vLook, &RotationMatrix);
 
-    m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
 
     if (m_pPlayer)
     {
@@ -186,6 +185,7 @@ HRESULT CCamera_Player::Locked_Turn(_float3& axis, _float fTimeDelta)
             return S_OK;
     }
 
+    m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
     m_pTransform->Set_State(CTransform::STATE_UP, vUp);
     m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
     return S_OK;

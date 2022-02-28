@@ -28,6 +28,9 @@
 *.exe
 *.out
 *.app
+
+Client.pdb
+Engine.pdb
 *.pdb
 
 #Ignore Folder

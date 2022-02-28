@@ -82,7 +82,7 @@ HRESULT CSky::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(2)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
 	SetUp_RenderState();

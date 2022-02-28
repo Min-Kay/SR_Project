@@ -6,6 +6,10 @@
 /* 스레드를 생성한다. */
 /* 스레드의 진입점함수를 정의한다. (각 레벨마다 로딩해야할 자원들을 생성한다.) */
 
+BEGIN(Engine)
+class CLevel;
+END
+
 BEGIN(Client)
 
 class CLoader final : public CBase
@@ -26,6 +30,7 @@ public:
 	_bool isFinished() const {
 		return m_isFinished;
 	}
+
 public:
 	HRESULT NativeConstruct(LEVEL eNextLevel);
 	HRESULT Loading_ForStageOne();
@@ -39,6 +44,7 @@ private:
 	_bool				m_isFinished = false;
 
 	CRITICAL_SECTION	m_CS;
+
 
 public:
 	static CLoader* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eNextLevel);

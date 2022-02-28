@@ -3,10 +3,6 @@
 #include "Client_Defines.h"
 #include "Level.h"
 
-BEGIN(Engine)
-class CUI;
-END
-
 BEGIN(Client)
 class CLevel_StageOne final : public CLevel
 {

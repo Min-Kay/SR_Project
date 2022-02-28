@@ -29,7 +29,6 @@ public:
 
 public:
 	void Set_Break(_bool _bool) { m_Break = _bool; }
-
 public:
 	void Control_Menu(_bool _bool);
 
@@ -38,6 +37,7 @@ private:
 	_bool	m_Break = false;
 	CUI_BackUI* m_BackUI = nullptr;
 	_bool isCursorOn = false;
+
 
 public:
 	static CCamera_Player* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

@@ -23,6 +23,9 @@
 #include "Tile_Cube.h"
 #include "Water.h"
 
+#include "Level.h"
+#include "Level_StageOne.h"
+
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -79,27 +82,6 @@ HRESULT CLoader::Loading_ForStageOne()
 	/* 원형컴포넌트를 생성한다. */
 #pragma region PROTOTYPE_COMPONENT
 
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STAGEONE, PROTO_TERRAIN, CVIBuffer_Terrain::Create(m_pGraphic_Device, 129, 129))))
-	{
-		MSGBOX("Failed to create terrain in Loader");
-		return E_FAIL;
-	}
-
-	/* For.Prototype_Component_VIBuffer_Portal */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_PORTAL, CVIBuffer_Portal::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-		/* For.Prototype_Component_VIBuffer_Cube */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_CUBE, CVIBuffer_Cube::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Camera */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX, g_iWinCY))))
-		return E_FAIL;
-
-
-
 	/* For.Prototype_Component_Texture_Terrain */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STAGEONE, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
 	{
@@ -126,7 +108,7 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Crosshair"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Crosshair.png")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"),4))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/SkyBox/Sky_2.dds")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BackUI"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Default/BackUI.png")))))
@@ -184,15 +166,6 @@ HRESULT CLoader::Loading_ForStageOne()
 #pragma  region PROTOTYPE_GAMEOBJECT
 	/* 원형객체를 생성한다. */
 
-
-	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_DYNAMIC, CCamera_Dynamic::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_PORTAL, CCam_Portal::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_PLAYER, CCamera_Player::Create(m_pGraphic_Device))))
-		return E_FAIL;
 
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pGraphic_Device))))

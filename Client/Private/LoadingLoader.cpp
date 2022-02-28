@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include "LoadingLoader.h"
+
+#include "Camera_Dynamic.h"
+#include "Camera_Player.h"
 #include "GameInstance.h"
 #include "UI.h"
 #include "Camera_Static.h"
+#include "Cam_Portal.h"
 
 
 CLoadingLoader::CLoadingLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -43,6 +47,28 @@ HRESULT CLoadingLoader::LoadToLoading()
 
 	///* For.Prototype_Component_Texture_Loadingscreen */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Loading/Loading_Blue/Aperture_%d.png"),100))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Portal */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_PORTAL, CVIBuffer_Portal::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_CUBE, CVIBuffer_Cube::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Camera */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX, g_iWinCY))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_DYNAMIC, CCamera_Dynamic::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_PORTAL, CCam_Portal::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Camera_Prototype(CAM_PLAYER, CCamera_Player::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

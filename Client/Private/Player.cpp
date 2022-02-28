@@ -152,9 +152,7 @@ HRESULT CPlayer::SetUp_Components()
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
-
 	Set_Cam(p_instance->Find_Camera_Object(MAIN_CAM));
 	RELEASE_INSTANCE(CGameInstance);
 

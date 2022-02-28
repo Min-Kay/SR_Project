@@ -22,7 +22,6 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 
 	Ready();
 
-	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
@@ -42,28 +41,30 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 	{
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-		CLevel*		pLevel = nullptr;
+		CLevel* m_Level = nullptr;
 
 		switch (m_eNextLevel)
 		{
 		case LEVEL_STAGEONE:
 			g_CurrLevel = LEVEL_STAGEONE;
-			pLevel = CLevel_StageOne::Create(m_pGraphic_Device);
+			m_Level = CLevel_StageOne::Create(m_pGraphic_Device);
 			break;
-
 		case LEVEL_STAGETWO:
 			g_CurrLevel = LEVEL_STAGETWO;
-			pLevel = CLevel_StageOne::Create(m_pGraphic_Device);
-			break;
+			m_Level = CLevel_StageOne::Create(m_pGraphic_Device);
 
+			break;
 		case LEVEL_STAGETHREE:
 			g_CurrLevel = LEVEL_STAGETHREE;
-			pLevel = CLevel_StageOne::Create(m_pGraphic_Device);
-			break;
-		}				
+			m_Level = CLevel_StageOne::Create(m_pGraphic_Device);
 
-		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, pLevel)))
+			break;
+		}
+		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, m_Level)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
 			return E_FAIL;
+		}
 
 		RELEASE_INSTANCE(CGameInstance);
 	}
@@ -103,7 +104,10 @@ HRESULT CLevel_Loading::Ready()
 	CameraDesc.iLevel = LEVEL_LOADING;
 
 	if (FAILED(pGameInstance->Add_Camera_Object(CAM_STATIC, TEXT("Loading_Camera"), &CameraDesc)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
+	}
 
 	CUI::UIDESC desc;
 	ZeroMemory(&desc, sizeof(Engine::CUI::UIDESC));
@@ -119,7 +123,12 @@ HRESULT CLevel_Loading::Ready()
 	desc.Style = CUI::STYLE_REPEAT;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Loading"), PROTO_UI, &desc)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

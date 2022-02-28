@@ -94,7 +94,10 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTa
 
 	CComponent*			pComponent = pGameInstance->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 	if (nullptr == pComponent)
+	{
+		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
+	}
 
 	m_Components.emplace(pComponentTag, pComponent);
 

@@ -256,18 +256,27 @@ void CPortal::Portaling()
 	    {
             CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
             CTransform* opponentTr = static_cast<CTransform*>(m_pOpponent->Get_Component(COM_TRANSFORM));
-            _float3 vLook = objTr->Get_State(CTransform::STATE_LOOK);
-            D3DXVec3Normalize(&vLook, &vLook);
+            _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
+            D3DXVec3Normalize(&vOpLook, &vOpLook);
+			objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * 3.f);
 
-            objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.f);
+	    	if (obj->Get_Type() == OBJ_PLAYER)
+                objTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
 
-           if( obj->Get_Type() == OBJ_PLAYER)
-           {
-               CTransform* camTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
-           		camTr->LookAt(camTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.1f);
-           }
-           else 
-			 objTr->LookAt(objTr->Get_State(CTransform::STATE_POSITION) - vLook * 1.1f);
+            _float3 vRight, vUp, vLook, vScale;
+           vScale = objTr->Get_Scale();
+           vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
+           vUp = opponentTr->Get_State(CTransform::STATE_UP);
+           vLook = -opponentTr->Get_State(CTransform::STATE_LOOK);
+           D3DXVec3Normalize(&vRight, &vRight);
+           D3DXVec3Normalize(&vUp, &vUp);
+           D3DXVec3Normalize(&vLook, &vLook);
+
+           objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+           objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+           objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+           
 	    }
     }
 
