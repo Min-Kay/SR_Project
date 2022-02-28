@@ -33,7 +33,8 @@ HRESULT CTile::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Set_Type(OBJ_STATIC);
-	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
+
+
 	//m_pTransformCom->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(180));
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(-10.f, -10.f, -10.f));
@@ -122,7 +123,9 @@ HRESULT CTile::SetUp_Components()
 		return E_FAIL;
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(0.5f, 0.5f, 0.5f));
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
+	m_pBoxColliderCom->Set_AdditionalPos(_float3(0.f, -0.5f, 0.f));
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	pGameInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);

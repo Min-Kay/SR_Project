@@ -189,11 +189,11 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//			return E_FAIL;
 	//		CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_T"), (i * 13) + j);
 	//		CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
+
 	//		static_cast<CTile*>(LeftTile)->Set_TextureIndex(0);
 
-	//		LeftTrans->Scaled(_float3(2.f, 2.f, 2.f));
 	//		LeftTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(270));
-	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 6.5f, (i * -1.f) - 2));
+	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((j ), 6.5f, (i * -1.f) - 2));
 
 	//	}
 	//}
@@ -208,9 +208,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_Bot"), (i * 13) + j);
 	//		CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
 	//		static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-	//		LeftTrans->Scaled(_float3(2.f, 2.f, 2.f));
 	//		LeftTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
-	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 1.f, (i * -1.f) - 2));
+	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((j ), 1.f, (i * -1.f) - 2));
 
 	//	}
 	//}
@@ -225,7 +224,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_R"), (i * 10) + j);
 	//		CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
 	//		static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-	//		LeftTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//		LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90));
 	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3(11.5f, (j * 1.f), (i * -1.f)));
 
@@ -242,7 +241,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_L"), (i * 10) + j);
 	//		CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
 	//		static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-	//		LeftTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//		LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(270));
 	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3(1.f, (j * 1.f), (i * -1.f) - 2));
 
@@ -259,7 +258,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_B"), (i * 12) + j);
 	//		CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
 	//		static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-	//		LeftTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//		LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f) + 1, (i * 1.f), -9.f));
 
@@ -278,7 +277,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//			CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
 
 
-	//			FrontTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//			FrontTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 	//			FrontTrans->Set_State(CTransform::STATE_POSITION, _float3(12.5 + (j * 1.f), (i * 1.f), 1.f));
 
@@ -297,7 +296,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//			CGameObject* FrontTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Back1"), (i * 17) + j);
 	//			CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
 
-	//			FrontTrans->Scaled(_float3(2.f, 2.f, 2.f));
+	//
 	//			FrontTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 	//			FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 7 + (i * 1.f), 1.f));
 
@@ -316,7 +315,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* BackTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Front"), (i * 30) + j);
 	//		CTransform* BackTrans = (CTransform*)BackTile->Get_Component(COM_TRANSFORM);
 
-	//		BackTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//		BackTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), (i * 1.f), 40.f));
 	//	}
 	//}
@@ -331,7 +330,6 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Left"), (i * 40) + j);
 	//		CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
 
-	//		LeftTrans->Scaled(_float3(2.f, 2.f, 2.f));
 	//		LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(270));
 	//		LeftTrans->Set_State(CTransform::STATE_POSITION, _float3(1.f, (i * 1.f), (j * 1.f)));
 
@@ -348,7 +346,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* RightTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right"), (i * 40) + j);
 	//		CTransform* RightTrans = (CTransform*)RightTile->Get_Component(COM_TRANSFORM);
 
-	//		RightTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//		RightTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90));
 	//		RightTrans->Set_State(CTransform::STATE_POSITION, _float3(30.f, (i * 1.f), (j * 1.f)));
 
@@ -366,7 +364,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom"), (i * 30) + j);
 	//		CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
 	//		static_cast<CTile*>(BottomTile)->Set_TextureIndex(1);
-	//		BottomTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//		BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
 	//		BottomTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 1.f, (i * 1.f)));
 
@@ -383,7 +381,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), (i * 30) + j);
 	//		CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
 	//		static_cast<CTile*>(BottomTile)->Set_TextureIndex(1);
-	//		BottomTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//		BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
 	//		BottomTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 0.f, 20 + (i * 1.f)));
 
@@ -402,7 +400,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//			CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
 
 	//			static_cast<CTile*>(FrontTile)->Set_TextureIndex(1);
-	//			FrontTrans->Scaled(_float3(2.f, 2.f, 2.f));
+
 	//			FrontTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 	//			FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 0.f, 20 + (i * 1.f)));
 
@@ -439,7 +437,6 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//			CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
 
 	//			static_cast<CTile*>(FrontTile)->Set_TextureIndex(1);
-	//			FrontTrans->Scaled(_float3(2.f, 2.f, 2.f));
 	//			//FrontTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 	//			FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 0.f, 24 + (i * 1.f)));
 
@@ -457,9 +454,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), (i * 30) + j);
 	//		CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
 	//		static_cast<CTile*>(BottomTile)->Set_TextureIndex(1);
-	//		BottomTrans->Scaled(_float3(2.f, 2.f, 2.f));
 	//		BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
-	//		BottomTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 1.f, 20 + (i * 1.f)));
+	//		BottomTrans->Set_State(CTransform::STATE_POSITION, _float3(j, 1.f, 20 + (i * 1.f)));
 
 	//	}
 	//}
@@ -474,9 +470,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	//		CGameObject* TopTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Top"), (i * 30) + j);
 	//		CTransform* TopTrans = (CTransform*)TopTile->Get_Component(COM_TRANSFORM);
 
-	//		TopTrans->Scaled(_float3(2.f, 2.f, 2.f));
 	//		TopTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(270));
-	//		TopTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 12.f, (i * 1.f)));
+	//		TopTrans->Set_State(CTransform::STATE_POSITION, _float3(j , 12.f, (i * 1.f)));
 
 	//	}
 	//}

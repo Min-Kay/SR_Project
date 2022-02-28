@@ -46,7 +46,7 @@ HRESULT CLoadingLoader::LoadToLoading()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	///* For.Prototype_Component_Texture_Loadingscreen */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Loading/Loading_Blue/Aperture_%d.png"),100))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Loading/Loading_Blue/Aperture_%d.png"),50))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Portal */

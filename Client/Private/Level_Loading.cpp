@@ -118,7 +118,7 @@ HRESULT CLevel_Loading::Ready()
 	desc.SizeX = g_iWinCX;
 	desc.SizeY = g_iWinCY;
 	desc.Texture = TEXT("Prototype_Component_Texture_Loading");
-	desc.FrameCount = 100;
+	desc.FrameCount = 50;
 	desc.AnimateSpeed = 100.f;
 	desc.Style = CUI::STYLE_REPEAT;
 

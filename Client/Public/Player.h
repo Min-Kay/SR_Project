@@ -58,7 +58,7 @@ private:
 private:
 	_float				m_fFrame = 0.f;
 	_bool				m_bJump = false;
-	_float				m_fMaxForce = 40.f;
+	_float				m_fMaxForce = 30.f;
 	_float				m_fForce = 2.f;
 	_float				m_CurrForce = 0.f;
 	_bool				m_OnGround = false;
