@@ -96,7 +96,7 @@ HRESULT CTexture::Add_Texture(_uint iWidth, _uint iHeight)
 
 const _uint CTexture::Get_Textures_Count() const
 {
-	return m_Textures.size();
+	return (_uint)m_Textures.size();
 }
 
 CTexture * CTexture::Create(LPDIRECT3DDEVICE9 pGraphic_Device, TYPE eType, const _tchar * pTextureFilePath, _uint iNumTextures)

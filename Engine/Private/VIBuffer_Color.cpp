@@ -15,10 +15,11 @@ HRESULT CVIBuffer_Color::NativeConstruct_Prototype()
 	
 	m_iStride = sizeof(VTXCOLOR);
 	m_iNumVertices = 4;
-	m_dwFVF = (D3DFVF_XYZ | D3DFVF_DIFFUSE /*| D3DFVF_TEX1*/  ) ;
+	m_dwFVF = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX0 /*| D3DFVF_SPECULAR*/  /*| D3DFVF_TEX1*/  ) ;
 	m_ePrimitiveType = D3DPT_TRIANGLELIST;
 	m_iNumPrimitive = 2;
-	m_lCOLOR = D3DXCOLOR(0.5f,0.5f,0.5f,0.5f);
+	m_lCOLOR = D3DXCOLOR(1.0, 0.0, 0.0, 0.0);
+	//m_Specular = D3DXCOLOR(0.0, 0.0, 0.0, 0.0);
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
@@ -30,19 +31,23 @@ HRESULT CVIBuffer_Color::NativeConstruct_Prototype()
 	m_pVB->Lock(0, 0, (void**)&pVertices, 0);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
-	pVertices[0].vColor = m_lCOLOR;
+	pVertices[0].vColor = 0xffff0000;
+	//[0].vSpecular = m_Specular;
 	//pVertices[0].vTexUV = _float2(0.f, 0.f);
 
 	pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
-	pVertices[1].vColor = m_lCOLOR;
+	pVertices[1].vColor = 0xffff0000;
+	//pVertices[1].vSpecular = m_Specular;
 	//pVertices[1].vTexUV = _float2(1.f, 0.f);
 
 	pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
-	pVertices[2].vColor = m_lCOLOR;
+	pVertices[2].vColor = 0xffff0000;
+	//pVertices[2].vSpecular = m_Specular;
 	//pVertices[2].vTexUV = _float2(1.f, 1.f);
 
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
-	pVertices[3].vColor = m_lCOLOR;
+	pVertices[3].vColor = 0xffff0000;
+	//pVertices[3].vSpecular = m_Specular;
 	//pVertices[3].vTexUV = _float2(0.f, 1.f);
 
 	memcpy(m_pVertices, pVertices, sizeof(VTXCOLOR) * m_iNumVertices);
@@ -90,7 +95,10 @@ HRESULT CVIBuffer_Color::ChangeColor(DWORD color)
 	m_lCOLOR = color;
 	m_pVB->Lock(0, 0, (void**)&pVertices, 0);
 
-	pVertices->vColor = m_lCOLOR;
+	pVertices[0].vColor = m_lCOLOR;
+	pVertices[1].vColor = m_lCOLOR;
+	pVertices[2].vColor = m_lCOLOR;
+	pVertices[3].vColor = m_lCOLOR;
 	memcpy(m_pVertices, pVertices, sizeof(VTXCOLOR) * m_iNumVertices);
 
 

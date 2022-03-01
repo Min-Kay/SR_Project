@@ -102,6 +102,8 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
 
     __super::Add_Exception(CRenderer::RENDER_SKYBOX);
     __super::Add_Exception(CRenderer::RENDER_UI);
+
+    return S_OK;
 }
 
 _int CCam_Portal::Tick(_float fTimeDelta)

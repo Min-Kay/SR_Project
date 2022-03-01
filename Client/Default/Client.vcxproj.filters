@@ -25,9 +25,6 @@
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{e4be1aa2-5fa3-47f4-827e-32383c7d6ee5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\BackGround">
-      <UniqueIdentifier>{63f2bf48-694b-45c7-bc46-9dd27c3a3734}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Camera">
       <UniqueIdentifier>{9d68a6fd-1ba3-4a11-9780-9bb5c2907f32}</UniqueIdentifier>
     </Filter>
@@ -121,6 +118,9 @@
     <Filter Include="02.GameObjects\Tile\Tile_Collider">
       <UniqueIdentifier>{860f94dd-38f0-479a-9b64-bef721851530}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Camera\BackGround">
+      <UniqueIdentifier>{63f2bf48-694b-45c7-bc46-9dd27c3a3734}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -157,7 +157,7 @@
       <Filter>01.Levels\Loading\Loader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
-      <Filter>02.GameObjects\BackGround</Filter>
+      <Filter>02.GameObjects\Camera\BackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\Terrain</Filter>
@@ -252,7 +252,7 @@
       <Filter>01.Levels\Loading\Loader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>02.GameObjects\BackGround</Filter>
+      <Filter>02.GameObjects\Camera\BackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObjects\Terrain</Filter>

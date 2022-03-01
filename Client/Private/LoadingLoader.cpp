@@ -57,6 +57,10 @@ HRESULT CLoadingLoader::LoadToLoading()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_CUBE, CVIBuffer_Cube::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_COLOR, CVIBuffer_Color::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Camera */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX, g_iWinCY))))
 		return E_FAIL;

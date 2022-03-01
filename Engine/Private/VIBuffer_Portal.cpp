@@ -57,6 +57,7 @@ HRESULT CVIBuffer_Portal::Render()
 
 	m_pGraphic_Device->DrawPrimitive(m_ePrimitiveType, 0, m_iNumPrimitive);
 
+	return S_OK;
 }
 
 CVIBuffer_Portal* CVIBuffer_Portal::Create(LPDIRECT3DDEVICE9 pGraphicDevice)

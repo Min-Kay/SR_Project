@@ -19,6 +19,7 @@ public:
 
 private:
 	DWORD m_lCOLOR;
+	
 public:
 	static CVIBuffer_Color* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CComponent* Clone(void* pArg);

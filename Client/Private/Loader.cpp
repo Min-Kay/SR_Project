@@ -23,6 +23,7 @@
 #include "Tile_Cube.h"
 #include "Water.h"
 #include "CubeMonster.h"
+#include "Impact.h"
 #include "Tile_Collider.h"
 
 #include "Level.h"
@@ -237,6 +238,10 @@ HRESULT CLoader::Loading_ForStageOne()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TileCollider"), CTileCollider::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Impact"), CImpact::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
 

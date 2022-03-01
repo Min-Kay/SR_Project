@@ -108,7 +108,7 @@ _bool CPicking::isPick(TYPE _type, _float3* pLocalPoints, _float3 * pOut)
 	switch (_type)
 	{
 	case Engine::CPicking::TYPE_MOUSE:
-		if (true == D3DXIntersectTri(&pLocalPoints[0], &pLocalPoints[1], &pLocalPoints[2],
+		if ( D3DXIntersectTri(&pLocalPoints[0], &pLocalPoints[1], &pLocalPoints[2],
 			&m_vRayPosInLocal, &m_vRayDirInLocal, &fU, &fV, &fDist))
 		{
 			*pOut = m_vRayPosInLocal + m_vRayDirInLocal * fDist;
@@ -116,7 +116,7 @@ _bool CPicking::isPick(TYPE _type, _float3* pLocalPoints, _float3 * pOut)
 		}
 		break;
 	case Engine::CPicking::TYPE_CROSSHAIR:
-		if (true == D3DXIntersectTri(&pLocalPoints[0], &pLocalPoints[1], &pLocalPoints[2],
+		if ( D3DXIntersectTri(&pLocalPoints[0], &pLocalPoints[1], &pLocalPoints[2],
 			&m_vRayPosInLocalCH, &m_vRayDirInLocalCH, &fU, &fV, &fDist))
 		{
 			*pOut = m_vRayPosInLocalCH + m_vRayDirInLocalCH * fDist;

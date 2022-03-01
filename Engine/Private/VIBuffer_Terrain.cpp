@@ -40,7 +40,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(_uint iNumVerticesX, _uint 
 		{
 			_uint iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = _float3(j, 0.0f, i);
+			pVertices[iIndex].vPosition = _float3((_float)j, 0.0f, (_float)i);
 			pVertices[iIndex].vTexUV = _float2((_float)j / (m_iNumVerticesX - 1) * 20.f, (_float)i / (m_iNumVerticesZ - 1) * 20.f);
 			((VTXTEX*)m_pVertices)[iIndex] = pVertices[iIndex];
 		}
@@ -136,7 +136,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar * pHeightMapFi
 		{
 			_uint iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.0f, i);
+			pVertices[iIndex].vPosition = _float3((_float)j, (pPixel[iIndex] & 0x000000ff) / 10.0f, (_float)i);
 			pVertices[iIndex].vTexUV = _float2((_float)j / (m_iNumVerticesX - 1) * 20.f, (_float)i / (m_iNumVerticesZ - 1) * 20.f);
 
 			((VTXTEX*)m_pVertices)[iIndex] = pVertices[iIndex];

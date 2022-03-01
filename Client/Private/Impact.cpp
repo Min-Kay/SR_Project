@@ -1,4 +1,4 @@
- #include "stdafx.h"
+#include "stdafx.h"
 #include "..\Public\Impact.h"
 #include "GameInstance.h"
 
@@ -18,7 +18,8 @@ HRESULT CImpact::NativeConstruct_Prototype()
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
 
-	
+
+
 	return S_OK;
 }
 
@@ -31,9 +32,11 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(5, 5, 5));
-	m_pTransformCom->Scaled(_float3(0.05f,0.05f,0.05f));
 
+	m_Impact = *static_cast<IMPACT*>(pArg);
+	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_Impact.Pos);
+	m_pTransformCom->Scaled(m_Impact.Size);
 
 	_float3 centerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);//임시로 만든 퍼지는점 중심
 
@@ -41,7 +44,7 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 	mt19937 ranY(rd());
 	mt19937 ranZ(rd());
 
-	uniform_real_distribution <_double> spread(-5, 5);
+	uniform_real_distribution <_double> spread(-m_Impact.randomPos, m_Impact.randomPos);
 
 	_float randomPos[3];
 
@@ -49,13 +52,11 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 	randomPos[1] = spread(ranY);
 	randomPos[2] = spread(ranZ);
 
-
-
-
 	m_fvecdir = _float3((centerPos.x + randomPos[0]), (centerPos.y + randomPos[1]), (centerPos.z + spread(ranZ))) - centerPos;
 	D3DXVec3Normalize(&m_fvecdir, &m_fvecdir);
 
-	//m_pVIBufferCom->ChangeColor(D3DXCOLOR(1.0,1.0,1.0,0.0));//rgba
+	m_pVIBufferCom->ChangeColor(m_Impact.Color);//rgba
+
 	return S_OK;
 }
 
@@ -64,40 +65,22 @@ _int CImpact::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-		m_fFrame +=  fTimeDelta;
+	m_fFrame += fTimeDelta;
 
 	//if (m_fFrame == 5)
 	//{
 	//	m_fFrame = 0.f;
-	//	m_lColor = D3DXCOLOR(0, 0, 0, 0);
+	//	m_Impact.Color = D3DXCOLOR(0, 0, 0, 0);
 	//	m_pVIBufferCom->ChangeColor(D3DXCOLOR(1, 0.9, 0, 0));//rgba
 	//}
 	//else 
 	//{
-	//	m_lColor -= D3DXCOLOR(0,0.1,0,0);
-	//	m_pVIBufferCom->ChangeColor(m_lColor);
+	//	m_Impact.Color -= D3DXCOLOR(0,0.1,0,0);
+	//	m_pVIBufferCom->ChangeColor(m_Impact.Color);
 	//	//m_fFrame = 0.f;
 	//
 	//}
 
-	
-	
-	
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-
-	if (!m_pTarget)
-	{
-	
-		m_pTarget = pGameInstance->Find_Camera_Object(MAIN_CAM)->Get_CameraTransform();
-	
-		
-	}
-	
-
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_fvecdir * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta);
 
@@ -114,13 +97,17 @@ _int CImpact::LateTick(_float fTimeDelta)
 		return -1;
 
 	
-
-	if (m_pTarget)
+	if(m_fcount == 5)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTarget->Get_State(CTransform::STATE_RIGHT) * m_pTransformCom->Get_Scale().x);
-		m_pTransformCom->Set_State(CTransform::STATE_UP, m_pTarget->Get_State(CTransform::STATE_UP) * m_pTransformCom->Get_Scale().y);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTarget->Get_State(CTransform::STATE_LOOK) * m_pTransformCom->Get_Scale().z);
+		m_Impact.DeleteImpact = true;
 	}
+	else
+	{
+		m_fcount += fTimeDelta;
+		m_Impact.DeleteImpact = true;
+	}
+
+
 
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
@@ -135,14 +122,11 @@ HRESULT CImpact::Render()
 
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
-	
-	//m_pBoxColliderCom->Draw_Box();
-
-	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-	//	return E_FAIL;
 
 	if (FAILED(SetUp_RenderState()))
 		return E_FAIL;
+
+	FaceOn_Camera();
 
 	m_pVIBufferCom->Render();
 
@@ -151,6 +135,8 @@ HRESULT CImpact::Render()
 
 	return S_OK;
 }
+
+
 
 HRESULT CImpact::SetUp_Components()
 {
@@ -174,27 +160,49 @@ HRESULT CImpact::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLOR, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
-	////* For.Com_Texture */
-	//if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Impact"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
-	//	return E_FAIL;
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
 
-	//* For.Com_Box */
-	//if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
-	//	return E_FAIL;
-	//
-	//m_pBoxColliderCom->Set_Parent(this);
-	//m_pBoxColliderCom->Get_Parentcom();
-	//m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(0.01f, 0.01f, 0.01f));
-	//m_pBoxColliderCom->Set_ObjType(CCollider::COLLOBJTYPE::COLLOBJTYPE_MAP);
-	//
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	if (nullptr != m_pBoxColliderCom)
-	{
-		pGameInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC,m_pBoxColliderCom);
-	}
+
+	m_pBoxColliderCom->Set_ParentInfo(this);
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CImpact::FaceOn_Camera()
+{
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
+	_float4x4		ViewMatrix;
+	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+	D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
+
+	_float3		vCamPosition = *(_float3*)&ViewMatrix.m[3][0];
+	_float3		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float3		vDir = vPosition - vCamPosition;
+	_float		m_fCamDistance = D3DXVec3Length(&vDir);
+
+	if (!m_pTarget)
+	{
+		m_pTarget = p_instance->Find_Camera_Object(MAIN_CAM)->Get_CameraTransform();
+	}
+
+	if (m_pTarget)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTarget->Get_State(CTransform::STATE_RIGHT) * m_pTransformCom->Get_Scale().x);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, m_pTarget->Get_State(CTransform::STATE_UP) * m_pTransformCom->Get_Scale().y);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTarget->Get_State(CTransform::STATE_LOOK) * m_pTransformCom->Get_Scale().z);
+	}
+
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
@@ -203,16 +211,7 @@ HRESULT CImpact::SetUp_RenderState()
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
-
-
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	//m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_POINTSPRITEENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	return S_OK;
@@ -220,10 +219,9 @@ HRESULT CImpact::SetUp_RenderState()
 
 HRESULT CImpact::Release_RenderState()
 {
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
+	m_pGraphic_Device->SetRenderState(D3DRS_POINTSPRITEENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	return S_OK;
 }
 
@@ -242,7 +240,7 @@ CImpact * CImpact::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject * CImpact::Clone(void* pArg )
+CGameObject * CImpact::Clone(void* pArg)
 {
 	/* 새로운객체를 복제하여 생성한다. */
 	CImpact*	pInstance = new CImpact(*this);
@@ -259,9 +257,8 @@ CGameObject * CImpact::Clone(void* pArg )
 void CImpact::Free()
 {
 	__super::Free();
-	Safe_Release(m_pBoxColliderCom);
-	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pBoxColliderCom);
 }

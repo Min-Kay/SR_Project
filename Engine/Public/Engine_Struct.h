@@ -34,7 +34,7 @@ namespace Engine
 	typedef struct tagVertex_Color
 	{
 		D3DXVECTOR3          vPosition;
-		DWORD                vColor;
+		D3DCOLOR             vColor;
 
 	}VTXCOLOR;
 

@@ -3,6 +3,7 @@
 #include "Camera_Player.h"
 #include "GameInstance.h"
 #include "Cam_Portal.h"
+#include "Impact.h"
 
 CPortalControl* CPortalControl::Create(LPDIRECT3DDEVICE9 pGraphicDevice)
 {
@@ -195,6 +196,28 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 	{
 		m_pPortal_Blue = static_cast<CPortal*>(pGameInstance->Get_GameObject(g_CurrLevel, portalDesc.portalCam, 0));
 		Safe_AddRef(m_pPortal_Blue);
+	}
+
+	CImpact::IMPACT Impact1;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Pos = portalDesc.vEye;
+	Impact1.Size = _float3(1.f, 1.f, 1.f);
+	Impact1.randomPos = 5;
+	Impact1.deleteCount = 10;//rand() % 5 + 2;
+	Impact1.DeleteImpact = false;
+
+	if (iIndex == CPortal::PORTAL_ORANGE)
+		Impact1.Color = D3DXCOLOR(1.0, 0.1, 0.0, 0.0);
+	else
+		Impact1.Color = D3DXCOLOR(0.0, 0.1, 0.9, 0.0);
+
+	for (int i = 0; i < 20; ++i)
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return E_FAIL;
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

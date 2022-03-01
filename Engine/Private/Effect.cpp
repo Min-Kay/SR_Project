@@ -96,7 +96,7 @@ HRESULT CEffect::Release_RenderState()
 void CEffect::Set_CurrentFrameIndex(_uint iIndex)
 {
     m_iCurrFrameIndex = iIndex;
-    m_fFrame = iIndex;
+    m_fFrame = (_float)iIndex;
 }
 
 void CEffect::Set_Style(EFFECTSTYLE _style)
