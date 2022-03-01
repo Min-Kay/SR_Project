@@ -67,19 +67,20 @@ _int CImpact::Tick(_float fTimeDelta)
 
 	m_fFrame += fTimeDelta;
 
-	//if (m_fFrame == 5)
-	//{
-	//	m_fFrame = 0.f;
-	//	m_Impact.Color = D3DXCOLOR(0, 0, 0, 0);
-	//	m_pVIBufferCom->ChangeColor(D3DXCOLOR(1, 0.9, 0, 0));//rgba
-	//}
-	//else 
-	//{
-	//	m_Impact.Color -= D3DXCOLOR(0,0.1,0,0);
-	//	m_pVIBufferCom->ChangeColor(m_Impact.Color);
-	//	//m_fFrame = 0.f;
-	//
-	//}
+	if (m_fFrame >= 2)
+	{
+		m_Impact.deleteCount -= 1;
+		//m_fFrame = 0.f;
+		//m_Impact.Color = D3DXCOLOR(0, 0, 0, 0);
+		//m_pVIBufferCom->ChangeColor(D3DXCOLOR(1, 0.9, 0, 0));//rgba
+	}
+	else
+	{
+		m_Impact.Color -= D3DXCOLOR(0, 0.1, 0, 0);
+		m_pVIBufferCom->ChangeColor(m_Impact.Color);
+		//m_fFrame = 0.f;
+
+	}
 
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_fvecdir * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta);
@@ -130,6 +131,17 @@ HRESULT CImpact::Render()
 
 	if (FAILED(Release_RenderState()))
 		return E_FAIL;
+
+
+	if (m_Impact.deleteCount <= 0)
+	{
+
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->Release_GameObject(LEVEL_STAGEONE, TEXT("Impact"), this);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+	}
 
 	return S_OK;
 }

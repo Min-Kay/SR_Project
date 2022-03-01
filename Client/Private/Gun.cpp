@@ -4,6 +4,8 @@
 #include "UI.h"
 #include "Camera_Player.h"
 #include "Effect.h"
+#include "Enemy.h"
+#include "Impact.h"
 
 CGun::CGun(LPDIRECT3DDEVICE9 pGraphic_Device)
 	:CGameObject(pGraphic_Device)
@@ -156,37 +158,66 @@ void CGun::Fire()
 		return;
 	}
 
+	CGameObject* hittedObj = nullptr;
 	_float3 point,nor; 
 	for(auto& target : hitList)
 	{
 		if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
 			continue;
 
+		hittedObj = target.CollObj;
 		point = target.Point;
 		nor = target.NormalVec;
 		break;
 	}
 
+	CImpact::IMPACT Impact1;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Pos = point;
+	Impact1.Size = _float3(0.1f, 0.1f, 0.1f);
+	Impact1.randomPos = 5;
+	Impact1.deleteCount = 1;//rand() % 5 + 2;
+	Impact1.DeleteImpact = false;
+	Impact1.Color = D3DXCOLOR(0.0, 0.1, 0.9, 0.0);
 
-	CEffect::EFFECTDESC eDesc;
-	ZeroMemory(&eDesc,sizeof(eDesc));
+	for (int i = 0; i < 20; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
 
-	eDesc.Texture = TEXT("Prototype_Component_Texture_Gun_BulletHole");
-	eDesc.FrameCount = 4;
-	eDesc.Alpha = CEffect::EFFECTALPHA_BLEND;
-	eDesc.Bilboard = false;
-	eDesc.Style = CEffect::EFFECTSTYLE_FIX;
+	if(hittedObj->Get_Type() == OBJ_STATIC)
+	{
+		CEffect::EFFECTDESC eDesc;
+		ZeroMemory(&eDesc, sizeof(eDesc));
 
-	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BulletHole"), PROTO_EFFECT,&eDesc)))
-		return;
+		eDesc.Texture = TEXT("Prototype_Component_Texture_Gun_BulletHole");
+		eDesc.FrameCount = 4;
+		eDesc.Alpha = CEffect::EFFECTALPHA_BLEND;
+		eDesc.Bilboard = false;
+		eDesc.Style = CEffect::EFFECTSTYLE_FIX;
 
-	CGameObject* p_ball = p_instance->Get_GameObject(g_CurrLevel, TEXT("BulletHole"), m_test++);
-	static_cast<CEffect*>(p_ball)->Set_CurrentFrameIndex(rand() % eDesc.FrameCount);
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BulletHole"), PROTO_EFFECT, &eDesc)))
+			return;
 
-	CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
-	tr->Scaled(_float3(0.1f,0.1f,0.1f));
-	tr->Set_State(CTransform::STATE_POSITION, point + nor * 0.01f);
-	tr->LookAt(tr->Get_State(CTransform::STATE_POSITION) - nor * 0.1f);
+		CGameObject* p_ball = p_instance->Get_GameObject(g_CurrLevel, TEXT("BulletHole"), m_test++);
+		static_cast<CEffect*>(p_ball)->Set_CurrentFrameIndex(rand() % eDesc.FrameCount);
+
+		CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
+		tr->Scaled(_float3(0.1f, 0.1f, 0.1f));
+		tr->Set_State(CTransform::STATE_POSITION, point + nor * 0.01f);
+		tr->LookAt(tr->Get_State(CTransform::STATE_POSITION) - nor * 0.1f);
+	}
+	else if(hittedObj->Get_Type() == OBJ_ENEMY)
+	{
+		static_cast<CEnemy*>(hittedObj)->Add_HP(-m_iDamage);
+
+	}
+
+
 	RELEASE_INSTANCE(CGameInstance);
 }
 

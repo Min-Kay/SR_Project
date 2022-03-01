@@ -56,21 +56,21 @@ private:
 	CTransform* m_PlayerPos = nullptr;
 
 private:
-	_float m_SearchRange = 3.f;
-	_float m_AlertRange = 7.f;
-	_float m_AttackRange = 2.f;
+	_float m_SearchRange = 10.f;
+	_float m_AlertRange = 15.f;
+	_float m_AttackRange = 5.f;
 
 	_float m_AlertTime = 3.f;
 
 	_float m_Timer = 0.f;
 
 	_float m_IdleSpeed = 0.1f;
-	_float m_ChaseSpeed = 0.3f;
+	_float m_ChaseSpeed = 0.2f;
 
 	_float m_AttackSpeed = 1.f;
 
 	_float m_YPos = 0.f;
-	_float m_YMax = 1.f;
+	_float m_YMax = 5.f;
 
 	_bool	m_YMove = false;
 

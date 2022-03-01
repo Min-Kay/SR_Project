@@ -179,11 +179,11 @@ void CCubeMonster::Set_InitPos(_float3 _pos)
 	m_pTransform->Set_State(CTransform::STATE_POSITION,_pos);
 }
 
-
 void CCubeMonster::Search_Player(_float fTimeDelta)
 {
 	if (!m_Player)
 		return;
+
 	_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
 	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 
@@ -248,17 +248,17 @@ void CCubeMonster::Chase_Player(_float fTimeDelta)
 
 	_float3 vDir = playerPos - myPos;
 
-	D3DXVec3Normalize(&vDir, &vDir);
+	Target_Turn(vDir, fTimeDelta * 2.f);
 
-	Target_Turn(vDir, fTimeDelta * 10.f);
+	_float length = D3DXVec3Length(&vDir);
 
-	if (D3DXVec3Length(&vDir) <= m_AttackRange)
+	if (length < m_AttackRange)
 	{
 		m_State = STATE_ATTACK;
 		return;
 	}
 
-	D3DXVec3Normalize(&vDir,&vDir);
+	D3DXVec3Normalize(&vDir, &vDir);
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION, myPos + vDir * m_ChaseSpeed);
 
@@ -270,9 +270,11 @@ void CCubeMonster::Attack(_float fTimeDelta)
 	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 
 	_float3 vDir = playerPos - myPos;
-	Target_Turn(vDir, fTimeDelta * 10.f);
+	Target_Turn(vDir, fTimeDelta * 2.f);
 
-	if (m_AttackRange < D3DXVec3Length(&vDir))
+	_float length = D3DXVec3Length(&vDir);
+
+	if (m_AttackRange < length)
 	{
 		m_State = STATE_CHASE;
 		m_Timer = 0.f;
@@ -309,15 +311,12 @@ void CCubeMonster::Idle(_float fTimeDelta)
 
 	if (m_Timer >= 3.f)
 	{
+		m_Timer = 0.f;
 		if (rand() % 2 != 0)
 		{
 			m_State = STATE_SEARCH;
 			m_MovePoint = _float3(m_InitPoint.x + rand() % 10, m_InitPoint.x + rand() % 10, m_InitPoint.x + rand() % 10);
-			m_Timer = 0.f;
-			return;
 		}
-		else
-			m_Timer = 0.f;
 	}
 
 }

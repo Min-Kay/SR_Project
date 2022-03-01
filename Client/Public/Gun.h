@@ -74,7 +74,7 @@ private:
 	_bool m_OnFire = false;
 
 private:
-	_uint m_iDamage = 5;
+	_int m_iDamage = 5;
 private:
 	_float3 m_vRayDirCH;
 	_float3 m_vRayPosCH; 
