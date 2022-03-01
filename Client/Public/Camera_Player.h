@@ -29,6 +29,7 @@ public:
 
 public:
 	void Set_Break(_bool _bool) { m_Break = _bool; }
+	const _bool& Get_Break() const { return m_Break; }
 public:
 	void Control_Menu(_bool _bool);
 

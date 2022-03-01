@@ -186,10 +186,10 @@ HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
     m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
 
     _float angle = D3DXVec3Length(&targetToRt) * 5.f;
-    if (angle >= 120.f)
-        angle = 120.f;
-    else if (angle <= 30.f)
-        angle = 30.f;
+    if (angle >= 100.f)
+        angle = 100.f;
+    else if (angle <= 40.f)
+        angle = 40.f;
 
     m_CameraDesc.fFovy = D3DXToRadian(angle);
 

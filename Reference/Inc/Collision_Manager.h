@@ -31,7 +31,7 @@ public:
 public:
 	list<CGameObject*> Get_Collision_List(CBoxCollider* target);
 	list<COLLPOINT> Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis);
-	HRESULT	Collision(COLLOBJTYPE _first, COLLOBJTYPE _second);
+	HRESULT	Collision();
 public:
 	HRESULT Add_Collider(COLLOBJTYPE _type, CBoxCollider* collider);
 	HRESULT Release_Collider(COLLOBJTYPE _type, CBoxCollider* collider);

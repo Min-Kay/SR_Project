@@ -96,7 +96,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
     m_Collider->Set_ParentInfo(this);
     m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-    m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.1f,0.1f,0.1f));
+    m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.2f,0.2f,0.2f));
 
     PORTALDESC portalDesc = *static_cast<PORTALDESC*>(pArg);
 
@@ -265,6 +265,8 @@ void CPortal::Portaling()
         _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
         D3DXVec3Normalize(&vOpLook, &vOpLook);
 		objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * 1.5f);
+
+        objTr->Set_OnCollide(false);
 
         objTr->Set_Force(-vOpLook);
 

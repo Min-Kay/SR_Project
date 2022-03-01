@@ -217,6 +217,12 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
+	if (static_cast<CCamera_Player*>(m_Camera)->Get_Break())
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return 0;
+	}
+
 	if (pGameInstance->Get_Key_Press(DIK_W))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
@@ -275,6 +281,7 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 		}
 	}
 
+	
 	switch (m_iCurrIndex)
 	{
 	case 0:
