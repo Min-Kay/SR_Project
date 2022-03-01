@@ -202,6 +202,12 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const _tchar * pLayerTa
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
 }
 
+CGameObject* CGameInstance::Get_GameObject_End(_uint iLevelIndex, const _tchar* pLayerTag)
+{
+	return m_pObject_Manager->Get_GameObject_End(iLevelIndex, pLayerTag);
+
+}
+
 CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, _uint iObjectIndex)
 {
 	return m_pObject_Manager->Get_GameObject(iLevelIndex,pLayerTag,iObjectIndex);

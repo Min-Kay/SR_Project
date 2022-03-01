@@ -1,5 +1,10 @@
 #pragma once
 #include "Enemy.h"
+
+BEGIN(Engine)
+class CEffect;
+END
+
 BEGIN(Client)
 class CPlayer;
 
@@ -38,8 +43,6 @@ private:
 	void Move(_float fTimeDelta);
 	void Blow(_float3& pos);
 
-	void Alert();
-
 	const STATE& Get_MonsterState() const;
 	void Set_MonsterState(STATE _state);
 
@@ -60,7 +63,7 @@ private:
 	_float m_AlertRange = 15.f;
 	_float m_AttackRange = 5.f;
 
-	_float m_AlertTime = 3.f;
+	_float m_AlertTime = 4.f;
 
 	_float m_Timer = 0.f;
 
@@ -80,6 +83,9 @@ private:
 
 private:
 	_bool	m_Alert = false;
+
+private:
+	CEffect* m_Effect = nullptr;
 
 protected:
 	CTexture* m_pTexture = nullptr;

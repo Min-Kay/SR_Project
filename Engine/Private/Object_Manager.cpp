@@ -112,6 +112,19 @@ CGameObject* CObject_Manager::Get_GameObject(_uint iLevelIndex, const _tchar* pL
 	return nullptr;
 }
 
+CGameObject* CObject_Manager::Get_GameObject_End(_uint iLevelIndex, const _tchar* pLayerTag)
+{
+
+	if (iLevelIndex >= m_iNumLevels)
+		return nullptr;
+
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
+	if (nullptr == pLayer)
+		return nullptr;
+
+	return pLayer->Get_List().back();
+}
+
 HRESULT CObject_Manager::Release_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, CGameObject* target)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex,pLayerTag);

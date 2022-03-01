@@ -48,12 +48,6 @@ _int CPlayer::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-
-	m_fFrame += 12.0f * fTimeDelta;
-
-	if (m_fFrame >= 12.0f)
-		m_fFrame = 0.f;
-
 	Player_Control(fTimeDelta);
 
 	Check_OnGround();
@@ -85,8 +79,6 @@ _int CPlayer::LateTick(_float fTimeDelta)
 	if (FAILED(Synchronize_Camera()))
 		return -1;
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-
 	return _int();
 }
 
@@ -99,9 +91,6 @@ HRESULT CPlayer::Render()
 		return E_FAIL;
 
 	//m_pBoxColliderCom->Draw_Box();
-
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(_uint(m_fFrame))))
-		return E_FAIL;
 
 	if (FAILED(SetUp_RenderState()))
 		return E_FAIL;
@@ -139,10 +128,6 @@ HRESULT CPlayer::SetUp_Components()
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
-		return E_FAIL;
-
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(g_CurrLevel, TEXT("Prototype_Component_Texture_Player"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	/* For.Com_Box */
@@ -199,16 +184,11 @@ HRESULT CPlayer::SetUp_RenderState()
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
 
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-
 	return S_OK;
 }
 
 HRESULT CPlayer::Release_RenderState()
 {
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }
@@ -266,16 +246,20 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 
 	if (nullptr != m_pGun && nullptr != m_pPortalCtrl)
 	{
-		if (pGameInstance->Get_Key_Down(DIKEYBOARD_1))
+		if (m_iCurrIndex != 0 && pGameInstance->Get_Key_Down(DIKEYBOARD_1))
 		{
 			m_iCurrIndex = 0;
+			pGameInstance->StopSound(CSoundMgr::UI);
+			pGameInstance->Play_Sound(TEXT("PortalGunSwap.wav"), CSoundMgr::UI, 1.f);
 			m_pPortalCtrl->Set_Vaild(true);
 			m_pGun->Set_Vaild(false);
 
 		}
-		else if (pGameInstance->Get_Key_Down(DIKEYBOARD_2))
+		else if (m_iCurrIndex != 1 && pGameInstance->Get_Key_Down(DIKEYBOARD_2))
 		{
 			m_iCurrIndex = 1;
+			pGameInstance->StopSound(CSoundMgr::UI);
+			pGameInstance->Play_Sound(TEXT("GunSwap.wav"), CSoundMgr::UI, 1.f);
 			m_pPortalCtrl->Set_Vaild(false);
 			m_pGun->Set_Vaild(true);
 		}
@@ -428,7 +412,6 @@ void CPlayer::Free()
 	__super::Free();
 
 	Safe_Release(m_pBoxColliderCom);
-	Safe_Release(m_pTextureCom); 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);

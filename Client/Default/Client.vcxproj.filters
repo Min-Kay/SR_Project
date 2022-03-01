@@ -121,6 +121,9 @@
     <Filter Include="02.GameObjects\Camera\BackGround">
       <UniqueIdentifier>{63f2bf48-694b-45c7-bc46-9dd27c3a3734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect\Alert">
+      <UniqueIdentifier>{f9449769-6541-4c90-9145-64d7f0ac3504}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -228,6 +231,9 @@
     <ClInclude Include="..\Public\Tile_Collider.h">
       <Filter>02.GameObjects\Tile\Tile_Collider</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Alert.h">
+      <Filter>02.GameObjects\Effect\Alert</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -322,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tile_Collider.cpp">
       <Filter>02.GameObjects\Tile\Tile_Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Alert.cpp">
+      <Filter>02.GameObjects\Effect\Alert</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

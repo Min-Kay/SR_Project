@@ -147,8 +147,8 @@ void CGun::Fire()
 
 	D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
 
-	p_instance->StopSound(CSoundMgr::SYSTEM_EFFECT2);
-	p_instance->Play_Sound(TEXT("Rifle_Fire.mp3"), CSoundMgr::SYSTEM_EFFECT2, 1.0f);
+	p_instance->StopSound(CSoundMgr::WEAPON_EFFECT1);
+	p_instance->Play_Sound(TEXT("Shot.wav"), CSoundMgr::WEAPON_EFFECT1, 1.0f);
 
 	list<CCollision_Manager::COLLPOINT> hitList = p_instance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, m_fRange);
 
@@ -214,7 +214,8 @@ void CGun::Fire()
 	else if(hittedObj->Get_Type() == OBJ_ENEMY)
 	{
 		static_cast<CEnemy*>(hittedObj)->Add_HP(-m_iDamage);
-
+		p_instance->StopSound(CSoundMgr::WEAPON_EFFECT2);
+		p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Metal Hit.wav") : TEXT("Metal Hit2.wav"), CSoundMgr::WEAPON_EFFECT2, 1.f);
 	}
 
 
@@ -236,6 +237,10 @@ void CGun::Reload()
 	{
 		m_pGun_UI->Set_Style(CUI::STYLE_STRAIGHT);
 		m_Reloading = true;
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->StopSound( CSoundMgr::WEAPON_EFFECT1);
+		p_instance->Play_Sound(TEXT("Reload.wav"), CSoundMgr::WEAPON_EFFECT1, 1.f);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 }
 

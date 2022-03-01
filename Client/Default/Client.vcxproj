@@ -168,6 +168,7 @@
     <ClInclude Include="..\Public\CubeMonster.h" />
     <ClInclude Include="..\Public\Door_left.h" />
     <ClInclude Include="..\Public\Door_right.h" />
+    <ClInclude Include="..\Public\Effect_Alert.h" />
     <ClInclude Include="..\Public\Enemy.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Impact.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="..\Private\CubeMonster.cpp" />
     <ClCompile Include="..\Private\Door_left.cpp" />
     <ClCompile Include="..\Private\Door_right.cpp" />
+    <ClCompile Include="..\Private\Effect_Alert.cpp" />
     <ClCompile Include="..\Private\Enemy.cpp" />
     <ClCompile Include="..\Private\Gun.cpp" />
     <ClCompile Include="..\Private\Impact.cpp" />

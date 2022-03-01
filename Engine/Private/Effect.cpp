@@ -47,6 +47,7 @@ HRESULT CEffect::SetUp_Components()
 
 HRESULT CEffect::SetUp_RenderState()
 {
+
     if (nullptr == m_pGraphic_Device)
         return E_FAIL;
 
@@ -107,6 +108,16 @@ void CEffect::Set_Style(EFFECTSTYLE _style)
 const _uint& CEffect::Get_CurrentFrameIndex() const
 {
     return m_iCurrFrameIndex;
+}
+
+const _bool& CEffect::Get_Vaild() const
+{
+    return m_Vaild;
+}
+
+void CEffect::Set_Vaild(_bool _bool)
+{
+    m_Vaild = _bool; 
 }
 
 HRESULT CEffect::FaceOn_Camera()
@@ -199,6 +210,9 @@ HRESULT CEffect::NativeConstruct(void* pArg)
 
 _int CEffect::Tick(_float fTimeDelta)
 {
+    if (!m_Vaild)
+        return 0;
+
     if (0 > __super::Tick(fTimeDelta))
         return -1;
 
@@ -209,6 +223,9 @@ _int CEffect::Tick(_float fTimeDelta)
 
 _int CEffect::LateTick(_float fTimeDelta)
 {
+    if (!m_Vaild)
+        return 0;
+
     if (0 > __super::LateTick(fTimeDelta))
         return -1;
 
@@ -222,6 +239,9 @@ _int CEffect::LateTick(_float fTimeDelta)
 
 HRESULT CEffect::Render()
 {
+    if (!m_Vaild)
+        return 0;
+
     if (nullptr == m_pVIBufferCom)
         return E_FAIL;
 

@@ -59,6 +59,7 @@ protected:
 	CRenderer* m_pRendererCom = nullptr;
 
 protected:
+	_bool				m_Vaild = true; 
 	EFFECTDESC			m_Desc;
 	_uint				m_iCurrFrameIndex = 0;
 	_float				m_fFrame = 0.f;
@@ -75,6 +76,10 @@ public:
 	void Set_Style(EFFECTSTYLE _style);
 
 	const _uint& Get_CurrentFrameIndex() const;
+
+public:
+	const _bool& Get_Vaild() const;
+	void Set_Vaild(_bool _bool);
 	
 
 protected:

@@ -8,6 +8,7 @@
 #include "GameInstance.h"
 
 #include "Player.h"
+#include "Effect_Alert.h"
 
 Client::CCubeMonster::CCubeMonster(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -46,6 +47,7 @@ HRESULT Client::CCubeMonster::NativeConstruct(void* pArg)
 
 _int Client::CCubeMonster::Tick(_float fTimeDelta)
 {
+
 	State_Machine(fTimeDelta);
 	m_pBoxCollider->Set_Collider();
 
@@ -110,17 +112,43 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 	m_pBoxCollider->Set_ParentInfo(this);
 	m_pBoxCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
 
-	CGameInstance* p_Instance = GET_INSTANCE(CGameInstance);
-	p_Instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ,m_pBoxCollider);
-
-	m_Player = static_cast<CPlayer*>(p_Instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));
-	RELEASE_INSTANCE(CGameInstance);
-
 	if(m_Player)
 		m_PlayerPos = static_cast<CTransform*>(m_Player->Get_Component(COM_TRANSFORM));
 
 	m_Hp = 100;
 	m_Damage = 5;
+
+	CGameInstance* p_Instance = GET_INSTANCE(CGameInstance);
+	p_Instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxCollider);
+
+	m_Player = static_cast<CPlayer*>(p_Instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));
+
+	m_PlayerPos = static_cast<CTransform*>(m_Player->Get_Component(COM_TRANSFORM));
+
+	CEffect::EFFECTDESC desc;
+	ZeroMemory(&desc, sizeof(CEffect::EFFECTDESC));
+
+	desc.FrameCount = 1;
+	desc.Alpha = CEffect::EFFECTALPHA_BLEND;
+	desc.Bilboard = true;
+	desc.Style = CEffect::EFFECTSTYLE_FIX;
+	desc.Texture = TEXT("Prototype_Component_Texture_Alert");
+
+	if (FAILED(p_Instance->Add_GameObject(g_CurrLevel,TEXT("Alert"), TEXT("Prototype_GameObject_Alert"), &desc)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_Effect = static_cast<CEffect*>(p_Instance->Get_GameObject_End(g_CurrLevel, TEXT("Alert")));
+	m_Effect->Set_Vaild(false);
+
+	static_cast<CEffect_Alert*>(m_Effect)->Set_TargetPos(m_pTransform);
+	static_cast<CEffect_Alert*>(m_Effect)->Set_CamPos(m_Player->Get_Camera()->Get_CameraTransform());
+
+	RELEASE_INSTANCE(CGameInstance);
+
+
 
 	return S_OK;
 
@@ -212,18 +240,32 @@ void CCubeMonster::Search_Player(_float fTimeDelta)
 
 void CCubeMonster::Alert_Company(_float fTimeDelta)
 {
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	if(m_AlertTime <= m_Timer)
 	{
+		m_Effect->Set_Vaild(false);
 		m_State = STATE_CHASE;
 		m_Timer = 0.f;
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
+
+		RELEASE_INSTANCE(CGameInstance);
 		return;
 	}
-
+	
 	m_Timer += fTimeDelta;
 
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	
+	if(!m_Alert)
+	{
+		m_Alert = true;
+		p_instance->Play_Sound(TEXT("Alarm.wav"), CSoundMgr::ENEMY_EFFECT1, 1.f);
+		m_Effect->Set_Vaild(true);
+	}
+
+
 	list<CGameObject*> pMonsters = p_instance->Get_Layer(g_CurrLevel, TEXT("CubeMonster"));
 	RELEASE_INSTANCE(CGameInstance);
+
 	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 
 	for(auto& mon : pMonsters)
@@ -231,12 +273,13 @@ void CCubeMonster::Alert_Company(_float fTimeDelta)
 		CCubeMonster* company = static_cast<CCubeMonster*>(mon);
 		_float3 monPos = static_cast<CTransform*>(company->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION);
 		
-		if (m_AlertRange >= D3DXVec3Length(&(myPos - monPos)) && company->Get_MonsterState() == STATE_IDLE)
+		if (m_AlertRange >= D3DXVec3Length(&(myPos - monPos)) && (company->Get_MonsterState() == STATE_IDLE || company->Get_MonsterState() == STATE_SEARCH))
 		{
 			company->Set_MonsterState(STATE_ALERT);
 		}
 	}
 
+	m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_UP), fTimeDelta * 10.f);
 
 	// AlertAnimation
 }

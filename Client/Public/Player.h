@@ -4,7 +4,6 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
-class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
@@ -43,8 +42,6 @@ public:
 	void Add_Hp(_int _add);
 
 private:
-	/* ÅØ½ºÃÄ */
-	CTexture*			m_pTextureCom = nullptr;
 
 	/* ¸ðµ¨ */
 	CVIBuffer_Rect*		m_pVIBufferCom = nullptr;
@@ -61,7 +58,6 @@ private:
 	CBoxCollider* m_pBoxColliderCom = nullptr;
 
 private:
-	_float				m_fFrame = 0.f;
 	_bool				m_bJump = false;
 	_float				m_fMaxForce = 30.f;
 	_float				m_fForce = 2.f;
@@ -81,8 +77,6 @@ private:
 
 private:
 	HRESULT SetUp_Components();
-	HRESULT SetUp_OnTerrain();
-	HRESULT Check_Terrain();
 
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
