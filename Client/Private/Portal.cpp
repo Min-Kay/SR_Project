@@ -255,7 +255,7 @@ void CPortal::Portaling()
 
     for (auto& obj : collList)
     {
-        if ((obj->Get_Type() != CGameObject::OBJ_PLAYER && obj->Get_Type() != CGameObject::OBJ_ENEMY && obj->Get_Type() != CGameObject::OBJ_INTERACTION)|| obj == m_pOpponent)
+        if (obj->Get_Type() >= OBJ_END || obj->Get_Type() <= OBJ_NONE || obj->Get_Type() == OBJ_STATIC || obj == m_pOpponent)
             continue;
 
         CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));

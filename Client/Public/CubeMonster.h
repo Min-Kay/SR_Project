@@ -36,6 +36,7 @@ private:
 
 
 	void Move(_float fTimeDelta);
+	void Blow(_float3& pos);
 
 	void Alert();
 
@@ -67,6 +68,11 @@ private:
 	_float m_ChaseSpeed = 0.3f;
 
 	_float m_AttackSpeed = 1.f;
+
+	_float m_YPos = 0.f;
+	_float m_YMax = 1.f;
+
+	_bool	m_YMove = false;
 
 private:
 	_float3 m_InitPoint;

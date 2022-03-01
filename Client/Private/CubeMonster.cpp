@@ -140,8 +140,18 @@ void CCubeMonster::Move(_float fTimeDelta)
 	D3DXVec3Normalize(&vDir,&vDir);
 
 	Target_Turn(vDir,fTimeDelta);
+
 	m_pTransform->Set_State(CTransform::STATE_POSITION,myPos + vDir * m_IdleSpeed);
 	
+}
+
+void CCubeMonster::Blow(_float3& pos)
+{
+	pos.y = m_YMove ? pos.y + 0.01f : pos.y - 0.01f;
+	m_YPos = m_YMove ? m_YPos + 0.01f : m_YPos - 0.01f;
+	if ((m_YMove && m_YPos >= m_YMax) || (!m_YMove && m_YPos <= -m_YMax))
+		m_YMove = !m_YMove;
+
 }
 
 const CCubeMonster::STATE& CCubeMonster::Get_MonsterState() const
@@ -156,7 +166,7 @@ void CCubeMonster::Set_MonsterState(STATE _state)
 
 void CCubeMonster::Target_Turn(_float3 dir, _float fTimeDelta)
 {
-	_float3 vAxis = *D3DXVec3Cross(&vAxis, &(m_pTransform->Get_State(CTransform::STATE_LOOK)), &dir);
+	_float3 vAxis = *D3DXVec3Cross(&vAxis, &(m_pTransform->Get_State(CTransform::STATE_LOOK)), &(_float3(dir.x, 0.f, dir.z)));
 
 	m_pTransform->Turn(vAxis, fTimeDelta);
 }
@@ -185,18 +195,18 @@ void CCubeMonster::Search_Player(_float fTimeDelta)
 
 	Move(fTimeDelta);
 
+	Blow(myPos);
+
 	m_Timer += fTimeDelta;
 
 	if(m_Timer >= 3.f)
 	{
+		m_Timer = 0.f;
+
 		if (rand() % 2 != 0)
 		{
 			m_State = STATE_IDLE;
-			m_Timer = 0.f;
-			return;
 		}
-		else
-			m_Timer = 0.f;
 	}
 }
 
@@ -294,6 +304,8 @@ void CCubeMonster::Idle(_float fTimeDelta)
 	}
 
 	m_Timer += fTimeDelta;
+
+	Blow(myPos);
 
 	if (m_Timer >= 3.f)
 	{

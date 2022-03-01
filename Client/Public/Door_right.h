@@ -43,15 +43,17 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 
 	/* �浹ü */
-	//CBoxCollider*		m_pBoxColliderCom = nullptr;
+	CBoxCollider*		m_pBoxColliderCom = nullptr;
 	
-	_uint m_Count = 0;
-
+	_float m_Count = 0;
+	const _float m_MaxCount = 1;
+	//const _float m_MinCount = 0;
 private:
 	HRESULT SetUp_Components();
 public:
 
-	HRESULT Open(_bool IsOpen, _float fTimeDelta);
+	HRESULT Open(_bool& IsOpen, _float fTimeDelta);
+	HRESULT Close(_bool& IsClose, _float fTimeDelta);
 
 public:
 	static CDoor_right* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

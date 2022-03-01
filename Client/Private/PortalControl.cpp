@@ -203,7 +203,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 	Impact1.Pos = portalDesc.vEye;
 	Impact1.Size = _float3(1.f, 1.f, 1.f);
 	Impact1.randomPos = 5;
-	Impact1.deleteCount = 10;//rand() % 5 + 2;
+	Impact1.deleteCount = 1;//rand() % 5 + 2;
 	Impact1.DeleteImpact = false;
 
 	if (iIndex == CPortal::PORTAL_ORANGE)
