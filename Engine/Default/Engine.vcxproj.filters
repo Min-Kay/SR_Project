@@ -97,15 +97,6 @@
     <Filter Include="01.Utility\03.GameObject\Effect">
       <UniqueIdentifier>{16bebe88-d49e-4d0e-91f8-d0978f84e35e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Components\Collider">
-      <UniqueIdentifier>{64c6648f-665f-472e-b148-d6111be935e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\04.Components\Collider\Manager">
-      <UniqueIdentifier>{e43c2b57-1e4a-4763-ab28-695a11c2e44f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\04.Components\Collider\Box">
-      <UniqueIdentifier>{161df6bf-3539-4aec-8cc7-c7d1bce1b5b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.GameObject\UI">
       <UniqueIdentifier>{d2d3e843-95b3-4670-b528-26730da5c043}</UniqueIdentifier>
     </Filter>
@@ -114,6 +105,15 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\Model\Color">
       <UniqueIdentifier>{29d9e12a-975a-4047-ae6c-3550661bb466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider">
+      <UniqueIdentifier>{64c6648f-665f-472e-b148-d6111be935e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\Manager">
+      <UniqueIdentifier>{e43c2b57-1e4a-4763-ab28-695a11c2e44f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\Box">
+      <UniqueIdentifier>{161df6bf-3539-4aec-8cc7-c7d1bce1b5b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

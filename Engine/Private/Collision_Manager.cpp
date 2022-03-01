@@ -70,13 +70,19 @@ HRESULT CCollision_Manager::Collision(COLLOBJTYPE _first, COLLOBJTYPE _second)
 {
 	for (auto& pCollider : m_CollList[_first])
 	{
+		_bool isCollide = false;
 		for (auto& pCollider2 : m_CollList[_second])
 		{
 			if (pCollider2 == pCollider)
 				continue;
 
-			AABB(pCollider, pCollider2, false);
+			if (AABB(pCollider, pCollider2, false) && !pCollider2->Get_CollStyle() != CCollider::COLLSTYLE_TRIGGER)
+				isCollide = true;
 		}
+
+		static_cast<CTransform*>(pCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(isCollide);
+		pCollider->Set_OnCollide(isCollide);
+		
 	}
 	return S_OK;
 }
@@ -177,13 +183,9 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 		return true;
 	}
-	static_cast<CTransform*>(_MyCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(false);
-	_MyCollider->Set_OnCollide(false);
-
-	return false;
-
 	
 
+	return false;
 }
 
 _bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _OtherCollider, _float dis, _float3& pPoint, _float3& pNor)

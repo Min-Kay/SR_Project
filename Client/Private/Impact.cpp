@@ -108,9 +108,7 @@ _int CImpact::LateTick(_float fTimeDelta)
 	}
 
 
-
-
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
 }
@@ -211,7 +209,8 @@ HRESULT CImpact::SetUp_RenderState()
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
-	m_pGraphic_Device->SetRenderState(D3DRS_POINTSPRITEENABLE, TRUE);
+
+
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	return S_OK;
@@ -219,8 +218,7 @@ HRESULT CImpact::SetUp_RenderState()
 
 HRESULT CImpact::Release_RenderState()
 {
-
-	m_pGraphic_Device->SetRenderState(D3DRS_POINTSPRITEENABLE, FALSE);
+	
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	return S_OK;
 }

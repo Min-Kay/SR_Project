@@ -42,6 +42,9 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
+	/* 충돌체 */
+	CBoxCollider* m_pBoxColliderCom = nullptr;
+
 	_float				m_fFrame = 0.f;
 private:
 	HRESULT SetUp_Components();

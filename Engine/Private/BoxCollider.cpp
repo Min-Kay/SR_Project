@@ -91,7 +91,7 @@ HRESULT CBoxCollider::Set_Collider()
  
 	m_CollInfo[COLLIDERINFO::COLL_CENTER] = m_ParentPos->Get_State(CTransform::STATE_POSITION) + m_AdditionaPos;
 	m_CollInfo[COLLIDERINFO::COLL_MIN] = m_CollInfo[COLLIDERINFO::COLL_CENTER] - (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5f);
-	m_CollInfo[COLLIDERINFO::COLL_MAX] = m_CollInfo[COLLIDERINFO::COLL_CENTER] + (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5f);
+	m_CollInfo[COLLIDERINFO::COLL_MAX] = m_CollInfo[COLLIDERINFO::COLL_CENTER] + (m_CollInfo[COLLIDERINFO::COLL_SIZE] * 0.5f); 
 	
 	return S_OK;
 }

@@ -255,7 +255,7 @@ void CPortal::Portaling()
 
     for (auto& obj : collList)
     {
-        if (obj->Get_Type() == CGameObject::OBJ_STATIC || obj == m_pOpponent)
+        if ((obj->Get_Type() != CGameObject::OBJ_PLAYER && obj->Get_Type() != CGameObject::OBJ_ENEMY && obj->Get_Type() != CGameObject::OBJ_INTERACTION)|| obj == m_pOpponent)
             continue;
 
         CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
@@ -268,21 +268,21 @@ void CPortal::Portaling()
 
         objTr->Set_Force(-vOpLook);
 
-	    if (obj->Get_Type() == OBJ_PLAYER)
-            objTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
+	    //if (obj->Get_Type() == OBJ_PLAYER)
+     //       objTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
 
-        _float3 vRight, vUp, vLook, vScale;
-       vScale = objTr->Get_Scale();
-       vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
-       vUp = opponentTr->Get_State(CTransform::STATE_UP);
-       vLook = -opponentTr->Get_State(CTransform::STATE_LOOK);
-       D3DXVec3Normalize(&vRight, &vRight);
-       D3DXVec3Normalize(&vUp, &vUp);
-       D3DXVec3Normalize(&vLook, &vLook);
+     //   _float3 vRight, vUp, vLook, vScale;
+     //  vScale = objTr->Get_Scale();
+     //  vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
+     //  vUp = opponentTr->Get_State(CTransform::STATE_UP);
+     //  vLook = -opponentTr->Get_State(CTransform::STATE_LOOK);
+     //  D3DXVec3Normalize(&vRight, &vRight);
+     //  D3DXVec3Normalize(&vUp, &vUp);
+     //  D3DXVec3Normalize(&vLook, &vLook);
 
-       objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
-       objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
-       objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+     //  objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+     //  objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+       //objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
 
        
     }

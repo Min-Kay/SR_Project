@@ -31,6 +31,8 @@ HRESULT CWater::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	Set_Type(OBJ_STATIC);
+
 	return S_OK;
 }
 
@@ -108,6 +110,16 @@ HRESULT CWater::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Water"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
+
+	m_pBoxColliderCom->Set_ParentInfo(this);
+	//m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
+	RELEASE_INSTANCE(CGameInstance);
 	
 	return S_OK;
 }
@@ -172,7 +184,7 @@ CGameObject * CWater::Clone(void* pArg )
 void CWater::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
