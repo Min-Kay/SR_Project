@@ -175,10 +175,13 @@ void CTransform::Scaled(_float3 vScale)
 
 void CTransform::Gravity(_float fWeight, _float fTimeDelta)
 {
+
 	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
 	_float3		vUp = Get_State(CTransform::STATE_UP);
 
-	vPosition -= *D3DXVec3Normalize(&vUp, &vUp) * (fWeight + m_fVelocity)  * m_fGravity * fTimeDelta ;
+	vPosition -= *D3DXVec3Normalize(&vUp, &vUp) * fWeight * m_fGravity * fTimeDelta;
+
+	m_fVelocity = m_bOnCollide ? 0.f : fWeight * fTimeDelta;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
@@ -196,6 +199,46 @@ void CTransform::Set_Velocity(_float _vel)
 const _float& CTransform::Get_Velocity() const
 {
 	return m_fVelocity; 
+}
+
+void CTransform::Add_Force(_float fTimeDelta)
+{
+	if (!m_bOnCollide && m_Forcing)
+	{
+		if (m_fForce > 0.f)
+		{
+			_float3 pos = Get_State(STATE_POSITION);
+			pos += m_vForceAxis * m_fForce * fTimeDelta * 1.5f;
+			Set_State(CTransform::STATE_POSITION, pos);
+			m_fForce -= fTimeDelta;
+		}
+		else
+			m_Forcing = false;
+
+	}
+	else
+	{
+		m_Forcing = false;
+		m_vForceAxis = _float3(0.f,0.f,0.f);
+		m_fForce = 0.f;
+	}
+}
+
+void CTransform::Set_Force(_float3 _axis)
+{
+	m_Forcing = true;
+	m_fForce += m_fVelocity;
+	m_vForceAxis = _axis;
+}
+
+void CTransform::Set_OnCollide(_bool _bool)
+{
+	m_bOnCollide = _bool;
+}
+
+const _bool& CTransform::Get_OnCollide() const
+{
+	return m_bOnCollide;
 }
 
 HRESULT CTransform::Bind_OnGraphicDevice()

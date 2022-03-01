@@ -55,7 +55,7 @@ public:
 	const OBJTYPE& Get_Type() const;
 
 private:
-	_uint				m_Layer = 0;
+ 	_uint				m_Layer = 0;
 	OBJTYPE				m_Type;
 
 public:

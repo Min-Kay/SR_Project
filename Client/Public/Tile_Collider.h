@@ -14,12 +14,12 @@ END
 
 BEGIN(Client)
 
-class CTile final : public CGameObject
+class CTileCollider final : public CGameObject
 {
 private:
-	explicit CTile(LPDIRECT3DDEVICE9 pGraphic_Device);
-	explicit CTile(const CTile& rhs);
-	virtual ~CTile() = default;
+	explicit CTileCollider(LPDIRECT3DDEVICE9 pGraphic_Device);
+	explicit CTileCollider(const CTileCollider& rhs);
+	virtual ~CTileCollider() = default;
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
@@ -40,6 +40,8 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
+	/* 충돌체 */
+	CBoxCollider*		m_pBoxColliderCom = nullptr;
 private:
 	_uint				m_iTextureIndex = 2;
 
@@ -53,7 +55,7 @@ public:
 	}
 
 public:
-	static CTile* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	static CTileCollider* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

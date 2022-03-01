@@ -47,13 +47,6 @@ _int CTile::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	if (nullptr != m_pBoxColliderCom)
-	{
-		m_pBoxColliderCom->Set_Coilider();
-
-	}
-	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
@@ -64,8 +57,6 @@ _int CTile::LateTick(_float fTimeDelta)
 
 	if (nullptr == m_pRendererCom)
 		return -1;
-
-	//m_pBoxColliderCom->Draw_Box();
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -118,18 +109,6 @@ HRESULT CTile::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Tile"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
-	/* For.Com_Box */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
-		return E_FAIL;
-
-	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-	m_pBoxColliderCom->Set_AdditionalPos(_float3(0.f, -0.5f, 0.f));
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
-	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -165,7 +144,7 @@ CGameObject * CTile::Clone(void* pArg )
 void CTile::Free()
 {
 	__super::Free();
-	Safe_Release(m_pBoxColliderCom);
+
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

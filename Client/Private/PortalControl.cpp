@@ -160,7 +160,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 	_float3 point, normal;
 	for (auto& target : hitList)
 	{
-		if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
+		if (target.CollObj->Get_Type() !=  CGameObject::OBJ_STATIC)
 			continue;
 		else
 		{

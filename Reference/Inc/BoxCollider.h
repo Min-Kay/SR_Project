@@ -41,7 +41,7 @@ public:
 public:
 	void Set_AdditionalPos(_float3 pos);
 	const _float3& Get_AdditionalPos() const;
-	HRESULT Set_Coilider();
+	HRESULT Set_Collider();
 	void Draw_Box();
 	
 	void Reflect_Direction(_float3& _vDir);

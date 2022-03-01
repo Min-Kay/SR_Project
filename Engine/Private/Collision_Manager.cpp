@@ -157,21 +157,28 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 			if(RayCollision(vDir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
 			{
 				refelctScale = vScale[i] - D3DXVec3Length(&(myPos - point));
+				_MyCollider->Set_OnCollide(true);
+				static_cast<CTransform*>(_MyCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(true);
 				_MyCollider->Reflect_Direction(-vDir[i] * refelctScale);
+
 				return true;
 			}
 
 			if (RayCollision(-vDir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
 			{
 				refelctScale = vScale[i] - D3DXVec3Length(&(myPos - point));
+				_MyCollider->Set_OnCollide(true);
+				static_cast<CTransform*>(_MyCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(true);
 				_MyCollider->Reflect_Direction(vDir[i] * refelctScale);
+
 				return true;
 			}
 		}
 
-
 		return true;
 	}
+	static_cast<CTransform*>(_MyCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(false);
+	_MyCollider->Set_OnCollide(false);
 
 	return false;
 

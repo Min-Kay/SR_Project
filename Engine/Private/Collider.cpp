@@ -52,6 +52,16 @@ const CCollider::COLLSTYLE& CCollider::Get_CollStyle() const
 	return m_CollStyle;
 }
 
+const _bool& CCollider::Get_OnCollide() const
+{
+	return m_OnCollide;
+}
+
+void CCollider::Set_OnCollide(_bool _bool)
+{
+	m_OnCollide = _bool;
+}
+
 
 void CCollider::Free()
 {

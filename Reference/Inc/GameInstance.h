@@ -48,7 +48,7 @@ public: /* For.Object_Manager */
 	CGameObject* Get_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, _uint iObjectIndex = 0);
 	HRESULT Release_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, CGameObject* pTarget);
 
-
+	list<CGameObject*> Get_Layer(_uint iLevelIndex, const _tchar * layerTag);
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
@@ -88,9 +88,6 @@ public:
 	HRESULT Release_ColliderList();
 	list<CGameObject*> Get_Collision_List(CBoxCollider * target);
 	list<CCollision_Manager::COLLPOINT> Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis);
-
-
-	list<_int>* test();
 public: // 마우스 커서 설정
 	void SetMouseMode(_bool setting, HWND _hwnd = nullptr);
 

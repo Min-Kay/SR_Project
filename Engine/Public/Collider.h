@@ -34,10 +34,15 @@ public:
 	virtual HRESULT Update()PURE;
 
 
+public:
+	const _bool& Get_OnCollide() const;
+	void Set_OnCollide(_bool _bool);
+
 protected:
 
 	CGameObject* m_Parent = nullptr;
 	COLLSTYLE m_CollStyle;
+	_bool	m_OnCollide = false;
 
 public:
 	virtual CComponent* Clone(void* pArg = nullptr) = 0;

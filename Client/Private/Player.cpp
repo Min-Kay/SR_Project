@@ -63,8 +63,10 @@ _int CPlayer::Tick(_float fTimeDelta)
 
 	m_pTransformCom->Gravity(1.f, fTimeDelta);
 
+	m_pTransformCom->Add_Force(fTimeDelta);
+
 	if(m_pBoxColliderCom)
-		m_pBoxColliderCom->Set_Coilider();
+		m_pBoxColliderCom->Set_Collider();
 
 	return _int();
 }
@@ -96,7 +98,7 @@ HRESULT CPlayer::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	m_pBoxColliderCom->Draw_Box();
+	//m_pBoxColliderCom->Draw_Box();
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(_uint(m_fFrame))))
 		return E_FAIL;
@@ -163,7 +165,6 @@ void CPlayer::Tick_JumpState(_float fTimeDelta)
 {
 	_float3 m_vJumpPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float3 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_float3 vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 	m_vJumpPos += *D3DXVec3Normalize(&vUp, &vUp) * fTimeDelta * m_fForce * m_pTransformCom->Get_Gravity();
 	m_CurrForce += m_fForce;
@@ -175,6 +176,21 @@ void CPlayer::Tick_JumpState(_float fTimeDelta)
 		m_bJump = false;
 		m_CurrForce = 0.f;
 	}
+}
+
+const _int& CPlayer::Get_Hp() const
+{
+	return m_HP;
+}
+
+void CPlayer::Set_Hp(_int _hp)
+{
+	m_HP = _hp;
+}
+
+void CPlayer::Add_Hp(_int _add)
+{
+	m_HP += _add;
 }
 
 
@@ -232,13 +248,10 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 	}
 
 	if (pGameInstance->Get_Key_Press(DIK_W) || pGameInstance->Get_Key_Press(DIK_S) || pGameInstance->Get_Key_Press(DIK_D) || pGameInstance->Get_Key_Press(DIK_A))
-	{
 		pGameInstance->Play_Sound(TEXT("Walk.mp3"), CSoundMgr::CHANNELID::PLAYER, 1.f);
-	}
 	else
-	{
 		pGameInstance->StopSound(CSoundMgr::PLAYER);
-	}
+
 
 	if (!m_bJump && m_OnGround && pGameInstance->Get_Key_Down(DIK_SPACE))
 		m_bJump = true;
@@ -336,14 +349,11 @@ void CPlayer::Check_OnGround()
 	_float3 vUp = -m_pTransformCom->Get_State(CTransform::STATE_UP);
 	D3DXVec3Normalize(&vUp, &vUp);
 
-	list<CCollision_Manager::COLLPOINT> hitList = p_instance->Get_Ray_Collision_List(vUp, m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_pTransformCom->Get_Scale().y * 0.5f + 0.1f);
+	list<CCollision_Manager::COLLPOINT> hitList = p_instance->Get_Ray_Collision_List(vUp, m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_pTransformCom->Get_Scale().y * 0.5f + 0.01f);
 
-	if (hitList.empty() || (hitList.size() == 1 && hitList.front().CollObj->Get_Type() == OBJ_PLAYER))
-		m_OnGround = false;
-	else
-		m_OnGround = true;
+	m_OnGround = (hitList.empty() || (hitList.size() == 1 && hitList.front().CollObj->Get_Type() == OBJ_PLAYER)) ? false : true;
 
-	
+
 	RELEASE_INSTANCE(CGameInstance);
 }
 

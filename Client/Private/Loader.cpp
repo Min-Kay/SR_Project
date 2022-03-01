@@ -22,6 +22,8 @@
 #include "Tile.h"
 #include "Tile_Cube.h"
 #include "Water.h"
+#include "CubeMonster.h"
+#include "Tile_Collider.h"
 
 #include "Level.h"
 #include "Level_StageOne.h"
@@ -147,11 +149,11 @@ HRESULT CLoader::Loading_ForStageOne()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Door_left*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Left"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_left.dds")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Left"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_left2.dds")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Door_right*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Right"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_right.dds")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Right"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_right2.dds")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Water*/
@@ -161,6 +163,11 @@ HRESULT CLoader::Loading_ForStageOne()
 	/* For.Prototype_Component_Texture_Tile_Cube*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Block"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Block/Block_%d.dds"), 2))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Tile_Cube*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_CubeMonster"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Enemy.dds")))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma  region PROTOTYPE_GAMEOBJECT
@@ -224,6 +231,12 @@ HRESULT CLoader::Loading_ForStageOne()
 
 	/* For.Prototype_GameObject_Tile_Cube*/
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Block"), CTile_Cube::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CubeMonster"), CCubeMonster::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TileCollider"), CTileCollider::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
 

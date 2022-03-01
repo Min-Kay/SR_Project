@@ -125,6 +125,11 @@ HRESULT CObject_Manager::Release_GameObject(_uint iLevelIndex, const _tchar* pLa
 	return S_OK;
 }
 
+list<CGameObject*> CObject_Manager::Get_Layer(_uint iLevelIndex, const _tchar* pLayerTag)
+{
+	return Find_Layer(iLevelIndex, pLayerTag)->Get_List();
+}
+
 _int CObject_Manager::Tick(_float fTimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)
@@ -165,8 +170,6 @@ CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
 
 CLayer * CObject_Manager::Find_Layer(_uint iLevelIndex, const _tchar * pLayerTag)
 {
-
-
 	auto	iter = find_if(m_pLayers[iLevelIndex].begin(), m_pLayers[iLevelIndex].end(), CTagFinder(pLayerTag));
 
 	if (iter == m_pLayers[iLevelIndex].end())

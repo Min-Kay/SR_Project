@@ -62,6 +62,12 @@ public:
 	void Set_Velocity(_float _vel);
 	const _float& Get_Velocity() const;
 
+	void Add_Force(_float fTimeDelta);
+	void Set_Force(_float3 _axis);
+
+	void Set_OnCollide(_bool _bool);
+	const _bool& Get_OnCollide() const;
+
 public:
 	HRESULT Bind_OnGraphicDevice();
 
@@ -69,9 +75,13 @@ private:
 	_float4x4			m_WorldMatrix;
 	TRANSFORMDESC		m_TransformDesc;
 
+	_bool				m_bOnCollide = false;
+	_bool				m_Forcing = false; 
 private:
 	_float				m_fGravity = 9.8f;
 	_float				m_fVelocity = 0.f;
+	_float3				m_vForceAxis = _float3(0.f,0.f,0.f);
+	_float				m_fForce = 0.f;
 
 public:
 	static CTransform* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

@@ -28,8 +28,8 @@ HRESULT CUI::NativeConstruct(void * pArg)
 	Set_Type(OBJ_UI);
 
 	UIDESC desc = *static_cast<UIDESC*>(pArg);
-	m_WinCY = desc.WinCY;
-	m_WinCX = desc.WinCX;
+	m_WinCY = (_float)desc.WinCY;
+	m_WinCX = (_float)desc.WinCX;
 	m_fSizeX = desc.SizeX;
 	m_fSizeY = desc.SizeY;
 	m_fX = desc.PosX;
@@ -141,7 +141,7 @@ const _uint& CUI::Get_CurrFrameIndex() const
 
 HRESULT CUI::Set_UI(_uint iWinCX, _uint iWinCY, _float x, _float y, _float sizeX, _float sizeY)
 {
-	D3DXMatrixOrthoLH(&m_ProjMatrix, iWinCX, iWinCY, 0.0f, 1.f);
+	D3DXMatrixOrthoLH(&m_ProjMatrix, (_float)iWinCX, (_float)iWinCY, 0.0f, 1.f);
 
 	m_fSizeX = sizeX;
 	m_fSizeY = sizeY;
@@ -284,6 +284,8 @@ HRESULT CUI::Bind_UI()
 	D3DXMatrixIdentity(&ViewMatrix);
 	m_pGraphic_Device->SetTransform(D3DTS_VIEW, &ViewMatrix);
 	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &m_ProjMatrix);
+
+	return S_OK;
 }
 
 CUI * CUI::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

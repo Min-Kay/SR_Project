@@ -46,7 +46,7 @@ _int CBackGround::Tick(_float fTimeDelta)
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (nullptr != m_pBoxColliderCom)
 	{
-		m_pBoxColliderCom->Set_Coilider();
+		m_pBoxColliderCom->Set_Collider();
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -79,7 +79,7 @@ HRESULT CBackGround::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	m_pBoxColliderCom->Draw_Box();
+	//m_pBoxColliderCom->Draw_Box();
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(2)))
 		return E_FAIL;

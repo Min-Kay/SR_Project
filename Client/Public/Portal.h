@@ -49,6 +49,7 @@ public:
 	CCam_Portal* Get_Cam_Portal();
 	void Set_Cam_Angle(CTransform* target);
 
+	void Release_Portal();
 private:
 	void Portaling();
 
@@ -63,6 +64,8 @@ private:
 	CBoxCollider* m_Collider = nullptr; 
 
 	const _tchar* tag = nullptr;
+
+	_bool Collide_Added = false;
 
 public:
 	static CPortal* Create(LPDIRECT3DDEVICE9 pGraphicDevice);

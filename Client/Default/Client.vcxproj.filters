@@ -112,6 +112,15 @@
     <Filter Include="02.GameObjects\Tile\Tile_Cube">
       <UniqueIdentifier>{8083c978-b672-4ef3-ab84-f8fc8c963cb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Enemy">
+      <UniqueIdentifier>{0be39be2-3d71-4c9e-b08c-aecc0e7121bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Enemy\CubeMonster">
+      <UniqueIdentifier>{415a74c7-93d9-4fd3-9842-46412ec76220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Tile\Tile_Collider">
+      <UniqueIdentifier>{860f94dd-38f0-479a-9b64-bef721851530}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -210,6 +219,15 @@
     <ClInclude Include="..\Public\Tile.h">
       <Filter>02.GameObjects\Tile</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Enemy.h">
+      <Filter>02.GameObjects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CubeMonster.h">
+      <Filter>02.GameObjects\Enemy\CubeMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tile_Collider.h">
+      <Filter>02.GameObjects\Tile\Tile_Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -295,6 +313,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tile_Cube.cpp">
       <Filter>02.GameObjects\Tile\Tile_Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Enemy.cpp">
+      <Filter>02.GameObjects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CubeMonster.cpp">
+      <Filter>02.GameObjects\Enemy\CubeMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tile_Collider.cpp">
+      <Filter>02.GameObjects\Tile\Tile_Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

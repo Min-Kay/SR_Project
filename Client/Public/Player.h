@@ -37,6 +37,11 @@ public:
 	void Tick_JumpState(_float fTimeDelta);
 
 
+public:
+	const _int& Get_Hp() const;
+	void Set_Hp(_int _hp);
+	void Add_Hp(_int _add);
+
 private:
 	/* ÅØ½ºÃÄ */
 	CTexture*			m_pTextureCom = nullptr;
@@ -61,12 +66,18 @@ private:
 	_float				m_fMaxForce = 30.f;
 	_float				m_fForce = 2.f;
 	_float				m_CurrForce = 0.f;
+
+private:
 	_bool				m_OnGround = false;
 
 private:
 	_uint				m_iCurrIndex = 0; 
 	CPortalControl*		m_pPortalCtrl = nullptr;
 	CGun*				m_pGun = nullptr;
+
+
+private:
+	_int				m_HP = 100;
 
 private:
 	HRESULT SetUp_Components();

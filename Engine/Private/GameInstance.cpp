@@ -218,6 +218,11 @@ HRESULT CGameInstance::Release_GameObject(_uint iLevelIndex, const _tchar* pLaye
 	return m_pObject_Manager->Release_GameObject(iLevelIndex,pLayerTag,pTarget);
 }
 
+list<CGameObject*> CGameInstance::Get_Layer(_uint iLevelIndex, const _tchar* layerTag)
+{
+	return m_pObject_Manager->Get_Layer(iLevelIndex, layerTag);
+}
+
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
@@ -450,16 +455,6 @@ list<CCollision_Manager::COLLPOINT> CGameInstance::Get_Ray_Collision_List(_float
 	return m_Collision_Manager->Get_Ray_Collision_List(dir, pos, dis);
 }
 
-list<_int>* CGameInstance::test()
-{
-	list<_int> a;
-	a.push_back(1);
-	a.push_back(12);
-	a.push_back(145);
-	a.push_back(15);
-
-	return &a;
-}
 
 void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 {

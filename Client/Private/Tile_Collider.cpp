@@ -1,29 +1,29 @@
 #include "stdafx.h"
-#include "..\Public\Terrain.h"
+#include "..\Public\Tile_Collider.h"
 #include "GameInstance.h"
 
-CTerrain::CTerrain(LPDIRECT3DDEVICE9 pGraphic_Device)
+CTileCollider::CTileCollider(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
 {
 
 }
 
-CTerrain::CTerrain(const CTerrain & rhs)
+CTileCollider::CTileCollider(const CTileCollider & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CTerrain::NativeConstruct_Prototype()
+HRESULT CTileCollider::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
 
-	Set_Type(OBJ_STATIC);
+	
 
 	return S_OK;
 }
 
-HRESULT CTerrain::NativeConstruct(void * pArg)
+HRESULT CTileCollider::NativeConstruct(void * pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
@@ -32,27 +32,25 @@ HRESULT CTerrain::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(-10.f, -10.f, -10.f));
+	Set_Type(OBJ_STATIC);
+
 
 	return S_OK;
 }
 
-_int CTerrain::Tick(_float fTimeDelta)
+_int CTileCollider::Tick(_float fTimeDelta)
 {
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	if (nullptr != m_pBoxColliderCom)
-	{
+
+	if (m_pBoxColliderCom)
 		m_pBoxColliderCom->Set_Collider();
 
-	}
-	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
-_int CTerrain::LateTick(_float fTimeDelta)
+_int CTileCollider::LateTick(_float fTimeDelta)
 {
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
@@ -66,7 +64,7 @@ _int CTerrain::LateTick(_float fTimeDelta)
 	return _int();
 }
 
-HRESULT CTerrain::Render()
+HRESULT CTileCollider::Render()
 {
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
@@ -74,20 +72,21 @@ HRESULT CTerrain::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	//m_pBoxColliderCom->Draw_Box();
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(4)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
 		return E_FAIL;
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+	//m_pBoxColliderCom->Draw_Box();
+
 
 	m_pVIBufferCom->Render();
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
 
 	return S_OK;
 }
 
-HRESULT CTerrain::SetUp_Components()
+HRESULT CTileCollider::SetUp_Components()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -105,57 +104,56 @@ HRESULT CTerrain::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_STAGEONE, PROTO_TERRAIN, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STAGEONE, TEXT("Prototype_Component_Texture_Terrain"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Tile"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	/* For.Com_Box */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
 		return E_FAIL;
 
-	Set_Type(OBJ_STATIC);
-
 	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(5.f, 5.f, 5.f));
+	//m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
-CTerrain * CTerrain::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+
+CTileCollider * CTileCollider::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CTerrain*	pInstance = new CTerrain(pGraphic_Device);
+	CTileCollider*	pInstance = new CTileCollider(pGraphic_Device);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSGBOX("Failed to Creating CTerrain");
+		MSGBOX("Failed to Creating CTileCollider");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CTerrain::Clone(void* pArg )
+CGameObject * CTileCollider::Clone(void* pArg )
 {
 	/* 새로운객체를 복제하여 생성한다. */
-	CTerrain*	pInstance = new CTerrain(*this);
+	CTileCollider*	pInstance = new CTileCollider(*this);
 
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSGBOX("Failed to Creating CTerrain");
+		MSGBOX("Failed to Creating CTileCollider");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CTerrain::Free()
+void CTileCollider::Free()
 {
 	__super::Free();
 	Safe_Release(m_pBoxColliderCom);

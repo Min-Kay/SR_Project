@@ -97,8 +97,6 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     m_Collider->Set_ParentInfo(this);
     m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
     m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.1f,0.1f,0.1f));
-    pInstance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_Collider);
-  
 
     PORTALDESC portalDesc = *static_cast<PORTALDESC*>(pArg);
 
@@ -177,7 +175,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
 _int CPortal::Tick(_float fTimeDelta)
 {
-    m_Collider->Set_Coilider();
+    m_Collider->Set_Collider();
     Portaling();
      return _int();
 }
@@ -218,6 +216,7 @@ void CPortal::Link_Portal(CPortal* opponent)
     if (nullptr == m_pOpponent)
     {
         m_pCam_Portal->Set_Vaild(false);
+        Release_Portal();
         return;
     }
 
@@ -226,6 +225,10 @@ void CPortal::Link_Portal(CPortal* opponent)
 
 CPortal* CPortal::Get_Link_Portal()
 {
+    Collide_Added = true;
+    CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+    p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC,m_Collider);
+    RELEASE_INSTANCE(CGameInstance);
     return m_pOpponent;
 }
 
@@ -244,41 +247,57 @@ void CPortal::Set_Cam_Angle(CTransform* target)
 
 void CPortal::Portaling()
 {
-    if (!m_pOpponent)
+    if (!m_pOpponent || !Collide_Added)
         return;
 
     CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
     list<CGameObject*> collList = p_instance->Get_Collision_List(m_Collider);
 
-    for(auto& obj : collList)
+    for (auto& obj : collList)
     {
-	    if(obj->Get_Type() != CGameObject::OBJ_STATIC )
-	    {
-            CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
-            CTransform* opponentTr = static_cast<CTransform*>(m_pOpponent->Get_Component(COM_TRANSFORM));
-            _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
-            D3DXVec3Normalize(&vOpLook, &vOpLook);
-			objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * 3.f);
+        if (obj->Get_Type() == CGameObject::OBJ_STATIC || obj == m_pOpponent)
+            continue;
 
-	    	if (obj->Get_Type() == OBJ_PLAYER)
-                objTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
+        CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
+        if (objTr == nullptr)
+            continue;
+        CTransform* opponentTr = static_cast<CTransform*>(m_pOpponent->Get_Component(COM_TRANSFORM));
+        _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
+        D3DXVec3Normalize(&vOpLook, &vOpLook);
+		objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * 1.5f);
 
-            _float3 vRight, vUp, vLook, vScale;
-           vScale = objTr->Get_Scale();
-           vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
-           vUp = opponentTr->Get_State(CTransform::STATE_UP);
-           vLook = -opponentTr->Get_State(CTransform::STATE_LOOK);
-           D3DXVec3Normalize(&vRight, &vRight);
-           D3DXVec3Normalize(&vUp, &vUp);
-           D3DXVec3Normalize(&vLook, &vLook);
+        objTr->Set_Force(-vOpLook);
 
-           objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
-           objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
-           objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+	    if (obj->Get_Type() == OBJ_PLAYER)
+            objTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
 
-           
-	    }
+        _float3 vRight, vUp, vLook, vScale;
+       vScale = objTr->Get_Scale();
+       vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
+       vUp = opponentTr->Get_State(CTransform::STATE_UP);
+       vLook = -opponentTr->Get_State(CTransform::STATE_LOOK);
+       D3DXVec3Normalize(&vRight, &vRight);
+       D3DXVec3Normalize(&vUp, &vUp);
+       D3DXVec3Normalize(&vLook, &vLook);
+
+       objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+       objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+       objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+       
     }
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPortal::Release_Portal()
+{
+    if (!Collide_Added)
+        return;
+
+    Collide_Added = false;
+    CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+    p_instance->Release_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_Collider);
+    RELEASE_INSTANCE(CGameInstance);
+
 }

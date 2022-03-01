@@ -81,7 +81,7 @@ const _float3& CBoxCollider::Get_AdditionalPos() const
 }
 
 
-HRESULT CBoxCollider::Set_Coilider()
+HRESULT CBoxCollider::Set_Collider()
 {
 	if (!m_ParentPos)
 	{
@@ -115,7 +115,7 @@ void CBoxCollider::Draw_Box()
 void CBoxCollider::Reflect_Direction(_float3& _vDir)
 {
 	m_ParentPos->Set_State(CTransform::STATE_POSITION, m_ParentPos->Get_State(CTransform::STATE_POSITION) +  _vDir);
-	Set_Coilider();
+	Set_Collider();
 }
 
 
