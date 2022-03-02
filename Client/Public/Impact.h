@@ -56,8 +56,6 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
-	/* 충돌정보*/
-	CBoxCollider* m_pBoxColliderCom = nullptr;
 
 private:
 	IMPACT			m_Impact;

@@ -66,6 +66,24 @@ list<CCollision_Manager::COLLPOINT> CCollision_Manager::Get_Ray_Collision_List(_
 	return colllist;
 }
 
+HRESULT CCollision_Manager::Check_DeadCollider()
+{
+	for (_uint i = 0; i < COLLOBJTYPE_END; ++i)
+	{
+		for (auto iter = m_CollList[i].begin(); iter != m_CollList[i].end(); )
+		{
+			if ((*iter)->Get_Dead())
+			{
+				Safe_Release(*iter);
+				iter = m_CollList[i].erase(iter);
+			}
+			else
+				++iter;
+		}
+	}
+	return S_OK;
+}
+
 HRESULT CCollision_Manager::Collision()
 {
 	for (auto& pCollider : m_CollList[COLLOBJTYPE_OBJ])
@@ -105,6 +123,7 @@ HRESULT CCollision_Manager::Add_Collider(COLLOBJTYPE _type,  CBoxCollider* colli
 		return E_FAIL;
 
 	Safe_AddRef(collider);
+	collider->Set_Dead(false);
 	m_CollList[_type].push_back(collider);
 	return S_OK;
 }

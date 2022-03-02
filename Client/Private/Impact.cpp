@@ -93,18 +93,6 @@ _int CImpact::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return -1;
 
-	
-	if(m_fcount == 5)
-	{
-		m_Impact.DeleteImpact = true;
-	}
-	else
-	{
-		m_fcount += fTimeDelta;
-		m_Impact.DeleteImpact = true;
-	}
-	
-
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
@@ -165,19 +153,6 @@ HRESULT CImpact::SetUp_Components()
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLOR, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
-
-	/* For.Com_Box */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
-		return E_FAIL;
-
-
-	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -296,5 +271,4 @@ void CImpact::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pBoxColliderCom);
 }

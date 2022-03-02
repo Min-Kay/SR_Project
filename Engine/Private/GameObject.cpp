@@ -31,16 +31,24 @@ HRESULT CGameObject::NativeConstruct(void * pArg)
 
 _int CGameObject::Tick(_float fTimeDelta)
 {
+	if (m_Dead)
+		return 0;
 	return _int();
 }
 
 _int CGameObject::LateTick(_float fTimeDelta)
 {
+	if (m_Dead)
+		return 0;
+
 	return _int();
 }
 
 HRESULT CGameObject::Render()
 {
+	if (m_Dead)
+		return S_OK;
+
 	return S_OK;
 }
 

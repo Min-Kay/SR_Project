@@ -51,10 +51,20 @@ HRESULT CLayer::Release_GameObject(CGameObject* pTarget)
 
 _int CLayer::Tick(_float fTimeDelta)
 {
-	for (auto& pGameObject : m_Objects)
+
+	for(auto iter = m_Objects.begin(); iter != m_Objects.end(); )
 	{
-		if (0 > pGameObject->Tick(fTimeDelta))
-			return -1;
+		if ((*iter)->Get_Dead())
+		{
+			Safe_Release(*iter);
+			iter = m_Objects.erase(iter);
+		}
+		else
+		{
+			if (0 > (*iter)->Tick(fTimeDelta))
+				return -1;
+			++iter;
+		}
 	}
 	return 0;
 }
@@ -63,6 +73,9 @@ _int CLayer::LateTick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_Objects)
 	{
+		if (pGameObject->Get_Dead())
+			continue;
+
 		if (0 > pGameObject->LateTick(fTimeDelta))
 			return -1;
 	}

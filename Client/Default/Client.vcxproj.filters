@@ -240,7 +240,9 @@
     <ClInclude Include="..\Public\Level_StageTwo.h">
       <Filter>01.Levels\StageTwo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Ball.h" />
+    <ClInclude Include="..\Public\Ball.h">
+      <Filter>02.GameObjects\Effect\Ball</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -342,7 +344,9 @@
     <ClCompile Include="..\Private\Level_StageTwo.cpp">
       <Filter>01.Levels\StageTwo</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Ball.cpp" />
+    <ClCompile Include="..\Private\Ball.cpp">
+      <Filter>02.GameObjects\Effect\Ball</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

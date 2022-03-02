@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CubeMonster.h"
 
+#include "Ball.h"
 #include "Transform.h"
 #include "Renderer.h"
 #include "BoxCollider.h"
@@ -237,19 +238,43 @@ void CCubeMonster::Charging(_float fTimeDelta)
 
 	m_pTransform->Turn(isBound ? m_vChargingLook : -m_vChargingLook, fTimeDelta * 3.f);
 
-	/*if (10.0f <= m_Timer)
+	if (3.0f <= m_Timer)
 	{
 		m_Timer = 0.f;
 		m_isFiring = true;
 		m_isCharging = false;
-	}*/
+	}
 
 }
 
 void CCubeMonster::Firing(_float fTimeDelta)
 {
-	// 격발 구체 소환
+	_float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	D3DXVec3Normalize(&vLook, &vLook);
 
+	// 격발 구체 소환
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	CEffect::EFFECTDESC desc;
+	ZeroMemory(&desc,sizeof(CEffect::EFFECTDESC));
+	desc.FrameCount = 27;
+	desc.Alpha = CEffect::EFFECTALPHA_BLEND;
+	desc.AnimateSpeed = 10.f;
+	desc.Bilboard = true;
+	desc.FixY = false;
+	desc.Style = CEffect::EFFECTSTYLE_REPEAT;
+	desc.Texture = TEXT("Prototype_Component_Texture_Ball");
+
+
+	if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Ball"),TEXT("Prototype_GameObject_Ball"),&desc)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return;
+	}
+
+	static_cast<CBall*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Ball")))->Set_Init(m_pTransform->Get_State(CTransform::STATE_POSITION),vLook);
+
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_isFiring = false;
 	m_Rebounding = true;

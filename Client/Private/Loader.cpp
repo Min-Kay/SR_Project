@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Portal.h"
 #include "BackGround.h"
+#include "Ball.h"
 #include "UI.h"
 #include "Sky.h"
 #include "Cam_Portal.h"
@@ -245,6 +246,9 @@ HRESULT CLoader::Loading_ForStageOne()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Alert"), CEffect_Alert::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ball"), CBall::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma endregion

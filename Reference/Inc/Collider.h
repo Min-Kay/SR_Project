@@ -38,8 +38,12 @@ public:
 	const _bool& Get_OnCollide() const;
 	void Set_OnCollide(_bool _bool);
 
-protected:
+public:
+	const _bool& Get_Dead() const { return m_Dead; }
+	void Set_Dead(_bool _bool) { m_Dead = _bool; }
 
+protected:
+	_bool	m_Dead = false;
 	CGameObject* m_Parent = nullptr;
 	COLLSTYLE m_CollStyle;
 	_bool	m_OnCollide = false;

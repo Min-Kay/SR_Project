@@ -1,7 +1,14 @@
 #pragma once
-#include "GameObject.h"
+#include "Client_Defines.h"
+#include "Effect.h"
+
+BEGIN(Engine)
+class CBoxCollider;
+END 
+
+BEGIN(Client)
 class CBall :
-    public CGameObject
+    public CEffect
 {
 protected:
 	explicit CBall(LPDIRECT3DDEVICE9 m_pGraphic_Device);
@@ -14,7 +21,32 @@ public:
 	_int Tick(_float fTimeDelta) override;
 	_int LateTick(_float fTimeDelta) override;
 	HRESULT Render() override;
+
+public:
+	void Set_Init(_float3 _pos, _float3 _dir);
+
+private:
+	_bool Check_Collide();
+
+	void Move(_float fTimeDelta);
+
+private:
+	CBoxCollider* m_pBoxCollider = nullptr;
+
+
+	_int m_Damage = 5.f;
+	_float m_Speed = 0.1f;
+
+	_float3 m_Dir;
+
+public:
+	static CBall* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;
 	void Free() override;
-};
 
+protected:
+	HRESULT SetUp_Components() override;
+	HRESULT SetUp_RenderState() override;
+	HRESULT Release_RenderState() override;
+};
+END

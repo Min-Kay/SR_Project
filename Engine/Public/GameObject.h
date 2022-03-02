@@ -50,6 +50,9 @@ public:
 	void Set_Layer(_uint _layer);
 	const _uint Get_Layer() const;
 
+	void Set_Dead(_bool _bool) { m_Dead = _bool; }
+	const _bool Get_Dead() const { return m_Dead; }
+
 public:
 	void Set_Type(OBJTYPE _type);
 	const OBJTYPE& Get_Type() const;
@@ -57,6 +60,10 @@ public:
 private:
  	_uint				m_Layer = 0;
 	OBJTYPE				m_Type;
+
+
+private:
+	_bool				m_Dead = false;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
