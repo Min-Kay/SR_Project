@@ -17,6 +17,8 @@ HINSTANCE g_hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
+_float g_ControlTime = 1.0f;
+
 // 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -92,7 +94,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			fTimeAcc = 0.f;
 
-			pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
+			pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")) * g_ControlTime);
 			pMainApp->Render();
 		}
 	}

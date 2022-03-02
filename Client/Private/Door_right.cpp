@@ -73,9 +73,9 @@ HRESULT CDoor_right::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	m_pBoxColliderCom->Draw_Box();
+	//m_pBoxColliderCom->Draw_Box();
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
 		return E_FAIL;
 
 
@@ -123,7 +123,7 @@ HRESULT CDoor_right::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CDoor_right::Open(_bool& IsOpen, _float fTimeDelta)
+HRESULT CDoor_right::Open(_bool& IsOpen)
 {
 	if (IsOpen)
 	{
@@ -142,7 +142,7 @@ HRESULT CDoor_right::Open(_bool& IsOpen, _float fTimeDelta)
 	return S_OK;
 }
 
-HRESULT CDoor_right::Close(_bool& IsClose, _float fTimeDelta)
+HRESULT CDoor_right::Close(_bool& IsClose)
 {
 	if (IsClose)
 	{

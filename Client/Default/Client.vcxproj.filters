@@ -124,6 +124,9 @@
     <Filter Include="02.GameObjects\Effect\Alert">
       <UniqueIdentifier>{f9449769-6541-4c90-9145-64d7f0ac3504}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect\Ball">
+      <UniqueIdentifier>{e139cc8e-7a37-4c5c-9840-e955b696d878}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -234,6 +237,10 @@
     <ClInclude Include="..\Public\Effect_Alert.h">
       <Filter>02.GameObjects\Effect\Alert</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_StageTwo.h">
+      <Filter>01.Levels\StageTwo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Ball.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -332,6 +339,10 @@
     <ClCompile Include="..\Private\Effect_Alert.cpp">
       <Filter>02.GameObjects\Effect\Alert</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Level_StageTwo.cpp">
+      <Filter>01.Levels\StageTwo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ball.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

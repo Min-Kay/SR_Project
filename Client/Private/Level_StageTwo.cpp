@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\Level_StageOne.h"
+#include "..\Public\Level_StageTwo.h"
 #include "GameInstance.h"
 #include "Camera.h"
 #include "Camera_Player.h"
@@ -12,24 +12,24 @@
 #include "Tile_Collider.h"
 #include "Tile_Cube.h"
 
-CLevel_StageOne::CLevel_StageOne(LPDIRECT3DDEVICE9 pGraphic_Device)
+CLevel_StageTwo::CLevel_StageTwo(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLevel(pGraphic_Device)
 {
 
 }
 
-HRESULT CLevel_StageOne::NativeConstruct()
+HRESULT CLevel_StageTwo::NativeConstruct()
 {
 	if (FAILED(__super::NativeConstruct()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Map()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_Map()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
@@ -44,7 +44,7 @@ HRESULT CLevel_StageOne::NativeConstruct()
 	return S_OK;
 }
 
-_int CLevel_StageOne::Tick(_float fTimeDelta)
+_int CLevel_StageTwo::Tick(_float fTimeDelta)
 {
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
@@ -59,7 +59,7 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 	return 0;
 }
 
-_int CLevel_StageOne::LateTick(_float fTimeDelta)
+_int CLevel_StageTwo::LateTick(_float fTimeDelta)
 {
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
@@ -67,7 +67,7 @@ _int CLevel_StageOne::LateTick(_float fTimeDelta)
 	return 0;
 }
 
-HRESULT CLevel_StageOne::Render()
+HRESULT CLevel_StageTwo::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -75,7 +75,7 @@ HRESULT CLevel_StageOne::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_StageOne::Ready_Layer_Camera(const _tchar * pLayerTag)
+HRESULT CLevel_StageTwo::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -94,7 +94,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
-	CameraDesc.iLevel = LEVEL_STAGEONE;
+	CameraDesc.iLevel = LEVEL_STAGETWO;
 
 	if (FAILED(pGameInstance->Add_Camera_Object(CAM_PLAYER, MAIN_CAM, &CameraDesc)))
 	{
@@ -107,11 +107,11 @@ HRESULT CLevel_StageOne::Ready_Layer_Camera(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar* pLayerTag)
+HRESULT CLevel_StageTwo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("SkyBox"), TEXT("Prototype_GameObject_Sky"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("SkyBox"), TEXT("Prototype_GameObject_Sky"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
@@ -129,65 +129,65 @@ HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	desc2.Alpha = Engine::CUI::ALPHA_BLEND;
 	desc2.Texture = TEXT("Prototype_Component_Texture_BackUI");
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("BackUI"), TEXT("Prototype_GameObject_BackUI"), &desc2)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("BackUI"), TEXT("Prototype_GameObject_BackUI"), &desc2)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
-	CCubeMonster* monster = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster")));
+	CCubeMonster* monster = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster")));
 	monster->Set_InitPos(_float3(-10.f, 15.f, 0.f));
 
-	CCubeMonster* monster1 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), 1));
+	CCubeMonster* monster1 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"), 1));
 	monster1->Set_InitPos(_float3(10.f, 10.f, 10.f));
 
-	CCubeMonster* monster2 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"),2));
+	CCubeMonster* monster2 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"),2));
 	monster2->Set_InitPos(_float3(-10.f, 15.f, 0.f));
 
-	CCubeMonster* monster3 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"),4));
+	CCubeMonster* monster3 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"),4));
 	monster3->Set_InitPos(_float3(-20.f, 20.f, 0.f));
 
-	CCubeMonster* monster4 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"),5));
+	CCubeMonster* monster4 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"),5));
 	monster4->Set_InitPos(_float3(-30.f, 30.f, 0.f));
 
-	CCubeMonster* monster5 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"),3));
+	CCubeMonster* monster5 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("CubeMonster"),3));
 	monster5->Set_InitPos(_float3(-25.f, 20.f, 0.f));
 
 
@@ -196,34 +196,28 @@ HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_StageOne::Ready_Layer_Player(const _tchar * pLayerTag)
+HRESULT CLevel_StageTwo::Ready_Layer_Player(const _tchar * pLayerTag)
 {
-
-
-	CPlayer::PLAYERINFO INFO;
-	ZeroMemory(&INFO, sizeof(INFO));
-
-	INFO.Pos.x = 12.0f;
-	INFO.Pos.y = 7.5f;
-	INFO.Pos.z = -4.0f;
-	INFO.Hp = 100;
-
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, pLayerTag, TEXT("Prototype_GameObject_Player"), &INFO)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, pLayerTag, TEXT("Prototype_GameObject_Player"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
 
 
+	CTransform* tr = static_cast<CTransform*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, pLayerTag, 0)->Get_Component(COM_TRANSFORM));
+
+	tr->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 0.f));
+	
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CLevel_StageOne::Ready_Layer_Map()
+HRESULT CLevel_StageTwo::Ready_Layer_Map()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -942,7 +936,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 
 	//}
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), TEXT("Prototype_GameObject_TileCollider"))))
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), TEXT("Prototype_GameObject_TileCollider"))))
 			return E_FAIL;
 	CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"));
 	CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
@@ -978,18 +972,18 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 	box3->Set_State(CBoxCollider::COLL_SIZE, _float3(20.f, 1.f, 20.f));
 	box3->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
 	BottomTrans1->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90.f));
-	BottomTrans1->Set_State(CTransform::STATE_POSITION, _float3(0.f, 25.f, 0.f));
+	BottomTrans1->Set_State(CTransform::STATE_POSITION, _float3(0.f, 25.f, 0.f));*/
 
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CLevel_StageOne::Open_Exit()
+HRESULT CLevel_StageTwo::Open_Exit()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"));
+	CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Open_Exit"));
 
 	static_cast<CTile_Cube*>(Switch)->Open_Event(TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 
@@ -998,9 +992,9 @@ HRESULT CLevel_StageOne::Open_Exit()
 	return S_OK;
 }
 
-CLevel_StageOne * CLevel_StageOne::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CLevel_StageTwo* CLevel_StageTwo::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CLevel_StageOne*	pInstance = new CLevel_StageOne(pGraphic_Device);
+	CLevel_StageTwo*	pInstance = new CLevel_StageTwo(pGraphic_Device);
 
 	if (FAILED(pInstance->NativeConstruct()))
 	{
@@ -1011,7 +1005,7 @@ CLevel_StageOne * CLevel_StageOne::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-void CLevel_StageOne::Free()
+void CLevel_StageTwo::Free()
 {
 	__super::Free();
 }

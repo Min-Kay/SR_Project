@@ -70,15 +70,6 @@ _int CMainApp::Tick(_float fTimeDelta)
 	if (nullptr == m_pGameInstance)
 		return -1;
 
-	if (((MCIWndGetLength(vid) <= MCIWndGetPosition(vid)) || (m_pLoader->isFinished() && m_pGameInstance->Get_Key_Down(DIK_RETURN))) && !isFin)
-	{
-		isFin = true;
-		Close_Intro();
-		if (FAILED(OpenLevel(LEVEL_LOGO)))
-			return -1;
-		return 0;
-	}
-
 	if (0 > m_pGameInstance->Tick_Engine(fTimeDelta))
 		return -1;
 
@@ -87,6 +78,15 @@ _int CMainApp::Tick(_float fTimeDelta)
 
 HRESULT CMainApp::Render()
 {
+	if (((MCIWndGetLength(vid) <= MCIWndGetPosition(vid)) || (m_pLoader->isFinished() && m_pGameInstance->Get_Key_Down(DIK_RETURN))) && !isFin)
+	{
+		isFin = true;
+		Close_Intro();
+		if (FAILED(OpenLevel(LEVEL_LOGO)))
+			return -1;
+		return S_OK;
+	}
+
 	if (!isFin)
 		return S_OK;
 

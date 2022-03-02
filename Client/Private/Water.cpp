@@ -2,6 +2,7 @@
 #include "Water.h"
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CWater::CWater(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -33,6 +34,7 @@ HRESULT CWater::NativeConstruct(void * pArg)
 
 	Set_Type(OBJ_STATIC);
 
+
 	return S_OK;
 }
 
@@ -45,7 +47,39 @@ _int CWater::Tick(_float fTimeDelta)
 
 	if (m_fFrame >= 4.0f)
 		m_fFrame = 0.f;
+	m_iCount += fTimeDelta;
 
+
+		if (m_pBoxColliderCom)
+			m_pBoxColliderCom->Set_Collider();
+
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		
+	if(m_Player)
+	{
+		
+		list<CGameObject*> test = p_instance->Get_Collision_List(m_pBoxColliderCom);
+
+		for (auto & iter : test)
+		{
+				
+			if (OBJ_PLAYER == iter->Get_Type())
+			{
+				if (m_iCount > 1.5)
+				{
+					m_Player->Add_Hp(-40);
+					m_iCount = 0;
+
+				}
+
+			}
+
+		
+		}
+
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 	
 	return _int();
 }
@@ -59,7 +93,7 @@ _int CWater::LateTick(_float fTimeDelta)
 		return -1;
 
 	
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
 }
@@ -76,6 +110,9 @@ HRESULT CWater::Render()
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
 		return E_FAIL;
 
+
+
+	//m_pBoxColliderCom->Draw_Box();
 
 	SetUp_RenderState();
 
@@ -117,8 +154,10 @@ HRESULT CWater::SetUp_Components()
 	m_pBoxColliderCom->Set_ParentInfo(this);
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
+	m_pBoxColliderCom->Set_Collider();
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
+	m_Player = static_cast<CPlayer*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));
 	RELEASE_INSTANCE(CGameInstance);
 	
 	return S_OK;

@@ -146,13 +146,6 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Tile"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Door_left*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Left"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_left2.dds")))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Door_right*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Right"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_right2.dds")))))
-		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Water*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Water"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Water/Water_%d.dds"), 4))))
@@ -170,6 +163,16 @@ HRESULT CLoader::Loading_ForStageOne()
 	/* For.Prototype_Component_Texture_Tile_Cube*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC , TEXT("Prototype_Component_Texture_Alert"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Alert.png")))))
 		return E_FAIL;
+
+
+	/* For.Prototype_Component_Texture_Door_left*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Left"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_left_%d.dds"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Door_right*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Right"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_right_%d.dds"), 2))))
+		return E_FAIL;
+
 
 #pragma endregion
 
@@ -243,6 +246,7 @@ HRESULT CLoader::Loading_ForStageOne()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Alert"), CEffect_Alert::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
 #pragma endregion
 
 	RELEASE_INSTANCE(CGameInstance);

@@ -30,14 +30,21 @@ public:
 	_bool Get_Delete() { return m_Impact.DeleteImpact; }
 
 public:
+	typedef	enum Colorgradation
+	{
+		GRADATION_NONE,GRADATION_UP, GRADATION_DOWN, GRADATION_FLASH, GRADATION_END
+	}GRADATION;
 	typedef struct tagImpact
 	{
 		_float3    Pos;
+		_float		Speed;
 		_double    randomPos;
 		D3DCOLOR	Color;
+		D3DCOLOR	ChangeColor;
 		_uint		deleteCount;
 		_bool		DeleteImpact;
 		_float3		Size;
+		GRADATION	Gradation;
 	}IMPACT;
 private:
 	/* ¸ðµ¨ */
@@ -70,7 +77,7 @@ private:
 	random_device rd;
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
-
+	HRESULT Gradation_Pattern();
 	_uint m_iCount;
 public:
 	static CImpact* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

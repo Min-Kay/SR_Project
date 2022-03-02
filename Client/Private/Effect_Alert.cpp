@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Effect_Alert.h"
 
-#include <Transform.h>
+#include "Transform.h"
+#include "VIBuffer_Rect.h"
 
 CEffect_Alert::CEffect_Alert(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEffect(m_pGraphic_Device)
@@ -49,6 +50,22 @@ _int CEffect_Alert::LateTick(_float fTimeDelta)
 {
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
+
+	_float3 vScale = m_pTransformCom->Get_Scale();
+
+	_float3 vRight = m_pCameraTr->Get_State(CTransform::STATE_RIGHT);
+	_float3 vUp = m_pCameraTr->Get_State(CTransform::STATE_UP);
+	_float3 vLook = m_pCameraTr->Get_State(CTransform::STATE_LOOK);
+
+	D3DXVec3Normalize(&vRight, &vRight);
+	D3DXVec3Normalize(&vUp, &vUp);
+	D3DXVec3Normalize(&vLook, &vLook);
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+	if (!m_Desc.FixY)
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
 	return 0;
 }
 
@@ -68,8 +85,37 @@ HRESULT CEffect_Alert::SetUp_Components()
 
 HRESULT CEffect_Alert::SetUp_RenderState()
 {
-	if (FAILED(__super::SetUp_RenderState()))
+	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
+
+	switch (m_Desc.Alpha)
+	{
+	case EFFECTALPHA_DEFAULT:
+		m_pVIBufferCom->Render();
+
+		break;
+	case EFFECTALPHA_BLEND:
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+		m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+		m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+		m_pVIBufferCom->Render();
+
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+		break;
+	case EFFECTALPHA_TEST:
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, m_Desc.Ref);
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, m_Desc.Func);
+
+		m_pVIBufferCom->Render();
+
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+		break;
+	}
 	return S_OK;
 
 }

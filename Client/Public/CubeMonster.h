@@ -41,7 +41,7 @@ private:
 
 
 	void Move(_float fTimeDelta);
-	void Blow(_float3& pos);
+	void Blow(_float fTimeDelta);
 
 	const STATE& Get_MonsterState() const;
 	void Set_MonsterState(STATE _state);
@@ -54,13 +54,20 @@ public:
 	void Set_InitPos(_float3 _pos);
 
 private:
+	void Charging(_float fTimeDelta);
+	void Firing(_float fTimeDelta);
+	void Rebounding(_float fTimeDelta);
+
+private:
 	STATE m_State = STATE_IDLE;
 	CPlayer* m_Player = nullptr;
 	CTransform* m_PlayerPos = nullptr;
 
 private:
-	_float m_SearchRange = 10.f;
-	_float m_AlertRange = 15.f;
+	_float m_SearchRange = 7.f;
+	_float m_AlertRange = 12.f;
+
+	_float m_CurrAlertRange= 0.f;
 	_float m_AttackRange = 5.f;
 
 	_float m_AlertTime = 4.f;
@@ -73,9 +80,22 @@ private:
 	_float m_AttackSpeed = 1.f;
 
 	_float m_YPos = 0.f;
-	_float m_YMax = 5.f;
+	_float m_YMax = 10.f;
+
+	_float m_Angle = 0.f;
 
 	_bool	m_YMove = false;
+	_bool	m_RMove = false;
+
+private:
+	_bool m_isCharging = false;
+	_float3 m_vChargingLook;
+	_float m_ChargingTimer = 0.f;
+	_bool isBound = false;
+
+
+	_bool m_isFiring = false;
+	_bool m_Rebounding = false;
 
 private:
 	_float3 m_InitPoint;

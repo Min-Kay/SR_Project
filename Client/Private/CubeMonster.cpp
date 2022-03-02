@@ -173,12 +173,29 @@ void CCubeMonster::Move(_float fTimeDelta)
 	
 }
 
-void CCubeMonster::Blow(_float3& pos)
+void CCubeMonster::Blow(_float fTimeDelta)
 {
-	pos.y = m_YMove ? pos.y + 0.01f : pos.y - 0.01f;
-	m_YPos = m_YMove ? m_YPos + 0.01f : m_YPos - 0.01f;
-	if ((m_YMove && m_YPos >= m_YMax) || (!m_YMove && m_YPos <= -m_YMax))
-		m_YMove = !m_YMove;
+	if (fTimeDelta <= 0.f)
+		return;
+
+	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+
+	D3DXVec3Normalize(&vRight, &vRight);	D3DXVec3Normalize(&vRight, &vRight);
+	D3DXVec3Normalize(&vUp, &vUp);
+
+	m_Angle += 10.f;
+
+	m_YMove = (_int)m_Angle % 360 == 0 ? !m_YMove : m_YMove;
+	m_RMove = (_int)m_Angle % 720 == 0 ? !m_RMove : m_RMove;
+
+
+	vUp = m_YMove ? vUp * sinf(D3DXToRadian(m_Angle)) * 0.01f : -vUp * sinf(D3DXToRadian(m_Angle)) * 0.01f; 
+	vRight = m_RMove ? vRight * 0.003f : -vRight * 0.003f;
+
+	m_pTransform->Turn(vUp, fTimeDelta * 0.5f);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, vPos + vRight + vUp);
 
 }
 
@@ -189,6 +206,7 @@ const CCubeMonster::STATE& CCubeMonster::Get_MonsterState() const
 
 void CCubeMonster::Set_MonsterState(STATE _state)
 {
+	m_Timer = 0.f;
 	m_State = _state;
 }
 
@@ -207,9 +225,60 @@ void CCubeMonster::Set_InitPos(_float3 _pos)
 	m_pTransform->Set_State(CTransform::STATE_POSITION,_pos);
 }
 
+void CCubeMonster::Charging(_float fTimeDelta)
+{
+
+	if (m_ChargingTimer >= 1.0f)
+		isBound = true;
+	else if (m_ChargingTimer <= -1.0f)
+		isBound = false;
+
+	m_ChargingTimer = isBound ? m_ChargingTimer - fTimeDelta * 20.f : m_ChargingTimer + fTimeDelta * 20.f;
+
+	m_pTransform->Turn(isBound ? m_vChargingLook : -m_vChargingLook, fTimeDelta * 3.f);
+
+	/*if (10.0f <= m_Timer)
+	{
+		m_Timer = 0.f;
+		m_isFiring = true;
+		m_isCharging = false;
+	}*/
+
+}
+
+void CCubeMonster::Firing(_float fTimeDelta)
+{
+	// 격발 구체 소환
+
+
+	m_isFiring = false;
+	m_Rebounding = true;
+	m_Timer = 0.f;
+}
+
+void CCubeMonster::Rebounding(_float fTimeDelta)
+{
+	_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
+	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+
+	_float3 vDir = playerPos - myPos;
+	Target_Turn(vDir, fTimeDelta * 2.f);
+
+	_float length = D3DXVec3Length(&vDir);
+
+	if (length > m_AttackRange)
+	{
+		Set_MonsterState(STATE_CHASE);
+		m_Rebounding = false;
+		return;
+	}
+	else
+		m_Rebounding = false;
+}
+
 void CCubeMonster::Search_Player(_float fTimeDelta)
 {
-	if (!m_Player)
+	if (!m_Player || fTimeDelta <= 0.f)
 		return;
 
 	_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
@@ -217,13 +286,13 @@ void CCubeMonster::Search_Player(_float fTimeDelta)
 
 	if( m_SearchRange >= D3DXVec3Length(&(myPos-playerPos)))
 	{
-		m_State = STATE_ALERT;
+		Set_MonsterState(STATE_ALERT);
 		return; 
 	}
 
 	Move(fTimeDelta);
 
-	Blow(myPos);
+	Blow(fTimeDelta);
 
 	m_Timer += fTimeDelta;
 
@@ -233,7 +302,7 @@ void CCubeMonster::Search_Player(_float fTimeDelta)
 
 		if (rand() % 2 != 0)
 		{
-			m_State = STATE_IDLE;
+			Set_MonsterState(STATE_IDLE);
 		}
 	}
 }
@@ -244,8 +313,7 @@ void CCubeMonster::Alert_Company(_float fTimeDelta)
 	if(m_AlertTime <= m_Timer)
 	{
 		m_Effect->Set_Vaild(false);
-		m_State = STATE_CHASE;
-		m_Timer = 0.f;
+		Set_MonsterState(STATE_CHASE);
 		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
 
 		RELEASE_INSTANCE(CGameInstance);
@@ -268,12 +336,16 @@ void CCubeMonster::Alert_Company(_float fTimeDelta)
 
 	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 
+	m_CurrAlertRange += fTimeDelta * 10.f;
+	if (m_AlertRange <= m_CurrAlertRange)
+		m_CurrAlertRange = m_AlertRange;
+
 	for(auto& mon : pMonsters)
 	{
 		CCubeMonster* company = static_cast<CCubeMonster*>(mon);
 		_float3 monPos = static_cast<CTransform*>(company->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION);
 		
-		if (m_AlertRange >= D3DXVec3Length(&(myPos - monPos)) && (company->Get_MonsterState() == STATE_IDLE || company->Get_MonsterState() == STATE_SEARCH))
+		if (m_CurrAlertRange >= D3DXVec3Length(&(myPos - monPos)) && (company->Get_MonsterState() == STATE_IDLE || company->Get_MonsterState() == STATE_SEARCH))
 		{
 			company->Set_MonsterState(STATE_ALERT);
 		}
@@ -297,7 +369,8 @@ void CCubeMonster::Chase_Player(_float fTimeDelta)
 
 	if (length < m_AttackRange)
 	{
-		m_State = STATE_ATTACK;
+		Set_MonsterState(STATE_ATTACK);
+		m_pTransform->LookAt(playerPos);
 		return;
 	}
 
@@ -309,31 +382,31 @@ void CCubeMonster::Chase_Player(_float fTimeDelta)
 
 void CCubeMonster::Attack(_float fTimeDelta)
 {
-	_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
-	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
-
-	_float3 vDir = playerPos - myPos;
-	Target_Turn(vDir, fTimeDelta * 2.f);
-
-	_float length = D3DXVec3Length(&vDir);
-
-	if (m_AttackRange < length)
-	{
-		m_State = STATE_CHASE;
-		m_Timer = 0.f;
-		return;
-	}
 
 	m_Timer += fTimeDelta;
 
-	if(m_AttackSpeed <= m_Timer)
+	if (!m_isCharging && !m_isFiring && !m_Rebounding)
 	{
-		// attack animation
-		m_Player->Add_Hp(-m_Damage);
+		m_isCharging = true;
+		m_ChargingTimer = 0.5f;
+		m_vChargingLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+		D3DXVec3Normalize(&m_vChargingLook, &m_vChargingLook);
 		m_Timer = 0.f;
 	}
-
+	else if(m_isCharging)
+	{
+		Charging(fTimeDelta);
+	}
+	else if(m_isFiring)
+	{
+		Firing(fTimeDelta);
+	}
+	else if(m_Rebounding)
+	{
+		Rebounding(fTimeDelta);
+	}
 }
+
 void CCubeMonster::Idle(_float fTimeDelta)
 {
 	
@@ -350,9 +423,9 @@ void CCubeMonster::Idle(_float fTimeDelta)
 
 	m_Timer += fTimeDelta;
 
-	Blow(myPos);
+	Blow(fTimeDelta);
 
-	if (m_Timer >= 3.f)
+	if (m_Timer >= 5.f)
 	{
 		m_Timer = 0.f;
 		if (rand() % 2 != 0)

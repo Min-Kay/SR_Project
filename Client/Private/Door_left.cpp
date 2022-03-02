@@ -71,9 +71,9 @@ HRESULT CDoor_left::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	m_pBoxColliderCom->Draw_Box();
+	//m_pBoxColliderCom->Draw_Box();
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
 		return E_FAIL;
 
 
@@ -121,7 +121,7 @@ HRESULT CDoor_left::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CDoor_left::Open(_bool& IsOpen, _float fTimeDelta)
+HRESULT CDoor_left::Open(_bool& IsOpen)
 {
 	
 	_float3 CollPos = m_pBoxColliderCom->Get_State(CBoxCollider::COLLIDERINFO::COLL_CENTER);
@@ -152,7 +152,7 @@ HRESULT CDoor_left::Open(_bool& IsOpen, _float fTimeDelta)
 	return S_OK;
 }
 
-HRESULT CDoor_left::Close(_bool& IsClose, _float fTimeDelta)
+HRESULT CDoor_left::Close(_bool& IsClose)
 {
 	if (IsClose)
 	{

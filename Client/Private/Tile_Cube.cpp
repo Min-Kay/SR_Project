@@ -2,6 +2,8 @@
 #include "Tile_Cube.h"
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
+#include "Door_left.h"
+#include "Door_right.h"
 
 CTile_Cube::CTile_Cube(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -32,12 +34,6 @@ HRESULT CTile_Cube::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Set_Type(OBJ_STATIC);
-	/*if (m_pBoxColliderCom == nullptr)
-	{
-		MSGBOX("Empty BoxCollider component in CDoorLeft");
-		return E_FAIL;
-	}*/
-
 
 	return S_OK;
 }
@@ -46,17 +42,10 @@ _int CTile_Cube::Tick(_float fTimeDelta)
 {
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
-	/*if (nullptr == m_pBoxColliderCom)
-	{
-		return -1;
-	}*/
 
-	/*CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	pGameInstance->Add_Collider(m_pBoxColliderCom);
-	RELEASE_INSTANCE(CGameInstance);
-
-	m_pBoxColliderCom->Set_Coilider();*/
+	if (m_pBoxColliderCom)
+		m_pBoxColliderCom->Set_Collider();
 	
 	
 	return _int();
@@ -121,12 +110,51 @@ HRESULT CTile_Cube::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Block"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
-	/* For.Com_Collider */
-	/*if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Collider"), COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
 		return E_FAIL;
-	m_pBoxColliderCom->Set_Parent(this);
-	m_pBoxColliderCom->Get_Parentcom();
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));*/
+	m_pBoxColliderCom->Set_ParentInfo(this);
+
+	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+HRESULT CTile_Cube::Open_Event(const _tchar* pLayerTag, const _tchar* pLayerTag2)
+{
+	if (nullptr == m_pBoxColliderCom)
+	{
+		MSGBOX("Empty CBoxCollider in CTile_Cube");
+		return E_FAIL;
+	}
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	list<CGameObject*> collList = pGameInstance->Get_Collision_List(m_pBoxColliderCom);
+
+	for (auto& obj : collList)
+	{
+		if (obj->Get_Type() == OBJ_PLAYER)
+		{
+			m_bOpen = true;
+
+
+			CDoor_right* Right_door = static_cast<CDoor_right*>(pGameInstance->Get_GameObject(g_CurrLevel, pLayerTag2));
+			Right_door->Open(m_bOpen);
+
+			CDoor_left* Left_door = static_cast<CDoor_left*>(pGameInstance->Get_GameObject(g_CurrLevel, pLayerTag));
+			Left_door->Open(m_bOpen);
+
+
+		
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -163,7 +191,7 @@ void CTile_Cube::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pBoxColliderCom);
+	Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

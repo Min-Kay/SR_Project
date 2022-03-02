@@ -4,11 +4,11 @@
 #include "Level.h"
 
 BEGIN(Client)
-class CLevel_StageOne final : public CLevel
+class CLevel_StageTwo final : public CLevel
 {
 public:
-	explicit CLevel_StageOne(LPDIRECT3DDEVICE9 pGraphic_Device);
-	virtual ~CLevel_StageOne() = default;
+	explicit CLevel_StageTwo(LPDIRECT3DDEVICE9 pGraphic_Device);
+	virtual ~CLevel_StageTwo() = default;
 public:
 	virtual HRESULT NativeConstruct();
 	virtual _int Tick(_float fTimeDelta);
@@ -33,7 +33,7 @@ private:
 
 
 public:
-	static CLevel_StageOne* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	static CLevel_StageTwo* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual void Free() override;
 };
 

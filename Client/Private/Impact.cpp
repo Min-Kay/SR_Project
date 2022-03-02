@@ -65,23 +65,19 @@ _int CImpact::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	m_fFrame += fTimeDelta;
+	m_fFrame += 2 * fTimeDelta;
 
-	if (m_fFrame >= 2)
+
+	
+	if (m_fFrame >= 1)
 	{
 		m_Impact.deleteCount -= 1;
-		//m_fFrame = 0.f;
-		//m_Impact.Color = D3DXCOLOR(0, 0, 0, 0);
-		//m_pVIBufferCom->ChangeColor(D3DXCOLOR(1, 0.9, 0, 0));//rgba
+		m_fFrame = 0.f;
 	}
 	else
-	{
-		m_Impact.Color -= D3DXCOLOR(0, 0.1, 0, 0);
-		m_pVIBufferCom->ChangeColor(m_Impact.Color);
-		//m_fFrame = 0.f;
+		Gradation_Pattern();	
 
-	}
-
+	
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_fvecdir * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta);
 
@@ -107,7 +103,7 @@ _int CImpact::LateTick(_float fTimeDelta)
 		m_fcount += fTimeDelta;
 		m_Impact.DeleteImpact = true;
 	}
-
+	
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -133,6 +129,7 @@ HRESULT CImpact::Render()
 		return E_FAIL;
 
 
+
 	if (m_Impact.deleteCount <= 0)
 	{
 
@@ -142,7 +139,6 @@ HRESULT CImpact::Render()
 		RELEASE_INSTANCE(CGameInstance);
 
 	}
-
 	return S_OK;
 }
 
@@ -154,7 +150,7 @@ HRESULT CImpact::SetUp_Components()
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 
-	TransformDesc.fSpeedPerSec = 10.f;
+	TransformDesc.fSpeedPerSec = 5.f;
 	TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
 
@@ -232,6 +228,36 @@ HRESULT CImpact::Release_RenderState()
 {
 	
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	return S_OK;
+}
+
+HRESULT CImpact::Gradation_Pattern()
+{
+
+	switch (m_Impact.Gradation)
+	{
+	case GRADATION_NONE:
+		break;
+
+	case GRADATION_UP:
+		m_Impact.Color += m_Impact.ChangeColor;
+		m_pVIBufferCom->ChangeColor(m_Impact.Color);
+		break;
+
+	case GRADATION_DOWN:
+		m_Impact.Color -= m_Impact.ChangeColor;
+		m_pVIBufferCom->ChangeColor(m_Impact.Color);
+		break;
+	case GRADATION_FLASH:
+
+		m_pVIBufferCom->ChangeColor(m_Impact.Color);
+		if(m_fFrame > 1.5)
+		m_pVIBufferCom->ChangeColor(m_Impact.ChangeColor);
+		break;
+	default:
+		break;
+	}
+
 	return S_OK;
 }
 

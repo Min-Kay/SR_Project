@@ -268,6 +268,7 @@ void CPortal::Portaling()
 
         objTr->Set_OnCollide(false);
 
+        objTr->Add_Velocity(objTr->Get_Velocity());
         objTr->Set_Force(-vOpLook);
 
 	    //if (obj->Get_Type() == OBJ_PLAYER)

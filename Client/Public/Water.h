@@ -12,7 +12,7 @@ class CBoxCollider;
 END
 
 BEGIN(Client)
-
+class CPlayer;
 class CWater final : public CGameObject
 {
 private:
@@ -43,15 +43,18 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 
 	/* �浹ü */
-	CBoxCollider* m_pBoxColliderCom = nullptr;
+	CBoxCollider*		 m_pBoxColliderCom = nullptr;
 
 	_float				m_fFrame = 0.f;
+	_float				m_iCount = 0.f;
 private:
 	HRESULT SetUp_Components();
 
 
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
+
+	CPlayer*		m_Player;
 public:
 	static CWater* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

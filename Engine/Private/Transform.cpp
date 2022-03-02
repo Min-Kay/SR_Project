@@ -234,7 +234,7 @@ void CTransform::Set_Force(_float3 _axis)
 {
 	m_Forcing = true;
 	m_fForce += m_fVelocity;
-	m_fVelocity = 0.f;
+	m_fVelocity *= 0.5f;
 	m_vForceAxis = _axis;
 }
 

@@ -41,6 +41,13 @@ public:
 	void Set_Hp(_int _hp);
 	void Add_Hp(_int _add);
 
+	typedef struct tagpalyerinfo
+	{
+		_float3    Pos;
+		_int		Hp;
+
+	}PLAYERINFO;
+
 private:
 
 	/* ¸ðµ¨ */
@@ -74,6 +81,8 @@ private:
 
 private:
 	_int				m_HP = 100;
+
+	PLAYERINFO			m_Info;
 
 private:
 	HRESULT SetUp_Components();

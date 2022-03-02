@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\Ball.h" />
     <ClInclude Include="..\Public\Button_Continue.h" />
     <ClInclude Include="..\Public\Button_Exit.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="..\Public\Level_StageOne.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
+    <ClInclude Include="..\Public\Level_StageTwo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\Public\LoadingLoader.h" />
     <ClInclude Include="..\public\MainApp.h" />
@@ -195,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Ball.cpp" />
     <ClCompile Include="..\Private\Button_Continue.cpp" />
     <ClCompile Include="..\Private\Button_Exit.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
@@ -211,6 +214,7 @@
     <ClCompile Include="..\Private\Level_StageOne.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
+    <ClCompile Include="..\Private\Level_StageTwo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\Private\LoadingLoader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />

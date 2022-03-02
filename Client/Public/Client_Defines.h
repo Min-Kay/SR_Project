@@ -8,6 +8,7 @@ enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_STAGEONE,LEVEL_STAGE
 extern HINSTANCE	g_hInst;
 extern HWND		g_hWnd;
 extern LEVEL	g_CurrLevel;
+extern float     g_ControlTime;
 
 #define MAIN_CAM TEXT("Main_Camera")
 

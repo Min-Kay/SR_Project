@@ -30,6 +30,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
+	m_Info = *static_cast<PLAYERINFO*>(pArg);
+
 	/* 현재 객체에게 추가되어야할 컴포넌트들을 복제(or 참조)하여 멤버변수에 보관한다.  */
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
@@ -38,7 +40,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Set_Type(OBJ_PLAYER);
-
+	Set_Hp(m_Info.Hp);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_Info.Pos);
 	
 	return S_OK;
 }
@@ -76,8 +79,16 @@ _int CPlayer::LateTick(_float fTimeDelta)
 	if (nullptr == m_pTransformCom)
 		return -1;
 
+
+	if (m_Info.Hp < 0)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_Info.Pos));
+		m_Info.Hp = 100;
+	}
+
 	if (FAILED(Synchronize_Camera()))
 		return -1;
+
 
 	return _int();
 }

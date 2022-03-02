@@ -28,7 +28,7 @@ public:
 	HRESULT Locked_Turn(_float3& axis, _float fTimeDelta);
 
 public:
-	void Set_Break(_bool _bool) { m_Break = _bool; }
+	void Set_Break(_bool _bool) { m_Break = _bool; g_ControlTime = m_Break ? 0.f : 1.f; }
 	const _bool& Get_Break() const { return m_Break; }
 public:
 	void Control_Menu(_bool _bool);
