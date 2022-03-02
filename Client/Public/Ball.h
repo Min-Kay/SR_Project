@@ -35,9 +35,11 @@ private:
 
 
 	_int m_Damage = 5.f;
-	_float m_Speed = 0.1f;
+	_float m_Speed = 2.f;
 
 	_float3 m_Dir;
+
+	_float m_Timer = 0.f;
 
 public:
 	static CBall* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);

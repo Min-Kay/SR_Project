@@ -50,7 +50,8 @@ private:
 private:
 	HRESULT SetUp_Components();
 public:
-	HRESULT	Open_Event(const _tchar* pLayerTag, const _tchar* pLayerTag2);
+	HRESULT	Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag);
+	HRESULT	Close_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag);
 	void	Set_TextureIndex(_uint _iTextureIndex)
 	{
 		m_iTextureIndex = _iTextureIndex;

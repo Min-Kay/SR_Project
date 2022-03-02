@@ -64,11 +64,11 @@ private:
 	CTransform* m_PlayerPos = nullptr;
 
 private:
-	_float m_SearchRange = 7.f;
+	_float m_SearchRange = 10.f;
 	_float m_AlertRange = 12.f;
 
 	_float m_CurrAlertRange= 0.f;
-	_float m_AttackRange = 5.f;
+	_float m_AttackRange = 7.f;
 
 	_float m_AlertTime = 4.f;
 
@@ -78,9 +78,6 @@ private:
 	_float m_ChaseSpeed = 0.2f;
 
 	_float m_AttackSpeed = 1.f;
-
-	_float m_YPos = 0.f;
-	_float m_YMax = 10.f;
 
 	_float m_Angle = 0.f;
 
@@ -96,6 +93,8 @@ private:
 
 	_bool m_isFiring = false;
 	_bool m_Rebounding = false;
+
+	_bool m_Rebounded = false;
 
 private:
 	_float3 m_InitPoint;

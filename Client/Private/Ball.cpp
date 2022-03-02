@@ -21,16 +21,23 @@ HRESULT CBall::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
+	return S_OK;
 }
 
 HRESULT CBall::NativeConstruct(void* pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
+	return S_OK;
 }
 
 _int CBall::Tick(_float fTimeDelta)
 {
+	if (Get_Dead())
+		return 0;
+
+	m_Timer += fTimeDelta;
+
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
@@ -38,12 +45,15 @@ _int CBall::Tick(_float fTimeDelta)
 
 	if (FAILED(m_pBoxCollider->Set_Collider()))
 		return -1;
+	return 0;
 }
 
 _int CBall::LateTick(_float fTimeDelta)
 {
+	if (Get_Dead())
+		return 0;
 
-	if (Check_Collide())
+	if (m_Timer >= 5.f || Check_Collide())
 	{
 		m_pBoxCollider->Set_Dead(true);
 		Set_Dead(true);
@@ -53,6 +63,7 @@ _int CBall::LateTick(_float fTimeDelta)
 
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
+	return 0;
 
 }
 
@@ -60,18 +71,20 @@ HRESULT CBall::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
+	return S_OK;
+
 }
 
 void CBall::Set_Init(_float3 _pos, _float3 _dir)
 {
 	m_Dir = _dir;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _pos);
-	m_pTransformCom->LookAt(_pos - m_Dir * 0.1f);
+	m_pTransformCom->LookAt(_pos + m_Dir);
 }
 
 void CBall::Move(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Straight(m_Speed * fTimeDelta);
+	m_pTransformCom->Go_Straight(-m_Speed * fTimeDelta);
 }
 
 _bool CBall::Check_Collide()
@@ -122,8 +135,8 @@ CGameObject* CBall::Clone(void* pArg)
 
 void CBall::Free()
 {
-	Safe_Release(m_pBoxCollider);
 	__super::Free();
+	Safe_Release(m_pBoxCollider);
 }
 
 HRESULT CBall::SetUp_Components()
@@ -144,17 +157,21 @@ HRESULT CBall::SetUp_Components()
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxCollider);
 
 	RELEASE_INSTANCE(CGameInstance);
-	
+	return S_OK;
+
 }
 
 HRESULT CBall::SetUp_RenderState()
 {
 	if (FAILED(__super::SetUp_RenderState()))
 		return E_FAIL;
+	return S_OK;
+
 }
 
 HRESULT CBall::Release_RenderState()
 {
 	if (FAILED(__super::Release_RenderState()))
 		return E_FAIL;
+	return S_OK;
 }

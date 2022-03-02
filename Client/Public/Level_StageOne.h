@@ -20,8 +20,15 @@ private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Map();
-	HRESULT Open_Exit();
+	HRESULT Ready_Layer_Second_Entrance();
+	HRESULT Ready_Layer_Monster_Map();
+	HRESULT Ready_Layer_Next_Stage();
 
+
+private:
+	HRESULT Open_Exit();
+	HRESULT Close_Exit_Open_Door2();
+	HRESULT Open_Exit2();
 private:
 	_int iLineX = 25;
 	_int iLineY = 10;

@@ -985,7 +985,7 @@ HRESULT CLevel_StageTwo::Open_Exit()
 
 	CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Open_Exit"));
 
-	static_cast<CTile_Cube*>(Switch)->Open_Event(TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
+	static_cast<CTile_Cube*>(Switch)->Open_Event(g_CurrLevel, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 
 	RELEASE_INSTANCE(CGameInstance);
 
