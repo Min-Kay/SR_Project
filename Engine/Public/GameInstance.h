@@ -84,11 +84,14 @@ public:
 	void StopAll();
 
 public:
+	_bool Get_Collide(CBoxCollider * _from, CBoxCollider * _to);
+	list<CGameObject*> Get_Collision_Object_List(CBoxCollider * target);
+	CCollision_Manager::COLLPOINT* Get_Ray_Collision_Object(_float3 dir, _float3 pos, _float dis, _bool _sort = false);
 	HRESULT Add_Collider(CCollision_Manager::COLLOBJTYPE _type , CBoxCollider * collider);
 	HRESULT Release_Collider(CCollision_Manager::COLLOBJTYPE _type, CBoxCollider * collider);
 	HRESULT Release_ColliderList();
 	list<CGameObject*> Get_Collision_List(CBoxCollider * target);
-	list<CCollision_Manager::COLLPOINT> Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis);
+	list<CCollision_Manager::COLLPOINT> Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis, _bool _sort = false);
 public: // 마우스 커서 설정
 	void SetMouseMode(_bool setting, HWND _hwnd = nullptr);
 
@@ -101,8 +104,8 @@ private:
 	CInput_Device*			m_pInput_Device = nullptr;
 	CCamera_Manager*		m_pCamera_Manager = nullptr;
 	CPicking*				m_pPicking = nullptr;
-	CSoundMgr*				m_Sound_Manager = nullptr;
-	CCollision_Manager*		m_Collision_Manager = nullptr;
+	CSoundMgr*				m_pSound_Manager = nullptr;
+	CCollision_Manager*		m_pCollision_Manager = nullptr;
 public:
 	static void Release_Engine();
 	virtual void Free() override;

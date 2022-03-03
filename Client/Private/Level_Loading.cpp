@@ -61,12 +61,6 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 		case LEVEL_STAGETWO:
 			g_CurrLevel = LEVEL_STAGETWO;
 			m_Level = CLevel_StageTwo::Create(m_pGraphic_Device);
-
-			break;
-		case LEVEL_STAGETHREE:
-			g_CurrLevel = LEVEL_STAGETHREE;
-			m_Level = CLevel_StageOne::Create(m_pGraphic_Device);
-
 			break;
 		}
 		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, m_Level,false)))

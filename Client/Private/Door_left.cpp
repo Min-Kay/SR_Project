@@ -44,7 +44,9 @@ _int CDoor_left::Tick(_float fTimeDelta)
 
 	if (m_pBoxColliderCom)
 		m_pBoxColliderCom->Set_Collider();
-	
+
+	Open(m_Open);
+	Close(m_Close);
 	
 	return _int();
 }
@@ -121,12 +123,8 @@ HRESULT CDoor_left::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CDoor_left::Open(_bool& IsOpen)
+HRESULT CDoor_left::Open(_bool IsOpen)
 {
-	
-	_float3 CollPos = m_pBoxColliderCom->Get_State(CBoxCollider::COLLIDERINFO::COLL_CENTER);
-
-	_float3 DoorPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if (IsOpen)
 	{
@@ -135,13 +133,6 @@ HRESULT CDoor_left::Open(_bool& IsOpen)
 		if (m_Count > m_MaxCount)
 		{
 			m_Count = m_MaxCount;
-			IsOpen = false;
-
-
-			_float3 CollPos = m_pBoxColliderCom->Get_State(CBoxCollider::COLLIDERINFO::COLL_CENTER);
-
-
-			_float3 DoorPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			return S_OK;
 		}
 		m_pTransformCom->Go_Left(0.02f);
@@ -152,7 +143,7 @@ HRESULT CDoor_left::Open(_bool& IsOpen)
 	return S_OK;
 }
 
-HRESULT CDoor_left::Close(_bool& IsClose)
+HRESULT CDoor_left::Close(_bool IsClose)
 {
 	if (IsClose)
 	{
@@ -161,7 +152,6 @@ HRESULT CDoor_left::Close(_bool& IsClose)
 		if (m_Count < 0)
 		{
 			m_Count = 0;
-			IsClose = false;
 			return S_OK;
 		}
 		m_pTransformCom->Go_Right(0.02f);

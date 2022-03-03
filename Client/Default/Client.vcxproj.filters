@@ -97,9 +97,6 @@
     <Filter Include="01.Levels\StageTwo">
       <UniqueIdentifier>{8501afef-63c3-42fe-aa1d-283a0ed5d594}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\StageThree">
-      <UniqueIdentifier>{6f527e95-e10e-4c28-999e-d138eaf889f5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\StageOne">
       <UniqueIdentifier>{5df5ff31-7b54-4a05-8cab-d06886d65f60}</UniqueIdentifier>
     </Filter>

@@ -4,6 +4,7 @@
 #include "Level.h"
 
 BEGIN(Client)
+class CTile_Cube;
 class CLevel_StageOne final : public CLevel
 {
 public:
@@ -40,6 +41,17 @@ private:
 
 private:
 	_bool m_setting = false;
+
+private:
+	_bool m_Open_1 = false;
+	_bool m_Open_2 = false;
+	_bool m_Open_3 = false;
+
+private:
+	CTile_Cube* m_EventCube1 = nullptr;
+	CTile_Cube* m_EventCube2 = nullptr;
+	CTile_Cube* m_EventCube3 = nullptr;
+
 
 public:
 	static CLevel_StageOne* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

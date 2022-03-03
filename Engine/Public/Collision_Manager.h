@@ -29,8 +29,13 @@ public:
 	}COLLPOINT;
 
 public:
+	_bool Get_Collide(CBoxCollider* _from, CBoxCollider* _to);
 	list<CGameObject*> Get_Collision_List(CBoxCollider* target);
-	list<COLLPOINT> Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis);
+	list<CGameObject*> Get_Collision_Object_List(CBoxCollider* target);
+
+	list<COLLPOINT> Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis, _bool _sort = false);
+	COLLPOINT* Get_Ray_Collision_Object(_float3 dir, _float3 pos, _float dis, _bool _sort = false);
+
 	HRESULT Check_DeadCollider();
 	HRESULT	Collision();
 public:

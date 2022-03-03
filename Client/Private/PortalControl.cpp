@@ -66,6 +66,13 @@ _int CPortalControl::Tick(_float fTimeDelta)
 
 	Animate_Gun(fTimeDelta);
 
+	
+	if(m_pPortal_Blue && m_pPortal_Orange)
+	{
+		m_pPortal_Blue->Set_Cam_Angle(m_camera->Get_CameraTransform());
+		m_pPortal_Orange->Set_Cam_Angle(m_camera->Get_CameraTransform());
+	}
+
     return _int();
 }
 
@@ -73,9 +80,6 @@ _int CPortalControl::LateTick(_float fTimeDelta)
 {
 	if (!m_Vaild)
 		return 0;
-
-	if (FAILED(Synchronize_Camera_Angle()))
-		return -1;
 
     return _int();
 }
@@ -117,7 +121,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 
 	_float range = 100.f;
 
-	list<CCollision_Manager::COLLPOINT> hitList = pGameInstance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, range);
+	list<CCollision_Manager::COLLPOINT> hitList = pGameInstance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, range, true);
 
 	if (hitList.empty() || (hitList.size() == 1 && hitList.front().CollObj->Get_Type() == OBJ_PLAYER))
 	{
@@ -230,7 +234,10 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
-   
+
+	if (FAILED(Synchronize_Camera_Angle()))
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -356,20 +363,12 @@ HRESULT CPortalControl::SetUp_UI()
 
 HRESULT CPortalControl::Synchronize_Camera_Angle()
 {
-	if (nullptr != m_pPortal_Orange && nullptr != m_pPortal_Blue)
+	if (m_pPortal_Orange && m_pPortal_Blue)
 	{
-		if (nullptr == m_pPortal_Orange->Get_Link_Portal())
-			m_pPortal_Orange->Link_Portal(m_pPortal_Blue);
-		if (nullptr == m_pPortal_Blue->Get_Link_Portal())
-			m_pPortal_Blue->Link_Portal(m_pPortal_Orange);
-
-		if (m_camera)
+		if (!m_pPortal_Orange->Get_Link_Portal())
 		{
-			if (nullptr != m_pPortal_Orange->Get_Link_Portal() && nullptr != m_pPortal_Blue->Get_Link_Portal())
-			{
-				m_pPortal_Blue->Set_Cam_Angle(m_camera->Get_CameraTransform());
-				m_pPortal_Orange->Set_Cam_Angle(m_camera->Get_CameraTransform());
-			}
+			m_pPortal_Orange->Link_Portal(m_pPortal_Blue);
+			m_pPortal_Blue->Link_Portal(m_pPortal_Orange);
 		}
 	}
 	return S_OK;

@@ -150,7 +150,7 @@ void CGun::Fire()
 	p_instance->StopSound(CSoundMgr::WEAPON_EFFECT1);
 	p_instance->Play_Sound(TEXT("Shot.wav"), CSoundMgr::WEAPON_EFFECT1, 1.0f);
 
-	list<CCollision_Manager::COLLPOINT> hitList = p_instance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, m_fRange);
+	list<CCollision_Manager::COLLPOINT> hitList = p_instance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, m_fRange,true);
 
 	if (hitList.empty() || (hitList.size() == 1 && hitList.front().CollObj->Get_Type() == OBJ_PLAYER))
 	{

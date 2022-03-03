@@ -13,10 +13,10 @@ CVIBuffer_Portal::CVIBuffer_Portal(const CVIBuffer_Portal& rhs)
 HRESULT CVIBuffer_Portal::NativeConstruct_Prototype()
 {
 	m_iStride = sizeof(VTXTEX);
-	m_iNumVertices = 362;
+	m_iNumVertices = 92;
 	m_dwFVF = D3DFVF_XYZ | D3DFVF_TEX1;
 	m_ePrimitiveType = D3DPT_TRIANGLEFAN;
-	m_iNumPrimitive = 360;
+	m_iNumPrimitive = 90;
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
@@ -30,10 +30,10 @@ HRESULT CVIBuffer_Portal::NativeConstruct_Prototype()
 	pVertices[0].vPosition = _float3(0.f, 0.f, 0.f);
 	pVertices[0].vTexUV = _float2(0.5f, 0.5f);
 
-	for (int i = 0; i < 361; ++i)
+	for (int i = 0; i < 91; ++i)
 	{
-		pVertices[i].vPosition = _float3(radiusX * cosf(D3DXToRadian(-i)), radiusY * sinf(D3DXToRadian(-i)), 0.f);
-		pVertices[i].vTexUV = _float2((cosf(D3DXToRadian(i)) - 1.f) * 0.5f, (sinf(D3DXToRadian(i)) - 1.f) * 0.5f);
+		pVertices[i].vPosition = _float3(radiusX * cosf(D3DXToRadian(-i * 4)), radiusY * sinf(D3DXToRadian(-i * 4)), 0.f);
+		pVertices[i].vTexUV = _float2((cosf(D3DXToRadian(i * 4)) - 1.f) * 0.5f, (sinf(D3DXToRadian(i * 4)) - 1.f) * 0.5f);
 	}
 
 	m_pVB->Unlock();

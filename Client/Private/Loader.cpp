@@ -60,9 +60,6 @@ unsigned int APIENTRY ThreadFunction(void* pArg)
 	case LEVEL_STAGETWO:
 		pLoader->Loading_ForStageTwo();
 		break;
-	case LEVEL_STAGETHREE:
-		pLoader->Loading_ForStageThree();
-		break;
 	}	
 
 	LeaveCriticalSection(&pLoader->Get_CS());	

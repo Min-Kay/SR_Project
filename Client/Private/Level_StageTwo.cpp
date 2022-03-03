@@ -195,6 +195,8 @@ HRESULT CLevel_StageTwo::Ready_Layer_Monster(const _tchar* pLayerTag)
 	bazier->Set_Pos(_float3(0.f, 10.f, 0.f), _float3(-5.f, 20.f, 0.f), _float3(-15.f, 0.f, 0.f));
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
 }
 
 HRESULT CLevel_StageTwo::Ready_Layer_Map()

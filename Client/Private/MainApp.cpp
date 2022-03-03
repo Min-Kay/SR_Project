@@ -111,7 +111,6 @@ HRESULT CMainApp::OpenLevel(LEVEL eLevelID)
 		break;
 	case LEVEL_STAGEONE: /* 바로 로딩레벨로 선할당. 로딩레벨안에서 로딩이 끝나면 게임플레이로 할당들어간다. */
 	case LEVEL_STAGETWO:
-	case LEVEL_STAGETHREE:
 		pLevel = CLevel_Loading::Create(m_pGraphic_Device, eLevelID);		
 		eLevelID = LEVEL_LOADING;
 		g_CurrLevel = eLevelID;

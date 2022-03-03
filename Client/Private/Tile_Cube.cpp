@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Door_left.h"
 #include "Door_right.h"
+#include "Player.h"
 
 CTile_Cube::CTile_Cube(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -124,7 +125,7 @@ HRESULT CTile_Cube::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CTile_Cube::Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag)
+_bool CTile_Cube::Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag)
 {
 	if (nullptr == m_pBoxColliderCom)
 	{
@@ -133,29 +134,26 @@ HRESULT CTile_Cube::Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTa
 	}
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	list<CGameObject*> collList = pGameInstance->Get_Collision_List(m_pBoxColliderCom);
 
-	for (auto& obj : collList)
+	if (!m_PlayerCollider)
+		m_PlayerCollider = static_cast<CBoxCollider*>(pGameInstance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player"))->Get_Component(COM_COLLIDER));
+
+
+	if(pGameInstance->Get_Collide(m_pBoxColliderCom, m_PlayerCollider))
 	{
-		if (obj->Get_Type() == OBJ_PLAYER)
-		{
-			m_bOpen = true;
+		static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag))->Set_Open(true);
+		static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag))->Set_Open(true);
 
-			CDoor_left* Left_door = static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag));
-			Left_door->Open(m_bOpen);
-
-
-			CDoor_right* Right_door = static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag));
-			Right_door->Open(m_bOpen);
-		}
+		RELEASE_INSTANCE(CGameInstance);
+		return true;
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	return S_OK;
+	return false;
 }
 
-HRESULT CTile_Cube::Close_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag)
+_bool CTile_Cube::Close_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag)
 {
 	if (nullptr == m_pBoxColliderCom)
 	{
@@ -164,26 +162,24 @@ HRESULT CTile_Cube::Close_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerT
 	}
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	list<CGameObject*> collList = pGameInstance->Get_Collision_List(m_pBoxColliderCom);
 
-	for (auto& obj : collList)
+	if(!m_PlayerCollider)
+		m_PlayerCollider = static_cast<CBoxCollider*>(pGameInstance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player"))->Get_Component(COM_COLLIDER));
+
+
+	if (pGameInstance->Get_Collide(m_pBoxColliderCom, m_PlayerCollider))
 	{
-		if (obj->Get_Type() == OBJ_PLAYER)
-		{
-			m_bOpen = true;
+		static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag))->Set_Close(true);
 
-			CDoor_left* Left_door = static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag));
-			Left_door->Close(m_bOpen);
+		static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag))->Set_Close(true);
 
-
-			CDoor_right* Right_door = static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag));
-			Right_door->Close(m_bOpen);
-		}
+		RELEASE_INSTANCE(CGameInstance);
+		return true;
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	return S_OK;
+	return false;
 }
 
 

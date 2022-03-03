@@ -26,8 +26,8 @@ public:
 	{
 		m_iTextureIndex = _iTextureIndex;
 	}
-	HRESULT Open(_bool& IsOpen);
-	HRESULT Close(_bool& IsClose);
+	HRESULT Open(_bool IsOpen);
+	HRESULT Close(_bool IsClose);
 	
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
@@ -36,6 +36,8 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Set_Open(_bool _bool) { m_Open = _bool; }
+	void Set_Close(_bool _bool) { m_Close = _bool; }
 private:
 	/* ÅØ½ºÃÄ */
 	CTexture*				m_pTextureCom = nullptr;
@@ -56,6 +58,11 @@ private:
 	_uint		 m_iTextureIndex = 0;
 	_float		 m_Count = 0;
 	const _float m_MaxCount = 1;
+
+
+	_bool		m_Open = false;
+	_bool		m_Close = false;
+
 
 private:
 	HRESULT SetUp_Components();

@@ -28,8 +28,8 @@ HRESULT CLevel_StageOne::NativeConstruct()
 	if (FAILED(Ready_Layer_Map()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_Second_Entrance()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Second_Entrance()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster_Map()))
 		return E_FAIL;
@@ -42,6 +42,12 @@ HRESULT CLevel_StageOne::NativeConstruct()
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Next_Stage()))
+	{
+		MSGBOX("Failed to Ready_Layer_Next_Stage in CLevel_StageOne");
+		return E_FAIL;
+	}
 
 	SetWindowText(g_hWnd, TEXT("PORTAL_STAGE1"));
 
@@ -68,30 +74,34 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	/*if (FAILED(Open_Exit()))
+	if(!m_Open_1)
 	{
-		MSGBOX("Failed to Open_Exit in CLevel_StageOne");
-		return E_FAIL;
+		if (FAILED(Open_Exit()))
+		{
+			MSGBOX("Failed to Open_Exit in CLevel_StageOne");
+			return E_FAIL;
+		}
 	}
 
-	if (FAILED(Close_Exit_Open_Door2()))
+	if(m_Open_1 && !m_Open_2)
 	{
-		MSGBOX("Failed to Close_Exit_Open_Door2 in CLevel_StageOne");
-		return E_FAIL;
-	}
-	
-	if (FAILED(Open_Exit2()))
-	{
-		MSGBOX("Failed to Open_Exit2 in CLevel_StageOne");
-		return E_FAIL;
+		if (FAILED(Close_Exit_Open_Door2()))
+		{
+			MSGBOX("Failed to Close_Exit_Open_Door2 in CLevel_StageOne");
+			return E_FAIL;
+		}
 	}
 
-	if (FAILED(Ready_Layer_Next_Stage()))
+	if(m_Open_2 && !m_Open_3)
 	{
-		MSGBOX("Failed to Ready_Layer_Next_Stage in CLevel_StageOne");
-		return E_FAIL;
-	}*/
-		
+		if (FAILED(Open_Exit2()))
+		{
+			MSGBOX("Failed to Open_Exit2 in CLevel_StageOne");
+			return E_FAIL;
+		}
+	}
+
+
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
 	if(p_instance->Get_Key_Down(DIK_0))
@@ -141,6 +151,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fAspect = _float(g_iWinCX) / g_iWinCY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 300.f;
+	CameraDesc.iImportance = 0;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
@@ -249,8 +260,6 @@ HRESULT CLevel_StageOne::Ready_Layer_Player(const _tchar * pLayerTag)
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
-
-
 
 	CTransform* tr = static_cast<CTransform*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, pLayerTag, 0)->Get_Component(COM_TRANSFORM));
 
@@ -1366,6 +1375,9 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 	}
 
+	m_EventCube1 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"), 0));
+	m_EventCube2 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Door_Switch"), 0));
+	m_EventCube3 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Exit2_Switch"), 0));
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -1479,9 +1491,7 @@ HRESULT CLevel_StageOne::Open_Exit()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"), 0);
-
-	static_cast<CTile_Cube*>(Switch)->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
+	m_Open_1 = m_EventCube1->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -1492,10 +1502,8 @@ HRESULT CLevel_StageOne::Close_Exit_Open_Door2()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Door_Switch"), 0);
-
-	static_cast<CTile_Cube*>(Switch)->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Entrance"), TEXT("Layer_Second_Right_Entrance"));
-	static_cast<CTile_Cube*>(Switch)->Close_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
+	m_Open_2 = m_EventCube2->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Entrance"), TEXT("Layer_Second_Right_Entrance"));
+	m_EventCube2->Close_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -1506,9 +1514,7 @@ HRESULT CLevel_StageOne::Open_Exit2()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Exit2_Switch"), 0);
-
-	static_cast<CTile_Cube*>(Switch)->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Exit"), TEXT("Layer_Second_Right_Exit"));
+	m_Open_3 = m_EventCube3->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Exit"), TEXT("Layer_Second_Right_Exit"));
 
 	RELEASE_INSTANCE(CGameInstance);
 

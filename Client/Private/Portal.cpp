@@ -123,7 +123,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     ZeroMemory(&camDesc,sizeof(CCamera::CAMERADESC));
 
     camDesc.fAspect = 3/(4.f);
-    camDesc.fFar = 200.f;
+    camDesc.fFar = 100.f;
     camDesc.fNear = 0.1f;
     camDesc.fFovy = D3DXToRadian(30.f);
     camDesc.iLevel = portalDesc.iLevel;
@@ -132,7 +132,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     _float3 nor = portalDesc.vAt - portalDesc.vEye;
     D3DXVec3Normalize(&nor,&nor);
     camDesc.vAt = portalDesc.vEye - nor;
-
+    camDesc.iImportance = portalDesc.iPortalColor + 1;
  
     tag = portalDesc.portalCam;
 
@@ -220,15 +220,15 @@ void CPortal::Link_Portal(CPortal* opponent)
         return;
     }
 
+    Collide_Added = true;
+    CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+    p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_Collider);
+    RELEASE_INSTANCE(CGameInstance);
     m_pCam_Portal->Set_ExitPortal(m_pOpponent);
 }
 
 CPortal* CPortal::Get_Link_Portal()
 {
-    Collide_Added = true;
-    CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-    p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC,m_Collider);
-    RELEASE_INSTANCE(CGameInstance);
     return m_pOpponent;
 }
 
@@ -251,11 +251,17 @@ void CPortal::Portaling()
         return;
 
     CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-    list<CGameObject*> collList = p_instance->Get_Collision_List(m_Collider);
+    list<CGameObject*> collList = p_instance->Get_Collision_Object_List(m_Collider);
+
+    if (collList.empty())
+    {
+        RELEASE_INSTANCE(CGameInstance);
+        return;
+    }
 
     for (auto& obj : collList)
     {
-        if (obj->Get_Type() >= OBJ_END || obj->Get_Type() <= OBJ_NONE || obj->Get_Type() == OBJ_STATIC || obj == m_pOpponent)
+        if (obj->Get_Type() == OBJ_STATIC || obj == m_pOpponent)
             continue;
 
         CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
@@ -265,10 +271,7 @@ void CPortal::Portaling()
         _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
         D3DXVec3Normalize(&vOpLook, &vOpLook);
 		objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * 1.5f);
-
-        objTr->Set_OnCollide(false);
-
-        objTr->Add_Velocity(objTr->Get_Velocity());
+        objTr->Add_Velocity(objTr->Get_Velocity() * 0.5f);
         objTr->Set_Force(-vOpLook);
 
 	    //if (obj->Get_Type() == OBJ_PLAYER)

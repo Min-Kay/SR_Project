@@ -113,14 +113,9 @@ _int CCam_Portal::Tick(_float fTimeDelta)
 
 _int CCam_Portal::LateTick(_float fTimeDelta)
 {
-    if (nullptr == m_ExitPortal)
+    if (m_ExitPortal)
     {
-        __super::Set_Vaild(false);
-    }
-    else
-    {
-        m_pRender->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-        __super::Set_Vaild(true);
+       m_pRender->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
     }
 
     return _int();
@@ -128,17 +123,13 @@ _int CCam_Portal::LateTick(_float fTimeDelta)
 
 HRESULT CCam_Portal::Render()
 {
-    if (__super::Get_Vaild())
-    {
+    if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
+        return E_FAIL;
 
-        if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
-            return E_FAIL;
+    if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+        return E_FAIL;
 
-        if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-            return E_FAIL;
-
-        m_pVIBuffer->Render();
-    }
+    m_pVIBuffer->Render();
 
     return S_OK;
 }
@@ -198,10 +189,12 @@ HRESULT CCam_Portal::Set_Cam_Angle(CTransform* portal, CTransform* target)
 
 void CCam_Portal::Set_ExitPortal(CPortal* _exit)
 {
-    if(nullptr == _exit)
+    if(!_exit)
+    {
+        __super::Set_Vaild(false);
         m_ExitPortal = nullptr;
-    
-    if (nullptr != _exit)
+    }
+    else if (_exit)
     {
         m_ExitPortal = _exit->Get_Cam_Portal();
 
@@ -224,6 +217,7 @@ void CCam_Portal::Set_ExitPortal(CPortal* _exit)
       D3DXVec3Normalize(&vLook,&vLook);
 
        m_pRenderTransform->Set_State (CTransform::STATE_POSITION, opponent->Get_State(CTransform::STATE_POSITION) - vLook * 0.01f );
+        __super::Set_Vaild(true);
     }
 }
 

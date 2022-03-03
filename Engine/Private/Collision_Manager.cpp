@@ -10,6 +10,13 @@ CCollision_Manager::CCollision_Manager()
 {
 }
 
+_bool CCollision_Manager::Get_Collide(CBoxCollider* _from, CBoxCollider* _to)
+{
+	if (AABB(_from, _to, true))
+		return true;
+	return false;
+}
+
 list<CGameObject*> CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 {
 	list<CGameObject*> collList;
@@ -31,7 +38,25 @@ list<CGameObject*> CCollision_Manager::Get_Collision_List(CBoxCollider* target)
 	return collList;
 }
 
-list<CCollision_Manager::COLLPOINT> CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
+list<CGameObject*> CCollision_Manager::Get_Collision_Object_List(CBoxCollider* target)
+{
+	list<CGameObject*> collList;
+
+	for (auto& cl : m_CollList[COLLOBJTYPE_OBJ])
+	{
+		if (cl == target)
+			continue;
+
+		if (AABB(target, cl, true))
+		{
+			collList.push_back(cl->Get_Parent());
+		}
+	}
+
+	return collList;
+}
+
+list<CCollision_Manager::COLLPOINT> CCollision_Manager::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis, _bool _sort)
 {
 	list<COLLPOINT> colllist;// = new list<COLLPOINT>;
 
@@ -54,12 +79,51 @@ list<CCollision_Manager::COLLPOINT> CCollision_Manager::Get_Ray_Collision_List(_
 		}
 	}
 
-	colllist.sort([pos](COLLPOINT a, COLLPOINT b)->bool
-		{
-			return D3DXVec3Length(&(pos - a.Point)) < D3DXVec3Length(&(pos - b.Point));
-		});
+	if(_sort)
+	{
+		colllist.sort([pos](COLLPOINT a, COLLPOINT b)->bool
+			{
+				return D3DXVec3Length(&(pos - a.Point)) < D3DXVec3Length(&(pos - b.Point));
+			});
+	}
 
 	return colllist;
+}
+
+CCollision_Manager::COLLPOINT* CCollision_Manager::Get_Ray_Collision_Object(_float3 dir, _float3 pos, _float dis, _bool _sort)
+{
+	list<COLLPOINT> colllist;// = new list<COLLPOINT>;
+
+	for (auto& cl : m_CollList)
+	{
+		for (auto& coll : cl)
+		{
+			if (coll->Get_CollStyle() == CCollider::COLLSTYLE_TRIGGER)
+				continue;
+
+			_float3 point, nor;
+			if (RayCollision(dir, pos, coll, dis, point, nor))
+			{
+				COLLPOINT cp;
+				cp.CollObj = coll->Get_Parent();
+				cp.Point = point;
+				cp.NormalVec = nor;
+				colllist.push_back(cp);
+			}
+		}
+	}
+
+	if (_sort)
+	{
+		colllist.sort([pos](COLLPOINT a, COLLPOINT b)->bool
+			{
+				return D3DXVec3Length(&(pos - a.Point)) < D3DXVec3Length(&(pos - b.Point));
+			});
+	}
+
+	if (colllist.empty())
+		return nullptr;
+	return &colllist.front();
 }
 
 HRESULT CCollision_Manager::Check_DeadCollider()
@@ -170,7 +234,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 		vHalfScale[0] = vScale.x;
 		vHalfScale[1] = vScale.y;
-		vHalfScale[2] = vScale.z ;
+		vHalfScale[2] = vScale.z;
 
 		_float3 myPos = myTr->Get_State(CTransform::STATE_POSITION);
 
@@ -179,7 +243,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 			_float3 point, nor;
 			_float refelctScale;
 
-			if(RayCollision(m_Dir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
+			if(RayCollision(m_Dir[i], myPos, _OtherCollider, vHalfScale[i] + 0.1f, point, nor))
 			{
 				refelctScale = vHalfScale[i] - D3DXVec3Length(&(myPos - point));
 				_MyCollider->Set_OnCollide(true);
@@ -188,7 +252,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 				return true;
 			}
 
-			if (RayCollision(-m_Dir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
+			if (RayCollision(-m_Dir[i], myPos, _OtherCollider, vHalfScale[i] + 0.1f, point, nor))
 			{
 				refelctScale = vHalfScale[i] - D3DXVec3Length(&(myPos - point));
 				_MyCollider->Set_OnCollide(true);

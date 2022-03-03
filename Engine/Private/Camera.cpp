@@ -56,10 +56,7 @@ HRESULT CCamera::BeforeRender()
 	if (FAILED(m_pGraphic_Device->SetTransform(D3DTS_VIEW, &m_pTransform->Get_WorldMatrixInverse())))
 		return E_FAIL;
 
-	_float4x4		ProjMatrix;
-
 	D3DXMatrixPerspectiveFovLH(&ProjMatrix, m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
-
 
 	if (FAILED(m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &ProjMatrix)))
 		return E_FAIL;

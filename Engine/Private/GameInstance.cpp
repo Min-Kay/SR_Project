@@ -10,8 +10,8 @@ CGameInstance::CGameInstance()
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pCamera_Manager(CCamera_Manager::GetInstance())
 	, m_pPicking(CPicking::GetInstance())
-	, m_Sound_Manager(CSoundMgr::GetInstance())
-	, m_Collision_Manager(CCollision_Manager::GetInstance())
+	, m_pSound_Manager(CSoundMgr::GetInstance())
+	, m_pCollision_Manager(CCollision_Manager::GetInstance())
 
 {
 	Safe_AddRef(m_pPicking);
@@ -22,8 +22,8 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pCamera_Manager);
-	Safe_AddRef(m_Sound_Manager);
-	Safe_AddRef(m_Collision_Manager);
+	Safe_AddRef(m_pSound_Manager);
+	Safe_AddRef(m_pCollision_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Device::GRAPHICDESC & GraphicDesc, _uint iNumLevels, LPDIRECT3DDEVICE9* ppOut)
@@ -50,7 +50,7 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, const CGraphic_Dev
 	if (FAILED(m_pPicking->NativeConstruct(*ppOut, GraphicDesc.hWnd)))
 		return E_FAIL;
 
-	if (FAILED(m_Sound_Manager->NativeConstruct()))
+	if (FAILED(m_pSound_Manager->NativeConstruct()))
 		return E_FAIL;
 
 	return S_OK;
@@ -85,10 +85,10 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 		return -1;
 
 
-	if (FAILED(m_Collision_Manager->Check_DeadCollider()))
+	if (FAILED(m_pCollision_Manager->Check_DeadCollider()))
 		return -1;
 
-	if (FAILED(m_Collision_Manager->Collision()))
+	if (FAILED(m_pCollision_Manager->Collision()))
 		return -1;
 
 	m_pInput_Device->Tick_KeyState();
@@ -173,7 +173,7 @@ HRESULT CGameInstance::OpenLevel(_uint iLevelIndex, CLevel * pNextLevel, _bool _
 		return E_FAIL;
 
 	if (_colliderClear)
-		m_Collision_Manager->Release_ColliderList();
+		m_pCollision_Manager->Release_ColliderList();
 
 	return m_pLevel_Manager->OpenLevel(iLevelIndex, pNextLevel);	
 }
@@ -311,23 +311,16 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 	if (nullptr == renderer)
 		return E_FAIL;
 
-	map<const _tchar*, CCamera*> camList = *m_pCamera_Manager->GetCameraList();
-
-	for (auto& cam : camList)
+	for (auto& cam : *m_pCamera_Manager->GetCameraList())
 	{
 		if (!cam.second->Get_Vaild())
 			continue;
 
-		if (FAILED(cam.second->BeforeRender()))
-			return E_FAIL;
-
+		cam.second->BeforeRender();
 		Render_Begin();
 		renderer->Render(cam.second->Get_Exception());
-		Render_Level();
-		Render_End(cam.second->Get_Handle());
-
-		if (FAILED(cam.second->AfterRender()))
-			return E_FAIL;
+		Render_End(nullptr);
+		cam.second->AfterRender();
 	}
 
 	renderer->Clear_RenderObjects();
@@ -357,112 +350,130 @@ CCamera* CGameInstance::Find_Camera_Object(const _tchar* _ObjTag)
 
 int CGameInstance::VolumeUp(CSoundMgr::CHANNELID eID, _float _vol)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return 0;
 
-	return m_Sound_Manager->VolumeUp(eID,_vol);
+	return m_pSound_Manager->VolumeUp(eID,_vol);
 }
 
 int CGameInstance::VolumeDown(CSoundMgr::CHANNELID eID, _float _vol)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return 0;
 
-	return m_Sound_Manager->VolumeDown(eID, _vol);
+	return m_pSound_Manager->VolumeDown(eID, _vol);
 }
 
 int CGameInstance::BGMVolumeUp(_float _vol)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return 0;
 
-	return m_Sound_Manager->BGMVolumeUp(_vol);
+	return m_pSound_Manager->BGMVolumeUp(_vol);
 }
 
 int CGameInstance::BGMVolumeDown(_float _vol)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return 0;
 
-	return m_Sound_Manager->BGMVolumeDown(_vol);
+	return m_pSound_Manager->BGMVolumeDown(_vol);
 }
 
 int CGameInstance::Pause(CSoundMgr::CHANNELID eID)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return 0;
 
-	return m_Sound_Manager->Pause(eID);
+	return m_pSound_Manager->Pause(eID);
 }
 
 void CGameInstance::Play_Sound(TCHAR* pSoundKey, CSoundMgr::CHANNELID eID, _float _vol)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return;
 
-	return m_Sound_Manager->Play_Sound(pSoundKey,eID,_vol);
+	return m_pSound_Manager->Play_Sound(pSoundKey,eID,_vol);
 }
 
 void CGameInstance::PlayBGM(TCHAR* pSoundKey)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return;
 
-	return m_Sound_Manager->PlayBGM(pSoundKey);
+	return m_pSound_Manager->PlayBGM(pSoundKey);
 }
 
 void CGameInstance::StopSound(CSoundMgr::CHANNELID eID)
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return;
 
-	return m_Sound_Manager->StopSound(eID);
+	return m_pSound_Manager->StopSound(eID);
 }
 
 void CGameInstance::StopAll()
 {
-	if (nullptr == m_Sound_Manager)
+	if (nullptr == m_pSound_Manager)
 		return;
 
-	return m_Sound_Manager->StopAll();
+	return m_pSound_Manager->StopAll();
+}
+
+_bool CGameInstance::Get_Collide(CBoxCollider* _from, CBoxCollider* _to)
+{
+	if (nullptr == m_pCollision_Manager)
+		return false;
+	return m_pCollision_Manager->Get_Collide(_from, _to);
+}
+
+list<CGameObject*> CGameInstance::Get_Collision_Object_List(CBoxCollider* target)
+{
+	return m_pCollision_Manager->Get_Collision_Object_List(target);
+}
+
+CCollision_Manager::COLLPOINT* CGameInstance::Get_Ray_Collision_Object(_float3 dir, _float3 pos, _float dis,
+	_bool _sort)
+{
+	return m_pCollision_Manager->Get_Ray_Collision_Object(dir, pos,dis,_sort);
 }
 
 HRESULT CGameInstance::Add_Collider(CCollision_Manager::COLLOBJTYPE _type, CBoxCollider* collider)
 {
-	if (nullptr == m_Collision_Manager)
+	if (nullptr == m_pCollision_Manager)
 	{
 		MSGBOX("Empty m_pCollision_Manager in CGameInstance");
 		return E_FAIL;
 	}
 
-	return m_Collision_Manager->Add_Collider(_type, collider);
+	return m_pCollision_Manager->Add_Collider(_type, collider);
 }
 
 HRESULT CGameInstance::Release_Collider(CCollision_Manager::COLLOBJTYPE _type, CBoxCollider* collider)
 {
-	if (nullptr == m_Collision_Manager)
+	if (nullptr == m_pCollision_Manager)
 		return E_FAIL;
 
-	return m_Collision_Manager->Release_Collider(_type,collider);
+	return m_pCollision_Manager->Release_Collider(_type,collider);
 
 }
 
 HRESULT CGameInstance::Release_ColliderList()
 {
-	if (nullptr == m_Collision_Manager)
+	if (nullptr == m_pCollision_Manager)
 		return E_FAIL;
 
-	return m_Collision_Manager->Release_ColliderList();
+	return m_pCollision_Manager->Release_ColliderList();
 }
 
 list<CGameObject*> CGameInstance::Get_Collision_List(CBoxCollider* target)
 {
-	return m_Collision_Manager->Get_Collision_List(target);
+	return m_pCollision_Manager->Get_Collision_List(target);
 }
 
-list<CCollision_Manager::COLLPOINT> CGameInstance::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis)
+list<CCollision_Manager::COLLPOINT> CGameInstance::Get_Ray_Collision_List(_float3 dir, _float3 pos, _float dis, _bool _sort)
 {
-	return m_Collision_Manager->Get_Ray_Collision_List(dir, pos, dis);
+	return m_pCollision_Manager->Get_Ray_Collision_List(dir, pos, dis, _sort);
 }
 
 
@@ -471,17 +482,20 @@ void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 	if (setting == true)
 	{
 		ShowCursor(true);
+
 		ClipCursor(NULL);
 	}
 	else
 	{
+		ShowCursor(false);
+
 		RECT rc;
 		GetWindowRect(_hwnd,&rc);
 		rc.top = rc.top + GetSystemMetrics(SM_CYCAPTION) + 10;
 		rc.left = rc.left + 10;
 		rc.right = rc.right - 10;
 		rc.bottom = rc.bottom - 10;
-		ShowCursor(false);
+
 		ClipCursor(&rc);
 	}
 	
@@ -527,11 +541,11 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
-	Safe_Release(m_Sound_Manager);
+	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
-	Safe_Release(m_Collision_Manager);
+	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pInput_Device);

@@ -48,9 +48,9 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 
 	_float randomPos[3];
 
-	randomPos[0] = spread(ranX);
-	randomPos[1] = spread(ranY);
-	randomPos[2] = spread(ranZ);
+	randomPos[0] = (_float)spread(ranX);
+	randomPos[1] = (_float)spread(ranY);
+	randomPos[2] = (_float)spread(ranZ);
 
 	m_fvecdir = _float3((centerPos.x + randomPos[0]), (centerPos.y + randomPos[1]), (centerPos.z + spread(ranZ))) - centerPos;
 	D3DXVec3Normalize(&m_fvecdir, &m_fvecdir);

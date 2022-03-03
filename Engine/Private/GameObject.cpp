@@ -92,6 +92,27 @@ const CGameObject::OBJTYPE& CGameObject::Get_Type() const
 	return m_Type; 
 }
 
+CGameObject::OBJCULLING CGameObject::Get_CullingInfo()
+{
+	CTransform* tr = static_cast<CTransform*>(Get_Component(COM_TRANSFORM));
+
+	OBJCULLING info;
+	ZeroMemory(&info, sizeof(OBJCULLING));
+
+	if (!tr)
+		return info;
+
+	info.Position = tr->Get_State(CTransform::STATE_POSITION);
+
+	_float3 vScale = tr->Get_Scale();
+	if(vScale.x > vScale.z)
+		info.Radius = vScale.x * 0.5f;
+	else
+		info.Radius = vScale.z * 0.5f;
+
+	return info; 
+}
+
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
 {

@@ -19,6 +19,12 @@ public:
 		OBJ_NONE, OBJ_PLAYER,OBJ_UI,OBJ_ENEMY,OBJ_INTERACTION, OBJ_STATIC, OBJ_END
 	}OBJTYPE;
 
+	typedef struct tagCulling
+	{
+		_float3 Position;
+		_float	Radius;
+	}OBJCULLING;
+
 public:
 	virtual HRESULT NativeConstruct_Prototype();
 	virtual HRESULT NativeConstruct(void* pArg);
@@ -56,6 +62,9 @@ public:
 public:
 	void Set_Type(OBJTYPE _type);
 	const OBJTYPE& Get_Type() const;
+
+public:
+	OBJCULLING Get_CullingInfo(); 
 
 private:
  	_uint				m_Layer = 0;
