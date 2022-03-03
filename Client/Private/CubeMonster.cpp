@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "Renderer.h"
 #include "BoxCollider.h"
+#include "CubeBullet.h"
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
 
@@ -259,7 +260,7 @@ void CCubeMonster::Firing(_float fTimeDelta)
 
 	// 격발 구체 소환
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	CEffect::EFFECTDESC desc;
+	/*CEffect::EFFECTDESC desc;
 	ZeroMemory(&desc,sizeof(CEffect::EFFECTDESC));
 	desc.FrameCount = 27;
 	desc.Alpha = CEffect::EFFECTALPHA_BLEND;
@@ -276,7 +277,16 @@ void CCubeMonster::Firing(_float fTimeDelta)
 		return;
 	}
 
-	static_cast<CBall*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Ball")))->Set_Init(m_pTransform->Get_State(CTransform::STATE_POSITION) + vLook * 2.f, vLook);
+	static_cast<CBall*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Ball")))->Set_Init(m_pTransform->Get_State(CTransform::STATE_POSITION) + vLook * 2.f, vLook);*/
+
+
+	if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("CubeBullet"),TEXT("Prototype_GameObject_CubeBullet"))))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return;
+	}
+
+	static_cast<CCubeBullet*>(p_instance->Get_GameObject_End(g_CurrLevel,TEXT("CubeBullet")))->Set_Init(m_pTransform->Get_State(CTransform::STATE_POSITION) + vLook * 2.f, vLook);
 
 
 	RELEASE_INSTANCE(CGameInstance);

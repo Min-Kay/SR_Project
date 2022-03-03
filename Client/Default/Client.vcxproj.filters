@@ -127,6 +127,9 @@
     <Filter Include="02.GameObjects\Effect\Ball">
       <UniqueIdentifier>{e139cc8e-7a37-4c5c-9840-e955b696d878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Enemy\CubeMonster\CubeBullet">
+      <UniqueIdentifier>{a22bca8e-6d94-407a-9d47-ba70d58f79e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -243,6 +246,9 @@
     <ClInclude Include="..\Public\Ball.h">
       <Filter>02.GameObjects\Effect\Ball</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CubeBullet.h">
+      <Filter>02.GameObjects\Enemy\CubeMonster\CubeBullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -346,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Ball.cpp">
       <Filter>02.GameObjects\Effect\Ball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CubeBullet.cpp">
+      <Filter>02.GameObjects\Enemy\CubeMonster\CubeBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

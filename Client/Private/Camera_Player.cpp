@@ -73,7 +73,7 @@ HRESULT CCamera_Player::NativeConstruct(void* pArg)
     desc.Ref = 70;
     desc.Texture = TEXT("Prototype_Component_Texture_Crosshair");
 
-    if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Crosshair"), PROTO_UI, &desc)))
+    if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Crosshair"), PROTO_UI, &desc)))
         return E_FAIL;
 
     RELEASE_INSTANCE(CGameInstance);
@@ -95,7 +95,7 @@ _int CCamera_Player::Tick(_float fTimeDelta)
 
     if (!m_BackUI)
     {
-        m_BackUI = static_cast<CUI_BackUI*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("BackUI"), 0));
+        m_BackUI = static_cast<CUI_BackUI*>(pGameInstance->Get_GameObject(g_CurrLevel, TEXT("BackUI"), 0));
         if (!m_BackUI)
             return -1;
         m_BackUI->Off_Menu();

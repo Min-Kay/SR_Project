@@ -27,6 +27,7 @@
 #include "Effect_Alert.h"
 #include "Impact.h"
 #include "Tile_Collider.h"
+#include "CubeBullet.h"
 
 #include "Level.h"
 #include "Level_StageOne.h"
@@ -251,6 +252,9 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ball"), CBall::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CubeBullet"), CCubeBullet::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion
 
 	RELEASE_INSTANCE(CGameInstance);
