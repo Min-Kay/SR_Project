@@ -10,7 +10,9 @@
 #include "Tile_Collider.h"
 #include "Door_left.h"
 #include "Door_right.h"
+#include "Level_Loading.h"
 #include "Tile_Cube.h"
+#include "ChangeLevel.h"
 
 CLevel_StageOne::CLevel_StageOne(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLevel(pGraphic_Device)
@@ -41,7 +43,7 @@ HRESULT CLevel_StageOne::NativeConstruct()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	SetWindowText(g_hWnd, TEXT("PORTAL_GAMEPLAY"));
+	SetWindowText(g_hWnd, TEXT("PORTAL_STAGE1"));
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	pInstance->SetMouseMode(false,g_hWnd);
@@ -81,8 +83,19 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 		MSGBOX("Failed to Ready_Layer_Next_Stage in CLevel_StageOne");
 		return E_FAIL;
 	}*/
+		
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
-	
+	if(p_instance->Get_Key_Down(DIK_0))
+	{
+		if (FAILED(p_instance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_STAGETWO))))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return -1;
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 	
 
 	return 0;
@@ -1087,6 +1100,18 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 //		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 //	}
 
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_ChangeLevel"), TEXT("Prototype_GameObject_ChangeLevel"))))
+	return E_FAIL;
+
+	CGameObject* ExitObj = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_ChangeLevel"));
+	CTransform* ExitTrans = static_cast<CTransform*>(ExitObj->Get_Component(COM_TRANSFORM));
+	ExitTrans->Scaled(_float3(2.f, 2.f, 2.f));
+	ExitTrans->Set_State(CTransform::STATE_POSITION, _float3(8.f, 2.f, 8.f));
+
+	CBoxCollider* ExitBox = static_cast<CBoxCollider*>(ExitObj->Get_Component(COM_COLLIDER));
+	ExitBox->Set_State(CBoxCollider::COLL_SIZE, _float3(8.f, 2.f, 8.f));
+	//    box->Set_AdditionalPos(_float3((iWaterZ * 2.5f), -0.5f, (_float)iWaterZ * 2.4f));
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;

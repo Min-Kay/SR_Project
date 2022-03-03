@@ -84,8 +84,7 @@ HRESULT CCamera_Manager::Clear_Camera(_uint _level)
 		if (iter->second->Get_Level() == _level)
 		{
 			Safe_Release(iter->second);
-			m_CameraList.erase(iter);
-			iter = m_CameraList.begin();
+			iter = m_CameraList.erase(iter);
 		}
 		else
 			++iter;

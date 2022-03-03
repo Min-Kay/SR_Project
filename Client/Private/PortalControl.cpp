@@ -209,15 +209,15 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 	if (iIndex == CPortal::PORTAL_ORANGE)
 	{
 		Impact1.Gradation = CImpact::GRADATION_DOWN;
-		Impact1.Color = D3DXCOLOR(1.0, 0.9, 0.0, 0.0);
-		Impact1.ChangeColor = D3DXCOLOR(0.0, 0.05, 0.0, 0.0);
+		Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
+		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0f, 0.0f);
 	}
 
 	else
 	{
 		Impact1.Gradation = CImpact::GRADATION_UP;
-		Impact1.Color = D3DXCOLOR(0.0, 0.1, 0.8, 0.0);
-		Impact1.ChangeColor = D3DXCOLOR(0.0, 0.05, 0.0001, 0.0);
+		Impact1.Color = D3DXCOLOR(0.0f, 0.1f, 0.8f, 0.0f);
+		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0001f, 0.0f);
 	}
 
 	for (int i = 0; i < rand() % 10 + 25; ++i)

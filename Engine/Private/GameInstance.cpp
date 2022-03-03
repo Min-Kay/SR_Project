@@ -131,6 +131,7 @@ HRESULT CGameInstance::Clear_LevelResource(_uint iLevelIndex)
 	if (FAILED(m_pCamera_Manager->Clear_Camera(iLevelIndex)))
 		return E_FAIL;
 
+	
 	return S_OK;
 }
 
@@ -166,10 +167,13 @@ HRESULT CGameInstance::Add_Timer(const _tchar * pTimerTag)
 	return m_pTimer_Manager->Add_Timer(pTimerTag);
 }
 
-HRESULT CGameInstance::OpenLevel(_uint iLevelIndex, CLevel * pNextLevel)
+HRESULT CGameInstance::OpenLevel(_uint iLevelIndex, CLevel * pNextLevel, _bool _colliderClear )
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
+
+	if (_colliderClear)
+		m_Collision_Manager->Release_ColliderList();
 
 	return m_pLevel_Manager->OpenLevel(iLevelIndex, pNextLevel);	
 }

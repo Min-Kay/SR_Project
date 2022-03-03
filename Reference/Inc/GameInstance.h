@@ -38,7 +38,7 @@ public: /* For.Timer_Manager */
 	HRESULT Add_Timer(const _tchar* pTimerTag);
 
 public: /* For.Level_Manager */	
-	HRESULT OpenLevel(_uint iLevelIndex, class CLevel* pNextLevel);
+	HRESULT OpenLevel(_uint iLevelIndex, class CLevel* pNextLevel, _bool _colliderClear = true);
 	HRESULT Render_Level();
 
 public: /* For.Object_Manager */

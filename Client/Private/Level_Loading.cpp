@@ -3,6 +3,7 @@
 #include "Loader.h"
 #include "GameInstance.h"
 #include "Level_StageOne.h"
+#include "Level_StageTwo.h"
 #include "UI.h"
 
 CLevel_Loading::CLevel_Loading(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -54,7 +55,7 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 			break;
 		case LEVEL_STAGETWO:
 			g_CurrLevel = LEVEL_STAGETWO;
-			m_Level = CLevel_StageOne::Create(m_pGraphic_Device);
+			m_Level = CLevel_StageTwo::Create(m_pGraphic_Device);
 
 			break;
 		case LEVEL_STAGETHREE:
@@ -63,7 +64,7 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 
 			break;
 		}
-		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, m_Level)))
+		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, m_Level,false)))
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return E_FAIL;

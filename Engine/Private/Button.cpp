@@ -116,5 +116,4 @@ _bool CButton::OnEnter()
 void CButton::Free()
 {
 	__super::Free();
-	Safe_Release(m_Parent);
 }

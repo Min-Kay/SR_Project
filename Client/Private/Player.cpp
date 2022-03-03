@@ -48,6 +48,9 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 _int CPlayer::Tick(_float fTimeDelta)
 {
+	if (Get_Dead())
+		return 0;
+
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
@@ -70,6 +73,9 @@ _int CPlayer::Tick(_float fTimeDelta)
 
 _int CPlayer::LateTick(_float fTimeDelta)
 {
+	if (Get_Dead())
+		return 0;
+
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
@@ -95,6 +101,10 @@ _int CPlayer::LateTick(_float fTimeDelta)
 
 HRESULT CPlayer::Render()
 {
+
+	if (Get_Dead())
+		return 0;
+
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 

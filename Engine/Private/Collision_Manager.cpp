@@ -56,11 +56,7 @@ list<CCollision_Manager::COLLPOINT> CCollision_Manager::Get_Ray_Collision_List(_
 
 	colllist.sort([pos](COLLPOINT a, COLLPOINT b)->bool
 		{
-			D3DXVECTOR3 dir1 = pos - a.Point;
-
-			D3DXVECTOR3 dir2 = pos - b.Point;
-
-			return D3DXVec3Length(&dir1) < D3DXVec3Length(&dir2);
+			return D3DXVec3Length(&(pos - a.Point)) < D3DXVec3Length(&(pos - b.Point));
 		});
 
 	return colllist;
@@ -107,8 +103,8 @@ HRESULT CCollision_Manager::Collision()
 			if (AABB(pCollider, pCollider2, false) && pCollider2->Get_CollStyle() != CCollider::COLLSTYLE_TRIGGER)
 				isCollide = true;
 		}
-
-		static_cast<CTransform*>(pCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(isCollide);
+		if(!pCollider->Get_Parent())
+			static_cast<CTransform*>(pCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(isCollide);
 		pCollider->Set_OnCollide(isCollide);
 		
 	}
@@ -169,12 +165,6 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 
 		CTransform* myTr = static_cast<CTransform*>(_MyCollider->Get_Parent()->Get_Component(COM_TRANSFORM));
 
-		_float3 vDir[3];
-
-		vDir[0] = _float3(1.f, 0.f, 0.f);
-		vDir[1] = _float3(0.f, 1.f, 0.f);
-		vDir[2] = _float3(0.f,0.f,1.f);
-
 		_float3 vScale = myTr->Get_Scale() * 0.5f;
 		_float vHalfScale[3];
 
@@ -189,20 +179,20 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 			_float3 point, nor;
 			_float refelctScale;
 
-			if(RayCollision(vDir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
+			if(RayCollision(m_Dir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
 			{
 				refelctScale = vHalfScale[i] - D3DXVec3Length(&(myPos - point));
 				_MyCollider->Set_OnCollide(true);
-				_MyCollider->Reflect_Direction(-vDir[i] * refelctScale);
+				_MyCollider->Reflect_Direction(-m_Dir[i] * refelctScale);
 
 				return true;
 			}
 
-			if (RayCollision(-vDir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
+			if (RayCollision(-m_Dir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
 			{
 				refelctScale = vHalfScale[i] - D3DXVec3Length(&(myPos - point));
 				_MyCollider->Set_OnCollide(true);
-				_MyCollider->Reflect_Direction(vDir[i] * refelctScale);
+				_MyCollider->Reflect_Direction(m_Dir[i] * refelctScale);
 
 				return true;
 			}
@@ -221,8 +211,6 @@ _bool CCollision_Manager::RayCollision(_float3 dir, _float3 pos, CBoxCollider* _
 
 	_float3 vOtherMax = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MAX);
 	_float3 vOtherMin = (_OtherCollider)->Get_State(CBoxCollider::COLLIDERINFO::COLL_MIN);
-
-	int index[12][3] = { {1,0,5}, {4,5,0},{2,1,6},{5,6,1},{3,2,7},{6,7,2},{0,3,4},{7,4,3},{5,4,6},{7,6,4},{2,3,1},{0,1,3}};
 
 	vOtherPoint[0] = vOtherMin;
 	vOtherPoint[1] = _float3(vOtherMax.x, vOtherMin.y, vOtherMin.z);

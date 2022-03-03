@@ -37,12 +37,6 @@ _int CLevel_Logo::Tick(_float fTimeDelta)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (pInstance->Get_Key_Down(DIK_ESCAPE))
-	{
-		pInstance->PlayBGM(TEXT("Girl.mp3"));
-	}
-
-
 	if (pInstance->Get_Key_Down(DIK_RETURN))
 	{
 		if (FAILED(pInstance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_STAGEONE))))

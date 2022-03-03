@@ -28,10 +28,10 @@
 #include "Impact.h"
 #include "Tile_Collider.h"
 #include "CubeBullet.h"
+#include "ChangeLevel.h"
 
 #include "Level.h"
 #include "Level_StageOne.h"
-
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -175,6 +175,10 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Door_Right"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Door/Portal_door_right_%d.dds"), 2))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Door_right*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ChangeLevel"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Heal.dds")))))
+		return E_FAIL;
+
 
 #pragma endregion
 
@@ -255,6 +259,10 @@ HRESULT CLoader::Loading_ForStageOne()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CubeBullet"), CCubeBullet::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ChangeLevel"), CChangeLevel::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -267,7 +275,7 @@ HRESULT CLoader::Loading_ForStageOne()
 
 HRESULT CLoader::Loading_ForStageTwo()
 {
-	for (_uint i = 0; i < 9999999999; ++i)
+	for (_uint i = 0; i < 100000000; ++i)
 		int a = 10;
 
 	m_isFinished = true;

@@ -36,7 +36,7 @@ private:
 
 public:
 	void Set_HWND(HWND _hwnd) { m_Hwnd = _hwnd; }
-	void Set_ParentUI(CUI * _parent) { m_Parent = _parent; Safe_AddRef(m_Parent);  }
+	void Set_ParentUI(CUI * _parent) { m_Parent = _parent;}
 
 protected:
 	CUI* m_Parent = nullptr;

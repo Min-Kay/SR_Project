@@ -130,6 +130,9 @@
     <Filter Include="02.GameObjects\Enemy\CubeMonster\CubeBullet">
       <UniqueIdentifier>{a22bca8e-6d94-407a-9d47-ba70d58f79e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Tile\Tile_Cube\ChangeLevel">
+      <UniqueIdentifier>{9b9c7768-110f-4f3c-a8fe-40bd1ec67636}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -249,6 +252,9 @@
     <ClInclude Include="..\Public\CubeBullet.h">
       <Filter>02.GameObjects\Enemy\CubeMonster\CubeBullet</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ChangeLevel.h">
+      <Filter>02.GameObjects\Tile\Tile_Cube\ChangeLevel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -355,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CubeBullet.cpp">
       <Filter>02.GameObjects\Enemy\CubeMonster\CubeBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ChangeLevel.cpp">
+      <Filter>02.GameObjects\Tile\Tile_Cube\ChangeLevel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
