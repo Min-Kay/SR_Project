@@ -38,6 +38,8 @@ private:
 	_float fDoorSizeX = 3.f;
 	_float fDoorSizeY = 3.f;
 
+private:
+	_bool m_setting = false;
 
 public:
 	static CLevel_StageOne* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

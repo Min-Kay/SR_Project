@@ -28,6 +28,14 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 
 _int CLevel_Loading::Tick(_float fTimeDelta)
 {
+	if(!m_setting)
+	{
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->SetMouseMode(true, nullptr);
+		RELEASE_INSTANCE(CGameInstance);
+		m_setting = true;
+	}
+
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 	return 0;

@@ -47,9 +47,10 @@ HRESULT CArm::NativeConstruct(void* pArg)
 
 _int CArm::Tick(_float fTimeDelta)
 {
-	if (Get_Dead())
+	if (Get_Dead() || fTimeDelta <= 0.f)
 		return 0;
 
+	Mode(fTimeDelta);
 	m_Collider->Set_Collider();
 
 	if (0 > __super::Tick(fTimeDelta))
@@ -117,6 +118,7 @@ HRESULT CArm::SetUp_Component()
 
 
 	m_Damage = 10;
+	return S_OK; 
 }
 
 void CArm::Set_Position(_float3 _pos)

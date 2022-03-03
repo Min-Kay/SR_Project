@@ -200,6 +200,7 @@ void CCamera_Player::Control_Menu(_bool _bool)
         m_BackUI->Off_Menu();
         Set_Break(false);
         isCursorOn = false;
+
     }
     else
     {

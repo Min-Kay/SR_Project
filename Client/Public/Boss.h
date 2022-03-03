@@ -22,6 +22,7 @@ protected:
 	virtual ~CBoss() = default;
 
 public:
+	typedef enum tagBossPhase {BOSS_PHASEONE, BOSS_PHASETWO}BOSSPHASE;
 	typedef enum tagBossState {BOSS_IDLE, BOSS_ATTACK, BOSS_DIE}BOSSSTATE;
 	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH, BOSSATT_MIXED }BOSSATTACK;
 
@@ -34,8 +35,12 @@ public:
 	HRESULT SetUp_Component() override;
 
 private:
+	void InitArmPosition(_float fTimeDelta);
+
+private:
 	void State_Machine(_float fTimeDelta);
 	void Idle(_float fTimeDelta);
+	void Phase(_float fTimeDelta);
 	void Attack(_float fTimeDelta);
 	void Die(_float fTimeDelta);
 
@@ -60,6 +65,7 @@ private:
 	// ³»²¨
 
 private:
+	BOSSPHASE m_Phase = BOSS_PHASEONE;
 	BOSSSTATE m_State = BOSS_IDLE;
 
 	BOSSATTACK m_AttState;
@@ -86,4 +92,5 @@ public:
 	CGameObject* Clone(void* pArg) override;
 	void Free() override;
 };
+
 END

@@ -29,6 +29,9 @@ private:
 	class CLoader*		m_pLoader = nullptr;
 	LEVEL				m_eNextLevel = LEVEL_END;
 
+private:
+	_bool				m_setting = false;
+
 public:
 	static CLevel_Loading* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eNextLevel);
 	virtual void Free() override;

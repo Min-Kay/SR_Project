@@ -471,6 +471,9 @@ void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 	if (setting == true)
 	{
 		ShowCursor(true);
+		ShowCursor(true);
+		ShowCursor(true);
+		ShowCursor(true);
 		ClipCursor(NULL);
 	}
 	else
@@ -481,6 +484,10 @@ void CGameInstance::SetMouseMode(_bool setting, HWND _hwnd)
 		rc.left = rc.left + 10;
 		rc.right = rc.right - 10;
 		rc.bottom = rc.bottom - 10;
+		ShowCursor(false);
+		ShowCursor(false);
+		ShowCursor(false);
+		ShowCursor(false);
 		ShowCursor(false);
 		ClipCursor(&rc);
 	}

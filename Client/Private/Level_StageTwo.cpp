@@ -49,6 +49,14 @@ HRESULT CLevel_StageTwo::NativeConstruct()
 
 _int CLevel_StageTwo::Tick(_float fTimeDelta)
 {
+	if(!m_setting)
+	{
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->SetMouseMode(false, g_hWnd);
+		RELEASE_INSTANCE(CGameInstance);
+		m_setting = true; 
+	}
+
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 

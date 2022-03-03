@@ -54,7 +54,7 @@ HRESULT CBoss::NativeConstruct(void* pArg)
 
 _int CBoss::Tick(_float fTimeDelta)
 {
-	if (Get_Dead())
+	if (Get_Dead() || fTimeDelta <= 0.f)
 		return 0;
 
 	if (0 > __super::Tick(fTimeDelta))
@@ -70,7 +70,7 @@ _int CBoss::Tick(_float fTimeDelta)
 
 _int CBoss::LateTick(_float fTimeDelta)
 {
-	if (Get_Dead())
+	if (Get_Dead() )
 		return 0;
 
 	if (0 > __super::LateTick(fTimeDelta))
@@ -121,6 +121,7 @@ HRESULT CBoss::SetUp_Component()
 		return E_FAIL;
 
 	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	D3DXVec3Normalize(&vRight, &vRight);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -136,7 +137,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_LeftArm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm")))));
 	m_LeftArm->Set_Parent(this);
-	m_LeftArm->Set_Position(m_pTransform->Get_State(CTransform::STATE_POSITION) + vRight * 3.f);
+	m_LeftArm->Set_Position(vPos - vRight * 3.f);
 	m_LeftArm->Set_Player(m_pPlayer);
 	m_LeftArmTr = static_cast<CTransform*>(m_LeftArm->Get_Component(COM_TRANSFORM));
 
@@ -149,7 +150,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_RightArm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm")))));
 	m_RightArm->Set_Parent(this);
-	m_RightArm->Set_Position(m_pTransform->Get_State(CTransform::STATE_POSITION) - vRight * 3.f);
+	m_RightArm->Set_Position(vPos + vRight * 3.f);
 	m_RightArm->Set_Player(m_pPlayer);
 	m_RightArmTr = static_cast<CTransform*>(m_RightArm->Get_Component(COM_TRANSFORM));
 
@@ -176,6 +177,19 @@ HRESULT CBoss::SetUp_Component()
 
 }
 
+void CBoss::InitArmPosition(_float fTimeDelta)
+{
+	if (!m_LeftArmTr || !m_RightArmTr)
+		return;
+
+	_float3 pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	_float3 right = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	D3DXVec3Normalize(&right, &right);
+	m_LeftArm->Set_Position(pos - right * 3.f);
+	m_RightArm->Set_Position(pos + right * 3.f);
+
+}
+
 void CBoss::State_Machine(_float fTimeDelta)
 {
 	m_fTimer += fTimeDelta;
@@ -186,7 +200,7 @@ void CBoss::State_Machine(_float fTimeDelta)
 		Idle(fTimeDelta);
 		break;
 	case BOSS_ATTACK:
-		Attack(fTimeDelta);
+		Phase(fTimeDelta);
 		break;
 	case BOSS_DIE:
 		Die(fTimeDelta);
@@ -197,7 +211,23 @@ void CBoss::State_Machine(_float fTimeDelta)
 void CBoss::Idle(_float fTimeDelta)
 {
 	// 멍때리기
+
+	InitArmPosition(fTimeDelta);
 }
+
+void CBoss::Phase(_float fTimeDelta)
+{
+	switch (m_Phase)
+	{
+	case BOSS_PHASEONE:
+		Attack(fTimeDelta);
+		break;
+	case BOSS_PHASETWO:
+		//페이즈 2
+		break;
+	}
+}
+
 
 void CBoss::Attack(_float fTimeDelta)
 {

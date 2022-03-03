@@ -57,6 +57,14 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 	if (0 > fTimeDelta)
 		return 0;
 
+	if (!m_setting)
+	{
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->SetMouseMode(false, g_hWnd);
+		RELEASE_INSTANCE(CGameInstance);
+		m_setting = true;
+	}
+
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 
