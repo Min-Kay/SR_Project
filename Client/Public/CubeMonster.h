@@ -3,6 +3,11 @@
 
 BEGIN(Engine)
 class CEffect;
+class CTransform;
+class CTexture;
+class CRenderer;
+class CVIBuffer_Cube;
+class CBoxCollider;
 END
 
 BEGIN(Client)

@@ -2,14 +2,6 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CTransform;
-class CTexture;
-class CVIBuffer_Cube;
-class CRenderer;
-class CBoxCollider;
-END
-
 
 BEGIN(Client)
 class CEnemy :

@@ -34,7 +34,7 @@ private:
 	CBoxCollider* m_pBoxCollider = nullptr;
 
 
-	_int m_Damage = 5.f;
+	_int m_Damage = 5;
 	_float m_Speed = 2.f;
 
 	_float3 m_Dir;

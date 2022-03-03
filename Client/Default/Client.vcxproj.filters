@@ -133,6 +133,12 @@
     <Filter Include="02.GameObjects\Tile\Tile_Cube\ChangeLevel">
       <UniqueIdentifier>{9b9c7768-110f-4f3c-a8fe-40bd1ec67636}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Enemy\Boss">
+      <UniqueIdentifier>{771f174c-d9d1-47f8-8ebb-5042fa0178b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Enemy\Boss\Arm">
+      <UniqueIdentifier>{bf019402-a202-48cf-9a5e-f910fe2adb51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -231,9 +237,6 @@
     <ClInclude Include="..\Public\Tile.h">
       <Filter>02.GameObjects\Tile</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Enemy.h">
-      <Filter>02.GameObjects\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CubeMonster.h">
       <Filter>02.GameObjects\Enemy\CubeMonster</Filter>
     </ClInclude>
@@ -254,6 +257,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\ChangeLevel.h">
       <Filter>02.GameObjects\Tile\Tile_Cube\ChangeLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Enemy.h">
+      <Filter>02.GameObjects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss.h">
+      <Filter>02.GameObjects\Enemy\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Arm.h">
+      <Filter>02.GameObjects\Enemy\Boss\Arm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -341,9 +353,6 @@
     <ClCompile Include="..\Private\Tile_Cube.cpp">
       <Filter>02.GameObjects\Tile\Tile_Cube</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Enemy.cpp">
-      <Filter>02.GameObjects\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CubeMonster.cpp">
       <Filter>02.GameObjects\Enemy\CubeMonster</Filter>
     </ClCompile>
@@ -364,6 +373,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\ChangeLevel.cpp">
       <Filter>02.GameObjects\Tile\Tile_Cube\ChangeLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Enemy.cpp">
+      <Filter>02.GameObjects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss.cpp">
+      <Filter>02.GameObjects\Enemy\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arm.cpp">
+      <Filter>02.GameObjects\Enemy\Boss\Arm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

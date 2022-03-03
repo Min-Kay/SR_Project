@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "Loader.h"
+
+#include "Arm.h"
 #include "GameInstance.h"
 
 #include "Player.h"
 #include "Portal.h"
 #include "BackGround.h"
 #include "Ball.h"
+#include "Boss.h"
 #include "UI.h"
 #include "Sky.h"
 #include "Cam_Portal.h"
@@ -278,8 +281,14 @@ HRESULT CLoader::Loading_ForStageOne()
 
 HRESULT CLoader::Loading_ForStageTwo()
 {
-	for (_uint i = 0; i < 100000000; ++i)
-		int a = 10;
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Boss"), CBoss::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Arm"), CArm::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_isFinished = true;
 

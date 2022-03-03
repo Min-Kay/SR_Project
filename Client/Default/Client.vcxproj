@@ -157,8 +157,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\Arm.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Ball.h" />
+    <ClInclude Include="..\Public\Boss.h" />
     <ClInclude Include="..\Public\Button_Continue.h" />
     <ClInclude Include="..\Public\Button_Exit.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
@@ -198,8 +200,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Arm.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Ball.cpp" />
+    <ClCompile Include="..\Private\Boss.cpp" />
     <ClCompile Include="..\Private\Button_Continue.cpp" />
     <ClCompile Include="..\Private\Button_Exit.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />

@@ -32,6 +32,9 @@ HRESULT CLevel_StageTwo::NativeConstruct()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -157,6 +160,20 @@ HRESULT CLevel_StageTwo::Ready_Layer_Player(const _tchar * pLayerTag)
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+HRESULT CLevel_StageTwo::Ready_Layer_Monster(const _tchar* pLayerTag)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Boss"), TEXT("Prototype_GameObject_Boss"))))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CLevel_StageTwo::Ready_Layer_Map()
