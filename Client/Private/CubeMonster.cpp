@@ -240,12 +240,23 @@ void CCubeMonster::Charging(_float fTimeDelta)
 	else if (m_ChargingTimer <= -0.5f)
 		isBound = false;
 
-	m_ChargingTimer = isBound ? m_ChargingTimer - fTimeDelta * 20.f : m_ChargingTimer + fTimeDelta * 20.f;
+	m_ChargingTimer = isBound ? m_ChargingTimer - fTimeDelta * 30.f : m_ChargingTimer + fTimeDelta * 30.f;
 
-	m_pTransform->Turn(isBound ? vDir : -vDir, fTimeDelta * 3.f);
+	m_pTransform->Turn(isBound ? vDir : -vDir, fTimeDelta * 5.f);
 
 	if (0.75f <= m_Timer)
 	{
+		_float3 vUp, vRight, vLook, vScale;
+		D3DXVec3Normalize(&vUp,&m_vChargingUp);
+		D3DXVec3Normalize(&vLook, &m_vChargingLook);
+		vRight = *D3DXVec3Cross(&vRight, &vUp, &vLook);
+		vScale = m_pTransform->Get_Scale();
+
+		m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+		m_pTransform->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+		m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+
 		m_Timer = 0.f;
 		m_isFiring = true;
 		m_isCharging = false;
@@ -260,25 +271,6 @@ void CCubeMonster::Firing(_float fTimeDelta)
 
 	// 격발 구체 소환
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	/*CEffect::EFFECTDESC desc;
-	ZeroMemory(&desc,sizeof(CEffect::EFFECTDESC));
-	desc.FrameCount = 27;
-	desc.Alpha = CEffect::EFFECTALPHA_BLEND;
-	desc.AnimateSpeed = 10.f;
-	desc.Bilboard = true;
-	desc.FixY = false;
-	desc.Style = CEffect::EFFECTSTYLE_REPEAT;
-	desc.Texture = TEXT("Prototype_Component_Texture_Ball");
-
-
-	if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Ball"),TEXT("Prototype_GameObject_Ball"),&desc)))
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return;
-	}
-
-	static_cast<CBall*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Ball")))->Set_Init(m_pTransform->Get_State(CTransform::STATE_POSITION) + vLook * 2.f, vLook);*/
-
 
 	if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("CubeBullet"),TEXT("Prototype_GameObject_CubeBullet"))))
 	{
@@ -313,8 +305,8 @@ void CCubeMonster::Rebounding(_float fTimeDelta)
 
 	if(!isBound)
 	{
-		m_pTransform->Set_State(CTransform::STATE_POSITION, myPos - vLook * fTimeDelta * 10.f);
-		if (m_Timer > 0.3f)
+		m_pTransform->Set_State(CTransform::STATE_POSITION, myPos - vLook * fTimeDelta * 30.f);
+		if (m_Timer > 0.2f)
 		{
 			isBound = true;
 			m_Timer = 0.f;
@@ -322,24 +314,25 @@ void CCubeMonster::Rebounding(_float fTimeDelta)
 	}
 	else
 	{
-		m_pTransform->Set_State(CTransform::STATE_POSITION, myPos + vLook * fTimeDelta * 10.f);
-		if (m_Timer > 0.3f)
+		m_pTransform->Set_State(CTransform::STATE_POSITION, myPos + vLook * fTimeDelta * 30.f);
+		if (m_Timer > 0.2f)
 		{
 			m_Timer = 0.f;
 			m_Rebounded = true;
 		}
 	}
 
-	if (length > m_AttackRange && m_Rebounded)
+
+	if(m_Rebounded)
 	{
-		Set_MonsterState(STATE_CHASE);
-		m_Rebounding = false;
+		if(length > m_AttackRange)
+		{
+			Set_MonsterState(STATE_CHASE);
+		}
+
 		m_Rebounded = false;
-	}
-	else if(length < m_AttackRange && m_Rebounded)
-	{
-		m_Rebounded = false;
 		m_Rebounding = false;
+
 	}
 }
 
@@ -430,7 +423,8 @@ void CCubeMonster::Chase_Player(_float fTimeDelta)
 
 	_float3 vDir = playerPos - myPos;
 
-	Target_Turn(vDir, fTimeDelta * 2.f);
+	//Target_Turn(vDir, fTimeDelta * 2.f);
+	m_pTransform->LookAt(playerPos);
 
 	_float length = D3DXVec3Length(&vDir);
 
@@ -457,7 +451,9 @@ void CCubeMonster::Attack(_float fTimeDelta)
 		m_isCharging = true;
 		m_ChargingTimer = 0.25f;
 		m_vChargingLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+		m_vChargingUp = m_pTransform->Get_State(CTransform::STATE_UP);
 		D3DXVec3Normalize(&m_vChargingLook, &m_vChargingLook);
+
 		m_Timer = 0.f;
 	}
 	else if(m_isCharging)

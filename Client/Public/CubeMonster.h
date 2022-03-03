@@ -87,6 +87,7 @@ private:
 private:
 	_bool m_isCharging = false;
 	_float3 m_vChargingLook;
+	_float3 m_vChargingUp;
 	_float m_ChargingTimer = 0.f;
 	_bool isBound = false;
 
