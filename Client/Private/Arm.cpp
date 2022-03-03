@@ -118,6 +118,7 @@ HRESULT CArm::SetUp_Component()
 
 
 	m_Damage = 10;
+
 	return S_OK; 
 }
 

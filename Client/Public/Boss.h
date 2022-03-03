@@ -22,8 +22,8 @@ protected:
 	virtual ~CBoss() = default;
 
 public:
+	typedef enum tagBossState {BOSS_IDLE, BOSS_ATTACK,BOSS_PHASECHANGE, BOSS_DIE}BOSSSTATE;
 	typedef enum tagBossPhase {BOSS_PHASEONE, BOSS_PHASETWO}BOSSPHASE;
-	typedef enum tagBossState {BOSS_IDLE, BOSS_ATTACK, BOSS_DIE}BOSSSTATE;
 	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH, BOSSATT_MIXED }BOSSATTACK;
 
 public:

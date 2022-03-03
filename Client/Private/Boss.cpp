@@ -202,6 +202,8 @@ void CBoss::State_Machine(_float fTimeDelta)
 	case BOSS_ATTACK:
 		Phase(fTimeDelta);
 		break;
+	case BOSS_PHASECHANGE:
+		break; 
 	case BOSS_DIE:
 		Die(fTimeDelta);
 		break;
@@ -259,6 +261,7 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 void CBoss::Attack_Punch(_float fTimeDelta)
 {
 	// ÆÝÄ¡
+
 }
 
 void CBoss::Attack_Mixed(_float fTimeDelta)
