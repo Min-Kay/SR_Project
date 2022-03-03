@@ -44,9 +44,6 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 
 		CLevel* m_Level = nullptr;
 
-		if(FAILED(pGameInstance->Release_ColliderList()))
-			return -1; 
-
 		switch (m_eNextLevel)
 		{
 		case LEVEL_STAGEONE:

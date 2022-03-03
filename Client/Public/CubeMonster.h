@@ -49,6 +49,8 @@ private:
 public:
 	void Target_Turn(_float3 dir, _float fTimeDelta);
 
+private:
+	void Dying(_float fTimeDelta);
 
 public:
 	void Set_InitPos(_float3 _pos);

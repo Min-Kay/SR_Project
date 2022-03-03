@@ -110,7 +110,7 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 		return E_FAIL;
 	Set_Type(OBJ_ENEMY);
 
-	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f,1.f,1.f));
+	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.5f,1.5f,1.5f));
 	m_pBoxCollider->Set_ParentInfo(this);
 	m_pBoxCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
 
@@ -217,6 +217,17 @@ void CCubeMonster::Target_Turn(_float3 dir, _float fTimeDelta)
 	_float3 vAxis = *D3DXVec3Cross(&vAxis, &(m_pTransform->Get_State(CTransform::STATE_LOOK)), &(_float3(dir.x, 0.f, dir.z)));
 
 	m_pTransform->Turn(vAxis, fTimeDelta);
+}
+
+void CCubeMonster::Dying(_float fTimeDelta)
+{
+	m_pTransform->Gravity(1.f, fTimeDelta);
+
+	if(m_pBoxCollider->Get_OnCollide())
+	{
+		m_pBoxCollider->Set_Dead(true);
+		Set_Dead(true);
+	}
 }
 
 void CCubeMonster::Set_InitPos(_float3 _pos)
@@ -329,7 +340,7 @@ void CCubeMonster::Rebounding(_float fTimeDelta)
 		{
 			Set_MonsterState(STATE_CHASE);
 		}
-
+		m_Timer = 0.f;
 		m_Rebounded = false;
 		m_Rebounding = false;
 
@@ -448,13 +459,15 @@ void CCubeMonster::Attack(_float fTimeDelta)
 
 	if (!m_isCharging && !m_isFiring && !m_Rebounding)
 	{
-		m_isCharging = true;
-		m_ChargingTimer = 0.25f;
-		m_vChargingLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
-		m_vChargingUp = m_pTransform->Get_State(CTransform::STATE_UP);
-		D3DXVec3Normalize(&m_vChargingLook, &m_vChargingLook);
-
-		m_Timer = 0.f;
+		if(m_Timer >= 0.5f)
+		{
+			m_ChargingTimer = 0.25f;
+			m_vChargingLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+			m_vChargingUp = m_pTransform->Get_State(CTransform::STATE_UP);
+			D3DXVec3Normalize(&m_vChargingLook, &m_vChargingLook);
+			m_isCharging = true;
+			m_Timer = 0.f;
+		}
 	}
 	else if(m_isCharging)
 	{
@@ -467,6 +480,7 @@ void CCubeMonster::Attack(_float fTimeDelta)
 	else if(m_Rebounding)
 	{
 		Rebounding(fTimeDelta);
+
 	}
 }
 
@@ -480,7 +494,7 @@ void CCubeMonster::Idle(_float fTimeDelta)
 
 	if (m_SearchRange >= D3DXVec3Length(&(myPos - playerPos)))
 	{
-		m_State = STATE_ALERT;
+		Set_MonsterState(STATE_ALERT);
 		return;
 	}
 
@@ -493,7 +507,7 @@ void CCubeMonster::Idle(_float fTimeDelta)
 		m_Timer = 0.f;
 		if (rand() % 2 != 0)
 		{
-			Set_MonsterState(STATE_CHASE);
+			Set_MonsterState(STATE_SEARCH);
 			m_MovePoint = _float3(m_InitPoint.x + rand() % 10, m_InitPoint.x + rand() % 10, m_InitPoint.x + rand() % 10);
 		}
 	}
@@ -523,8 +537,7 @@ void CCubeMonster::State_Machine(_float fTimeDelta)
 		Attack(fTimeDelta);
 		break; 
 	case STATE_DIE:
-		m_pBoxCollider->Set_Dead(true);
-		Set_Dead(true);
+		Dying(fTimeDelta);
 		break;
 	}
 }
