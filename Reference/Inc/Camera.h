@@ -14,7 +14,6 @@ public:
 		_float		fFovy, fAspect, fNear, fFar;
 		CTransform::TRANSFORMDESC TransformDesc;
 		_uint		iLevel;
-		_uint		iImportance;
 	}CAMERADESC;
 protected:
 	explicit CCamera(LPDIRECT3DDEVICE9 pGraphic_Device);

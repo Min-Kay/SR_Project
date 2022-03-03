@@ -13,6 +13,7 @@
 #include "Level_Loading.h"
 #include "Tile_Cube.h"
 #include "ChangeLevel.h"
+#include "Impact.h"
 
 CLevel_StageOne::CLevel_StageOne(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLevel(pGraphic_Device)
@@ -25,8 +26,8 @@ HRESULT CLevel_StageOne::NativeConstruct()
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Map()))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Map()))
+		//return E_FAIL;
 
 	if (FAILED(Ready_Layer_Second_Entrance()))
 		return E_FAIL;
@@ -74,32 +75,32 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	if(!m_Open_1)
-	{
-		if (FAILED(Open_Exit()))
-		{
-			MSGBOX("Failed to Open_Exit in CLevel_StageOne");
-			return E_FAIL;
-		}
-	}
+	//if(!m_Open_1)
+	//{
+	//	if (FAILED(Open_Exit()))
+	//	{
+	//		MSGBOX("Failed to Open_Exit in CLevel_StageOne");
+	//		return E_FAIL;
+	//	}
+	//}
 
-	if(m_Open_1 && !m_Open_2)
-	{
-		if (FAILED(Close_Exit_Open_Door2()))
-		{
-			MSGBOX("Failed to Close_Exit_Open_Door2 in CLevel_StageOne");
-			return E_FAIL;
-		}
-	}
+	//if(m_Open_1 && !m_Open_2)
+	//{
+	//	if (FAILED(Close_Exit_Open_Door2()))
+	//	{
+	//		MSGBOX("Failed to Close_Exit_Open_Door2 in CLevel_StageOne");
+	//		return E_FAIL;
+	//	}
+	//}
 
-	if(m_Open_2 && !m_Open_3)
-	{
-		if (FAILED(Open_Exit2()))
-		{
-			MSGBOX("Failed to Open_Exit2 in CLevel_StageOne");
-			return E_FAIL;
-		}
-	}
+	//if(m_Open_2 && !m_Open_3)
+	//{
+	//	if (FAILED(Open_Exit2()))
+	//	{
+	//		MSGBOX("Failed to Open_Exit2 in CLevel_StageOne");
+	//		return E_FAIL;
+	//	}
+	//}
 
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -151,7 +152,6 @@ HRESULT CLevel_StageOne::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fAspect = _float(g_iWinCX) / g_iWinCY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 300.f;
-	CameraDesc.iImportance = 0;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);

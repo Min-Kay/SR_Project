@@ -211,7 +211,7 @@ void CTransform::Add_Force(_float fTimeDelta)
 		if (m_fForce > 0.f)
 		{
 			_float3 pos = Get_State(STATE_POSITION);
-			pos += m_vForceAxis * m_fForce * 0.3f;
+			pos += m_vForceAxis * m_fForce * 0.5f;
 			Set_State(CTransform::STATE_POSITION, pos);
 			m_fForce -= fTimeDelta;
 		}

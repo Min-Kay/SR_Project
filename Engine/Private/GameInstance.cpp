@@ -316,11 +316,15 @@ HRESULT CGameInstance::Render_Camera(CRenderer* renderer)
 		if (!cam.second->Get_Vaild())
 			continue;
 
-		cam.second->BeforeRender();
+		if(FAILED(cam.second->BeforeRender()))
+			return E_FAIL;
+
 		Render_Begin();
 		renderer->Render(cam.second->Get_Exception());
 		Render_End(nullptr);
-		cam.second->AfterRender();
+
+		if (FAILED(cam.second->AfterRender()))
+			return E_FAIL;
 	}
 
 	renderer->Clear_RenderObjects();

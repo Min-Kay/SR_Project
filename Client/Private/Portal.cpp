@@ -132,7 +132,6 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     _float3 nor = portalDesc.vAt - portalDesc.vEye;
     D3DXVec3Normalize(&nor,&nor);
     camDesc.vAt = portalDesc.vEye - nor;
-    camDesc.iImportance = portalDesc.iPortalColor + 1;
  
     tag = portalDesc.portalCam;
 
@@ -271,7 +270,7 @@ void CPortal::Portaling()
         _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
         D3DXVec3Normalize(&vOpLook, &vOpLook);
 		objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * 1.5f);
-        objTr->Add_Velocity(objTr->Get_Velocity() * 0.5f);
+        //objTr->Add_Velocity(objTr->Get_Velocity() * 0.5f);
         objTr->Set_Force(-vOpLook);
 
 	    //if (obj->Get_Type() == OBJ_PLAYER)

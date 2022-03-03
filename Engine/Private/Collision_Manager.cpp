@@ -167,8 +167,7 @@ HRESULT CCollision_Manager::Collision()
 			if (AABB(pCollider, pCollider2, false) && pCollider2->Get_CollStyle() != CCollider::COLLSTYLE_TRIGGER)
 				isCollide = true;
 		}
-		if(!pCollider->Get_Parent())
-			static_cast<CTransform*>(pCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(isCollide);
+		static_cast<CTransform*>(pCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(isCollide);
 		pCollider->Set_OnCollide(isCollide);
 		
 	}

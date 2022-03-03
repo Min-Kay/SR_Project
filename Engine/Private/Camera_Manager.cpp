@@ -61,13 +61,12 @@ HRESULT CCamera_Manager::Release_Camera(const _tchar* _tag)
 	if (nullptr == pCam)
 		return E_FAIL;
 
-	auto iter = m_CameraList.begin();
-	for (; iter != m_CameraList.end();)
+	for (auto iter = m_CameraList.begin(); iter != m_CameraList.end();)
 	{
-		if (pCam = iter->second)
+		if (pCam == iter->second)
 		{
 			Safe_Release(iter->second);
-			m_CameraList.erase(iter);
+			iter = m_CameraList.erase(iter);
 			return S_OK;
 		}
 		++iter;

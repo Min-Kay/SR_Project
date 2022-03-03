@@ -150,7 +150,7 @@ HRESULT CCam_Portal::BeforeRender()
 
 HRESULT CCam_Portal::AfterRender()
 {
-    m_pGraphic_Device->SetRenderTarget(0, pBackBuffer);
+	m_pGraphic_Device->SetRenderTarget(0, pBackBuffer);
 
     return __super::AfterRender();
 }
