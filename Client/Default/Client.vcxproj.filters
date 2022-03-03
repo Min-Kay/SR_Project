@@ -139,6 +139,9 @@
     <Filter Include="02.GameObjects\Enemy\Boss\Arm">
       <UniqueIdentifier>{bf019402-a202-48cf-9a5e-f910fe2adb51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Enemy\CubeMonster\BazierBullet">
+      <UniqueIdentifier>{01e8778e-281e-408e-b941-c8aa5222e141}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -267,6 +270,9 @@
     <ClInclude Include="..\Public\Arm.h">
       <Filter>02.GameObjects\Enemy\Boss\Arm</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BazierBullet.h">
+      <Filter>02.GameObjects\Enemy\CubeMonster\BazierBullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -382,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Arm.cpp">
       <Filter>02.GameObjects\Enemy\Boss\Arm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BazierBullet.cpp">
+      <Filter>02.GameObjects\Enemy\CubeMonster\BazierBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

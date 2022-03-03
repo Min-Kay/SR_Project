@@ -8,6 +8,7 @@
 #include "Portal.h"
 #include "BackGround.h"
 #include "Ball.h"
+#include "BazierBullet.h"
 #include "Boss.h"
 #include "UI.h"
 #include "Sky.h"
@@ -286,6 +287,9 @@ HRESULT CLoader::Loading_ForStageTwo()
 		return E_FAIL;
 
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Arm"), CArm::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_BazierBullet"), CBazierBullet::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

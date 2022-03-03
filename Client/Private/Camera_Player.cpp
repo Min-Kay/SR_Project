@@ -100,6 +100,8 @@ _int CCamera_Player::Tick(_float fTimeDelta)
             return -1;
         m_BackUI->Off_Menu();
         m_BackUI->Set_Cam(this);
+        Control_Menu(false);
+
     }
 
 	    _long		MouseMove = 0;

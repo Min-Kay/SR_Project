@@ -16,9 +16,19 @@ Client::CCubeBullet::CCubeBullet(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 
 Client::CCubeBullet::CCubeBullet(const CCubeBullet& rhs)
 	:CGameObject(rhs)
+	,m_pTransformCom(rhs.m_pTransformCom)
+	,m_pBoxCollider(rhs.m_pBoxCollider)
+	,m_pRendererCom(rhs.m_pRendererCom)
+	,m_pTextureCom(rhs.m_pTextureCom)
+	,m_pVIBufferCom(rhs.m_pVIBufferCom)
 	,m_pOnlyRotation(rhs.m_pOnlyRotation)
 {
 	Safe_AddRef(m_pOnlyRotation);
+	Safe_AddRef(m_pTransformCom);
+	Safe_AddRef(m_pBoxCollider);
+	Safe_AddRef(m_pRendererCom);
+	Safe_AddRef(m_pTextureCom);
+	Safe_AddRef(m_pVIBufferCom);
 }
 
 HRESULT Client::CCubeBullet::NativeConstruct_Prototype()
@@ -35,7 +45,8 @@ HRESULT Client::CCubeBullet::NativeConstruct(void* pArg)
 		return E_FAIL;
 
 
-	SetUp_Component();
+	if(FAILED(SetUp_Component()))
+		return E_FAIL;
 
 	return S_OK;
 }

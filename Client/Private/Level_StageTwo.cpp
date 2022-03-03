@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Level_StageTwo.h"
+
+#include "BazierBullet.h"
 #include "GameInstance.h"
 #include "Camera.h"
 #include "Camera_Player.h"
@@ -180,6 +182,17 @@ HRESULT CLevel_StageTwo::Ready_Layer_Monster(const _tchar* pLayerTag)
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Bazier"), TEXT("Prototype_GameObject_BazierBullet"))))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	CBazierBullet* bazier = static_cast<CBazierBullet*>(pGameInstance->Get_GameObject_End(LEVEL_STAGETWO, TEXT("Bazier")));
+
+	bazier->Set_Pos(_float3(0.f, 10.f, 0.f), _float3(-5.f, 20.f, 0.f), _float3(-15.f, 0.f, 0.f));
 
 	RELEASE_INSTANCE(CGameInstance);
 }
