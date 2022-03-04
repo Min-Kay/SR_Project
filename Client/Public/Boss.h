@@ -98,7 +98,7 @@ private:
 	_float m_fRightPos = 10.f;
 
 
-	_float m_fMoveLength = 40.f;
+	_float m_fMoveLength = 30.f;
 
 
 private:

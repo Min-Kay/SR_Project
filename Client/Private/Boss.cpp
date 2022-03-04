@@ -365,7 +365,14 @@ void CBoss::Blowing(_float fTimeDelta)
 
 void CBoss::Init_Move()
 {
-	
+
+
+
+
+
+
+
+
 }
 
 _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
@@ -373,7 +380,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 	switch(_arm)
 	{
 	case ARM_LEFT:
-		if (m_LeftTimer >= 1.f ||  2.f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
+		if (m_LeftTimer >= 1.f ||  3.f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
 		{
 			m_LeftTimer = 0.f;
 			Reset_Arm_Direction(ARM_LEFT);
@@ -381,10 +388,10 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		}
 
 		m_LeftTimer += fTimeDelta * 0.7f;
-		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, pow(1 - m_LeftTimer, 2) * leftArmBazier[0] + 2 * m_LeftTimer * (1 - m_LeftTimer) * leftArmBazier[1] + pow(m_LeftTimer, 2) * leftArmBazier[2]);
+		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, (_float)pow(1 - m_LeftTimer, 2) * leftArmBazier[0] + 2 * m_LeftTimer * (1 - m_LeftTimer) * leftArmBazier[1] + (_float)pow(m_LeftTimer, 2)* leftArmBazier[2]);
 		break;
 	case ARM_RIGHT:
-		if (m_RightTimer >= 1.f || 2.f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
+		if (m_RightTimer >= 1.f || 3.f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
 		{
 			m_RightTimer = 0.f;
 
@@ -394,7 +401,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		}
 
 		m_RightTimer += fTimeDelta * 0.7f;
-		m_RightArmTr->Set_State(CTransform::STATE_POSITION, pow(1 - m_RightTimer, 2) * rightArmBazier[0] + 2 * m_RightTimer * (1 - m_RightTimer) * rightArmBazier[1] + pow(m_RightTimer, 2) * rightArmBazier[2]);
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, (_float)pow(1 - m_RightTimer, 2) * rightArmBazier[0] + 2 * m_RightTimer * (1 - m_RightTimer) * rightArmBazier[1] + (_float)pow(m_RightTimer, 2) * rightArmBazier[2]);
 		break;
 	}
 	return false;
@@ -466,9 +473,52 @@ void CBoss::Idle(_float fTimeDelta)
 
 void CBoss::Move(_float fTimeDelta)
 {
+	m_fTimer += fTimeDelta;
+
+	m_pTransform->Gravity(0.3f, fTimeDelta);
+
+	m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+	_float3 vOnlyRight = m_pOnlyRotation->Get_State(CTransform::STATE_RIGHT);
+
+	_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+	_float3 vScale = m_pTransform->Get_Scale();
+
+	D3DXVec3Normalize(&vOnlyRight, &vOnlyRight);
+	D3DXVec3Normalize(&vUp, &vUp);
+
+	_float3 vLook = *D3DXVec3Cross(&vLook, &vOnlyRight,&vUp);
+
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, vOnlyRight *	vScale.x);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+	m_pTransform->Go_Straight(fTimeDelta);
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-vUp, m_pTransform->Get_State(CTransform::STATE_POSITION), 100, true);
+
+	if (collList.empty() || (collList.size() == 1 && collList.front().CollObj == this))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return;
+	}
+
+	auto iter = collList.begin();
+	++iter;
+
+	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 6.f, 0.f) + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 2.f));
+
+	RELEASE_INSTANCE(CGameInstance);
 
 
-	if(m_fMoveLength > D3DXVec3Length(&(m_pTransform->Get_State(CTransform::STATE_POSITION) - m_pPlayerTr->Get_State(CTransform::STATE_POSITION))))
+	m_LeftArm->Set_Position(vPos - vOnlyRight * m_fRightPos - vOnlyRight * sinf(D3DXToDegree(m_fTimer * 0.05f)) * 2.f + vUp * m_fUpPos * cosf(D3DXToDegree(m_fTimer * 0.04f)));
+	m_RightArm->Set_Position(vPos + vOnlyRight * m_fRightPos + vOnlyRight * cosf(D3DXToDegree(m_fTimer * 0.05f)) * 2.f + vUp * m_fUpPos * cosf(D3DXToDegree(m_fTimer * 0.04f)));
+
+
+	Reset_Arm_Direction(ARM_LEFT);
+	Reset_Arm_Direction(ARM_RIGHT);
+
+	if(m_fMoveLength - 3.f > D3DXVec3Length(&(vPos - m_pPlayerTr->Get_State(CTransform::STATE_POSITION))))
 	{
 		Set_BossState(BOSS_IDLE);
 	}
