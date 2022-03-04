@@ -120,9 +120,15 @@ HRESULT CBoss::SetUp_Component()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_CubeMonster"), COM_TEXTURE, (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
+
+	m_pTransform->Scaled(_float3(5.f, 5.f, 5.f));
+
+
+
 	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
 	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	D3DXVec3Normalize(&vRight, &vRight);
+
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
@@ -159,7 +165,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 5.f, 5.f));
 
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
 	RELEASE_INSTANCE(CGameInstance);
@@ -185,8 +191,8 @@ void CBoss::InitArmPosition(_float fTimeDelta)
 	_float3 pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	_float3 right = m_pTransform->Get_State(CTransform::STATE_RIGHT);
 	D3DXVec3Normalize(&right, &right);
-	m_LeftArm->Set_Position(pos - right * 3.f);
-	m_RightArm->Set_Position(pos + right * 3.f);
+	m_LeftArm->Set_Position(pos - right * 10.f);
+	m_RightArm->Set_Position(pos + right * 10.f);
 
 }
 

@@ -184,6 +184,14 @@ HRESULT CLoader::Loading_ForStageOne()
 	/* For.Prototype_Component_Texture_Door_right*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_CubeAttack"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Enemy_Att.dds")))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Font*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Font"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Number/Num_%d.png"), 10))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Font_Slash*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Slash"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Number/Slash.png")))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma  region PROTOTYPE_GAMEOBJECT

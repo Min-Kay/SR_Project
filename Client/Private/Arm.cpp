@@ -109,9 +109,12 @@ HRESULT CArm::SetUp_Component()
 
 	Set_Type(OBJ_ENEMY);
 
+	
+	m_pTransform->Scaled(_float3(7.f, 7.f, 7.f));
+
 	m_Collider->Set_ParentInfo(this);
 	m_Collider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-	m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(7.f, 7.f, 7.f));
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_Collider);
 	RELEASE_INSTANCE(CGameInstance);

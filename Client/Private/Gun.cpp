@@ -66,7 +66,7 @@ _int CGun::LateTick(_float fTimeDelta)
 
 	m_pMuzzle_UI->Set_Vaild(m_OnFire);
 	Animate(fTimeDelta);
-
+	SynchroBullet();
 	return 0;
 }
 
@@ -86,6 +86,12 @@ void CGun::Set_Vaild(_bool _bool)
 	m_Vaild = _bool;
 	m_pGun_UI->Set_Vaild(m_Vaild);
 	m_pMuzzle_UI->Set_Vaild(false);
+
+	m_pSlash_UI->Set_Vaild(m_Vaild);
+	m_pFullBullet_UI_1->Set_Vaild(m_Vaild);
+	m_pFullBullet_UI_2->Set_Vaild(m_Vaild);
+	m_pCurrBullet_UI_1->Set_Vaild(m_Vaild);
+	m_pCurrBullet_UI_2->Set_Vaild(m_Vaild);
 }
 
 void CGun::Set_OnFire(_bool _bool)
@@ -199,11 +205,13 @@ void CGun::Fire()
 		eDesc.Alpha = CEffect::EFFECTALPHA_BLEND;
 		eDesc.Bilboard = false;
 		eDesc.Style = CEffect::EFFECTSTYLE_FIX;
+		eDesc.LifeTime = 5.f;
+		eDesc.Tick = true;
 
 		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BulletHole"), PROTO_EFFECT, &eDesc)))
 			return;
 
-		CGameObject* p_ball = p_instance->Get_GameObject(g_CurrLevel, TEXT("BulletHole"), m_test++);
+		CGameObject* p_ball = p_instance->Get_GameObject_End(g_CurrLevel, TEXT("BulletHole"));
 		static_cast<CEffect*>(p_ball)->Set_CurrentFrameIndex(rand() % eDesc.FrameCount);
 
 		CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
@@ -303,7 +311,141 @@ HRESULT CGun::SetUp_UI()
 
 
 	m_camera_ = static_cast<CCamera_Player*>(p_instance->Find_Camera_Object(MAIN_CAM));
-	
+
+
+
+	///* Font 고정 일의 자리*/
+
+	CUI::UIDESC desc3;
+	ZeroMemory(&desc3, sizeof(desc3));
+	desc3.WinCX = g_iWinCX;
+	desc3.WinCY = g_iWinCY;
+
+	desc3.Layer = 2;
+	desc3.FrameCount = 10;
+	desc3.Alpha = CUI::ALPHA_BLEND;
+	desc3.PosX = g_iWinCX * 0.16f;
+	desc3.PosY = g_iWinCY * 0.9f;
+	desc3.SizeX = 50.f;
+	desc3.SizeY = 50.f;
+	desc3.AnimateSpeed = 100.f;
+	desc3.Style = CUI::STYLE_FIX;
+	desc3.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("FullBullet_UI_1"), PROTO_UI, &desc3)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pFullBullet_UI_1 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("FullBullet_UI_1")));
+
+	///* Font 고정 십의 자리*/
+
+	CUI::UIDESC desc4;
+	ZeroMemory(&desc4, sizeof(desc4));
+	desc4.WinCX = g_iWinCX;
+	desc4.WinCY = g_iWinCY;
+
+	desc4.Layer = 2;
+	desc4.FrameCount = 10;
+	desc4.Alpha = CUI::ALPHA_BLEND;
+	desc4.PosX = g_iWinCX * 0.13f;
+	desc4.PosY = g_iWinCY * 0.9f;
+	desc4.SizeX = 50.f;
+	desc4.SizeY = 50.f;
+	desc4.AnimateSpeed = 100.f;
+	desc4.Style = CUI::STYLE_FIX;
+	desc4.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("FullBullet_UI_2"), PROTO_UI, &desc4)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pFullBullet_UI_2 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("FullBullet_UI_2")));
+	m_pFullBullet_UI_2->Set_CurrFrameIndex(4);
+
+
+	/* Font 고정 slash*/
+
+	CUI::UIDESC desc5;
+	ZeroMemory(&desc5, sizeof(desc5));
+	desc5.WinCX = g_iWinCX;
+	desc5.WinCY = g_iWinCY;
+	desc5.Layer = 2;
+	desc5.FrameCount = 0;
+	desc5.Alpha = CUI::ALPHA_BLEND;
+	desc5.PosX = g_iWinCX * 0.1f;
+	desc5.PosY = g_iWinCY * 0.9f;
+	desc5.SizeX = 50.f;
+	desc5.SizeY = 50.f;
+	desc5.AnimateSpeed = 100.f;
+	desc5.Style = CUI::STYLE_FIX;
+	desc5.Texture = TEXT("Prototype_Component_Texture_Slash");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Slash_UI"), PROTO_UI, &desc5)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pSlash_UI = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Slash_UI")));
+
+	///* Font CurrFrame 일의 자리*/
+
+	CUI::UIDESC desc6;
+	ZeroMemory(&desc6, sizeof(desc6));
+	desc6.WinCX = g_iWinCX;
+	desc6.WinCY = g_iWinCY;
+
+	desc6.Layer = 2;
+	desc6.FrameCount = 10;
+	desc6.Alpha = CUI::ALPHA_BLEND;
+	desc6.PosX = g_iWinCX * 0.07f;
+	desc6.PosY = g_iWinCY * 0.9f;
+	desc6.SizeX = 50.f;
+	desc6.SizeY = 50.f;
+	desc6.AnimateSpeed = 100.f;
+	desc6.Style = CUI::STYLE_FIX;
+	desc6.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_1"), PROTO_UI, &desc6)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pCurrBullet_UI_1 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_1")));
+
+	///* Font CurrFrame 십의 자리*/
+
+	CUI::UIDESC desc7;
+	ZeroMemory(&desc7, sizeof(desc7));
+	desc7.WinCX = g_iWinCX;
+	desc7.WinCY = g_iWinCY;
+
+	desc7.Layer = 2;
+	desc7.FrameCount = 10;
+	desc7.Alpha = CUI::ALPHA_BLEND;
+	desc7.PosX = g_iWinCX * 0.04f;
+	desc7.PosY = g_iWinCY * 0.9f;
+	desc7.SizeX = 50.f;
+	desc7.SizeY = 50.f;
+	desc7.AnimateSpeed = 100.f;
+	desc7.Style = CUI::STYLE_FIX;
+	desc7.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_2"), PROTO_UI, &desc7)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pCurrBullet_UI_2 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_2")));
+
+
 	if (!m_camera_)
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -359,6 +501,15 @@ void CGun::Animate(_float fTimeDelta)
 	m_pMuzzle_UI->Set_Pos(m_fGun_fx - 100.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy - 20.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
 }
+
+void CGun::SynchroBullet()
+{
+	m_iCurrUnits = (m_iCurrBulletCount % 10);
+	m_iCurrTens = (m_iCurrBulletCount % 100) / 10;
+	m_pCurrBullet_UI_1->Set_CurrFrameIndex(m_iCurrUnits);
+	m_pCurrBullet_UI_2->Set_CurrFrameIndex(m_iCurrTens);
+}
+
 
 CGun* CGun::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {

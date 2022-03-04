@@ -33,7 +33,7 @@ public:
 
 private:
 	void Fire();
-
+	void SynchroBullet();
 private:
 	HRESULT SetUp_UI();
 	void Animate(_float fTimeDelta);
@@ -50,6 +50,17 @@ private:
 
 	_bool m_Vaild = true;
 
+
+
+	CUI* m_pCurrBullet_UI_1 = nullptr;
+	CUI* m_pCurrBullet_UI_2 = nullptr;
+	CUI* m_pFullBullet_UI_1 = nullptr;
+	CUI* m_pFullBullet_UI_2 = nullptr;
+	CUI* m_pSlash_UI = nullptr;
+
+	_uint m_iCurrUnits = 0;
+	_uint m_iCurrTens = 0;
+
 private:
 	_float m_fFrWalk = 0.f; 
 	_float m_fFrShoot = 0.f;
@@ -59,7 +70,6 @@ private:
 
 	_int m_iCurrSpread = 0;
 	_uint m_iSpread = 3;
-	_uint m_test = 0;
 
 	_float m_fRange = 10.f; 
 

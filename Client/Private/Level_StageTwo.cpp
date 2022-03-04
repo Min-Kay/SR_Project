@@ -153,7 +153,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	CPlayer::PLAYERINFO info;
 	info.Hp = 100;
-	info.Pos = _float3(0.f,0.f,0.f);
+	info.Pos = _float3(0.f,10.f,0.f);
 
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, pLayerTag, TEXT("Prototype_GameObject_Player"),&info)))
@@ -183,7 +183,6 @@ HRESULT CLevel_StageTwo::Ready_Layer_Monster(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
-
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Bazier"), TEXT("Prototype_GameObject_BazierBullet"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -204,118 +203,122 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Bottom2"), TEXT("Prototype_GameObject_TileCollider"))))
-	//		return E_FAIL;
-	//CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Bottom2"));
-	//CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
-	//static_cast<CTileCollider*>(BottomTile)->Set_TextureIndex(1);
-	////실제 보이는 박스
-	//BottomTrans->Scaled(_float3(80.f, 80.f, 80.f));
-	//BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90.f));
-	//BottomTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f,0.f,0.f));
-	//CBoxCollider* box = static_cast<CBoxCollider*>(BottomTile->Get_Component(COM_COLLIDER));
-	////충돌박스
-	//box->Set_State(CBoxCollider::COLL_SIZE, _float3(80.f, 0.f, 80.f));
-	//box->Set_AdditionalPos(_float3(0.f,0.f,0.f));
 
-
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Left1"), TEXT("Prototype_GameObject_TileCollider"))))
-	//	return E_FAIL;
-	//CGameObject* BottomTile1 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Left1"));
-	//CTransform* BottomTrans1 = (CTransform*)BottomTile1->Get_Component(COM_TRANSFORM);
-	//static_cast<CTileCollider*>(BottomTile1)->Set_TextureIndex(1);
-	////실제 보이는 박스
-	//BottomTrans1->Scaled(_float3(80.f, 80.f, 80.f));
-	//BottomTrans1->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(-90.f));
-	//BottomTrans1->Set_State(CTransform::STATE_POSITION, _float3(-40.f, 40.f, 0.f));;
-	//CBoxCollider* box1 = static_cast<CBoxCollider*>(BottomTile1->Get_Component(COM_COLLIDER));
-	////충돌박스
-	//box1->Set_State(CBoxCollider::COLL_SIZE, _float3(0.f, 80.f, 80.f));
-	//box1->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Left2"), TEXT("Prototype_GameObject_TileCollider"))))
-	//	return E_FAIL;
-	//CGameObject* BottomTile4 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Left2"));
-	//CTransform* BottomTrans4 = (CTransform*)BottomTile4->Get_Component(COM_TRANSFORM);
-	//static_cast<CTileCollider*>(BottomTile4)->Set_TextureIndex(1);
-	////실제 보이는 박스
-	//BottomTrans4->Scaled(_float3(80.f, 80.f, 80.f));
-	//BottomTrans4->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
-	//BottomTrans4->Set_State(CTransform::STATE_POSITION, _float3(40.f, 40.f, 0.f));;
-	//CBoxCollider* box4 = static_cast<CBoxCollider*>(BottomTile4->Get_Component(COM_COLLIDER));
-	////충돌박스
-	//box4->Set_State(CBoxCollider::COLL_SIZE, _float3(0.5f, 80.f, 80.f));
-	//box4->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-
-
-
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Right1"), TEXT("Prototype_GameObject_TileCollider"))))
-	//	return E_FAIL;
-	//CGameObject* BottomTile2 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Right1"));
-	//CTransform* BottomTrans2 = (CTransform*)BottomTile2->Get_Component(COM_TRANSFORM);
-	//static_cast<CTileCollider*>(BottomTile2)->Set_TextureIndex(1);
-	////실제 보이는 박스
-	//BottomTrans2->Scaled(_float3(80.f, 80.f, 80.f));
-	//BottomTrans2->Rotation(_float3(0.f, 0.f, 1.f), D3DXToRadian(-90.f));
-	//BottomTrans2->Set_State(CTransform::STATE_POSITION, _float3(0.f, 40.f, 40.f));;
-	//CBoxCollider* box2 = static_cast<CBoxCollider*>(BottomTile2->Get_Component(COM_COLLIDER));
-	////충돌박스
-	//box2->Set_State(CBoxCollider::COLL_SIZE, _float3(80.f, 80.f, 0.f));
-	//box2->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-	//
-
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Right2"), TEXT("Prototype_GameObject_TileCollider"))))
-	//	return E_FAIL;
-	//CGameObject* BottomTile3 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Right2"));
-	//CTransform* BottomTrans3 = (CTransform*)BottomTile3->Get_Component(COM_TRANSFORM);
-	//static_cast<CTileCollider*>(BottomTile3)->Set_TextureIndex(1);
-	////실제 보이는 박스
-	//BottomTrans3->Scaled(_float3(80.f, 80.f, 80.f));
-	////BottomTrans3->Rotation(_float3(0.f, 0.f, 1.f), D3DXToRadian(90.f));
-	//BottomTrans3->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180.f));
-	//BottomTrans3->Set_State(CTransform::STATE_POSITION, _float3(0.f, 40.f, -40.f));;
-	//CBoxCollider* box3 = static_cast<CBoxCollider*>(BottomTile3->Get_Component(COM_COLLIDER));
-	////충돌박스
-	//box3->Set_State(CBoxCollider::COLL_SIZE, _float3(80.f, 80.f, 0.5f));
-	//box3->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), TEXT("Prototype_GameObject_TileCollider"))))
-			return E_FAIL;
-	CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"));
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Bottom2"), TEXT("Prototype_GameObject_TileCollider"))))
+		return E_FAIL;
+	CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Bottom2"));
 	CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
 	static_cast<CTileCollider*>(BottomTile)->Set_TextureIndex(1);
-	BottomTrans->Scaled(_float3(60.f, 60.f, 60.f));
-	CBoxCollider* box = static_cast<CBoxCollider*>(BottomTile->Get_Component(COM_COLLIDER));
-	box->Set_State(CBoxCollider::COLL_SIZE, _float3(60.f, 60.f, 60.f));
-	box->Set_AdditionalPos(_float3(0.f,-30.f,0.f));
+	//실제 보이는 박스
+	BottomTrans->Scaled(_float3(m_iBoxSize, m_iBoxSize, m_iBoxSize));
 	BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90.f));
-	BottomTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f,-1.f,0.f));
+	BottomTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 0.f));
+	CBoxCollider* box = static_cast<CBoxCollider*>(BottomTile->Get_Component(COM_COLLIDER));
+	//충돌박스
+	box->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, WallSize, m_iBoxSize));
+	box->Set_AdditionalPos(_float3(0.f, -HalfWallSize, 0.f));
 
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right"), TEXT("Prototype_GameObject_TileCollider"))))
+	//왼쪽
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Left1"), TEXT("Prototype_GameObject_TileCollider"))))
 		return E_FAIL;
-	CGameObject* RightTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right"));
-	CTransform* RightTrans = (CTransform*)RightTile->Get_Component(COM_TRANSFORM);
-	static_cast<CTileCollider*>(RightTile)->Set_TextureIndex(1);
-	RightTrans->Scaled(_float3(60.f, 60.f, 60.f));
-	CBoxCollider* box2 = static_cast<CBoxCollider*>(RightTile->Get_Component(COM_COLLIDER));
-	box2->Set_State(CBoxCollider::COLL_SIZE, _float3(60.f, 60.f, 60.f));
-	RightTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
-	box2->Set_AdditionalPos(_float3(30.f, 0.f, 0.f));
-	RightTrans->Set_State(CTransform::STATE_POSITION, _float3(15.f, 0.f, 0.f));
-
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom1"), TEXT("Prototype_GameObject_TileCollider"))))
-		return E_FAIL;
-	CGameObject* BottomTile1 = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom1"));
+	CGameObject* BottomTile1 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Left1"));
 	CTransform* BottomTrans1 = (CTransform*)BottomTile1->Get_Component(COM_TRANSFORM);
 	static_cast<CTileCollider*>(BottomTile1)->Set_TextureIndex(1);
-	BottomTrans1->Scaled(_float3(20.f, 20.f, 20.f));
-	CBoxCollider* box3 = static_cast<CBoxCollider*>(BottomTile1->Get_Component(COM_COLLIDER));
-	box3->Set_State(CBoxCollider::COLL_SIZE, _float3(20.f, 1.f, 20.f));
-	box3->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-	BottomTrans1->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90.f));
-	BottomTrans1->Set_State(CTransform::STATE_POSITION, _float3(0.f, 25.f, 0.f));
+	//실제 보이는 박스
+	BottomTrans1->Scaled(_float3(m_iBoxSize, m_iBoxSize, m_iBoxSize));
+	BottomTrans1->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(-90.f));
+	BottomTrans1->Set_State(CTransform::STATE_POSITION, _float3(-HalfBoxSize, HalfBoxSize, 0.f));;
+	CBoxCollider* box1 = static_cast<CBoxCollider*>(BottomTile1->Get_Component(COM_COLLIDER));
+	//충돌박스
+	box1->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iBoxSize, m_iBoxSize));
+	box1->Set_AdditionalPos(_float3(-HalfWallSize, 0.f, 0.f));
+
+
+
+	//오른쪽
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Right"), TEXT("Prototype_GameObject_TileCollider"))))
+		return E_FAIL;
+	CGameObject* BottomTile4 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Right"));
+	CTransform* BottomTrans4 = (CTransform*)BottomTile4->Get_Component(COM_TRANSFORM);
+	static_cast<CTileCollider*>(BottomTile4)->Set_TextureIndex(1);
+	//실제 보이는 박스
+	BottomTrans4->Scaled(_float3(m_iBoxSize, m_iBoxSize, m_iBoxSize));
+	BottomTrans4->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
+	BottomTrans4->Set_State(CTransform::STATE_POSITION, _float3(HalfBoxSize, HalfBoxSize, 0.f));;
+	CBoxCollider* box4 = static_cast<CBoxCollider*>(BottomTile4->Get_Component(COM_COLLIDER));
+	//충돌박스
+	box4->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iBoxSize, m_iBoxSize));
+	box4->Set_AdditionalPos(_float3(HalfWallSize, 0.f, 0.f));
+
+
+	//정면
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Front"), TEXT("Prototype_GameObject_TileCollider"))))
+		return E_FAIL;
+	CGameObject* BottomTile2 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Front"));
+	CTransform* BottomTrans2 = (CTransform*)BottomTile2->Get_Component(COM_TRANSFORM);
+	static_cast<CTileCollider*>(BottomTile2)->Set_TextureIndex(1);
+	//실제 보이는 박스
+	BottomTrans2->Scaled(_float3(m_iBoxSize, m_iBoxSize, m_iBoxSize));
+	BottomTrans2->Rotation(_float3(0.f, 0.f, 1.f), D3DXToRadian(-90.f));
+	BottomTrans2->Set_State(CTransform::STATE_POSITION, _float3(0.f, HalfBoxSize, HalfBoxSize));;
+	CBoxCollider* box2 = static_cast<CBoxCollider*>(BottomTile2->Get_Component(COM_COLLIDER));
+	//충돌박스
+	box2->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, WallSize));
+	box2->Set_AdditionalPos(_float3(0.f, 0.f, HalfWallSize));
+
+	//뒤에
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Back"), TEXT("Prototype_GameObject_TileCollider"))))
+		return E_FAIL;
+	CGameObject* BottomTile3 = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Back"));
+	CTransform* BottomTrans3 = (CTransform*)BottomTile3->Get_Component(COM_TRANSFORM);
+	static_cast<CTileCollider*>(BottomTile3)->Set_TextureIndex(1);
+	//실제 보이는 박스
+	BottomTrans3->Scaled(_float3(m_iBoxSize, m_iBoxSize, m_iBoxSize));
+	//BottomTrans3->Rotation(_float3(0.f, 0.f, 1.f), D3DXToRadian(90.f));
+	BottomTrans3->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180.f));
+	BottomTrans3->Set_State(CTransform::STATE_POSITION, _float3(0.f, HalfBoxSize, -HalfBoxSize));;
+	CBoxCollider* box3 = static_cast<CBoxCollider*>(BottomTile3->Get_Component(COM_COLLIDER));
+	//충돌박스
+	box3->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, WallSize));
+	box3->Set_AdditionalPos(_float3(0.f, 0.f, -HalfWallSize));
+
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), TEXT("Prototype_GameObject_TileCollider"))))
+	//		return E_FAIL;
+	//CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"));
+	//CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
+	//static_cast<CTileCollider*>(BottomTile)->Set_TextureIndex(1);
+	//BottomTrans->Scaled(_float3(60.f, 60.f, 60.f));
+	//CBoxCollider* box = static_cast<CBoxCollider*>(BottomTile->Get_Component(COM_COLLIDER));
+	//box->Set_State(CBoxCollider::COLL_SIZE, _float3(60.f, 60.f, 60.f));
+	//box->Set_AdditionalPos(_float3(0.f,-30.f,0.f));
+	//BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90.f));
+	//BottomTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f,-1.f,0.f));
+
+
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right"), TEXT("Prototype_GameObject_TileCollider"))))
+	//	return E_FAIL;
+	//CGameObject* RightTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right"));
+	//CTransform* RightTrans = (CTransform*)RightTile->Get_Component(COM_TRANSFORM);
+	//static_cast<CTileCollider*>(RightTile)->Set_TextureIndex(1);
+	//RightTrans->Scaled(_float3(60.f, 60.f, 60.f));
+	//CBoxCollider* box2 = static_cast<CBoxCollider*>(RightTile->Get_Component(COM_COLLIDER));
+	//box2->Set_State(CBoxCollider::COLL_SIZE, _float3(60.f, 60.f, 60.f));
+	//RightTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
+	//box2->Set_AdditionalPos(_float3(30.f, 0.f, 0.f));
+	//RightTrans->Set_State(CTransform::STATE_POSITION, _float3(15.f, 0.f, 0.f));
+
+
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom1"), TEXT("Prototype_GameObject_TileCollider"))))
+	//	return E_FAIL;
+	//CGameObject* BottomTile1 = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom1"));
+	//CTransform* BottomTrans1 = (CTransform*)BottomTile1->Get_Component(COM_TRANSFORM);
+	//static_cast<CTileCollider*>(BottomTile1)->Set_TextureIndex(1);
+	//BottomTrans1->Scaled(_float3(20.f, 20.f, 20.f));
+	//CBoxCollider* box3 = static_cast<CBoxCollider*>(BottomTile1->Get_Component(COM_COLLIDER));
+	//box3->Set_State(CBoxCollider::COLL_SIZE, _float3(20.f, 1.f, 20.f));
+	//box3->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
+	//BottomTrans1->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90.f));
+	//BottomTrans1->Set_State(CTransform::STATE_POSITION, _float3(0.f, 25.f, 0.f));
 
 	RELEASE_INSTANCE(CGameInstance);
 

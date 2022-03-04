@@ -28,7 +28,7 @@ private:
 
 private:
 	HRESULT Open_Exit();
-	HRESULT Close_Exit_Open_Door2();
+	HRESULT Close_Exit_Open_Door2(); 
 	HRESULT Open_Exit2();
 private:
 	_int iLineX = 25;

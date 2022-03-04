@@ -42,6 +42,8 @@ public:
 		_uint	Ref;
 		_bool Bilboard;
 		_bool FixY;
+		_bool Tick;
+		_float LifeTime;
 		const _tchar* Texture;
 	}EFFECTDESC;
 
@@ -63,6 +65,8 @@ protected:
 	EFFECTDESC			m_Desc;
 	_uint				m_iCurrFrameIndex = 0;
 	_float				m_fFrame = 0.f;
+
+	_float				m_fTimer = 0.f;
 
 	_bool				m_Wave = false;
 

@@ -213,6 +213,13 @@ _int CEffect::Tick(_float fTimeDelta)
     if (!m_Vaild)
         return 0;
 
+    if(m_Desc.Tick)
+    {
+        m_fTimer += fTimeDelta;
+        if (m_fTimer >= m_Desc.LifeTime)
+            Set_Dead(true);
+    }
+
     if (0 > __super::Tick(fTimeDelta))
         return -1;
 
@@ -223,7 +230,7 @@ _int CEffect::Tick(_float fTimeDelta)
 
 _int CEffect::LateTick(_float fTimeDelta)
 {
-    if (!m_Vaild)
+    if (!m_Vaild || Get_Dead())
         return 0;
 
     if (0 > __super::LateTick(fTimeDelta))

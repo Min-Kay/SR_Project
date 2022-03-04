@@ -251,7 +251,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Player(const _tchar * pLayerTag)
 	ZeroMemory(&INFO, sizeof(INFO));
 
 	INFO.Pos.x = 12.0f;
-	INFO.Pos.y = 7.5f;
+	INFO.Pos.y = 10.f;
 	INFO.Pos.z = -4.0f;
 	INFO.Hp = 100;
 
