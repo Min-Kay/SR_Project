@@ -26,6 +26,9 @@ public:
 	typedef enum tagBossPhase {BOSS_PHASEONE, BOSS_PHASETWO}BOSSPHASE;
 	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH, BOSSATT_MIXED }BOSSATTACK;
 
+
+public:
+	typedef enum tagArmSide{ARM_LEFT,ARM_RIGHT}ARM;
 public:
 	HRESULT NativeConstruct_Prototype() override;
 	HRESULT NativeConstruct(void* pArg) override;
@@ -35,7 +38,16 @@ public:
 	HRESULT SetUp_Component() override;
 
 private:
-	void InitArmPosition(_float fTimeDelta);
+	void Synchronize_Transform();
+
+private:
+	// ³»²¨
+	void Init_Idle();
+	_bool InitArmPosition(_float fTimeDelta);
+	_bool Move_By_Bazier(ARM _arm, _float fTimeDelta);
+	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);
+	void Blowing(_float fTimeDelta);
+
 
 private:
 	void State_Machine(_float fTimeDelta);
@@ -43,7 +55,6 @@ private:
 	void Phase(_float fTimeDelta);
 	void Attack(_float fTimeDelta);
 	void Die(_float fTimeDelta);
-
 
 private:
 	void Attack_Missile(_float fTimeDelta);
@@ -63,6 +74,19 @@ private:
 
 private:
 	// ³»²¨
+	_bool m_test = false;
+
+	//Init Idle
+	_bool initPos = false;
+	_bool idlePos = true;
+
+	_float m_LeftTimer = 0.f;
+	_float m_RightTimer = 0.f;
+
+	_float3  leftArmBazier[3];
+	_float3  rightArmBazier[3];
+
+
 
 private:
 	BOSSPHASE m_Phase = BOSS_PHASEONE;
@@ -80,6 +104,7 @@ private:
 
 
 private:
+	CTransform* m_pOnlyRotation = nullptr;
 	CTransform* m_pTransform = nullptr;
 	CRenderer* m_pRenderer = nullptr;
 	CTexture* m_pTexture = nullptr;

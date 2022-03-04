@@ -269,27 +269,25 @@ void CPortal::Portaling()
         CTransform* opponentTr = static_cast<CTransform*>(m_pOpponent->Get_Component(COM_TRANSFORM));
         _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
         D3DXVec3Normalize(&vOpLook, &vOpLook);
-		objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * 1.5f);
-        //objTr->Add_Velocity(objTr->Get_Velocity() * 0.5f);
+        _float3 vScale = objTr->Get_Scale();
+		objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * vScale.x);
         objTr->Set_Force(-vOpLook);
 
-	    //if (obj->Get_Type() == OBJ_PLAYER)
-     //       objTr = static_cast<CPlayer*>(obj)->Get_Camera()->Get_CameraTransform();
+	    if (obj->Get_Type() != OBJ_PLAYER)
+	    {
+            _float3 vRight, vUp, vLook;
+         
+          vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
+          vUp = opponentTr->Get_State(CTransform::STATE_UP);
+          vLook = -opponentTr->Get_State(CTransform::STATE_LOOK);
+          D3DXVec3Normalize(&vRight, &vRight);
+          D3DXVec3Normalize(&vUp, &vUp);
+          D3DXVec3Normalize(&vLook, &vLook);
 
-     //   _float3 vRight, vUp, vLook, vScale;
-     //  vScale = objTr->Get_Scale();
-     //  vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
-     //  vUp = opponentTr->Get_State(CTransform::STATE_UP);
-     //  vLook = -opponentTr->Get_State(CTransform::STATE_LOOK);
-     //  D3DXVec3Normalize(&vRight, &vRight);
-     //  D3DXVec3Normalize(&vUp, &vUp);
-     //  D3DXVec3Normalize(&vLook, &vLook);
-
-     //  objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
-     //  objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
-       //objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
-
-       
+          objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+          objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+          objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+	    }
     }
 
 	RELEASE_INSTANCE(CGameInstance);

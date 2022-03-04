@@ -43,6 +43,9 @@ public:
 	void Set_Parent(CBoss* parent);
 	void Set_Player(CPlayer* _player);
 
+private:
+	void Synchronize_Transform();
+
 
 private:
 	void Mode(_float fTimeDelta);
@@ -56,6 +59,7 @@ private:
 	_float m_Timer = 0.f;
 	_float m_AttackTick = 1.f;
 private:
+	CTransform* m_pOnlyRotation = nullptr;
 	CTransform* m_pTransform = nullptr;
 	CRenderer* m_pRenderer = nullptr;
 	CTexture* m_pTexture = nullptr;

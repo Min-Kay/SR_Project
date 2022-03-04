@@ -129,7 +129,30 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 		return S_OK;
 	} 
 
-	if(iIndex == CPortal::PORTAL_ORANGE)
+	_float3 point, normal;
+	for (auto& target : hitList)
+	{
+		if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
+			continue;
+
+		if (target.CollObj->Get_Type() !=  CGameObject::OBJ_STATIC)
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return S_OK;
+		}
+
+		point = target.Point;
+		normal = target.NormalVec;
+
+		if(iIndex == CPortal::PORTAL_ORANGE)
+			m_pPortal_Orange_UI->Set_CurrFrameIndex(1);
+		else
+			m_pPortal_Blue_UI->Set_CurrFrameIndex(1);
+
+		break;
+	}
+
+	if (iIndex == CPortal::PORTAL_ORANGE)
 	{
 		if (nullptr != m_pPortal_Orange)
 		{
@@ -155,32 +178,11 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 			m_pPortal_Blue = nullptr;
 		}
 	}
-	
 
 	CPortal::PORTALDESC portalDesc;
 	portalDesc.iLevel = g_CurrLevel;
 	portalDesc.iPortalColor = iIndex;
 	portalDesc.vAxisY = _float3(0.f, 1.f, 0.f);
-
-	_float3 point, normal;
-	for (auto& target : hitList)
-	{
-		if (target.CollObj->Get_Type() !=  CGameObject::OBJ_STATIC)
-			continue;
-		else
-		{
-			point = target.Point;
-			normal = target.NormalVec;
-
-			if(iIndex == CPortal::PORTAL_ORANGE)
-				m_pPortal_Orange_UI->Set_CurrFrameIndex(1);
-			else
-				m_pPortal_Blue_UI->Set_CurrFrameIndex(1);
-
-			break;
-		}
-	}
-
 	portalDesc.vEye = point + normal * 0.01f;
 	portalDesc.vAt = point - normal;
 	portalDesc.portalCam = iIndex == CPortal::PORTAL_ORANGE ? TEXT("Portal_Orange") : TEXT("Portal_Blue");

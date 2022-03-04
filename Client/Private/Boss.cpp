@@ -21,11 +21,13 @@ CBoss::CBoss(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 CBoss::CBoss(const CBoss& rhs)
 	:CEnemy(rhs)
 	,m_pTransform(rhs.m_pTransform)
+	, m_pOnlyRotation(rhs.m_pOnlyRotation)
 	,m_pTexture(rhs.m_pTexture)
 	,m_pRenderer(rhs.m_pRenderer)
 	,m_pCollider(rhs.m_pCollider)
 	,m_pBuffer(rhs.m_pBuffer)
 {
+	Safe_AddRef(m_pOnlyRotation);
 	Safe_AddRef(m_pTransform);
 	Safe_AddRef(m_pTexture);
 	Safe_AddRef(m_pRenderer);
@@ -64,6 +66,7 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	State_Machine(fTimeDelta);
 
+	Synchronize_Transform();
 
 	return 0;
 }
@@ -86,7 +89,7 @@ HRESULT CBoss::Render()
 	if (Get_Dead())
 		return 0;
 
-	if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
+	if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
 	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
@@ -105,6 +108,9 @@ HRESULT CBoss::SetUp_Component()
 	desc.fRotationPerSec = 90.f;
 	desc.fSpeedPerSec = 5.f;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, TEXT("OnlyRotation"), (CComponent**)&m_pOnlyRotation, &desc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransform, &desc)))
 		return E_FAIL;
 
@@ -122,7 +128,7 @@ HRESULT CBoss::SetUp_Component()
 
 
 	m_pTransform->Scaled(_float3(5.f, 5.f, 5.f));
-
+	m_pOnlyRotation->Scaled(_float3(5.f, 5.f, 5.f));
 
 
 	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
@@ -183,16 +189,109 @@ HRESULT CBoss::SetUp_Component()
 
 }
 
-void CBoss::InitArmPosition(_float fTimeDelta)
+_bool CBoss::InitArmPosition(_float fTimeDelta)
 {
 	if (!m_LeftArmTr || !m_RightArmTr)
-		return;
+		return false;
 
-	_float3 pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
-	_float3 right = m_pTransform->Get_State(CTransform::STATE_RIGHT);
-	D3DXVec3Normalize(&right, &right);
-	m_LeftArm->Set_Position(pos - right * 10.f);
-	m_RightArm->Set_Position(pos + right * 10.f);
+	if(!initPos)
+	{
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+		_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+		_float3 vScale = m_pTransform->Get_Scale() * 0.5f;
+
+		D3DXVec3Normalize(&vUp, &vUp);
+		D3DXVec3Normalize(&vRight, &vRight);
+
+		m_LeftTimer = 0.f;
+		m_RightTimer = 0.f;
+
+		Set_ArmPos(ARM_LEFT,m_LeftArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * 10.f - vRight * 20.f, vPos + vUp - vRight * 5.f);
+		Set_ArmPos(ARM_RIGHT, m_RightArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * 10.f + vRight * 20.f, vPos + vUp + vRight * 5.f);
+
+		idlePos = false;
+		initPos = true;
+	}
+
+	if(!idlePos)
+	{
+		_bool leftReach  = Move_By_Bazier(ARM_LEFT,fTimeDelta);
+		_bool rightReadch = Move_By_Bazier(ARM_RIGHT, fTimeDelta);
+
+		if (leftReach && rightReadch)
+		{
+			initPos = false;
+			idlePos = true;
+			return true;
+		}
+	}
+	return false;
+}
+
+void CBoss::Synchronize_Transform()
+{
+	m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
+}
+
+void CBoss::Init_Idle()
+{
+	m_LeftTimer = 0.f;
+	m_RightTimer = 0.f;
+	initPos = false;
+	idlePos = true;
+}
+
+void CBoss::Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end)
+{
+	switch (_arm)
+	{
+	case ARM_LEFT:
+		leftArmBazier[0] = _start;
+		leftArmBazier[1] = _mid;
+		leftArmBazier[2] = _end;
+		break;
+	case ARM_RIGHT:
+		rightArmBazier[0] = _start;
+		rightArmBazier[1] = _mid;
+		rightArmBazier[2] = _end;
+		break;
+	}
+}
+
+void CBoss::Blowing(_float fTimeDelta)
+{
+	m_fTimer += fTimeDelta;
+
+	
+}
+
+_bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
+{
+	switch(_arm)
+	{
+	case ARM_LEFT:
+		if (m_LeftTimer >= 1.f ||  2.f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
+		{
+			m_LeftTimer = 0.f;
+			return true;
+		}
+
+		m_LeftTimer += fTimeDelta * 0.7f;
+		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, pow(1 - m_LeftTimer, 2) * leftArmBazier[0] + 2 * m_LeftTimer * (1 - m_LeftTimer) * leftArmBazier[1] + pow(m_LeftTimer, 2) * leftArmBazier[2]);
+		break;
+	case ARM_RIGHT:
+		if (m_RightTimer >= 1.f || 2.f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
+		{
+			m_RightTimer = 0.f;
+			return true;
+		}
+
+		m_RightTimer += fTimeDelta * 0.7f;
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, pow(1 - m_RightTimer, 2) * rightArmBazier[0] + 2 * m_RightTimer * (1 - m_RightTimer) * rightArmBazier[1] + pow(m_RightTimer, 2) * rightArmBazier[2]);
+		break;
+	}
+	return false;
 
 }
 
@@ -220,7 +319,28 @@ void CBoss::Idle(_float fTimeDelta)
 {
 	// ¸Û¶§¸®±â
 
-	InitArmPosition(fTimeDelta);
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
+	if(p_instance->Get_Key_Press(DIK_P))
+	{
+		_float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+		D3DXVec3Normalize(&vLook, &vLook);
+		m_LeftArmTr->Go_Straight(fTimeDelta);
+		m_RightArmTr->Go_Straight(fTimeDelta);
+	}
+
+	if (p_instance->Get_Key_Down(DIK_O))
+	{
+		m_test = !m_test;
+		
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (m_test && InitArmPosition(fTimeDelta))
+	{
+		Blowing(fTimeDelta);
+	}
 }
 
 void CBoss::Phase(_float fTimeDelta)
@@ -300,6 +420,7 @@ CGameObject* CBoss::Clone(void* pArg)
 void CBoss::Free()
 {
 	__super::Free();
+	Safe_Release(m_pOnlyRotation);
 	Safe_Release(m_pTransform);
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pBuffer);

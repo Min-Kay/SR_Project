@@ -15,11 +15,13 @@ CArm::CArm(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 CArm::CArm(const CArm& rhs)
 	:CEnemy(rhs)
 	,m_pTransform(rhs.m_pTransform)
+	, m_pOnlyRotation(rhs.m_pOnlyRotation)
 	,m_Collider(rhs.m_Collider)
 	,m_pTexture(rhs.m_pTexture)
 	,m_pRenderer(rhs.m_pRenderer)
 	,m_pBuffer(rhs.m_pBuffer)
 {
+	Safe_AddRef(m_pOnlyRotation);
 	Safe_AddRef(m_pTransform);
 	Safe_AddRef(m_Collider);
 	Safe_AddRef(m_pTexture);
@@ -52,6 +54,7 @@ _int CArm::Tick(_float fTimeDelta)
 
 	Mode(fTimeDelta);
 	m_Collider->Set_Collider();
+	Synchronize_Transform();
 
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
@@ -76,7 +79,7 @@ HRESULT CArm::Render()
 	if (Get_Dead())
 		return 0;
 
-	if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
+	if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
 
@@ -96,6 +99,8 @@ HRESULT CArm::SetUp_Component()
 	desc.fRotationPerSec = 90.f;
 	desc.fSpeedPerSec = 5.f;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, TEXT("OnlyRotation"), (CComponent**)&m_pOnlyRotation, &desc)))
+		return E_FAIL;
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransform, &desc)))
 		return E_FAIL;
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_Collider)))
@@ -111,6 +116,7 @@ HRESULT CArm::SetUp_Component()
 
 	
 	m_pTransform->Scaled(_float3(7.f, 7.f, 7.f));
+	m_pOnlyRotation->Scaled(_float3(7.f, 7.f, 7.f));
 
 	m_Collider->Set_ParentInfo(this);
 	m_Collider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
@@ -143,6 +149,11 @@ void CArm::Set_Parent(CBoss* parent)
 void CArm::Set_Player(CPlayer* _player)
 {
 	m_Player = _player; 
+}
+
+void CArm::Synchronize_Transform()
+{
+	m_pOnlyRotation->Set_State(CTransform::STATE_POSITION,m_pTransform->Get_State(CTransform::STATE_POSITION));
 }
 
 void CArm::Add_Position(_float3 _add)
@@ -192,7 +203,7 @@ CGameObject* CArm::Clone(void* pArg)
 void CArm::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pOnlyRotation);
 	Safe_Release(m_Collider);
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pRenderer);
