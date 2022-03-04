@@ -242,6 +242,40 @@ void CBoss::Init_Idle()
 	idlePos = true;
 }
 
+void CBoss::Reset_Arm_Direction(ARM _arm)
+{
+	_float3 vRight, vLook, vUp , vScale;
+	vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+
+	D3DXVec3Normalize(&vRight, &vRight);
+	D3DXVec3Normalize(&vLook, &vLook);
+	D3DXVec3Normalize(&vUp, &vUp);
+
+	switch (_arm)
+	{
+	case ARM_LEFT:
+		vScale = m_LeftArmTr->Get_Scale();
+
+		m_LeftArmTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+		m_LeftArmTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.y);
+		m_LeftArmTr->Set_State(CTransform::STATE_UP, vUp * vScale.z);
+		m_LeftArm->Synchronize_Direction();
+		m_LeftArm->Set_Rolling(false);
+		break;
+	case ARM_RIGHT:
+		vScale = m_RightArmTr->Get_Scale();
+
+		m_RightArmTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+		m_RightArmTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.y);
+		m_RightArmTr->Set_State(CTransform::STATE_UP, vUp * vScale.z);
+		m_RightArm->Synchronize_Direction();
+		m_RightArm->Set_Rolling(false);
+		break;
+	}
+}
+
 void CBoss::Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end)
 {
 	switch (_arm)
@@ -274,6 +308,9 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		if (m_LeftTimer >= 1.f ||  2.f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
 		{
 			m_LeftTimer = 0.f;
+			Reset_Arm_Direction(ARM_LEFT);
+			
+
 			return true;
 		}
 
@@ -284,6 +321,9 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		if (m_RightTimer >= 1.f || 2.f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
 		{
 			m_RightTimer = 0.f;
+
+			Reset_Arm_Direction(ARM_RIGHT);
+
 			return true;
 		}
 
@@ -327,6 +367,12 @@ void CBoss::Idle(_float fTimeDelta)
 		D3DXVec3Normalize(&vLook, &vLook);
 		m_LeftArmTr->Go_Straight(fTimeDelta);
 		m_RightArmTr->Go_Straight(fTimeDelta);
+
+		if (m_LeftArm->Get_OnCollide())
+			m_LeftArm->Set_Rolling(true);
+
+		if (m_RightArm->Get_OnCollide())
+			m_RightArm->Set_Rolling(true);
 	}
 
 	if (p_instance->Get_Key_Down(DIK_O))

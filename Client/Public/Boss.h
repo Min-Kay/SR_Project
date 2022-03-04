@@ -43,6 +43,7 @@ private:
 private:
 	// ³»²¨
 	void Init_Idle();
+	void Reset_Arm_Direction(ARM _arm);
 	_bool InitArmPosition(_float fTimeDelta);
 	_bool Move_By_Bazier(ARM _arm, _float fTimeDelta);
 	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);

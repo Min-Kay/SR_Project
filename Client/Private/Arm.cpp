@@ -56,6 +56,8 @@ _int CArm::Tick(_float fTimeDelta)
 	m_Collider->Set_Collider();
 	Synchronize_Transform();
 
+	Rolling(fTimeDelta);
+
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 	return 0;
@@ -149,6 +151,37 @@ void CArm::Set_Parent(CBoss* parent)
 void CArm::Set_Player(CPlayer* _player)
 {
 	m_Player = _player; 
+}
+
+void CArm::Synchronize_Direction()
+{
+	m_pOnlyRotation->Set_State(CTransform::STATE_RIGHT, m_pTransform->Get_State(CTransform::STATE_RIGHT));
+	m_pOnlyRotation->Set_State(CTransform::STATE_UP, m_pTransform->Get_State(CTransform::STATE_UP));
+	m_pOnlyRotation->Set_State(CTransform::STATE_LOOK, m_pTransform->Get_State(CTransform::STATE_LOOK));
+
+}
+
+void CArm::Set_Rolling(_bool _bool)
+{
+	m_Rolling = _bool;
+}
+
+void CArm::Set_RollingSpeed(_float _speed)
+{
+	m_RollingSpeed = _speed;
+}
+
+const _bool& CArm::Get_OnCollide() const
+{
+	return m_Collider->Get_OnCollide();
+}
+
+void CArm::Rolling(_float fTimeDelta)
+{
+	if (!m_Rolling)
+		return;
+
+	m_pOnlyRotation->Turn(_float3(0.f,1.f,1.f), fTimeDelta * m_RollingSpeed);
 }
 
 void CArm::Synchronize_Transform()

@@ -43,9 +43,14 @@ public:
 	void Set_Parent(CBoss* parent);
 	void Set_Player(CPlayer* _player);
 
+	void Synchronize_Direction();
+	void Set_Rolling(_bool _bool);
+	void Set_RollingSpeed(_float _speed);
+
+	const _bool& Get_OnCollide() const;
 private:
 	void Synchronize_Transform();
-
+	void Rolling(_float fTimeDelta);
 
 private:
 	void Mode(_float fTimeDelta);
@@ -58,6 +63,11 @@ private:
 private:
 	_float m_Timer = 0.f;
 	_float m_AttackTick = 1.f;
+
+private:
+	_bool m_Rolling = false;
+	_float m_RollingSpeed = 0.3f;
+
 private:
 	CTransform* m_pOnlyRotation = nullptr;
 	CTransform* m_pTransform = nullptr;
