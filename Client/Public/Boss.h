@@ -22,7 +22,7 @@ protected:
 	virtual ~CBoss() = default;
 
 public:
-	typedef enum tagBossState {BOSS_IDLE, BOSS_ATTACK,BOSS_PHASECHANGE, BOSS_DIE}BOSSSTATE;
+	typedef enum tagBossState {BOSS_IDLE, BOSS_MOVE, BOSS_ATTACK,BOSS_PHASECHANGE, BOSS_DIE}BOSSSTATE;
 	typedef enum tagBossPhase {BOSS_PHASEONE, BOSS_PHASETWO}BOSSPHASE;
 	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH, BOSSATT_MIXED }BOSSATTACK;
 
@@ -39,6 +39,7 @@ public:
 
 private:
 	void Synchronize_Transform();
+	void Set_BossState(BOSSSTATE _state);
 
 private:
 	// ³»²¨
@@ -49,10 +50,13 @@ private:
 	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);
 	void Blowing(_float fTimeDelta);
 
+	void Init_Move();
+
 
 private:
 	void State_Machine(_float fTimeDelta);
 	void Idle(_float fTimeDelta);
+	void Move(_float fTimeDelta);
 	void Phase(_float fTimeDelta);
 	void Attack(_float fTimeDelta);
 	void Die(_float fTimeDelta);
@@ -75,7 +79,7 @@ private:
 
 private:
 	// ³»²¨
-	_bool m_test = false;
+	_bool m_init = false;
 
 	//Init Idle
 	_bool initPos = false;
@@ -87,6 +91,14 @@ private:
 	_float3  leftArmBazier[3];
 	_float3  rightArmBazier[3];
 
+	_float m_fUpMidPos = 20.f;
+	_float m_fRightMidPos = 30.f;
+
+	_float m_fUpPos = 1.f;
+	_float m_fRightPos = 10.f;
+
+
+	_float m_fMoveLength = 40.f;
 
 
 private:
@@ -97,6 +109,9 @@ private:
 
 private:
 	CPlayer* m_pPlayer = nullptr;
+	CTransform* m_pPlayerTr = nullptr;
+
+
 	CArm* m_LeftArm = nullptr;
 	CArm* m_RightArm = nullptr;
 

@@ -139,7 +139,7 @@ HRESULT CBoss::SetUp_Component()
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
 	m_pPlayer = static_cast<CPlayer*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player")));
-
+	m_pPlayerTr = static_cast<CTransform*>(m_pPlayer->Get_Component(COM_TRANSFORM));
 	
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Arm"), TEXT("Prototype_GameObject_Arm"))))
 	{
@@ -149,7 +149,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_LeftArm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm")))));
 	m_LeftArm->Set_Parent(this);
-	m_LeftArm->Set_Position(vPos - vRight * 3.f);
+	m_LeftArm->Set_Position(vPos - vRight * 15.f);
 	m_LeftArm->Set_Player(m_pPlayer);
 	m_LeftArmTr = static_cast<CTransform*>(m_LeftArm->Get_Component(COM_TRANSFORM));
 
@@ -162,7 +162,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_RightArm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm")))));
 	m_RightArm->Set_Parent(this);
-	m_RightArm->Set_Position(vPos + vRight * 3.f);
+	m_RightArm->Set_Position(vPos + vRight * 15.f);
 	m_RightArm->Set_Player(m_pPlayer);
 	m_RightArmTr = static_cast<CTransform*>(m_RightArm->Get_Component(COM_TRANSFORM));
 
@@ -199,7 +199,6 @@ _bool CBoss::InitArmPosition(_float fTimeDelta)
 		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 		_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
 		_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
-		_float3 vScale = m_pTransform->Get_Scale() * 0.5f;
 
 		D3DXVec3Normalize(&vUp, &vUp);
 		D3DXVec3Normalize(&vRight, &vRight);
@@ -207,8 +206,11 @@ _bool CBoss::InitArmPosition(_float fTimeDelta)
 		m_LeftTimer = 0.f;
 		m_RightTimer = 0.f;
 
-		Set_ArmPos(ARM_LEFT,m_LeftArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * 10.f - vRight * 20.f, vPos + vUp - vRight * 5.f);
-		Set_ArmPos(ARM_RIGHT, m_RightArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * 10.f + vRight * 20.f, vPos + vUp + vRight * 5.f);
+		Set_ArmPos(ARM_LEFT,m_LeftArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * m_fUpMidPos - vRight * m_fRightMidPos, vPos + vUp * m_fUpPos - vRight * m_fRightPos);
+		Set_ArmPos(ARM_RIGHT, m_RightArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * m_fUpMidPos + vRight * m_fRightMidPos, vPos + vUp * m_fUpPos + vRight * m_fRightPos);
+
+		m_RightArm->Set_Rolling(true, _float3(1.f, -1.f, 0.f));
+		m_LeftArm->Set_Rolling(true, _float3(1.f, 1.f, 0.f));
 
 		idlePos = false;
 		initPos = true;
@@ -223,6 +225,7 @@ _bool CBoss::InitArmPosition(_float fTimeDelta)
 		{
 			initPos = false;
 			idlePos = true;
+			m_init = false;
 			return true;
 		}
 	}
@@ -232,10 +235,38 @@ _bool CBoss::InitArmPosition(_float fTimeDelta)
 void CBoss::Synchronize_Transform()
 {
 	m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
+
+	_float3 vRight, vUp, vLook, vScale;
+
+	vRight = m_pOnlyRotation->Get_State(CTransform::STATE_RIGHT);
+	vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+
+	vScale = m_pTransform->Get_Scale();
+
+	vLook = *D3DXVec3Cross(&vLook, &vRight, &vUp);
+	D3DXVec3Normalize(&vRight, &vRight);
+	D3DXVec3Normalize(&vLook, &vLook);
+
+	if (0 >= D3DXVec3Length(&vLook))
+		return;
+
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+}
+
+void CBoss::Set_BossState(BOSSSTATE _state)
+{
+	// 여기에 자기 패턴이나 상태관련 변수 초기화 작성
+	m_fTimer = 0.f;
+	m_State = _state;
+	Init_Idle();
+	Init_Move();
 }
 
 void CBoss::Init_Idle()
 {
+	m_init = true;
 	m_LeftTimer = 0.f;
 	m_RightTimer = 0.f;
 	initPos = false;
@@ -297,6 +328,43 @@ void CBoss::Blowing(_float fTimeDelta)
 {
 	m_fTimer += fTimeDelta;
 
+	m_pTransform->Gravity(0.3f, fTimeDelta);
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-m_pTransform->Get_State(CTransform::STATE_UP), m_pTransform->Get_State(CTransform::STATE_POSITION), 100, true);
+
+	if(collList.empty() || (collList.size() == 1 && collList.front().CollObj == this))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return;
+	}
+
+	auto iter = collList.begin();
+	++iter;
+
+	m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+
+	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 6.f,0.f) + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 2.f));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+
+	D3DXVec3Normalize(&vRight, &vRight);
+	D3DXVec3Normalize(&vUp, &vUp);
+
+	m_LeftArm->Set_Position(vPos - vRight * m_fRightPos - vRight * sinf(D3DXToDegree(m_fTimer * 0.05f)) * 2.f + vUp * m_fUpPos * cosf(D3DXToDegree(m_fTimer * 0.04f)));
+	m_RightArm->Set_Position(vPos + vRight * m_fRightPos + vRight * cosf(D3DXToDegree(m_fTimer * 0.05f)) * 2.f + vUp * m_fUpPos * cosf(D3DXToDegree(m_fTimer * 0.04f)));
+
+
+	Reset_Arm_Direction(ARM_LEFT);
+	Reset_Arm_Direction(ARM_RIGHT);
+
+}
+
+void CBoss::Init_Move()
+{
 	
 }
 
@@ -309,8 +377,6 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		{
 			m_LeftTimer = 0.f;
 			Reset_Arm_Direction(ARM_LEFT);
-			
-
 			return true;
 		}
 
@@ -344,6 +410,9 @@ void CBoss::State_Machine(_float fTimeDelta)
 	case BOSS_IDLE:
 		Idle(fTimeDelta);
 		break;
+	case BOSS_MOVE:
+		Move(fTimeDelta);
+		break;
 	case BOSS_ATTACK:
 		Phase(fTimeDelta);
 		break;
@@ -361,7 +430,7 @@ void CBoss::Idle(_float fTimeDelta)
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
-	if(p_instance->Get_Key_Press(DIK_P))
+	if (p_instance->Get_Key_Press(DIK_P))
 	{
 		_float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
 		D3DXVec3Normalize(&vLook, &vLook);
@@ -369,23 +438,39 @@ void CBoss::Idle(_float fTimeDelta)
 		m_RightArmTr->Go_Straight(fTimeDelta);
 
 		if (m_LeftArm->Get_OnCollide())
-			m_LeftArm->Set_Rolling(true);
+			m_LeftArm->Set_Rolling(true,_float3(1.f, 1.f, 0.f));
 
 		if (m_RightArm->Get_OnCollide())
-			m_RightArm->Set_Rolling(true);
+			m_RightArm->Set_Rolling(true,_float3(1.f,-1.f,0.f));
 	}
 
 	if (p_instance->Get_Key_Down(DIK_O))
 	{
-		m_test = !m_test;
-		
+		Init_Idle();
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	if (m_test && InitArmPosition(fTimeDelta))
+	if(m_fMoveLength <= D3DXVec3Length(&(m_pTransform->Get_State(CTransform::STATE_POSITION) - m_pPlayerTr->Get_State(CTransform::STATE_POSITION))))
+	{
+		Set_BossState(BOSS_MOVE);
+	}
+	else if (!m_init)
 	{
 		Blowing(fTimeDelta);
+	}
+	else
+		InitArmPosition(fTimeDelta);
+
+}
+
+void CBoss::Move(_float fTimeDelta)
+{
+
+
+	if(m_fMoveLength > D3DXVec3Length(&(m_pTransform->Get_State(CTransform::STATE_POSITION) - m_pPlayerTr->Get_State(CTransform::STATE_POSITION))))
+	{
+		Set_BossState(BOSS_IDLE);
 	}
 }
 

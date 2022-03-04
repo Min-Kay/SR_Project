@@ -35,6 +35,8 @@ private:
 	HRESULT Synchronize_Camera_Angle();
 	void	Animate_Gun(_float fTimeDelta);
 
+	void	Spawn_Effect(_uint _index, _float3 _pos);
+
 public:
 	void Set_Vaild(_bool _bool);
 
@@ -53,6 +55,8 @@ private:
 	_float m_fGun_fy = 0.f;
 	_float m_fFrWalk = 0.f;
 	_float m_fFrShoot = 0.f;
+
+
 
 public:
 	static CPortalControl* Create(LPDIRECT3DDEVICE9 pGraphicDevice);

@@ -62,6 +62,9 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 
 _int CImpact::Tick(_float fTimeDelta)
 {
+	if (Get_Dead())
+		return 0;
+
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
@@ -87,6 +90,9 @@ _int CImpact::Tick(_float fTimeDelta)
 
 _int CImpact::LateTick(_float fTimeDelta)
 {
+	if (Get_Dead())
+		return 0;
+
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
@@ -100,6 +106,8 @@ _int CImpact::LateTick(_float fTimeDelta)
 
 HRESULT CImpact::Render()
 {
+	
+
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
@@ -119,14 +127,7 @@ HRESULT CImpact::Render()
 
 
 	if (m_Impact.deleteCount <= 0)
-	{
-
-		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-		p_instance->Release_GameObject(LEVEL_STAGEONE, TEXT("Impact"), this);
-
-		RELEASE_INSTANCE(CGameInstance);
-
-	}
+		Set_Dead(true);
 	return S_OK;
 }
 

@@ -36,7 +36,7 @@ private:
 
 	_float	m_iBoxSize = 80.f; //<-여기 바꾸면 전체크기다 바뀜 
 	_float HalfBoxSize = m_iBoxSize * 0.5f;
-	_float WallSize = 1.f;//벽의 두께
+	_float WallSize = 5.f;//벽의 두께
 	_float HalfWallSize = WallSize * 0.5;//벽의 두께
 
 

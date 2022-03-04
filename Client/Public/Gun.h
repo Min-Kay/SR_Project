@@ -34,6 +34,9 @@ public:
 private:
 	void Fire();
 	void SynchroBullet();
+
+	void Spark(_float3 _point);
+	void Spawn_BulletHole(_float3 _point, _float3 _nor);
 private:
 	HRESULT SetUp_UI();
 	void Animate(_float fTimeDelta);
@@ -71,7 +74,7 @@ private:
 	_int m_iCurrSpread = 0;
 	_uint m_iSpread = 3;
 
-	_float m_fRange = 10.f; 
+	_float m_fRange = 30.f; 
 
 	_float m_fRebound = 1.f;
 

@@ -44,7 +44,7 @@ public:
 	void Set_Player(CPlayer* _player);
 
 	void Synchronize_Direction();
-	void Set_Rolling(_bool _bool);
+	void Set_Rolling(_bool _bool, _float3 axis = _float3(0.f,1.f,0.f));
 	void Set_RollingSpeed(_float _speed);
 
 	const _bool& Get_OnCollide() const;
@@ -58,6 +58,8 @@ private:
 private:
 	ARMSTATE m_State = ARM_IDLE;
 	CBoss* m_Parent = nullptr;
+	CTransform* m_ParentTr = nullptr;
+
 	CPlayer* m_Player = nullptr;
 
 private:
@@ -67,6 +69,7 @@ private:
 private:
 	_bool m_Rolling = false;
 	_float m_RollingSpeed = 0.3f;
+	_float3 m_RollingAxis = _float3(0.f, 1.f, 0.f);
 
 private:
 	CTransform* m_pOnlyRotation = nullptr;

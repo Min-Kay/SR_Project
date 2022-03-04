@@ -116,8 +116,6 @@ void CGun::Shoot(_float fTimeDelta)
 void CGun::Fire()
 {
 
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-
 	mt19937 ranX(rd());
 	mt19937 ranY(rd());
 
@@ -153,6 +151,7 @@ void CGun::Fire()
 
 	D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
 
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->StopSound(CSoundMgr::WEAPON_EFFECT1);
 	p_instance->Play_Sound(TEXT("Shot.wav"), CSoundMgr::WEAPON_EFFECT1, 1.0f);
 
@@ -177,48 +176,11 @@ void CGun::Fire()
 		break;
 	}
 
-	CImpact::IMPACT Impact1;
-	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = point;
-	Impact1.Size = _float3(0.1f, 0.1f, 0.1f);
-	Impact1.randomPos = 5;
-	Impact1.deleteCount = 1;//rand() % 5 + 2;
-	Impact1.DeleteImpact = false;
-	Impact1.Color = D3DXCOLOR(0.0, 0.1, 0.9, 0.0);
-
-	for (int i = 0; i < 20; ++i)
-	{
-		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
-		{
-			RELEASE_INSTANCE(CGameInstance);
-			return;
-		}
-	}
+	
+	Spark(point);
 
 	if(hittedObj->Get_Type() == OBJ_STATIC)
-	{
-		CEffect::EFFECTDESC eDesc;
-		ZeroMemory(&eDesc, sizeof(eDesc));
-
-		eDesc.Texture = TEXT("Prototype_Component_Texture_Gun_BulletHole");
-		eDesc.FrameCount = 4;
-		eDesc.Alpha = CEffect::EFFECTALPHA_BLEND;
-		eDesc.Bilboard = false;
-		eDesc.Style = CEffect::EFFECTSTYLE_FIX;
-		eDesc.LifeTime = 5.f;
-		eDesc.Tick = true;
-
-		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BulletHole"), PROTO_EFFECT, &eDesc)))
-			return;
-
-		CGameObject* p_ball = p_instance->Get_GameObject_End(g_CurrLevel, TEXT("BulletHole"));
-		static_cast<CEffect*>(p_ball)->Set_CurrentFrameIndex(rand() % eDesc.FrameCount);
-
-		CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
-		tr->Scaled(_float3(0.1f, 0.1f, 0.1f));
-		tr->Set_State(CTransform::STATE_POSITION, point + nor * 0.01f);
-		tr->LookAt(tr->Get_State(CTransform::STATE_POSITION) - nor * 0.1f);
-	}
+		Spawn_BulletHole(point,nor);
 	else if(hittedObj->Get_Type() == OBJ_ENEMY)
 	{
 		static_cast<CEnemy*>(hittedObj)->Add_HP(-m_iDamage);
@@ -508,6 +470,64 @@ void CGun::SynchroBullet()
 	m_iCurrTens = (m_iCurrBulletCount % 100) / 10;
 	m_pCurrBullet_UI_1->Set_CurrFrameIndex(m_iCurrUnits);
 	m_pCurrBullet_UI_2->Set_CurrFrameIndex(m_iCurrTens);
+}
+
+void CGun::Spark(_float3 _point)
+{
+	CImpact::IMPACT Impact1;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Pos = _point;
+	Impact1.Size = _float3(0.03f, 0.03f, 0.03f);
+	Impact1.randomPos = 3;
+	Impact1.deleteCount = 1.f;//rand() % 5 + 2;
+	Impact1.DeleteImpact = false;
+	Impact1.Speed = 10.f;
+	Impact1.Gradation = CImpact::GRADATION_DOWN;
+	Impact1.Color = D3DXCOLOR(1.0f, 1.0f, 0.0f, 0.0f);
+	Impact1.ChangeColor = D3DXCOLOR(0.005f, 0.15f, 0.0f, 0.0f);
+
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	for (int i = 0; i < rand() % 10 + 30; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact_Gun"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
+
+}
+
+void CGun::Spawn_BulletHole(_float3 _point, _float3 _nor)
+{
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	CEffect::EFFECTDESC eDesc;
+	ZeroMemory(&eDesc, sizeof(eDesc));
+
+	eDesc.Texture = TEXT("Prototype_Component_Texture_Gun_BulletHole");
+	eDesc.FrameCount = 4;
+	eDesc.Alpha = CEffect::EFFECTALPHA_BLEND;
+	eDesc.Bilboard = false;
+	eDesc.Style = CEffect::EFFECTSTYLE_FIX;
+	eDesc.LifeTime = 5.f;
+	eDesc.Tick = true;
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BulletHole"), PROTO_EFFECT, &eDesc)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return;
+	}
+
+	CGameObject* p_ball = p_instance->Get_GameObject_End(g_CurrLevel, TEXT("BulletHole"));
+	static_cast<CEffect*>(p_ball)->Set_CurrentFrameIndex(rand() % eDesc.FrameCount);
+
+	CTransform* tr = static_cast<CTransform*>(p_ball->Get_Component(COM_TRANSFORM));
+	tr->Scaled(_float3(0.1f, 0.1f, 0.1f));
+	tr->Set_State(CTransform::STATE_POSITION, _point + _nor * 0.01f);
+	tr->LookAt(tr->Get_State(CTransform::STATE_POSITION) - _nor * 0.1f);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 

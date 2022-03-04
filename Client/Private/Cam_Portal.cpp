@@ -96,7 +96,6 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
         return E_FAIL;
 
     m_pTextureCom->Add_Texture(g_iWinCX,g_iWinCY);
-    m_TextureIndex = 0;
     LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(0);
     (static_cast<LPDIRECT3DTEXTURE9>(texture))->GetSurfaceLevel(0, &m_pSurface);
 

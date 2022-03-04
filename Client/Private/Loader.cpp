@@ -36,6 +36,7 @@
 
 #include "Level.h"
 #include "Level_StageOne.h"
+#include "Missile.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -288,6 +289,15 @@ HRESULT CLoader::Loading_ForStageOne()
 HRESULT CLoader::Loading_ForStageTwo()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
+	// ** Component **
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Targeting"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Effect/Targeting.png")))))
+		return E_FAIL;
+
+
+	// ** GameObject **
+
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Boss"), CBoss::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
@@ -296,6 +306,11 @@ HRESULT CLoader::Loading_ForStageTwo()
 
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_BazierBullet"), CBazierBullet::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Missile"), CMissile::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+
 
 	RELEASE_INSTANCE(CGameInstance);
 

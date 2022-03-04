@@ -204,38 +204,10 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 		Safe_AddRef(m_pPortal_Blue);
 	}
 
-	CImpact::IMPACT Impact1;
-	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = portalDesc.vEye;
-	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
-	Impact1.randomPos = 5;
-	Impact1.Speed = 5;
-	Impact1.deleteCount = 1;//rand() % 5 + 2;
-	Impact1.DeleteImpact = false;
-	if (iIndex == CPortal::PORTAL_ORANGE)
-	{
-		Impact1.Gradation = CImpact::GRADATION_DOWN;
-		Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
-		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0f, 0.0f);
-	}
-
-	else
-	{
-		Impact1.Gradation = CImpact::GRADATION_UP;
-		Impact1.Color = D3DXCOLOR(0.0f, 0.1f, 0.8f, 0.0f);
-		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0001f, 0.0f);
-	}
-
-	for (int i = 0; i < rand() % 10 + 25; ++i)
-	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
-		{
-			RELEASE_INSTANCE(CGameInstance);
-			return E_FAIL;
-		}
-	}
-
 	RELEASE_INSTANCE(CGameInstance);
+
+	Spawn_Effect(iIndex, portalDesc.vEye);
+
 
 	if (FAILED(Synchronize_Camera_Angle()))
 		return E_FAIL;
@@ -406,6 +378,42 @@ void CPortalControl::Animate_Gun(_float fTimeDelta)
 
 	m_pPortal_Gun_UI->Set_Pos(m_fGun_fx + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.3f, m_fGun_fy + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.3f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPortalControl::Spawn_Effect(_uint _index, _float3 _pos)
+{
+	CImpact::IMPACT Impact1;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Pos = _pos;
+	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
+	Impact1.randomPos = 5;
+	Impact1.Speed = 5;
+	Impact1.deleteCount = 1;//rand() % 5 + 2;
+	Impact1.DeleteImpact = false;
+	if (_index == CPortal::PORTAL_ORANGE)
+	{
+		Impact1.Gradation = CImpact::GRADATION_DOWN;
+		Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
+		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0f, 0.0f);
+	}
+
+	else
+	{
+		Impact1.Gradation = CImpact::GRADATION_UP;
+		Impact1.Color = D3DXCOLOR(0.0f, 0.1f, 0.8f, 0.0f);
+		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0001f, 0.0f);
+	}
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	for (int i = 0; i < rand() % 10 + 25; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
 	RELEASE_INSTANCE(CGameInstance);
 }
 

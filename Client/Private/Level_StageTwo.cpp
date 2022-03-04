@@ -162,11 +162,6 @@ HRESULT CLevel_StageTwo::Ready_Layer_Player(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
-	CTransform* tr = static_cast<CTransform*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, pLayerTag, 0)->Get_Component(COM_TRANSFORM));
-
-	tr->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 0.f));
-	
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -182,6 +177,10 @@ HRESULT CLevel_StageTwo::Ready_Layer_Monster(const _tchar* pLayerTag)
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
 	}
+
+	CTransform* tr = static_cast<CTransform*>(pGameInstance->Get_GameObject_End(LEVEL_STAGETWO, TEXT("Boss"))->Get_Component(COM_TRANSFORM));
+	tr->Set_State(CTransform::STATE_POSITION, _float3(10.f, 10.f, 10.f));
+
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Bazier"), TEXT("Prototype_GameObject_BazierBullet"))))
 	{
@@ -212,7 +211,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 	//실제 보이는 박스
 	BottomTrans->Scaled(_float3(m_iBoxSize, m_iBoxSize, m_iBoxSize));
 	BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90.f));
-	BottomTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 0.f));
+	BottomTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f, -10.f, 0.f));
 	CBoxCollider* box = static_cast<CBoxCollider*>(BottomTile->Get_Component(COM_COLLIDER));
 	//충돌박스
 	box->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, WallSize, m_iBoxSize));

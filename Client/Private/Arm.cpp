@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Arm.h"
+
+#include "Boss.h"
 #include "Transform.h"
 #include "BoxCollider.h"
 #include "VIBuffer_Cube.h"
@@ -146,6 +148,7 @@ void CArm::Move_Dir(_float3 dir, _float range)
 void CArm::Set_Parent(CBoss* parent)
 {
 	m_Parent = parent;
+	m_ParentTr = static_cast<CTransform*>(m_Parent->Get_Component(COM_TRANSFORM));
 }
 
 void CArm::Set_Player(CPlayer* _player)
@@ -161,9 +164,10 @@ void CArm::Synchronize_Direction()
 
 }
 
-void CArm::Set_Rolling(_bool _bool)
+void CArm::Set_Rolling(_bool _bool, _float3 axis)
 {
 	m_Rolling = _bool;
+	m_RollingAxis = axis;
 }
 
 void CArm::Set_RollingSpeed(_float _speed)
@@ -181,12 +185,13 @@ void CArm::Rolling(_float fTimeDelta)
 	if (!m_Rolling)
 		return;
 
-	m_pOnlyRotation->Turn(_float3(0.f,1.f,1.f), fTimeDelta * m_RollingSpeed);
+	m_pOnlyRotation->Turn(m_RollingAxis, fTimeDelta * m_RollingSpeed);
 }
 
 void CArm::Synchronize_Transform()
 {
-	m_pOnlyRotation->Set_State(CTransform::STATE_POSITION,m_pTransform->Get_State(CTransform::STATE_POSITION));
+	m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
+
 }
 
 void CArm::Add_Position(_float3 _add)
