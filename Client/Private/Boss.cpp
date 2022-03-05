@@ -265,9 +265,12 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 {
 	// 여기에 자기 패턴이나 상태관련 변수 초기화 작성
 	m_fTimer = 0.f;
-	m_State = _state;
+
 	Init_Idle();
 	Init_Move();
+
+	m_State = _state;
+	
 }
 
 void CBoss::Init_Idle()
@@ -277,6 +280,10 @@ void CBoss::Init_Idle()
 	m_RightTimer = 0.f;
 	initPos = false;
 	idlePos = true;
+
+	if (m_State == BOSS_MOVE || m_State == BOSS_IDLE)
+		return;
+
 	m_Resizing = false;
 	m_Sizing = false;
 	m_Reset = false;
