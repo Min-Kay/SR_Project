@@ -45,6 +45,9 @@ void Client::CEnemy::Set_HP(_int _hp)
 
 void Client::CEnemy::Add_HP(_int _add)
 {
+	if (m_Invincible && _add < 0)
+		return;
+
 	m_Hp += _add;
 }
 

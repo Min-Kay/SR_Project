@@ -32,7 +32,9 @@ _int CLevel_Loading::Tick(_float fTimeDelta)
 	{
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		p_instance->SetMouseMode(true, nullptr);
+		p_instance->StopAll();
 		RELEASE_INSTANCE(CGameInstance);
+
 		m_setting = true;
 	}
 

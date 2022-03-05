@@ -36,6 +36,7 @@ protected:
 protected:
 	_int m_Hp;
 	_int m_Damage;
+	_bool m_Invincible = false;
 
 protected:
 	_bool m_Portaling = false;

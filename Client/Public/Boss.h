@@ -56,6 +56,7 @@ private:
 	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);
 	void Blowing(_float fTimeDelta);
 	void Randomize_Pattern(_float fTimeDelta);
+	void Sizing_Particles();
 
 private:
 	void State_Machine(_float fTimeDelta);
@@ -69,7 +70,6 @@ private:
 	void Attack_Missile(_float fTimeDelta);
 	void Attack_Punch(_float fTimeDelta);
 	void Attack_Mixed(_float fTimeDelta);
-
 private:
 	_float m_fTimer = 0.f; 
 	_uint m_ImageIndex = 0;

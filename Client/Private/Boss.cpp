@@ -9,6 +9,7 @@
 #include "GameInstance.h"
 
 #include "Arm.h"
+#include "Impact.h"
 #include "Player.h"
 #include "Texture.h"
 
@@ -74,9 +75,13 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	if (Check_HP())
+	if (m_State != BOSS_DIE && Check_HP())
 	{
 		m_ImageIndex = 2;
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+		p_instance->Play_Sound(TEXT("Boss_Die.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
+		RELEASE_INSTANCE(CGameInstance);
 		Set_BossState(BOSS_DIE);
 	}
 
@@ -196,17 +201,18 @@ HRESULT CBoss::SetUp_Component()
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_vScale);
 
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
+
+	p_instance->PlayBGM(TEXT("Boss_Stage.wav"));
+
+	p_instance->Play_Sound(TEXT("Boss_Sound.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (!m_pPlayer || !m_RightArm || !m_LeftArm)
-	{
-		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
-	}
-
+	
 	m_Hp = 100;
 	m_Damage = 10;
-
+	
 	return S_OK; 
 
 }
@@ -288,7 +294,6 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 {
 	// 여기에 자기 패턴이나 상태관련 변수 초기화 작성
 	m_fTimer = 0.f;
-	m_AttPatternTimer = 0.f;
 
 	Init_Idle();
 
@@ -312,13 +317,52 @@ void CBoss::Init_Idle()
 	m_Reset = false;
 }
 
+void CBoss::Sizing_Particles()
+{
+	CImpact::IMPACT Impact1;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
+	Impact1.randomPos = 5;
+	Impact1.Speed = 5;
+	Impact1.deleteCount = 1;//rand() % 5 + 2;
+	Impact1.DeleteImpact = false;
+	Impact1.Gradation = CImpact::GRADATION_UP;
+	Impact1.Color = D3DXCOLOR(0.0f, 0.1f, 0.8f, 0.0f);
+	Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0001f, 0.0f);
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	for (int i = 0; i < rand() % 10 + 25; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+
 void CBoss::Resizing(_float fTimeDelta)
 {
-	m_fTimer += fTimeDelta * 1.5f;
+	if(m_fTimer == 0.f)
+	{
+		m_Invincible = true;
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		//p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
+		p_instance->Play_Sound(TEXT("Resizing.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
+		RELEASE_INSTANCE(CGameInstance);
+	}
+
+
+	m_fTimer += fTimeDelta * 1.8f;
 
 	m_pOnlyRotation->Turn(m_SizingAxis, fTimeDelta * 0.3f);
 
 	m_pOnlyRotation->Scaled(_float3(m_vScale.x - m_fTimer, m_vScale.y - m_fTimer, m_vScale.z - m_fTimer));
+
+	Sizing_Particles();
 
 	if(m_pOnlyRotation->Get_Scale().x <= 0.1f)
 	{
@@ -332,11 +376,13 @@ void CBoss::Resizing(_float fTimeDelta)
 
 void CBoss::Sizing(_float fTimeDelta)
 {
-	m_fTimer += fTimeDelta * 1.5f;
+	m_fTimer += fTimeDelta * 1.8f;
 
 	m_pOnlyRotation->Turn(-m_SizingAxis, fTimeDelta * 0.3f);
 
 	m_pOnlyRotation->Scaled(_float3( m_fTimer,  m_fTimer, m_fTimer));
+
+	Sizing_Particles();
 
 	if (m_fTimer >= m_vScale.x)
 	{
@@ -445,6 +491,7 @@ void CBoss::Randomize_Pattern(_float fTimeDelta)
 		if(m_AttPatternTimer > 5.f)
 		{
 			m_AttState = (BOSSATTACK)(rand() % 2);
+			m_AttPatternTimer = 0.f;
 			Set_BossState(BOSS_ATTACK);
 		}
 	}
@@ -486,7 +533,6 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 
 void CBoss::State_Machine(_float fTimeDelta)
 {
-	m_fTimer += fTimeDelta;
 	Randomize_Pattern(fTimeDelta);
 	switch (m_State)
 	{
@@ -522,7 +568,13 @@ void CBoss::Idle(_float fTimeDelta)
 	else if(!m_Reset)
 	{
 		if(InitArmPosition(fTimeDelta))
+		{
+			m_Invincible = false;
 			m_Reset = true;
+			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+			p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+			RELEASE_INSTANCE(CGameInstance);
+		}
 	}
 	else if(m_fMoveLength <= D3DXVec3Length(&(m_pTransform->Get_State(CTransform::STATE_POSITION) - m_pPlayerTr->Get_State(CTransform::STATE_POSITION))))
 	{
@@ -629,6 +681,11 @@ void CBoss::Die(_float fTimeDelta)
 
 	if(m_pTransform->Get_OnCollide() && m_LeftArmTr->Get_OnCollide() && m_RightArmTr->Get_OnCollide())
 	{
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+		RELEASE_INSTANCE(CGameInstance);
 		static_cast<CBoxCollider*>(m_LeftArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
 		m_pCollider->Set_Dead(true);
 		static_cast<CBoxCollider*>(m_RightArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
@@ -641,11 +698,23 @@ void CBoss::Die(_float fTimeDelta)
 void CBoss::Attack_Missile(_float fTimeDelta)
 {
 	// 미사일
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
+	p_instance->Play_Sound(TEXT("Boss_AttackAlarm.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
+	RELEASE_INSTANCE(CGameInstance);
+
+	Set_BossState(BOSS_IDLE);
 }
 
 void CBoss::Attack_Punch(_float fTimeDelta)
 {
 	// 펀치
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
+	p_instance->Play_Sound(TEXT("Boss_AttackAlarm1.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
+	RELEASE_INSTANCE(CGameInstance);
+
+	Set_BossState(BOSS_IDLE);
 
 }
 
