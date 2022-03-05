@@ -30,6 +30,8 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+
+
 private:
 	/* ÅØ½ºÃÄ */
 	CTexture*			m_pTextureCom = nullptr;
@@ -48,6 +50,8 @@ private:
 
 	_float				m_fFrame = 0.f;
 	_float				m_iCount = 0.f;
+
+	CPlayer*			m_Player = nullptr;
 private:
 	HRESULT SetUp_Components();
 

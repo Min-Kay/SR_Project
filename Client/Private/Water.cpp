@@ -33,8 +33,6 @@ HRESULT CWater::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Set_Type(OBJ_STATIC);
-
-
 	return S_OK;
 }
 
@@ -43,43 +41,37 @@ _int CWater::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	if (!m_Player)
+	{
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		m_Player = static_cast<CPlayer*>(p_instance->Get_GameObject_End(g_CurrLevel,TEXT("Layer_Player")));
+		RELEASE_INSTANCE(CGameInstance); 
+	}
+
 	m_fFrame += 4.0f * fTimeDelta;
 
 	if (m_fFrame >= 4.0f)
 		m_fFrame = 0.f;
+
+	if (m_pBoxColliderCom)
+		m_pBoxColliderCom->Set_Collider();
+
 	m_iCount += fTimeDelta;
-
-
-		if (m_pBoxColliderCom)
-			m_pBoxColliderCom->Set_Collider();
-
-		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-		
 	if(m_Player)
 	{
-		
-		list<CGameObject*> test = p_instance->Get_Collision_List(m_pBoxColliderCom);
-
-		for (auto & iter : test)
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		if(p_instance->Get_Collide(m_pBoxColliderCom,static_cast<CBoxCollider*>(m_Player->Get_Component(COM_COLLIDER))))
 		{
-				
-			if (OBJ_PLAYER == iter->Get_Type())
+			if (m_iCount > 1.0)
 			{
-				if (m_iCount > 1.5)
-				{
-					m_Player->Add_Hp(-50);
-					m_iCount = 0;
-
-				}
+				m_Player->Add_Hp(-50);
+				m_iCount = 0;
 
 			}
-
-		
 		}
-
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
-	RELEASE_INSTANCE(CGameInstance);
 	
 	return _int();
 }

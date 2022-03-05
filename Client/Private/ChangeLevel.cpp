@@ -45,34 +45,20 @@ _int CChangeLevel::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	m_iCount += fTimeDelta;
+	if (m_pBoxColliderCom)
+		m_pBoxColliderCom->Set_Collider();
 
-
-		if (m_pBoxColliderCom)
-			m_pBoxColliderCom->Set_Collider();
-
+	if(!m_Player)
+	{
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-		
+		m_Player = static_cast<CPlayer*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player")));
+		RELEASE_INSTANCE(CGameInstance);
+	}
 
-	
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		
-		list<CGameObject*> test = p_instance->Get_Collision_List(m_pBoxColliderCom);
-
-		for (auto & iter : test)
-		{
-				
-			if (OBJ_PLAYER == iter->Get_Type())
-			{
+		if(p_instance->Get_Collide(m_pBoxColliderCom,static_cast<CBoxCollider*>(m_Player->Get_Component(COM_COLLIDER))))
 				m_bLevelOut = true;
-			}
-
-		
-		}
-
-		if (p_instance->Get_Key_Down(DIK_P))
-		{
-			m_bLevelOut = true;
-		}
 
 	RELEASE_INSTANCE(CGameInstance);
 	
@@ -152,6 +138,10 @@ HRESULT CChangeLevel::SetUp_Components()
 	m_pBoxColliderCom->Set_Collider();
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
+
+
+	m_Player = static_cast<CPlayer*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player")));
+
 	RELEASE_INSTANCE(CGameInstance);
 	
 	return S_OK;

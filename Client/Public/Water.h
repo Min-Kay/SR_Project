@@ -29,6 +29,11 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Set_Player(CPlayer* _player) {
+		m_Player = _player;
+	}
+
 private:
 	/* ÅØ½ºÃÄ */
 	CTexture*				m_pTextureCom = nullptr;
@@ -54,7 +59,7 @@ private:
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
 
-	CPlayer*		m_Player;
+	CPlayer*		m_Player = nullptr;
 public:
 	static CWater* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ChangeLevel.h"
 #include "Client_Defines.h"
 #include "Level.h"
 
@@ -21,6 +22,7 @@ private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Map();
+	HRESULT Ready_Layer_Event();
 	HRESULT Ready_Layer_Second_Entrance();
 	HRESULT Ready_Layer_Monster_Map();
 	HRESULT Ready_Layer_Next_Stage();
@@ -51,6 +53,8 @@ private:
 	CTile_Cube* m_EventCube1 = nullptr;
 	CTile_Cube* m_EventCube2 = nullptr;
 	CTile_Cube* m_EventCube3 = nullptr;
+
+	CChangeLevel* m_Change = nullptr;
 
 
 public:

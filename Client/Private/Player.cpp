@@ -86,10 +86,10 @@ _int CPlayer::LateTick(_float fTimeDelta)
 		return -1;
 
 
-	if (m_Info.Hp < 0)
+	if (m_HP < 0)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_Info.Pos));
-		m_Info.Hp = 100;
+		m_HP = m_Info.Hp;
 	}
 
 	if (FAILED(Synchronize_Camera()))
