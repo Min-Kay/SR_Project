@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Texture.h"
 
+#include "AttackRange.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -200,6 +201,18 @@ HRESULT CBoss::SetUp_Component()
 	m_pOnlyRotation->Scaled(m_vScale);
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_vScale);
 
+	//
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Layer_AttackRange"), TEXT("Prototype_GameObject_AttackRange"))))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+	m_pAttackRange = static_cast<CAttackRange*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_AttackRange")));
+	m_RangeTrans = static_cast<CTransform*>(m_pAttackRange->Get_Component(COM_TRANSFORM));
+
+	//m_RangeTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 0.f));
+	//
+
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
 
 	p_instance->PlayBGM(TEXT("Boss_Stage.wav"));
@@ -322,17 +335,14 @@ void CBoss::Sizing_Particles()
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
 	Impact1.Pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
-	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
-	Impact1.randomPos = 5;
-	Impact1.Speed = 5;
-	Impact1.deleteCount = 1;//rand() % 5 + 2;
-	Impact1.DeleteImpact = false;
-	Impact1.Gradation = CImpact::GRADATION_UP;
-	Impact1.Color = D3DXCOLOR(0.0f, 0.1f, 0.8f, 0.0f);
-	Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0001f, 0.0f);
+	Impact1.Size = _float3(0.1f, 0.1f, 0.1f);
+	Impact1.randomPos = 7;
+	Impact1.Speed = 15;
+	Impact1.deleteCount = 2;//rand() % 5 + 2;
+	Impact1.Color = D3DXCOLOR(0.0f, 0.5f, 1.0f, 0.0f);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	for (int i = 0; i < rand() % 10 + 25; ++i)
+	for (int i = 0; i < 10 ; ++i)
 	{
 		if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
 		{
@@ -350,7 +360,6 @@ void CBoss::Resizing(_float fTimeDelta)
 	{
 		m_Invincible = true;
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-		//p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
 		p_instance->Play_Sound(TEXT("Resizing.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
 		RELEASE_INSTANCE(CGameInstance);
 	}
@@ -511,7 +520,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		}
 
 		m_LeftTimer += fTimeDelta * 0.7f;
-		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, (_float)pow(1 - m_LeftTimer, 2) * leftArmBazier[0] + 2 * m_LeftTimer * (1 - m_LeftTimer) * leftArmBazier[1] + (_float)pow(m_LeftTimer, 2)* leftArmBazier[2]);
+		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, powf(1 - m_LeftTimer, 2) * leftArmBazier[0] + 2 * m_LeftTimer * (1 - m_LeftTimer) * leftArmBazier[1] + powf(m_LeftTimer, 2)* leftArmBazier[2]);
 		break;
 	case ARM_RIGHT:
 		if (m_RightTimer >= 1.f || 2.f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
@@ -524,7 +533,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		}
 
 		m_RightTimer += fTimeDelta * 0.7f;
-		m_RightArmTr->Set_State(CTransform::STATE_POSITION, (_float)pow(1 - m_RightTimer, 2) * rightArmBazier[0] + 2 * m_RightTimer * (1 - m_RightTimer) * rightArmBazier[1] + (_float)pow(m_RightTimer, 2) * rightArmBazier[2]);
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, powf(1 - m_RightTimer, 2) * rightArmBazier[0] + 2 * m_RightTimer * (1 - m_RightTimer) * rightArmBazier[1] + powf(m_RightTimer, 2) * rightArmBazier[2]);
 		break;
 	}
 	return false;
@@ -658,6 +667,7 @@ void CBoss::Phase(_float fTimeDelta)
 
 void CBoss::Attack(_float fTimeDelta)
 {
+	m_AttState = BOSSATT_PUNCH;
 	// 1페이즈 패턴 구현
 	switch (m_AttState)
 	{
@@ -712,17 +722,50 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
 	p_instance->Play_Sound(TEXT("Boss_AttackAlarm1.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
-	RELEASE_INSTANCE(CGameInstance);
 
-	Set_BossState(BOSS_IDLE);
+	if (m_State != BOSS_ATTACK)
+		return;
+
+
+	if (m_bCalled)
+	{
+		_float3 LAposition = m_LeftArmTr->Get_State(CTransform::STATE_POSITION);
+		_float3 P1 = m_LeftArmTr->Get_State(CTransform::STATE_UP);
+		_float3 pPos = m_pPlayerTr->Get_State(CTransform::STATE_POSITION);
+		m_RangeTrans->Set_State(CTransform::STATE_POSITION, _float3(pPos.x, pPos.y - 0.3f, pPos.z));
+		_float3 RangePos = m_RangeTrans->Get_State(CTransform::STATE_POSITION);
+
+		Set_ArmPos(ARM_LEFT, LAposition, P1, RangePos);
+		m_bCalled = false;
+	}
+
+
+	Move_By_Bazier(ARM_LEFT, fTimeDelta);
+
+	/*
+		player와 각 팔의 거리 구해서 더 가까운 쪽의 주먹이 움직일 수 있도록 switch문을 이용해서 함수
+
+		주먹 날리고 회수하는 플레이어 위치에 도달했을때
+		reset함수 호출하기
+		플레이어한테 주먹 날리기 미ㅏㄴ;어리만;어라ㅣ;ㅁ니ㅏㅓㅣㅏㅓ;ㄴㅇㄹ;ㅣㅓㄴ암ㄹ;ㅣㅏㅓ
+
+		1. 주먹 날리기 딱한번만 플레이어 위치 저장하기
+
+		2. 주먹 지르고 나면 패턴 끝내기
+
+		3. 플레이어 위치에 따라 오른쪽나갈지 왼쪽 나갈지 정하기
+	*/
+
+
+	RELEASE_INSTANCE(CGameInstance);
 
 }
 
 void CBoss::Attack_Mixed(_float fTimeDelta)
 {
-	 // 주먹 와리가리
+	// 주먹 와리가리
 	m_fTimer += fTimeDelta;
-
+	
 
 
 

@@ -2,6 +2,7 @@
 #include "Loader.h"
 
 #include "Arm.h"
+#include "AttackRange.h"
 #include "GameInstance.h"
 
 #include "Player.h"
@@ -303,6 +304,11 @@ HRESULT CLoader::Loading_ForStageTwo()
 		return E_FAIL;
 
 
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_AttackRange"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Range.png")))))
+		return E_FAIL;
+
+
+
 	// ** GameObject **
 
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Boss"), CBoss::Create(m_pGraphic_Device))))
@@ -317,6 +323,9 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Missile"), CMissile::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype Game Object_AttackRange*/
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_AttackRange"), CAttackRange::Create(m_pGraphic_Device))))
+		return E_FAIL;
 
 
 	RELEASE_INSTANCE(CGameInstance);

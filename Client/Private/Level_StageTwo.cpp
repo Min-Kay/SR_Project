@@ -141,7 +141,6 @@ HRESULT CLevel_StageTwo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

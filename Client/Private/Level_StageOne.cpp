@@ -26,8 +26,8 @@ HRESULT CLevel_StageOne::NativeConstruct()
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_Map()))
-		//return E_FAIL;
+	if (FAILED(Ready_Layer_Map()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Second_Entrance()))
 		return E_FAIL;
@@ -75,32 +75,32 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 	if(0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	//if(!m_Open_1)
-	//{
-	//	if (FAILED(Open_Exit()))
-	//	{
-	//		MSGBOX("Failed to Open_Exit in CLevel_StageOne");
-	//		return E_FAIL;
-	//	}
-	//}
+	if(!m_Open_1)
+	{
+		if (FAILED(Open_Exit()))
+		{
+			MSGBOX("Failed to Open_Exit in CLevel_StageOne");
+			return E_FAIL;
+		}
+	}
 
-	//if(m_Open_1 && !m_Open_2)
-	//{
-	//	if (FAILED(Close_Exit_Open_Door2()))
-	//	{
-	//		MSGBOX("Failed to Close_Exit_Open_Door2 in CLevel_StageOne");
-	//		return E_FAIL;
-	//	}
-	//}
+	if(m_Open_1 && !m_Open_2)
+	{
+		if (FAILED(Close_Exit_Open_Door2()))
+		{
+			MSGBOX("Failed to Close_Exit_Open_Door2 in CLevel_StageOne");
+			return E_FAIL;
+		}
+	}
 
-	//if(m_Open_2 && !m_Open_3)
-	//{
-	//	if (FAILED(Open_Exit2()))
-	//	{
-	//		MSGBOX("Failed to Open_Exit2 in CLevel_StageOne");
-	//		return E_FAIL;
-	//	}
-	//}
+	if(m_Open_2 && !m_Open_3)
+	{
+		if (FAILED(Open_Exit2()))
+		{
+			MSGBOX("Failed to Open_Exit2 in CLevel_StageOne");
+			return E_FAIL;
+		}
+	}
 
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -196,7 +196,7 @@ HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return E_FAIL;
@@ -234,7 +234,7 @@ HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
 
 	CCubeMonster* monster3 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster")));
-	monster3->Set_InitPos(_float3(10.f, 10.f, 20.f));
+	monster3->Set_InitPos(_float3(10.f, 10.f, 20.f));*/
 
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -349,40 +349,10 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 	}
 
-	// 입구 천장
-	for (_int i = 0; i < iWaterZ + 1; ++i)
-	{
-		for (_int j = 0; j < (iWaterZ + 1); ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_T"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_T"), (i * (iWaterZ + 1)) + j);
-			CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(LeftTile)->Set_TextureIndex(0);
 
-			LeftTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(270));
-			LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 1.9f) + (j * 1.f), (_float)iWaterZ - 1.f, (i * -1.f)));
 
-		}
-	}
 
-	// 입구 바닥
-	for (_int i = 0; i < (iWaterZ + 1); ++i)
-	{
-		for (_int j = 0; j < (iWaterZ + 1); ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_Bot"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_Bot"), (i * (iWaterZ + 1)) + j);
-			CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-			LeftTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
-			LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 1.9f) + (j * 1.f), 1.f, (i * -1.f)));
-
-		}
-	}
-
-	// 입구 바닥 충돌체
+	// 시작 바닥
 	{
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_Bot_Collider"), TEXT("Prototype_GameObject_TileCollider"))))
 			return E_FAIL;
@@ -391,31 +361,18 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// tile의 위치
 		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
 		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
-		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 1.9f), 0.f, 0.f));
+		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 1.9f), 1.f, 0.f));
+		transform->Scaled(_float3(30.f, 20.f, 30.f));
+		transform->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
 
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3(7.f, 0.5f, 6.f));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(7.f, 3.f, 6.f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), 0.5f, (-iWaterZ * 0.5f)));
 
 	}
 
-	// 입구 오른면
-	for (_int i = 0; i < iWaterZ + 1; ++i)
-	{
-		for (_int j = 0; j < iWaterZ; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_R"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_R"), (i * iWaterZ) + j);
-			CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-			LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90));
-			LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 3.f), (j * 1.f), (i * -1.f)));
-
-		}
-	}
 
 	// 입구 오른쪽면 충돌체
 	{
@@ -426,30 +383,15 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// tile의 위치
 		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
 		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
-		transform->Set_State(CTransform::STATE_POSITION, _float3(_float3((iWaterZ * 3.f), 0.f, -2.f)));
-
+		transform->Set_State(CTransform::STATE_POSITION, _float3(_float3((iWaterZ * 3.f), 0.f, -4.f)));
+		transform->Scaled(_float3(10.f, 10.f, 15.f));
+		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90));
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 7.f, 6.f));
-		box->Set_AdditionalPos(_float3(0.5f, 5.f, 0.f));
+		box->Set_AdditionalPos(_float3(-0.5f, 5.f, 0.f));
 
-	}
-
-	// 입구 왼면
-	for (_int i = 0; i < iWaterZ + 1; ++i)
-	{
-		for (_int j = 0; j < iWaterZ; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_L"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_L"), (i * iWaterZ) + j);
-			CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-			LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(270));
-			LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 0.8f) + ((_float)iWaterZ), (j * 1.f), (i * -1.f)));
-
-		}
 	}
 
 	// 입구 왼쪽면 충돌체
@@ -461,31 +403,14 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// tile의 위치
 		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
 		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
-		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 0.5f) + ((_float)iWaterZ), ((_float)iWaterZ) * 0.5f, -(iWaterZ * 0.5f)));
+		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 0.5f) + ((_float)iWaterZ) + 2.f, ((_float)iWaterZ) * 0.5f, -(iWaterZ * 0.5f)- 2.f));
+		transform->Scaled(_float3(10.f, 10.f, 15.f));
+		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(270));
 
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
-
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 5.f, 6.f));
 		box->Set_AdditionalPos(_float3(1.f, 1.f, 0.f));
-
-	}
-
-
-	// 입구 뒷면
-	for (_int i = 0; i < iWaterZ; ++i)
-	{
-		for (_int j = 0; j < (iWaterZ + 1); ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_B"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Enter_B"), (i * (iWaterZ + 1)) + j);
-			CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(LeftTile)->Set_TextureIndex(1);
-			LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
-			LeftTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 1.9f) + (j * 1.f), (i * 1.f), -(_float)iWaterZ));
-
-		}
 	}
 
 	// 입구 뒷면 충돌체
@@ -502,32 +427,35 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 
 		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 		transform->Set_State(CTransform::STATE_POSITION, _float3((((_float)iWaterZ * 1.9f)), 1.f, -(_float)iWaterZ));
-
+		transform->Scaled(_float3(10.f, 15.f, 10.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ + 1, (_float)iWaterZ, 0.1f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), (iWaterZ * 0.5f), 0.f));
 
 	}
 
-	//뒷면_0
+
+	// 천장
 	{
-		for (_int i = 0; i < iLineY; ++i)
-		{
-			for (_int j = 0; j < (iWaterZ * 2); ++j)
-			{
-				if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Back0"), TEXT("Prototype_GameObject_Tile"))))
-					return E_FAIL;
-				CGameObject* FrontTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Back0"), (i * (iWaterZ * 2)) + j);
-				CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_T_Collider"), TEXT("Prototype_GameObject_TileCollider"))))
+			return E_FAIL;
 
+		CGameObject* tileCollider = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_T_Collider"), 0);
+		// tile의 위치
+		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
+		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
+		// collider의 위치
+		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
-				FrontTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
-				FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), (i * 1.f), 1.f));
+		transform->Set_State(CTransform::STATE_POSITION, _float3(0.f, (_float)iLineY - 1 - 4, 0.f));
+		transform->Scaled(_float3(70.f, 60.f, 40.f));
+		transform->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(270));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)iLineZ));
+		box->Set_AdditionalPos(_float3(iLineX * 0.5f,  0.5f, iLineZ * 0.5f));
 
-			}
-		}
 	}
 
-	// 뒷면 충돌체_0
+
+	// 뒷면
 	{
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_B_Collider"), TEXT("Prototype_GameObject_TileCollider"))))
 			return E_FAIL;
@@ -540,31 +468,14 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		transform->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 1.f));
-
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2, (_float)iLineY + 1, 0.1f));
-		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f) + 1, iLineY * 0.5f, 0.f));
+		transform->Scaled(_float3(50.f, 15.f, 15.f));
+		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(270));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 6, (_float)iLineY + 1, 0.1f));
+		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f) + 1 + 5, iLineY * 0.5f, 0.f));
 
 	}
 
-	//뒷면_1
-	{
-		for (_int i = 0; i < iLineY; ++i)
-		{
-			for (_int j = 0; j < (iWaterZ * 2); ++j)
-			{
-				if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Back1"), TEXT("Prototype_GameObject_Tile"))))
-					return E_FAIL;
-				CGameObject* FrontTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Back1"), (i * (iWaterZ * 2)) + j);
-				CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
-
-				FrontTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
-				FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 3) + (j * 1.f), (i * 1.f), 1.f));
-
-			}
-		}
-	}
-
-	//뒷면 충돌체_1
+	//뒷면
 	{
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_B1_Collider"), TEXT("Prototype_GameObject_TileCollider"))))
 			return E_FAIL;
@@ -576,64 +487,14 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
-		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 3) + 2.f, 0.f, 1.f));
-
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 1, (_float)iLineY + 1, 0.1f));
+		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 3) + 2.f + 7.f, 0.f, 1.f));
+		transform->Scaled(_float3(50.f, 30.f, 30.f));
+		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 1 + 20.f, (_float)iLineY + 1, 0.5f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), iLineY * 0.5f, 0.f));
 	}
 
-	//뒷면_2
-	{
-		for (_int i = 0; i < iLineY; ++i)
-		{
-			for (_int j = 0; j < (iWaterZ * 2); ++j)
-			{
-				if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Back2"), TEXT("Prototype_GameObject_Tile"))))
-					return E_FAIL;
-				CGameObject* FrontTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Back2"), (i * (iWaterZ * 2)) + j);
-				CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
 
-				FrontTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
-				FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 2) + (j * 1.f), 4.f + (i * 1.f) * 0.5f, 1.f));
-
-			}
-		}
-	}
-
-	// 뒷면 충돌체_2
-	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_B2_Collider"), TEXT("Prototype_GameObject_TileCollider"))))
-			return E_FAIL;
-
-		CGameObject* tileCollider = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_B2_Collider"), 0);
-		// tile의 위치
-		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
-		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
-		// collider의 위치
-		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
-
-		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 2.f), 4.f, 1.f));
-
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2, (_float)iLineY, 0.1f));
-		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), iLineY * 0.5f, 0.f));
-	}
-
-	//정면_0
-	{
-		for (_int i = 0; i < iLineY; ++i)
-		{
-			for (_int j = 0; j < (iWaterZ * 2); ++j)
-			{
-				if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Front0"), TEXT("Prototype_GameObject_Tile"))))
-					return E_FAIL;
-				CGameObject* FrontTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Front0"), (i * (iWaterZ * 2)) + j);
-				CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
-
-				FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), (i * 1.f), (_float)iLineZ - 1));
-
-			}
-		}
-	}
 	// 정면 충돌체_0
 	{
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_F_Collider0"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -646,29 +507,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
-		transform->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, (_float)iLineZ - 1));
+		transform->Set_State(CTransform::STATE_POSITION, _float3(5.f, 0.f, (_float)iLineZ - 1));
+		transform->Scaled(_float3(10.f, 10.f, 10.f));
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2, (_float)iLineY + 1, 0.1f));
-		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f) + 1, iLineY * 0.5f, 0.f));
+		box->Set_AdditionalPos(_float3(0.f, iLineY * 0.5f, 0.f));
 
-	}
-
-	//정면_1
-	{
-		for (_int i = 0; i < iLineY; ++i)
-		{
-			for (_int j = 0; j < (iWaterZ * 2); ++j)
-			{
-				if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Front1"), TEXT("Prototype_GameObject_Tile"))))
-					return E_FAIL;
-				CGameObject* FrontTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Front1"), (i * (iWaterZ * 2)) + j);
-				CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
-
-				
-				FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 3) + (j * 1.f), (i * 1.f), (_float)iLineZ - 1));
-
-			}
-		}
 	}
 
 	//정면 충돌체_1
@@ -683,28 +527,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
-		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 3) + 2.f, 0.f, (_float)iLineZ - 1));
-
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 1, (_float)iLineY + 1, 0.1f));
-		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), iLineY * 0.5f, 0.f));
+		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 3) + 2.f + 3.f, 0.f, (_float)iLineZ - 1));
+		transform->Scaled(_float3(10.f, 10.f, 10.f));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 1 + 3, (_float)iLineY + 1, 0.1f));
+		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f) - 2.f, iLineY * 0.5f, 0.f));
 	}
 
-	//정면_2
-	{
-		for (_int i = 0; i < iLineY; ++i)
-		{
-			for (_int j = 0; j < (iWaterZ * 2); ++j)
-			{
-				if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Front2"), TEXT("Prototype_GameObject_Tile"))))
-					return E_FAIL;
-				CGameObject* FrontTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Front2"), (i * (iWaterZ * 2)) + j);
-				CTransform* FrontTrans = (CTransform*)FrontTile->Get_Component(COM_TRANSFORM);
-
-				FrontTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 2) + (j * 1.f), 4.f + (i * 1.f) * 0.5f, (_float)iLineZ - 1));
-
-			}
-		}
-	}
 
 	// 정면 충돌체_2
 	{
@@ -718,27 +546,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
-		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 2.f), 4.f, (_float)iLineZ - 1));
-
+		transform->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 2.f) + 2.5f, 4.5f, (_float)iLineZ - 1));
+		transform->Scaled(_float3(5.f, 1.f, 5.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2, (_float)iLineY, 0.1f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), iLineY * 0.5f, 0.f));
 	}
 
-	// 왼쪽면
-	for (_int i = 0; i < iLineY; ++i)
-	{
-		for (_int j = 0; j < iLineZ; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Left"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* LeftTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Left"), (i * iLineZ) + j);
-			CTransform* LeftTrans = (CTransform*)LeftTile->Get_Component(COM_TRANSFORM);
-
-			LeftTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(270));
-			LeftTrans->Set_State(CTransform::STATE_POSITION, _float3(1.f, (i * 1.f), (j * 1.f)));
-
-		}
-	}
 
 	// 왼쪽면 충돌체
 	{
@@ -753,29 +566,34 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		transform->Set_State(CTransform::STATE_POSITION, _float3(1.f, 0.f, 0.f));
-
+		transform->Scaled(_float3(30.f, 1.f, 30.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.f, (_float)iLineY, (_float)iLineZ));
-		box->Set_AdditionalPos(_float3(0.f, iLineY * 0.5f, iLineZ * 0.5f));
+		box->Set_AdditionalPos(_float3(-1.f, iLineY * 0.5f, iLineZ * 0.5f));
+
+	}
+
+	// 바닥면 충돌체_2
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_bot_Collider2"), TEXT("Prototype_GameObject_TileCollider"))))
+			return E_FAIL;
+
+		CGameObject* tileCollider = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_bot_Collider2"), 0);
+		// tile의 위치
+		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
+		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
+		// collider의 위치
+		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
+
+		transform->Set_State(CTransform::STATE_POSITION, _float3(0.1f, 1.f, (iWaterZ * 3.f) + 4.f));
+		transform->Scaled(_float3(50.f, 11.f, 50.f));
+		transform->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
+
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)(iWaterZ * 2.f) + 1.f));
+		box->Set_AdditionalPos(_float3(iLineX * 0.5f, -0.5f, 0));
 
 	}
 
 	// 오른쪽면
-	for (_int i = 0; i < iLineY; ++i)
-	{
-		for (_int j = 0; j < iLineZ; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* RightTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right"), (i * iLineZ) + j);
-			CTransform* RightTrans = (CTransform*)RightTile->Get_Component(COM_TRANSFORM);
-
-			RightTrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90));
-			RightTrans->Set_State(CTransform::STATE_POSITION, _float3((_float)iLineX - 1, (i * 1.f), (j * 1.f)));
-
-		}
-	}
-
-	// 오른쪽면 충돌체 big problem 충돌은 되는데 포탈 찍히는게 타일 밖으로 보임
 	{
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_R_Collider"), TEXT("Prototype_GameObject_TileCollider"))))
 			return E_FAIL;
@@ -787,27 +605,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
-		transform->Set_State(CTransform::STATE_POSITION, _float3((_float)iLineX - 1.f, 0.1f, 0.1f));
-
+		transform->Set_State(CTransform::STATE_POSITION, _float3((_float)iLineX - 1.f, 0.1f, 1.f));
+		transform->Scaled(_float3(50.f, 30.f, 10.f));
+		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.5f, (_float)iLineY, (_float)iLineZ));
-		box->Set_AdditionalPos(_float3(0.1f, iLineY * 0.5f, iLineZ * 0.5f));
+		box->Set_AdditionalPos(_float3(0.f, iLineY * 0.5f, iLineZ * 0.5f));
 
-	}
-
-	// 바닥_0 
-	for (_int i = 0; i < (iWaterZ * 2); ++i)
-	{
-		for (_int j = 0; j < iLineX; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom"), (i * iLineX) + j);
-			CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(BottomTile)->Set_TextureIndex(1);
-			BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
-			BottomTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 1.f, (i * 1.f)));
-
-		}
 	}
 
 	// 바닥면 충돌체_0
@@ -823,26 +626,10 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		transform->Set_State(CTransform::STATE_POSITION, _float3(0.1f, 0.5f, 0.1f));
-
+		transform->Scaled(_float3(30.f, 1.f, 30.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)(iWaterZ * 2.9)));
 		box->Set_AdditionalPos(_float3(iLineX * 0.5f, 0.f, iWaterZ * 0.5f));
 
-	}
-
-	// 바닥_1 (물 밑 바닥)
-	for (_int i = 0; i < iWaterZ; ++i)
-	{
-		for (_int j = 0; j < iLineX; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom1"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom1"), (i * iLineX) + j);
-			CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(BottomTile)->Set_TextureIndex(1);
-			BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
-			BottomTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), -2.f, (iWaterZ * 2) + (i * 1.f)));
-
-		}
 	}
 
 
@@ -859,7 +646,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		transform->Set_State(CTransform::STATE_POSITION, _float3(0.1f, -2.f, (iWaterZ * 2.f)));
-
+		transform->Scaled(_float3(30.f, 1.f, 30.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)(iWaterZ)));
 		box->Set_AdditionalPos(_float3(iLineX * 0.5f, 0.f, iWaterZ * 0.5f));
 
@@ -918,75 +705,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		}
 	}
 
-	// 바닥_2 
-	for (_int i = 0; i < (iWaterZ * 2); ++i)
-	{
-		for (_int j = 0; j < iLineX; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* BottomTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Bottom2"), (i * iLineX) + j);
-			CTransform* BottomTrans = (CTransform*)BottomTile->Get_Component(COM_TRANSFORM);
-			static_cast<CTile*>(BottomTile)->Set_TextureIndex(1);
-			BottomTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(90));
-			BottomTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), 1.f, (iWaterZ * 3) + (i * 1.f)));
 
-		}
-	}
-
-	// 바닥면 충돌체_2
-	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_bot_Collider2"), TEXT("Prototype_GameObject_TileCollider"))))
-			return E_FAIL;
-
-		CGameObject* tileCollider = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_bot_Collider2"), 0);
-		// tile의 위치
-		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
-		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
-		// collider의 위치
-		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
-
-		transform->Set_State(CTransform::STATE_POSITION, _float3(0.1f, 0.5f, (iWaterZ * 3.f)));
-
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)(iWaterZ * 2.f) + 1.f));
-		box->Set_AdditionalPos(_float3(iLineX * 0.5f, 0.f, iWaterZ * 0.5f * 2.f));
-
-	}
-
-	// 천장
-	for (_int i = 0; i < iLineZ; ++i)
-	{
-		for (_int j = 0; j < iLineX + 2; ++j)
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Top"), TEXT("Prototype_GameObject_Tile"))))
-				return E_FAIL;
-			CGameObject* TopTile = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Top"), (i * (iLineX + 2)) + j);
-			CTransform* TopTrans = (CTransform*)TopTile->Get_Component(COM_TRANSFORM);
-
-			TopTrans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(270));
-			TopTrans->Set_State(CTransform::STATE_POSITION, _float3((j * 1.f), (_float)iLineY - 1, (i * 1.f)));
-
-		}
-	}
-
-	// 천장 충돌체 오른쪽 면과 같은 문제
-	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_T_Collider"), TEXT("Prototype_GameObject_TileCollider"))))
-			return E_FAIL;
-
-		CGameObject* tileCollider = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_T_Collider"), 0);
-		// tile의 위치
-		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
-		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(0);
-		// collider의 위치
-		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
-
-		transform->Set_State(CTransform::STATE_POSITION, _float3(0.f, (_float)iLineY - 1, 0.f));
-
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 0.1f, (_float)iLineZ));
-		box->Set_AdditionalPos(_float3(iLineX * 0.5f, 0.f, iLineZ * 0.5f));
-
-	}
+	
 
 	RELEASE_INSTANCE(CGameInstance);
 

@@ -12,6 +12,7 @@ END
 BEGIN(Client)
 class CPlayer;
 class CArm;
+class CAttackRange;
 
 class CBoss :
     public CEnemy
@@ -58,6 +59,19 @@ private:
 	void Randomize_Pattern(_float fTimeDelta);
 	void Sizing_Particles();
 
+
+private:
+	// 인우형 꺼
+
+	// 주먹이 범위 안에 들어왔을 때
+	void InRange();
+
+	// 한번만 Range 호출해서 그 순간 플레이어 위치 받아오기
+	_int Set_RangePos();
+
+	// Range랑 주먹이랑 충돌했나 안했나 bool값 반환 함수
+	_bool IsCollision();
+
 private:
 	void State_Machine(_float fTimeDelta);
 	void Idle(_float fTimeDelta);
@@ -77,7 +91,11 @@ private:
 
 private:
 	// 인우형 패턴 변수
-
+	CAttackRange* m_pAttackRange = nullptr;
+	CTransform* m_RangeTrans = nullptr;
+	_float3				m_playerPos = { 0.f, 0.f, 0.f };
+	_bool				m_bRangeValid = false;
+	_bool				m_bCalled = true;
 
 private:
 	// 태우형 패턴 변수
