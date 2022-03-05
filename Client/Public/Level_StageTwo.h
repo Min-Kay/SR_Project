@@ -22,8 +22,8 @@ private:
 	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
 
 	HRESULT Ready_Layer_Map();
+	HRESULT Ready_Layer_JumpMap();
 	HRESULT Open_Exit();
-
 private:
 	_int iLineX = 25;
 	_int iLineY = 10;
@@ -37,9 +37,13 @@ private:
 	_float	m_iBoxSize = 80.f; //<-여기 바꾸면 전체크기다 바뀜 
 	_float HalfBoxSize = m_iBoxSize * 0.5f;
 	_float WallSize = 5.f;//벽의 두께
-	_float HalfWallSize = WallSize * 0.5;//벽의 두께
+	_float HalfWallSize = WallSize * 0.5f;//벽의 두께
 
-
+	//점프맵 크기 설정
+	_float    m_iJumpBoxSize = 20.f; //<-여기 바꾸면 전체크기다 바뀜 
+	_float JumpHalfBoxSize = m_iJumpBoxSize * 0.5f;
+	_float JumpWallSize = 1.f;//벽의 두께
+	_float JumpHalfWallSize = (_float)JumpWallSize * 0.5f;//벽의 두께
 private:
 	_bool m_setting = false;
 

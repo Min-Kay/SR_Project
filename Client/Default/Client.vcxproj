@@ -191,7 +191,7 @@
     <ClInclude Include="..\Public\Portal.h" />
     <ClInclude Include="..\Public\PortalControl.h" />
     <ClInclude Include="..\Public\Sky.h" />
-    <ClInclude Include="..\Public\Tageting.h" />
+    <ClInclude Include="..\Public\Targeting.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Tile.h" />
     <ClInclude Include="..\Public\Tile_Collider.h" />
@@ -237,7 +237,7 @@
     <ClCompile Include="..\Private\Portal.cpp" />
     <ClCompile Include="..\Private\PortalControl.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
-    <ClCompile Include="..\Private\Tageting.cpp" />
+    <ClCompile Include="..\Private\Targeting.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Tile.cpp" />
     <ClCompile Include="..\Private\Tile_Collider.cpp" />

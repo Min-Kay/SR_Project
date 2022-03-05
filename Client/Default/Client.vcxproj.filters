@@ -282,11 +282,11 @@
     <ClInclude Include="..\Public\Missile.h">
       <Filter>02.GameObjects\Enemy\Missile</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Tageting.h">
-      <Filter>02.GameObjects\Effect\Targeting</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\AttackRange.h">
       <Filter>02.GameObjects\Enemy\Boss\AttackRange</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Targeting.h">
+      <Filter>02.GameObjects\Effect\Targeting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -407,14 +407,14 @@
     <ClCompile Include="..\Private\BazierBullet.cpp">
       <Filter>02.GameObjects\Enemy\CubeMonster\BazierBullet</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Tageting.cpp">
-      <Filter>02.GameObjects\Effect\Targeting</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Missile.cpp">
       <Filter>02.GameObjects\Enemy\Missile</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AttackRange.cpp">
       <Filter>02.GameObjects\Enemy\Boss\AttackRange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Targeting.cpp">
+      <Filter>02.GameObjects\Effect\Targeting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

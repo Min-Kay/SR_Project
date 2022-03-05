@@ -14,6 +14,7 @@
 #include "Texture.h"
 
 #include "AttackRange.h"
+#include "Targeting.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -309,7 +310,8 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 	m_fTimer = 0.f;
 
 	Init_Idle();
-
+	Init_Attack_Punch();
+	Init_Attack_Missile();
 	m_State = _state;
 	
 }
@@ -351,6 +353,11 @@ void CBoss::Sizing_Particles()
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CBoss::Init_Attack_Punch()
+{
+	
 }
 
 
@@ -540,6 +547,11 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 
 }
 
+void CBoss::Init_Attack_Missile()
+{
+	m_bMissile = false;
+}
+
 void CBoss::State_Machine(_float fTimeDelta)
 {
 	Randomize_Pattern(fTimeDelta);
@@ -667,7 +679,7 @@ void CBoss::Phase(_float fTimeDelta)
 
 void CBoss::Attack(_float fTimeDelta)
 {
-	m_AttState = BOSSATT_PUNCH;
+	m_AttState = BOSSATT_MISSILE;
 	// 1페이즈 패턴 구현
 	switch (m_AttState)
 	{
@@ -711,8 +723,28 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
 	p_instance->Play_Sound(TEXT("Boss_AttackAlarm.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
-	RELEASE_INSTANCE(CGameInstance);
 
+
+	if (!m_bMissile)
+	{
+		m_bMissile = true;
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Missile"), TEXT("Prototype_GameObject_Missile"))))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+		}
+	}
+	CTargeting* ptarget = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target")));
+	if (nullptr != ptarget)
+	{
+		if (ptarget->Get_Dead())
+		{
+			Set_BossState(BOSS_IDLE);
+			m_bMissile = false;
+		}
+		else
+			Set_BossState(BOSS_ATTACK);
+	}
+	RELEASE_INSTANCE(CGameInstance);
 	Set_BossState(BOSS_IDLE);
 }
 
@@ -758,7 +790,7 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 
 
 	RELEASE_INSTANCE(CGameInstance);
-
+	
 }
 
 void CBoss::Attack_Mixed(_float fTimeDelta)

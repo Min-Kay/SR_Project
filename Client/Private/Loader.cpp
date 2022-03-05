@@ -38,6 +38,7 @@
 #include "Level.h"
 #include "Level_StageOne.h"
 #include "Missile.h"
+#include "Targeting.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -299,15 +300,17 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Arm"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Hand_%d.dds"), 2))))
 		return E_FAIL;
 
-
-	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Targeting"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Effect/Targeting.png")))))
-		return E_FAIL;
-
-
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_AttackRange"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Range.png")))))
 		return E_FAIL;
 
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Missile"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Missile.dds")))))
+		return E_FAIL;
 
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Targeting"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Effect/Tageting_%d.png"), 13))))
+		return E_FAIL;
+	/////////////////
+
+	////////////
 
 	// ** GameObject **
 
@@ -327,7 +330,8 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_AttackRange"), CAttackRange::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Targeting"), CTargeting::Create(m_pGraphic_Device))))
+		return E_FAIL;
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_isFinished = true;

@@ -12,13 +12,14 @@ END
 
 BEGIN(Client)
 class CPlayer;
-class CTageting :
+class CMissile;
+class CTargeting :
 	public CGameObject
 {
 protected:
-	explicit CTageting(LPDIRECT3DDEVICE9 pGraphic_Device);
-	explicit CTageting(const CTageting& rhs);
-	virtual ~CTageting() = default;
+	explicit CTargeting(LPDIRECT3DDEVICE9 pGraphic_Device);
+	explicit CTargeting(const CTargeting& rhs);
+	virtual ~CTargeting() = default;
 
 public:
 	HRESULT NativeConstruct_Prototype() override;
@@ -31,6 +32,9 @@ public:
 	HRESULT	Release_RanderState();
 	HRESULT SetUp_Component();
 	HRESULT FaceOn_Camera();
+
+	_bool	Get_CheckCollider() { return m_bcheckCollider; }
+
 private:
 
 	CTexture*			m_pTextureCom = nullptr;
@@ -45,12 +49,17 @@ private:
 
 
 private:
-	_float3 m_tagetPos;
-	CPlayer* m_pPlayer =nullptr;;
-	_float	timer =0.0f;
+	_float3 m_targetPos;
+	CPlayer* m_pPlayer = nullptr;;
+	CMissile*	m_pMissile = nullptr;
+
+	_float m_fFrame;
+	_float	timer = 0.0f;
+	_float3			m_ColliderPos;
 	CTransform*		m_pTarget = nullptr;
+	_bool			m_bcheckCollider = false;
 public:
-	static CTageting* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	static CTargeting* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;
 	void Free() override;
 };

@@ -63,6 +63,8 @@ private:
 private:
 	// 인우형 꺼
 
+	void Init_Attack_Punch();
+
 	// 주먹이 범위 안에 들어왔을 때
 	void InRange();
 
@@ -72,6 +74,9 @@ private:
 	// Range랑 주먹이랑 충돌했나 안했나 bool값 반환 함수
 	_bool IsCollision();
 
+private:
+	// 태우형 꺼
+	void Init_Attack_Missile();
 private:
 	void State_Machine(_float fTimeDelta);
 	void Idle(_float fTimeDelta);
@@ -99,7 +104,7 @@ private:
 
 private:
 	// 태우형 패턴 변수
-
+	_bool  m_bMissile = false;
 
 private:
 	// 내꺼
