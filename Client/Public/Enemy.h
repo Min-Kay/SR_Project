@@ -28,12 +28,17 @@ public:
 
 	const _int& Get_Damage() const;
 
+	void Set_Portaling(_bool _bool);
+	const _bool& Get_Portaliing() const; 
 protected:
-	_bool Check_HP(); 
+	_bool Check_HP();
 
 protected:
 	_int m_Hp;
 	_int m_Damage;
+
+protected:
+	_bool m_Portaling = false;
 
 
 public:

@@ -58,6 +58,16 @@ const _int& Client::CEnemy::Get_Damage() const
 	return m_Damage;
 }
 
+void CEnemy::Set_Portaling(_bool _bool)
+{
+	m_Portaling = _bool;
+}
+
+const _bool& CEnemy::Get_Portaliing() const
+{
+	return m_Portaling; 
+}
+
 _bool Client::CEnemy::Check_HP()
 {
 	if (m_Hp <= 0)

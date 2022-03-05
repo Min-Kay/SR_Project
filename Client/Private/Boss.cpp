@@ -62,18 +62,41 @@ _int CBoss::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	if(p_instance->Get_Key_Down(DIK_P))
+	{
+		m_Resizing = false;
+		m_Sizing = false;
+		m_Reset = false;
+		Set_BossState(BOSS_IDLE);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (Check_HP())
+	{
+		static_cast<CBoxCollider*>(m_LeftArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
+		m_pCollider->Set_Dead(true);
+		static_cast<CBoxCollider*>(m_RightArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
+		m_LeftArm->Set_Dead(true);
+		m_RightArm->Set_Dead(true);
+		Set_Dead(true);
+	}
+
 	m_pCollider->Set_Collider();
 
 	State_Machine(fTimeDelta);
 
-	Synchronize_Transform();
+	if(m_Resizing && m_Sizing)
+		Synchronize_Transform();
 
 	return 0;
 }
 
 _int CBoss::LateTick(_float fTimeDelta)
 {
-	if (Get_Dead() )
+	if (Get_Dead())
 		return 0;
 
 	if (0 > __super::LateTick(fTimeDelta))
@@ -123,7 +146,7 @@ HRESULT CBoss::SetUp_Component()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_CUBE, COM_BUFFER, (CComponent**)&m_pBuffer)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_CubeMonster"), COM_TEXTURE, (CComponent**)&m_pTexture)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Boss"), COM_TEXTURE, (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
 
@@ -149,6 +172,7 @@ HRESULT CBoss::SetUp_Component()
 	m_LeftArm->Set_Parent(this);
 	m_LeftArm->Set_Position(vPos - vRight * 15.f);
 	m_LeftArm->Set_Player(m_pPlayer);
+	m_LeftArm->Set_ArmPos(CArm::ARMPOS_LEFT);
 	m_LeftArmTr = static_cast<CTransform*>(m_LeftArm->Get_Component(COM_TRANSFORM));
 
 
@@ -162,6 +186,7 @@ HRESULT CBoss::SetUp_Component()
 	m_RightArm->Set_Parent(this);
 	m_RightArm->Set_Position(vPos + vRight * 15.f);
 	m_RightArm->Set_Player(m_pPlayer);
+	m_RightArm->Set_ArmPos(CArm::ARMPOS_RIGHT);
 	m_RightArmTr = static_cast<CTransform*>(m_RightArm->Get_Component(COM_TRANSFORM));
 
 
@@ -183,7 +208,7 @@ HRESULT CBoss::SetUp_Component()
 		return E_FAIL;
 	}
 
-	m_Hp = 100;
+	m_Hp = 10000;
 	m_Damage = 10;
 
 	return S_OK; 
@@ -229,6 +254,8 @@ _bool CBoss::InitArmPosition(_float fTimeDelta)
 
 		if (leftReach && rightReadch)
 		{
+			m_LeftTimer = 0.f;
+			m_RightTimer = 0.f;
 			initPos = false;
 			idlePos = true;
 			m_init = false;
@@ -267,7 +294,6 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 	m_fTimer = 0.f;
 
 	Init_Idle();
-	Init_Move();
 
 	m_State = _state;
 	
@@ -299,6 +325,7 @@ void CBoss::Resizing(_float fTimeDelta)
 
 	if(m_pOnlyRotation->Get_Scale().x <= 0.1f)
 	{
+		m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_InitPos);
 		m_pTransform->Set_State(CTransform::STATE_POSITION, m_InitPos);
 		m_Resizing = true;
 		m_fTimer = 0.f;
@@ -317,6 +344,7 @@ void CBoss::Sizing(_float fTimeDelta)
 	if (m_fTimer >= m_vScale.x)
 	{
 		m_pOnlyRotation->Set_WorldMatrix(m_pTransform->Get_WorldMatrix());
+
 		m_Sizing = true;
 		m_fTimer = 0.f;
 	}
@@ -412,17 +440,13 @@ void CBoss::Blowing(_float fTimeDelta)
 
 }
 
-void CBoss::Init_Move()
-{
-
-}
 
 _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 {
 	switch(_arm)
 	{
 	case ARM_LEFT:
-		if (m_LeftTimer >= 1.f ||  3.f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
+		if (m_LeftTimer >= 1.f ||  2.f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
 		{
 			m_LeftTimer = 0.f;
 			Reset_Arm_Direction(ARM_LEFT);
@@ -433,7 +457,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, (_float)pow(1 - m_LeftTimer, 2) * leftArmBazier[0] + 2 * m_LeftTimer * (1 - m_LeftTimer) * leftArmBazier[1] + (_float)pow(m_LeftTimer, 2)* leftArmBazier[2]);
 		break;
 	case ARM_RIGHT:
-		if (m_RightTimer >= 1.f || 3.f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
+		if (m_RightTimer >= 1.f || 2.f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
 		{
 			m_RightTimer = 0.f;
 

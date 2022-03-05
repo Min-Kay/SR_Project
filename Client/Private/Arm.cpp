@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "Texture.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CArm::CArm(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -87,7 +88,7 @@ HRESULT CArm::Render()
 		return E_FAIL;
 
 
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
+	if (FAILED(m_pTexture->Bind_OnGraphicDevice(m_ArmPos)))
 		return E_FAIL;
 
 	m_pBuffer->Render();
@@ -113,7 +114,7 @@ HRESULT CArm::SetUp_Component()
 		return E_FAIL;
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_CUBE, COM_BUFFER, (CComponent**)&m_pBuffer)))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_CubeMonster"), COM_TEXTURE, (CComponent**)&m_pTexture)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Arm"), COM_TEXTURE, (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
 	Set_Type(OBJ_ENEMY);
@@ -201,17 +202,36 @@ void CArm::Add_Position(_float3 _add)
 
 void CArm::Mode(_float fTimeDelta)
 {
+	m_Timer += fTimeDelta;
 	switch (m_State)
 	{
 	case ARM_IDLE:
 		break;
 	case ARM_ATTACK:
-		m_Timer += fTimeDelta;
+		
 		if(m_Timer > m_AttackTick)
 		{
-		// 충돌처리 및 데미지 연산 
-			m_Timer = 0.f; 
+			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+			if(p_instance->Get_Collide(m_Collider,static_cast<CBoxCollider*>(m_Player->Get_Component(COM_COLLIDER))))
+			{
+				RELEASE_INSTANCE(CGameInstance);
+				m_Player->Add_Hp(-m_Damage);
+				m_Timer = 0.f;
+				break;
+			}
+			else if(m_Portaling && p_instance->Get_Collide(m_Collider, static_cast<CBoxCollider*>(m_Parent->Get_Component(COM_COLLIDER))))
+			{
+				RELEASE_INSTANCE(CGameInstance);
+				m_Parent->Add_HP(-m_Damage);
+				m_Timer = 0.f;
+				m_Portaling = false;
+				break;
+			}
+
+			RELEASE_INSTANCE(CGameInstance);
 		}
+
+		
 		break;
 	}
 }

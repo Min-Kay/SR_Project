@@ -15,7 +15,7 @@ HRESULT CVIBuffer_Color::NativeConstruct_Prototype()
 	
 	m_iStride = sizeof(VTXCOLOR);
 	m_iNumVertices = 4;
-	m_dwFVF = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX0 /*| D3DFVF_SPECULAR*/  /*| D3DFVF_TEX1*/  ) ;
+	m_dwFVF = (D3DFVF_XYZ | D3DFVF_TEX0 | D3DFVF_DIFFUSE /*| D3DFVF_SPECULAR*/  /*| D3DFVF_TEX1*/  ) ;
 	m_ePrimitiveType = D3DPT_TRIANGLELIST;
 	m_iNumPrimitive = 2;
 	m_lCOLOR = D3DXCOLOR(1.0, 0.0, 0.0, 0.0);

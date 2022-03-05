@@ -7,6 +7,7 @@
 #include "VIBuffer_Rect.h"
 #include "GameInstance.h"
 #include "BoxCollider.h"
+#include "Enemy.h"
 #include "Player.h"
 
 CPortal::CPortal(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -287,6 +288,9 @@ void CPortal::Portaling()
           objTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
           objTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
           objTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+          if (obj->Get_Type() == OBJ_ENEMY)
+              static_cast<CEnemy*>(obj)->Set_Portaling(true);
 	    }
     }
 

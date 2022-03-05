@@ -292,6 +292,13 @@ HRESULT CLoader::Loading_ForStageTwo()
 
 	// ** Component **
 
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Boss"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_%d.dds"),3))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Arm"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Hand_%d.dds"), 2))))
+		return E_FAIL;
+
+
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Targeting"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Effect/Targeting.png")))))
 		return E_FAIL;
 

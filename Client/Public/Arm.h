@@ -14,7 +14,7 @@ class CBoss;
 class CPlayer;
 
 class CArm :
-    public CEnemy
+	public CEnemy
 {
 protected:
 	explicit CArm(LPDIRECT3DDEVICE9 m_pGraphic_Device);
@@ -22,6 +22,7 @@ protected:
 	virtual ~CArm() = default;
 
 public:
+	typedef enum tagArmPos {ARMPOS_LEFT, ARMPOS_RIGHT}ARMPOS;
 	typedef enum tagArmState { ARM_IDLE, ARM_ATTACK }ARMSTATE;
 
 public:
@@ -33,6 +34,7 @@ public:
 	HRESULT SetUp_Component() override;
 
 public:
+	void Set_ArmPos(ARMPOS _armPos) { m_ArmPos = _armPos; }
 	void Set_Position(_float3 _pos);
 	void Add_Position(_float3 _add);
 	void Move_Dir(_float3 dir, _float range);
@@ -56,6 +58,7 @@ private:
 	void Mode(_float fTimeDelta);
 
 private:
+	ARMPOS m_ArmPos = ARMPOS_RIGHT;
 	ARMSTATE m_State = ARM_IDLE;
 	CBoss* m_Parent = nullptr;
 	CTransform* m_ParentTr = nullptr;

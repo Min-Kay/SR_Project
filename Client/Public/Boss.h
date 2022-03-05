@@ -57,9 +57,6 @@ private:
 	void Blowing(_float fTimeDelta);
 
 
-	void Init_Move();
-
-
 private:
 	void State_Machine(_float fTimeDelta);
 	void Idle(_float fTimeDelta);
@@ -88,8 +85,6 @@ private:
 	// ³»²¨
 	_float3 m_vScale = _float3(5.f,5.f,5.f);
 
-
-
 	_bool m_init = false;
 
 	// Idle
@@ -112,7 +107,6 @@ private:
 	_float m_fMoveLength = 30.f;
 
 
-
 	// Init Positioning
 
 	_bool m_Resizing = false;
@@ -122,7 +116,6 @@ private:
 	_float m_TurnTime = 2.f;
 
 	_float3 m_InitPos = _float3(0.f,0.f,0.f);
-
 	_float3 m_SizingAxis = _float3(1.f, 1.f, 0.f);
 	
 
@@ -132,9 +125,6 @@ private:
 
 	_bool m_Charging = false;
 	_bool m_Striking = false;
-
-
-	
 
 
 private:
