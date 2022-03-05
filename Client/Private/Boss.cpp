@@ -76,12 +76,8 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	if (Check_HP())
 	{
-		static_cast<CBoxCollider*>(m_LeftArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
-		m_pCollider->Set_Dead(true);
-		static_cast<CBoxCollider*>(m_RightArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
-		m_LeftArm->Set_Dead(true);
-		m_RightArm->Set_Dead(true);
-		Set_Dead(true);
+		m_ImageIndex = 2;
+		Set_BossState(BOSS_DIE);
 	}
 
 	m_pCollider->Set_Collider();
@@ -115,7 +111,7 @@ HRESULT CBoss::Render()
 	if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
+	if (FAILED(m_pTexture->Bind_OnGraphicDevice(m_ImageIndex)))
 		return E_FAIL;
 
 	m_pBuffer->Render(); 
@@ -208,7 +204,7 @@ HRESULT CBoss::SetUp_Component()
 		return E_FAIL;
 	}
 
-	m_Hp = 10000;
+	m_Hp = 100;
 	m_Damage = 10;
 
 	return S_OK; 
@@ -292,6 +288,7 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 {
 	// 여기에 자기 패턴이나 상태관련 변수 초기화 작성
 	m_fTimer = 0.f;
+	m_AttPatternTimer = 0.f;
 
 	Init_Idle();
 
@@ -440,6 +437,19 @@ void CBoss::Blowing(_float fTimeDelta)
 
 }
 
+void CBoss::Randomize_Pattern(_float fTimeDelta)
+{
+	if( m_Reset && (m_State == BOSS_IDLE || m_State == BOSS_MOVE))
+	{
+		m_AttPatternTimer += fTimeDelta;
+		if(m_AttPatternTimer > 5.f)
+		{
+			m_AttState = (BOSSATTACK)(rand() % 2);
+			Set_BossState(BOSS_ATTACK);
+		}
+	}
+}
+
 
 _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 {
@@ -477,7 +487,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 void CBoss::State_Machine(_float fTimeDelta)
 {
 	m_fTimer += fTimeDelta;
-
+	Randomize_Pattern(fTimeDelta);
 	switch (m_State)
 	{
 	case BOSS_IDLE:
@@ -499,6 +509,7 @@ void CBoss::State_Machine(_float fTimeDelta)
 
 void CBoss::Idle(_float fTimeDelta)
 {
+	
 	// 멍때리기
 	if(!m_Resizing)
 	{
@@ -612,7 +623,19 @@ void CBoss::Attack(_float fTimeDelta)
 
 void CBoss::Die(_float fTimeDelta)
 {
-	// 사망
+	m_pTransform->Gravity(0.3f, fTimeDelta);
+	m_LeftArmTr->Gravity(0.3f, fTimeDelta);
+	m_RightArmTr->Gravity(0.3f, fTimeDelta);
+
+	if(m_pTransform->Get_OnCollide() && m_LeftArmTr->Get_OnCollide() && m_RightArmTr->Get_OnCollide())
+	{
+		static_cast<CBoxCollider*>(m_LeftArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
+		m_pCollider->Set_Dead(true);
+		static_cast<CBoxCollider*>(m_RightArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
+		m_LeftArm->Set_Dead(true);
+		m_RightArm->Set_Dead(true);
+		Set_Dead(true);
+	}
 }
 
 void CBoss::Attack_Missile(_float fTimeDelta)

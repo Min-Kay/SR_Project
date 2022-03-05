@@ -55,7 +55,7 @@ private:
 	_bool Move_By_Bazier(ARM _arm, _float fTimeDelta);
 	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);
 	void Blowing(_float fTimeDelta);
-
+	void Randomize_Pattern(_float fTimeDelta);
 
 private:
 	void State_Machine(_float fTimeDelta);
@@ -72,6 +72,8 @@ private:
 
 private:
 	_float m_fTimer = 0.f; 
+	_uint m_ImageIndex = 0;
+
 
 private:
 	// 인우형 패턴 변수
@@ -86,6 +88,8 @@ private:
 	_float3 m_vScale = _float3(5.f,5.f,5.f);
 
 	_bool m_init = false;
+
+	_float m_AttPatternTimer = 0.f;
 
 	// Idle
 	_bool initPos = false;
@@ -126,6 +130,10 @@ private:
 	_bool m_Charging = false;
 	_bool m_Striking = false;
 
+
+	// Die
+	_bool m_Dying = false;
+	
 
 private:
 	BOSSPHASE m_Phase = BOSS_PHASEONE;
