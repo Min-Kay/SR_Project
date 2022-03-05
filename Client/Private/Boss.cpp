@@ -127,9 +127,7 @@ HRESULT CBoss::SetUp_Component()
 		return E_FAIL;
 
 
-	m_pTransform->Scaled(_float3(5.f, 5.f, 5.f));
-	m_pOnlyRotation->Scaled(_float3(5.f, 5.f, 5.f));
-
+	
 
 	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
 	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
@@ -171,7 +169,10 @@ HRESULT CBoss::SetUp_Component()
 
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 5.f, 5.f));
+
+	m_pTransform->Scaled(m_vScale);
+	m_pOnlyRotation->Scaled(m_vScale);
+	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_vScale);
 
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
 	RELEASE_INSTANCE(CGameInstance);
@@ -187,6 +188,11 @@ HRESULT CBoss::SetUp_Component()
 
 	return S_OK; 
 
+}
+
+void CBoss::Set_InitPos(_float3 _pos)
+{
+	m_InitPos = _pos;
 }
 
 _bool CBoss::InitArmPosition(_float fTimeDelta)
@@ -271,6 +277,42 @@ void CBoss::Init_Idle()
 	m_RightTimer = 0.f;
 	initPos = false;
 	idlePos = true;
+	m_Resizing = false;
+	m_Sizing = false;
+	m_Reset = false;
+}
+
+void CBoss::Resizing(_float fTimeDelta)
+{
+	m_fTimer += fTimeDelta * 1.5f;
+
+	m_pOnlyRotation->Turn(m_SizingAxis, fTimeDelta * 0.3f);
+
+	m_pOnlyRotation->Scaled(_float3(m_vScale.x - m_fTimer, m_vScale.y - m_fTimer, m_vScale.z - m_fTimer));
+
+	if(m_pOnlyRotation->Get_Scale().x <= 0.1f)
+	{
+		m_pTransform->Set_State(CTransform::STATE_POSITION, m_InitPos);
+		m_Resizing = true;
+		m_fTimer = 0.f;
+	}
+
+}
+
+void CBoss::Sizing(_float fTimeDelta)
+{
+	m_fTimer += fTimeDelta * 1.5f;
+
+	m_pOnlyRotation->Turn(-m_SizingAxis, fTimeDelta * 0.3f);
+
+	m_pOnlyRotation->Scaled(_float3( m_fTimer,  m_fTimer, m_fTimer));
+
+	if (m_fTimer >= m_vScale.x)
+	{
+		m_pOnlyRotation->Set_WorldMatrix(m_pTransform->Get_WorldMatrix());
+		m_Sizing = true;
+		m_fTimer = 0.f;
+	}
 }
 
 void CBoss::Reset_Arm_Direction(ARM _arm)
@@ -366,13 +408,6 @@ void CBoss::Blowing(_float fTimeDelta)
 void CBoss::Init_Move()
 {
 
-
-
-
-
-
-
-
 }
 
 _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
@@ -434,31 +469,20 @@ void CBoss::State_Machine(_float fTimeDelta)
 void CBoss::Idle(_float fTimeDelta)
 {
 	// 港锭府扁
-
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-
-	if (p_instance->Get_Key_Press(DIK_P))
+	if(!m_Resizing)
 	{
-		_float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
-		D3DXVec3Normalize(&vLook, &vLook);
-		m_LeftArmTr->Go_Straight(fTimeDelta);
-		m_RightArmTr->Go_Straight(fTimeDelta);
-
-		if (m_LeftArm->Get_OnCollide())
-			m_LeftArm->Set_Rolling(true,_float3(1.f, 1.f, 0.f));
-
-		if (m_RightArm->Get_OnCollide())
-			m_RightArm->Set_Rolling(true,_float3(1.f,-1.f,0.f));
+		Resizing(fTimeDelta);
 	}
-
-	if (p_instance->Get_Key_Down(DIK_O))
+	else if(!m_Sizing)
 	{
-		Init_Idle();
+		Sizing(fTimeDelta);
 	}
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	if(m_fMoveLength <= D3DXVec3Length(&(m_pTransform->Get_State(CTransform::STATE_POSITION) - m_pPlayerTr->Get_State(CTransform::STATE_POSITION))))
+	else if(!m_Reset)
+	{
+		if(InitArmPosition(fTimeDelta))
+			m_Reset = true;
+	}
+	else if(m_fMoveLength <= D3DXVec3Length(&(m_pTransform->Get_State(CTransform::STATE_POSITION) - m_pPlayerTr->Get_State(CTransform::STATE_POSITION))))
 	{
 		Set_BossState(BOSS_MOVE);
 	}
@@ -574,6 +598,11 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 void CBoss::Attack_Mixed(_float fTimeDelta)
 {
 	 // 林冈 客府啊府
+	m_fTimer += fTimeDelta;
+
+
+
+
 }
 
 CBoss* CBoss::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)

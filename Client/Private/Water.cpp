@@ -67,7 +67,7 @@ _int CWater::Tick(_float fTimeDelta)
 			{
 				if (m_iCount > 1.5)
 				{
-					m_Player->Add_Hp(-40);
+					m_Player->Add_Hp(-50);
 					m_iCount = 0;
 
 				}

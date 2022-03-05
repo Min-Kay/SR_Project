@@ -35,6 +35,8 @@ public:
 	
 	_float	Get_Gravity() const { return m_fGravity; }
 
+	void Set_WorldMatrix(_float4x4 _wm) { m_WorldMatrix = _wm; }
+
 	void Set_State(STATE eState, const _float3& vState) {
 		memcpy(&m_WorldMatrix.m[eState][0], &vState, sizeof(_float3));
 	}

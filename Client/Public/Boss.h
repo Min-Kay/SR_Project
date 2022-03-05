@@ -37,6 +37,9 @@ public:
 	HRESULT Render() override;
 	HRESULT SetUp_Component() override;
 
+public:
+	void Set_InitPos(_float3 _pos);
+
 private:
 	void Synchronize_Transform();
 	void Set_BossState(BOSSSTATE _state);
@@ -44,11 +47,15 @@ private:
 private:
 	// ³»²¨
 	void Init_Idle();
+
+	void Resizing(_float fTimeDelta);
+	void Sizing(_float fTimeDelta);
 	void Reset_Arm_Direction(ARM _arm);
 	_bool InitArmPosition(_float fTimeDelta);
 	_bool Move_By_Bazier(ARM _arm, _float fTimeDelta);
 	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);
 	void Blowing(_float fTimeDelta);
+
 
 	void Init_Move();
 
@@ -79,9 +86,13 @@ private:
 
 private:
 	// ³»²¨
+	_float3 m_vScale = _float3(5.f,5.f,5.f);
+
+
+
 	_bool m_init = false;
 
-	//Init Idle
+	// Idle
 	_bool initPos = false;
 	_bool idlePos = true;
 
@@ -97,8 +108,33 @@ private:
 	_float m_fUpPos = 1.f;
 	_float m_fRightPos = 10.f;
 
-
+	// Move
 	_float m_fMoveLength = 30.f;
+
+
+
+	// Init Positioning
+
+	_bool m_Resizing = false;
+	_bool m_Sizing = false;
+	_bool m_Reset = false;
+
+	_float m_TurnTime = 2.f;
+
+	_float3 m_InitPos = _float3(0.f,0.f,0.f);
+
+	_float3 m_SizingAxis = _float3(1.f, 1.f, 0.f);
+	
+
+	// Attack_Mixed
+	_float m_ChargingTime = 3.f;
+	_float m_StrikingTime = 5.f;
+
+	_bool m_Charging = false;
+	_bool m_Striking = false;
+
+
+	
 
 
 private:
