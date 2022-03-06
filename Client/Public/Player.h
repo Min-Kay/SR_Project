@@ -34,8 +34,8 @@ public:
 
 public:
 	void Tick_JumpState(_float fTimeDelta);
-
-
+	void Erase_Portal();
+	HRESULT Reset_PlayerPos(_float3 resetPos);
 public:
 	const _int& Get_Hp() const;
 	void Set_Hp(_int _hp);

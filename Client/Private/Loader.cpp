@@ -39,6 +39,8 @@
 #include "Level_StageOne.h"
 #include "Missile.h"
 #include "Targeting.h"
+#include "Unportal.h"
+#include "Shield.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -188,6 +190,11 @@ HRESULT CLoader::Loading_ForStageOne()
 	/* For.Prototype_Component_Texture_Font_Slash*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Slash"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Number/Slash.png")))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Font_Slash*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UnPortal"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Block/UnPortal.dds")))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma  region PROTOTYPE_GAMEOBJECT
@@ -271,6 +278,11 @@ HRESULT CLoader::Loading_ForStageOne()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ChangeLevel"), CChangeLevel::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UnPortal"), CUnportal::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 #pragma endregion
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -299,6 +311,10 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Missile"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Missile.dds")))))
 		return E_FAIL;
 
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Shield"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Shield.dds")))))
+		return E_FAIL;
+
+
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Targeting"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Effect/Tageting_%d.png"), 13))))
 		return E_FAIL;
 	/////////////////
@@ -325,20 +341,15 @@ HRESULT CLoader::Loading_ForStageTwo()
 
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Targeting"), CTargeting::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Shield"), CShield::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_isFinished = true;
 
-	return S_OK;
-}
-
-HRESULT CLoader::Loading_ForStageThree()
-{
-	for (_uint i = 0; i < 9999999999; ++i)
-		int a = 10;
-
-	m_isFinished = true;
-	
 	return S_OK;
 }
 

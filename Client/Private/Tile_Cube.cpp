@@ -196,6 +196,24 @@ _bool CTile_Cube::Close_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag
 }
 
 
+_bool CTile_Cube::Save_Point()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (!m_PlayerCollider)
+		m_PlayerCollider = static_cast<CBoxCollider*>(pGameInstance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player"))->Get_Component(COM_COLLIDER));
+
+	if (pGameInstance->Get_Collide(m_pBoxColliderCom, m_PlayerCollider))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return true;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return false;
+}
+
 
 CTile_Cube * CTile_Cube::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {

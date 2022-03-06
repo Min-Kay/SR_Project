@@ -148,6 +148,12 @@
     <Filter Include="02.GameObjects\Enemy\Boss\AttackRange">
       <UniqueIdentifier>{eef2dd94-e9bd-44d9-82c7-2c7f8c5f7dad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\UnportaBlock">
+      <UniqueIdentifier>{be9507c4-581d-4818-8502-140c51e93527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Enemy\Boss\Shield">
+      <UniqueIdentifier>{3f7a4bf5-7edd-4ae4-85c3-a44b8eed79f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -288,6 +294,12 @@
     <ClInclude Include="..\Public\Targeting.h">
       <Filter>02.GameObjects\Effect\Targeting</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Unportal.h">
+      <Filter>02.GameObjects\UnportaBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shield.h">
+      <Filter>02.GameObjects\Enemy\Boss\Shield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -415,6 +427,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Targeting.cpp">
       <Filter>02.GameObjects\Effect\Targeting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Unportal.cpp">
+      <Filter>02.GameObjects\UnportaBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shield.cpp">
+      <Filter>02.GameObjects\Enemy\Boss\Shield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -184,6 +184,20 @@ void CPlayer::Tick_JumpState(_float fTimeDelta)
 	}
 }
 
+HRESULT CPlayer::Reset_PlayerPos(_float3 resetPos)
+{
+	m_Info.Pos = resetPos;
+	return S_OK;
+}
+
+void CPlayer::Erase_Portal()
+{
+	if (!m_pPortalCtrl)
+		return;
+
+	m_pPortalCtrl->Erase_Portal();
+}
+
 const _int& CPlayer::Get_Hp() const
 {
 	return m_HP;

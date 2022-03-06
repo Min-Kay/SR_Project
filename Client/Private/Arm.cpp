@@ -216,9 +216,10 @@ void CArm::Mode(_float fTimeDelta)
 	switch (m_State)
 	{
 	case ARM_IDLE:
+		m_Collider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
 		break;
 	case ARM_ATTACK:
-		
+		m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
 		if(m_Timer > m_AttackTick)
 		{
 			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);

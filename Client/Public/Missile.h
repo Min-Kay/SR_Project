@@ -34,32 +34,39 @@ public:
 	_float3 Get_Bezier() { return m_fFront_BezierPos; }
 	HRESULT Set_Bezier(_float3  Pos);
 
-	typedef enum tagArmMissle{ ARMMISSLE_LEFT, ATMMISSLE_RIGHT, ATMMISSLE_END}ArmMissle;
-	
+	typedef enum tagArmMissle { ARMMISSLE_LEFT, ATMMISSLE_RIGHT, ATMMISSLE_END }ArmMissle;
+
 
 	typedef struct tagarmmissle {
 		ArmMissle ArmMissle;
 		_float	FireCount;
 		_bool	Left;
 		_bool	Right;
-		void*  pParent;
+		void* pParent;
 	}ARMMISSLE;
 private:
 	HRESULT SetUp_Component();
+	HRESULT SetUp_First();
+	_bool Check_Dead();
+	HRESULT Check_ColliderTarget();
+	HRESULT First_Bezier(_float fTimeDelta);
+	HRESULT Targeting_Main_Sub();
+	HRESULT Missle_Move(_float fTimeDelta);
+	//HRESULT Check_Portaling(_float fTimeDelta);
 	_float3		BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _float time);
 
 protected:
 	CVIBuffer_Cube* m_pVIBuffer = nullptr;
-	CRenderer*		m_pRenderer = nullptr;
-	CTexture*		m_pTexture = nullptr;
-	CTransform*		m_pTransform = nullptr;
-	CBoxCollider*	m_pBoxCollider = nullptr;
+	CRenderer* m_pRenderer = nullptr;
+	CTexture* m_pTexture = nullptr;
+	CTransform* m_pTransform = nullptr;
+	CBoxCollider* m_pBoxCollider = nullptr;
 
 private:
-	CArm*		m_pArm = nullptr;
-	CPlayer*	m_pPlayer = nullptr;
-	CTargeting*	m_pTageting = nullptr;
-	CBoss*		m_pBoss = nullptr;
+	CArm* m_pArm = nullptr;
+	CPlayer* m_pPlayer = nullptr;
+	CTargeting* m_pTageting = nullptr;
+	CBoss* m_pBoss = nullptr;
 
 	ARMMISSLE	m_ArmMissle;
 	_float3		PlayerPos;
@@ -84,7 +91,7 @@ private:
 	_bool	m_bTargetCollider = false;
 	_uint	Count = 0;
 
-	CArm*	m_Arm = nullptr;
+	CArm* m_Arm = nullptr;
 public:
 	static CMissile* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

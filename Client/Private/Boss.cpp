@@ -16,6 +16,9 @@
 #include "AttackRange.h"
 #include "Missile.h"
 #include "Targeting.h"
+#include "Missile.h"
+
+#include "Shield.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -90,6 +93,12 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	m_pCollider->Set_Collider();
 
+
+	if(m_Hp < 70)
+	{
+		m_Shield->Set_Valid(true);
+	}
+
 	State_Machine(fTimeDelta);
 
 	if(m_Resizing && m_Sizing)
@@ -154,7 +163,7 @@ HRESULT CBoss::SetUp_Component()
 		return E_FAIL;
 
 
-	
+
 
 	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
 	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
@@ -165,7 +174,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_pPlayer = static_cast<CPlayer*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player")));
 	m_pPlayerTr = static_cast<CTransform*>(m_pPlayer->Get_Component(COM_TRANSFORM));
-	
+
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Arm_Left"), TEXT("Prototype_GameObject_Arm"))))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -198,10 +207,10 @@ HRESULT CBoss::SetUp_Component()
 
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
+	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_vScale);
 
 	m_pTransform->Scaled(m_vScale);
 	m_pOnlyRotation->Scaled(m_vScale);
-	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_vScale);
 
 	//
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Layer_AttackRange"), TEXT("Prototype_GameObject_AttackRange"))))
@@ -211,16 +220,25 @@ HRESULT CBoss::SetUp_Component()
 	}
 	m_pAttackRange = static_cast<CAttackRange*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_AttackRange")));
 	m_RangeTrans = static_cast<CTransform*>(m_pAttackRange->Get_Component(COM_TRANSFORM));
-	m_pAttackRange->Set_Valid(false); 
+	m_pAttackRange->Set_Valid(false);
 
-	//m_RangeTrans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 0.f, 0.f));
-	//
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Shield"), TEXT("Prototype_GameObject_Shield"))))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_Shield = static_cast<CShield*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Shield")));
+	m_Shield->Set_ParentTransform(m_pOnlyRotation);
+	m_Shield->Set_Valid(false);
+
 
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
 
 	p_instance->PlayBGM(TEXT("Boss_Stage.wav"));
 
 	p_instance->Play_Sound(TEXT("Boss_Sound.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (!m_pPlayer || !m_RightArm || !m_LeftArm)
@@ -386,7 +404,7 @@ void CBoss::Sizing_Particles()
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < 10 ; ++i)
 	{
-		if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return;
@@ -406,14 +424,25 @@ void CBoss::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-m_pTransform->Get_State(CTransform::STATE_UP), m_pTransform->Get_State(CTransform::STATE_POSITION), 100, true);
 
-	if (collList.empty() || (collList.size() == 1 && collList.front().CollObj == this))
+	if (collList.empty() || collList.size() == 1 )
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return;
 	}
 
+
 	auto iter = collList.begin();
-	++iter;
+
+	for(; iter != collList.end();)
+	{
+		if (iter->CollObj->Get_Type() != OBJ_STATIC)
+			++iter;
+		else
+			break;
+	}
+
+	if (iter == collList.end())
+		return; 
 
 	if(_watchPlayer)
 		m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
@@ -613,9 +642,14 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 
 }
 
-void CBoss::Init_Attack_Missile()
+HRESULT CBoss::Init_Attack_Missile()
 {
 	m_bMissile = false;
+	m_fFireFrame = 0.f;
+	m_fFireCount = 0.f;
+	m_fWaiting = 0.f;
+	
+	return S_OK;
 }
 
 void CBoss::State_Machine(_float fTimeDelta)
@@ -757,7 +791,6 @@ void CBoss::Die(_float fTimeDelta)
 		Set_Dead(true);
 	}
 }
-
 void CBoss::Attack_Missile(_float fTimeDelta)
 {
 	// ¹Ì»çÀÏ
@@ -765,14 +798,54 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
 	p_instance->Play_Sound(TEXT("Boss_AttackAlarm.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
 
-	//CTargeting* ptarget = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target")));
 	CMissile::ARMMISSLE Armtarget1;
 	Armtarget1.FireCount = 8;
 	Armtarget1.ArmMissle = CMissile::ARMMISSLE_LEFT;
 	Armtarget1.pParent = this;
 
-	if (m_btargetCollider)
+	m_fWaiting += fTimeDelta;
+	if (m_fFireCount >= Armtarget1.FireCount)
 	{
+		if (m_fWaiting >= 5.f)
+		{
+			if (FAILED(m_pMissile = static_cast<CMissile*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Missile")))))
+			{
+				MSGBOX("Boss_Missile_check_false")
+					RELEASE_INSTANCE(CGameInstance);
+				return;
+			}
+			if (m_pMissile != nullptr)
+				m_pMissile->Set_Dead(true);
+
+			if (FAILED(m_pTargeting_Main = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target")))))
+			{
+				MSGBOX("Boss_Target_check_false")
+					RELEASE_INSTANCE(CGameInstance);
+				return;
+			}
+			if (m_pTargeting_Main != nullptr)
+				m_pTargeting_Main->Set_Dead(true);
+
+			if (FAILED(m_pTargeting_Sub = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target_sub")))))
+			{
+				MSGBOX("Boss_Target_sub_check_false")
+					RELEASE_INSTANCE(CGameInstance);
+				return;
+			}
+			if (m_pTargeting_Sub != nullptr)
+				m_pTargeting_Sub->Set_Dead(true);
+			RELEASE_INSTANCE(CGameInstance);
+
+			Set_BossState(BOSS_IDLE);
+			m_fFireCount = 0;
+			m_btargetCollider = true;
+			return;
+		}
+	}
+
+	if (m_btargetCollider && m_fFireCount < Armtarget1.FireCount)
+	{
+
 		m_fFireFrame += fTimeDelta * 3;
 		if (m_fFireFrame >= 1.f)
 		{
@@ -796,16 +869,10 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 			{
 				RELEASE_INSTANCE(CGameInstance);
 			}
+			m_fWaiting = 0.f;
 		}
 
 	}
-	if (m_fFireCount > Armtarget1.FireCount)
-	{
-		Set_BossState(BOSS_IDLE);
-		m_fFireCount = 0;
-		m_btargetCollider = true;
-	}
-
 	RELEASE_INSTANCE(CGameInstance);
 
 }

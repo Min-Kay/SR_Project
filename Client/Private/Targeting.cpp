@@ -79,6 +79,7 @@ _int CTargeting::Tick(_float fTimeDelta)
 
 	if (timer / 3 >= 1.0f)
 	{
+		m_pBoxColliderCom->Set_Dead(true);
 		Set_Dead(true);
 		timer = 0;
 		return 0;

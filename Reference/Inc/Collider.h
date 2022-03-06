@@ -15,7 +15,7 @@ protected:
 public:
 	typedef enum tagCollType
 	{
-		COLLSTYLE_ENTER,COLLSTYLE_TRIGGER, COLLSTYLE_END//실제 충돌 , 범위충돌(레이더)
+		COLLSTYLE_ENTER,COLLSTYLE_TRIGGER,COLLSTYLE_ONLYRAY, COLLSTYLE_END//실제 충돌 , 범위충돌(레이더)
 	}COLLSTYLE;
 
 public:

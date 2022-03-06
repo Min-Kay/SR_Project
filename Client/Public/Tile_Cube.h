@@ -53,6 +53,7 @@ public:
 	_bool	Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag);
 	_bool Open_Block_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag);
 	_bool	Close_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag);
+	_bool Save_Point();
 	void	Set_TextureIndex(_uint _iTextureIndex)
 	{
 		m_iTextureIndex = _iTextureIndex;

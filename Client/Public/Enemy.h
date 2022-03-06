@@ -23,7 +23,7 @@ public:
 	virtual HRESULT SetUp_Component()PURE;
 
 	void Set_HP(_int _hp);
-	void Add_HP(_int _add);
+	virtual void Add_HP(_int _add);
 	const _int& Get_HP() const;
 
 	const _int& Get_Damage() const;

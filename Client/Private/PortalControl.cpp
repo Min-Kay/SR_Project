@@ -135,7 +135,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 		if (target.CollObj->Get_Type() == CGameObject::OBJ_PLAYER)
 			continue;
 
-		if (target.CollObj->Get_Type() !=  CGameObject::OBJ_STATIC)
+		if (target.CollObj->Get_Type() !=  CGameObject::OBJ_STATIC || static_cast<CBoxCollider*>(target.CollObj->Get_Component(COM_COLLIDER))->Get_CollStyle() == CCollider::COLLSTYLE_ONLYRAY)
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return S_OK;
@@ -408,7 +408,7 @@ void CPortalControl::Spawn_Effect(_uint _index, _float3 _pos)
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < rand() % 10 + 25; ++i)
 	{
-		if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return;

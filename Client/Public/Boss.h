@@ -13,6 +13,9 @@ BEGIN(Client)
 class CPlayer;
 class CArm;
 class CAttackRange;
+class CShield;
+class CMissile;
+class CTargeting; 
 
 class CBoss :
     public CEnemy
@@ -76,9 +79,13 @@ private:
 	// Range¶û ÁÖ¸ÔÀÌ¶û Ãæµ¹Çß³ª ¾ÈÇß³ª bool°ª ¹ÝÈ¯ ÇÔ¼ö
 	_bool IsCollision();
 
+
 private:
 	// ÅÂ¿ìÇü ²¨
-	void Init_Attack_Missile();
+	HRESULT Init_Attack_Missile();
+
+
+
 private:
 	void State_Machine(_float fTimeDelta);
 	void Idle(_float fTimeDelta);
@@ -114,9 +121,13 @@ private:
 	_float m_fMissileCount = 0.f;
 	_int m_fFireCount = 0;
 	_float m_fFireFrame = 0.f;
+	_float m_fWaiting = 0.f;
 	_bool    m_bLeft = false;
 	_bool    m_bRight = false;
 	_bool    m_btargetCollider = true;
+	CMissile* m_pMissile = nullptr;
+	CTargeting* m_pTargeting_Main = nullptr;
+	CTargeting* m_pTargeting_Sub = nullptr;
 private:
 	// ³»²¨
 	_float3 m_vScale = _float3(5.f,5.f,5.f);
@@ -186,6 +197,8 @@ private:
 	CTransform* m_LeftArmTr = nullptr;
 	CTransform* m_RightArmTr = nullptr;
 
+
+	CShield* m_Shield = nullptr;
 
 private:
 	CTransform* m_pOnlyRotation = nullptr;

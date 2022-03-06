@@ -190,6 +190,7 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Portal.h" />
     <ClInclude Include="..\Public\PortalControl.h" />
+    <ClInclude Include="..\Public\Shield.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Targeting.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="..\Public\Tile_Collider.h" />
     <ClInclude Include="..\Public\Tile_Cube.h" />
     <ClInclude Include="..\Public\UI_BackUI.h" />
+    <ClInclude Include="..\Public\Unportal.h" />
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -236,6 +238,7 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Portal.cpp" />
     <ClCompile Include="..\Private\PortalControl.cpp" />
+    <ClCompile Include="..\Private\Shield.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Targeting.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
@@ -243,6 +246,7 @@
     <ClCompile Include="..\Private\Tile_Collider.cpp" />
     <ClCompile Include="..\Private\Tile_Cube.cpp" />
     <ClCompile Include="..\Private\UI_BackUI.cpp" />
+    <ClCompile Include="..\Private\Unportal.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

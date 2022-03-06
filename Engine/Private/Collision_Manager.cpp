@@ -154,7 +154,7 @@ HRESULT CCollision_Manager::Collision()
 			if (pCollider2 == pCollider)
 				continue;
 
-			if (AABB(pCollider, pCollider2, false) && pCollider2->Get_CollStyle() != CCollider::COLLSTYLE_TRIGGER)
+			if (pCollider2->Get_CollStyle() == CCollider::COLLSTYLE_ENTER && AABB(pCollider, pCollider2, false))
 				isCollide = true;
 		}
 
@@ -164,7 +164,7 @@ HRESULT CCollision_Manager::Collision()
 			if (pCollider2 == pCollider)
 				continue;
 
-			if (AABB(pCollider, pCollider2, false) && pCollider2->Get_CollStyle() != CCollider::COLLSTYLE_TRIGGER)
+			if (pCollider2->Get_CollStyle() == CCollider::COLLSTYLE_ENTER && AABB(pCollider, pCollider2, false))
 				isCollide = true;
 		}
 		static_cast<CTransform*>(pCollider->Get_Parent()->Get_Component(COM_TRANSFORM))->Set_OnCollide(isCollide);
@@ -242,7 +242,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 			_float3 point, nor;
 			_float refelctScale;
 
-			if(RayCollision(m_Dir[i], myPos, _OtherCollider, vHalfScale[i] + 0.1f, point, nor))
+			if(RayCollision(m_Dir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
 			{
 				refelctScale = vHalfScale[i] - D3DXVec3Length(&(myPos - point));
 				_MyCollider->Set_OnCollide(true);
@@ -251,7 +251,7 @@ _bool CCollision_Manager::AABB(CBoxCollider* _MyCollider, CBoxCollider* _OtherCo
 				return true;
 			}
 
-			if (RayCollision(-m_Dir[i], myPos, _OtherCollider, vHalfScale[i] + 0.1f, point, nor))
+			if (RayCollision(-m_Dir[i], myPos, _OtherCollider, vHalfScale[i], point, nor))
 			{
 				refelctScale = vHalfScale[i] - D3DXVec3Length(&(myPos - point));
 				_MyCollider->Set_OnCollide(true);
