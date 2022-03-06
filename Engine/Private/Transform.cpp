@@ -177,11 +177,11 @@ void CTransform::Gravity(_float fWeight, _float fTimeDelta)
 {
 
 	_float3		vPosition = Get_State(CTransform::STATE_POSITION);
-	_float3		vUp = Get_State(CTransform::STATE_UP);
 
-	vPosition -= *D3DXVec3Normalize(&vUp, &vUp) * fWeight * m_fGravity * fTimeDelta;
+	vPosition -= _float3(0.f,1.f,0.f) * fWeight * (m_fGravity  + m_Press) * fTimeDelta ;
 
 	m_fVelocity = !m_bOnCollide ? m_fVelocity + fTimeDelta : 0.f;
+	m_Press = !m_bOnCollide ? m_Press + fTimeDelta * 2.f: 0.f;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
@@ -213,7 +213,7 @@ void CTransform::Add_Force(_float fTimeDelta)
 			_float3 pos = Get_State(STATE_POSITION);
 			pos += m_vForceAxis * m_fForce * 0.5f;
 			Set_State(CTransform::STATE_POSITION, pos);
-			m_fForce -= fTimeDelta;
+			m_fForce -= fTimeDelta * 0.8f;
 		}
 		else
 		{
@@ -233,8 +233,8 @@ void CTransform::Add_Force(_float fTimeDelta)
 void CTransform::Set_Force(_float3 _axis)
 {
 	m_Forcing = true;
-	m_fForce += m_fVelocity;
-	m_fVelocity *= 0.5f;
+	m_fForce += m_fVelocity + m_Press;
+	m_fVelocity *= 0.8f;
 	m_vForceAxis = _axis;
 }
 

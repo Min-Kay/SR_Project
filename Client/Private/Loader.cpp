@@ -92,13 +92,6 @@ HRESULT CLoader::Loading_ForStageOne()
 	/* 원형컴포넌트를 생성한다. */
 #pragma region PROTOTYPE_COMPONENT
 
-	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STAGEONE, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Terrain/Block_%d.png"), 6))))
-	{
-		MSGBOX("Failed to create terrain_texture in Loader");
-		return E_FAIL;
-	}
-
 	/* For.Prototype_Component_Portal_Orange */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Portal_Orange"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Portal_Orange.png")/*129, 129*/))))
 		return E_FAIL;
@@ -158,7 +151,7 @@ HRESULT CLoader::Loading_ForStageOne()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Tile_Cube*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Block"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Block/Block_%d.dds"), 2))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Block"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Block/Block_%d.dds"), 3))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Tile_Cube*/

@@ -75,7 +75,6 @@ HRESULT CPortal::NativeConstruct_Prototype()
     if (FAILED(__super::NativeConstruct_Prototype()))
         return E_FAIL;
 
-    Set_Type(OBJ_STATIC);
 
     return S_OK;
 }
@@ -274,9 +273,9 @@ void CPortal::Portaling()
 		objTr->Set_State(CTransform::STATE_POSITION, opponentTr->Get_State(CTransform::STATE_POSITION) - vOpLook * vScale.x);
         objTr->Set_Force(-vOpLook);
 
-	    if (obj->Get_Type() != OBJ_PLAYER)
+    	if (obj->Get_Type() != OBJ_PLAYER)
 	    {
-            _float3 vRight, vUp, vLook;
+    		_float3 vRight, vUp, vLook;
          
           vRight = -opponentTr->Get_State(CTransform::STATE_RIGHT);
           vUp = opponentTr->Get_State(CTransform::STATE_UP);

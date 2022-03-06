@@ -41,6 +41,11 @@ HRESULT CTargeting::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Component()))
 		return E_FAIL;
 
+
+	m_Target = *static_cast<TARGET*>(pArg);
+
+	m_Target.MainTarget;
+	m_Target.targetPos;
 	m_fFrame = 0.f;
 	m_bcheckCollider = false;
 	//m_pMissile->Get_Bezier();
@@ -93,39 +98,43 @@ _int CTargeting::LateTick(_float fTimeDelta)
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
 
-
-
 	list<CGameObject*> test = p_instance->Get_Collision_List(m_pBoxColliderCom);
 	_float3 Look, playerpos, Targetpos;
 	for (auto & iter : test)
 	{
 		if (OBJ_STATIC == iter->Get_Type())
 		{
-			CTransform*	point = (CTransform*)iter->Get_Component(COM_TRANSFORM);
-			Targetpos = point->Get_State(CTransform::STATE_POSITION);
-
-			CTransform* PlayerTrans = (CTransform*)m_pPlayer->Get_Component(COM_TRANSFORM);
-			playerpos = PlayerTrans->Get_State(CTransform::STATE_POSITION);
-
-			_float4x4		ViewMatrix;
-			m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
-			D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
-
-
-
+			
 			if (!m_pTarget)
 			{
 				m_pTarget = (CTransform*)iter->Get_Component(COM_TRANSFORM);
-
-
-				if (m_pTarget)
+					_float3 Target_Right = m_pTarget->Get_State(CTransform::STATE_RIGHT);
+					_float3 Target_Up = m_pTarget->Get_State(CTransform::STATE_UP);
+					_float3 Target_Look = m_pTarget->Get_State(CTransform::STATE_LOOK);
+					D3DXVec3Normalize(&Target_Right, &Target_Right);
+					D3DXVec3Normalize(&Target_Up, &Target_Up);
+					D3DXVec3Normalize(&Target_Look, &Target_Look);
+				if (m_pTarget && m_Target.MainTarget == true)
 				{
-					m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTarget->Get_State(CTransform::STATE_RIGHT)* 0.1f/* * m_pTransformCom->Get_Scale().x*/);
-					m_pTransformCom->Set_State(CTransform::STATE_UP, m_pTarget->Get_State(CTransform::STATE_UP) * 0.1f/** m_pTransformCom->Get_Scale().y*/);
-					m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTarget->Get_State(CTransform::STATE_LOOK) * 0.1f/** m_pTransformCom->Get_Scale().z*/);
+
+					m_pTransformCom->Set_State(CTransform::STATE_RIGHT, Target_Right * m_pTransformCom->Get_Scale().x);
+					m_pTransformCom->Set_State(CTransform::STATE_UP, Target_Up * m_pTransformCom->Get_Scale().y);
+					m_pTransformCom->Set_State(CTransform::STATE_LOOK, Target_Look * m_pTransformCom->Get_Scale().z);
+	
+					//MSGBOX("충돌!")
 				}
-				m_bcheckCollider = true;
-				//MSGBOX("충돌!")
+				else if (m_pTarget && m_Target.MainTarget == false)
+				{
+					m_pTransformCom->Set_State(CTransform::STATE_RIGHT, Target_Right * m_pTransformCom->Get_Scale().x);
+					m_pTransformCom->Set_State(CTransform::STATE_UP, Target_Up * m_pTransformCom->Get_Scale().y);
+					m_pTransformCom->Set_State(CTransform::STATE_LOOK, Target_Look * m_pTransformCom->Get_Scale().z);
+
+					m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + _float3(Target_Right)*m_Target.SubTargetRangeX);
+					m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + _float3(Target_Up)*m_Target.SubTargetRangeY);
+				
+					
+				}
+					m_bcheckCollider = true;
 			}
 		}
 	}
@@ -144,8 +153,9 @@ HRESULT CTargeting::Render()
 	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(1)))
-		return E_FAIL;
+
+		if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(1)))
+			return E_FAIL;
 
 	if (m_bcheckCollider == true)
 	{
@@ -154,10 +164,16 @@ HRESULT CTargeting::Render()
 
 	}
 
+
 	//FaceOn_Camera();
 	Set_RanderState();
-
+	if(m_Target.MainTarget == true)
 	m_pVIBufferCom->Render();
+
+	if (m_Target.MainTarget == false && m_bcheckCollider == true)
+	{
+		m_pVIBufferCom->Render();
+	}
 
 	Release_RanderState();
 	if (FAILED(__super::Render()))
@@ -173,7 +189,6 @@ HRESULT CTargeting::Set_RanderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
 	return S_OK;
 }
 

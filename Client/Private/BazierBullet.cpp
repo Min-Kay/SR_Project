@@ -99,7 +99,7 @@ void CBazierBullet::Move_By_Bazier(_float fTimeDelta)
 	m_fTimer += fTimeDelta * 0.5f;
 	_float3 CurrPos;
 
-	CurrPos = pow(1 - m_fTimer, 2) * m_StartPos + 2 * m_fTimer * (1 - m_fTimer) * m_MidPos + pow(m_fTimer, 2) * m_EndPos;
+	CurrPos = powf(1 - m_fTimer, 2) * m_StartPos + 2 * m_fTimer * (1 - m_fTimer) * m_MidPos + powf(m_fTimer, 2) * m_EndPos;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, CurrPos);
 

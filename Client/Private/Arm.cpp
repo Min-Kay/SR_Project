@@ -181,6 +181,16 @@ const _bool& CArm::Get_OnCollide() const
 	return m_Collider->Get_OnCollide();
 }
 
+const _bool& CArm::Get_ParentCollide() const
+{
+	return m_ParentCollide;
+}
+
+void CArm::Set_ParentCollide(_bool _bool)
+{
+	m_ParentCollide = _bool;
+}
+
 void CArm::Rolling(_float fTimeDelta)
 {
 	if (!m_Rolling)
@@ -223,6 +233,7 @@ void CArm::Mode(_float fTimeDelta)
 			{
 				RELEASE_INSTANCE(CGameInstance);
 				m_Parent->Add_HP(-m_Damage);
+				m_ParentCollide = true;
 				m_Timer = 0.f;
 				m_Portaling = false;
 				break;

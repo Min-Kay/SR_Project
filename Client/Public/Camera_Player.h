@@ -32,6 +32,7 @@ public:
 	const _bool& Get_Break() const { return m_Break; }
 public:
 	void Control_Menu(_bool _bool);
+	void Grab_Interaction();
 
 private:
 	CPlayer* m_pPlayer = nullptr;
@@ -39,6 +40,10 @@ private:
 	CUI_BackUI* m_BackUI = nullptr;
 	_bool isCursorOn = false;
 
+
+	_bool	isGrabed = false;
+
+	CGameObject* m_GrabInteraction = nullptr;
 
 public:
 	static CCamera_Player* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

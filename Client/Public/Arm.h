@@ -50,6 +50,9 @@ public:
 	void Set_RollingSpeed(_float _speed);
 
 	const _bool& Get_OnCollide() const;
+
+	const _bool& Get_ParentCollide() const;
+	void Set_ParentCollide(_bool _bool);
 private:
 	void Synchronize_Transform();
 	void Rolling(_float fTimeDelta);
@@ -68,7 +71,7 @@ private:
 private:
 	_float m_Timer = 0.f;
 	_float m_AttackTick = 1.f;
-
+	_bool m_ParentCollide = false;
 private:
 	_bool m_Rolling = false;
 	_float m_RollingSpeed = 0.3f;

@@ -35,6 +35,15 @@ public:
 
 	_bool	Get_CheckCollider() { return m_bcheckCollider; }
 
+	typedef struct tagTarget
+	{
+		_float3	targetPos;
+		_bool	MainTarget;
+		_float	SubTargetRangeX;
+		_float	SubTargetRangeY;
+	
+	}TARGET;
+
 private:
 
 	CTexture*			m_pTextureCom = nullptr;
@@ -58,6 +67,8 @@ private:
 	_float3			m_ColliderPos;
 	CTransform*		m_pTarget = nullptr;
 	_bool			m_bcheckCollider = false;
+	TARGET			m_Target;
+	_bool			m_fire = false;
 public:
 	static CTargeting* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

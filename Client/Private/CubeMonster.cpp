@@ -49,6 +49,8 @@ HRESULT Client::CCubeMonster::NativeConstruct(void* pArg)
 
 _int Client::CCubeMonster::Tick(_float fTimeDelta)
 {
+	if (FAILED(__super::Tick(fTimeDelta)))
+		return -1;
 
 	State_Machine(fTimeDelta);
 	m_pBoxCollider->Set_Collider();
@@ -222,12 +224,8 @@ void CCubeMonster::Target_Turn(_float3 dir, _float fTimeDelta)
 void CCubeMonster::Dying(_float fTimeDelta)
 {
 	m_pTransform->Gravity(1.f, fTimeDelta);
-
-	if(m_pBoxCollider->Get_OnCollide())
-	{
-		m_pBoxCollider->Set_Dead(true);
-		Set_Dead(true);
-	}
+	m_pTransform->Add_Force(fTimeDelta);
+	Set_Type(OBJ_INTERACTION); 
 }
 
 void CCubeMonster::Set_InitPos(_float3 _pos)
@@ -517,7 +515,10 @@ void CCubeMonster::Idle(_float fTimeDelta)
 void CCubeMonster::State_Machine(_float fTimeDelta)
 {
 	if (Check_HP())
-		m_State = STATE_DIE;
+	{
+		m_Effect->Set_Vaild(false);
+		Set_MonsterState(STATE_DIE);
+	}
 
 	switch(m_State)
 	{

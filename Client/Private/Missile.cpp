@@ -9,13 +9,14 @@
 #include "Arm.h"
 #include "Impact.h"
 #include "Targeting.h"
+#include "Boss.h"
 
 CMissile::CMissile(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
 {
 }
 
-CMissile::CMissile(const CMissile & rhs)
+CMissile::CMissile(const CMissile& rhs)
 	: CEnemy(rhs)
 	, m_pTransform(rhs.m_pTransform)
 	, m_pTexture(rhs.m_pTexture)
@@ -34,8 +35,10 @@ HRESULT CMissile::NativeConstruct_Prototype()
 	return S_OK;
 }
 
-HRESULT CMissile::NativeConstruct(void * pArg)
+HRESULT CMissile::NativeConstruct(void* pArg)
 {
+
+
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
@@ -45,18 +48,35 @@ HRESULT CMissile::NativeConstruct(void * pArg)
 			return E_FAIL;
 	}
 
+
+	m_ArmMissle = *static_cast<ARMMISSLE*>(pArg);
+
+
 	m_pTransform->Scaled(_float3(2.f, 2.f, 2.f));
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm")))));
+	m_pBoss = static_cast<CBoss*>(m_ArmMissle.pParent);
+	switch (m_ArmMissle.ArmMissle)
+	{
+	case ARMMISSLE_LEFT:
+		m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Left")))));
+		break;
+	case ATMMISSLE_RIGHT:
+		m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Right")))));
+		break;
+	}
 	CTransform* m_ArmTrans = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
+	CTransform* BossTrans = (CTransform*)m_pBoss->Get_Component(COM_TRANSFORM);
+	BossPos = BossTrans->Get_State(CTransform::STATE_UP);
+	RandPos1 = _float3(BossPos.x + rand() % 10 - 5, BossPos.y + rand() % 10 + 35, BossPos.z + rand() % 10 - 5);
 	MissilePos = m_ArmTrans->Get_State(CTransform::STATE_POSITION);
+	CTransform* PlayerTrans = (CTransform*)m_pPlayer->Get_Component(COM_TRANSFORM);
+	PlayerPos = PlayerTrans->Get_State(CTransform::STATE_POSITION);
+	//BossPos.y += 5.f;
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MissilePos);
 	RELEASE_INSTANCE(CGameInstance);
 
 
-	RandPos1 = _float3(MissilePos.x + rand() % 10 - 5, MissilePos.y + rand() % 10 + 15, MissilePos.z + rand() % 10 - 5);
 	//RandPos2 = _float3(PlayerPos.x - rand() % 30 - 10, PlayerPos.y, PlayerPos.z);
-
 
 
 	m_bTargetCollider = false;
@@ -70,12 +90,33 @@ _int CMissile::Tick(_float fTimeDelta)
 
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
+
+
+	if (m_bDEAD)
+	{
+		m_pBoxCollider->Set_Dead(true);
+		Set_Dead(true);
+	}
+
+	m_pBoxCollider->Set_Collider();
+
+	if (Get_Portaliing())
+	{
+		m_pTransform->Go_Straight(fTimeDelta * 10.f);
+		return 0;
+	}
+
+
 	if (false == m_bTargetCollider)
 	{
 		m_fTargetTimer += fTimeDelta;
-		CTransform* PlayerTrans = (CTransform*)m_pPlayer->Get_Component(COM_TRANSFORM);
-		PlayerPos = PlayerTrans->Get_State(CTransform::STATE_POSITION);
-		m_fFront_BezierPos = BezierCurve(MissilePos, RandPos1, PlayerPos, RandPos2, m_fTargetTimer / 2);
+
+
+		CTransform* BossTrans = (CTransform*)m_pBoss->Get_Component(COM_TRANSFORM);
+		BossPos = BossTrans->Get_State(CTransform::STATE_UP);
+
+
+		m_fFront_BezierPos = BezierCurve(BossPos, RandPos1, PlayerPos, RandPos2, m_fTargetTimer);
 		Set_Bezier(m_fFront_BezierPos);
 
 	}
@@ -84,24 +125,44 @@ _int CMissile::Tick(_float fTimeDelta)
 
 	if (Count == 0)
 	{
-		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Target"), TEXT("Prototype_GameObject_Targeting"))))
+		CTargeting::TARGET targeting;
+		targeting.targetPos = m_fFront_BezierPos;
+		targeting.MainTarget = true;
+		targeting.SubTargetRangeX = 0.0f;
+		targeting.SubTargetRangeY = 0.0f;
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Target"), TEXT("Prototype_GameObject_Targeting"), &targeting)))
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return -1;
+		}
+
+		for (int i = 0; i < 3; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				CTargeting::TARGET targeting;
+				targeting.targetPos = m_fFront_BezierPos;
+				targeting.MainTarget = false;
+				targeting.SubTargetRangeX = i * 3 - 3.f;
+				targeting.SubTargetRangeY = j * 3 - 3.f;
+				if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Target_sub"), TEXT("Prototype_GameObject_Targeting"), &targeting)))
+				{
+					RELEASE_INSTANCE(CGameInstance);
+					return -1;
+				}
+
+			}
 		}
 		++Count;
 
 	}
 	else
 	{
-
 		CTargeting* ptarget = (CTargeting*)p_instance->Get_GameObject(g_CurrLevel, TEXT("Target"));
 		if (nullptr != ptarget)
 			m_bTargetCollider = ptarget->Get_CheckCollider();
 
 	}
-
-	m_pBoxCollider->Set_Collider();
 
 
 	if (m_bTargetCollider)
@@ -130,8 +191,13 @@ _int CMissile::Tick(_float fTimeDelta)
 	}
 	else
 	{
+
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-		m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm")))));
+		if (m_ArmMissle.ArmMissle == ARMMISSLE_LEFT && m_ArmMissle.Left)
+			m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Left")))));
+		else if (m_ArmMissle.ArmMissle == ATMMISSLE_RIGHT && m_ArmMissle.Right)
+			m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Right")))));
+
 		CTransform* m_ArmTrans = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
 		m_pTransform->Set_State(CTransform::STATE_POSITION, m_ArmTrans->Get_State(CTransform::STATE_POSITION));
 		RELEASE_INSTANCE(CGameInstance);
@@ -143,24 +209,29 @@ _int CMissile::Tick(_float fTimeDelta)
 
 		list<CGameObject*> test = p_instance->Get_Collision_List(m_pBoxCollider);
 
-		for (auto & iter : test)
+		for (auto& iter : test)
 		{
 			if (OBJ_PLAYER == iter->Get_Type())
 			{
-				m_bDEAD = true;
-				m_pPlayer->Add_Hp(-50);
+				//m_bDEAD = true;
+				//m_pPlayer->Add_Hp(-50);
 				//MSGBOX("충돌!!")
 			}
 			else if (OBJ_STATIC == iter->Get_Type())
 			{
-				m_bDEAD = true;
+
+				//m_bDEAD = true;
 
 				//MSGBOX("충돌!!")
+				//Set_Portaling(true);
+
 			}
+
 
 		}
 	}
 
+	
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -199,9 +270,6 @@ HRESULT CMissile::Render()
 
 	m_pVIBuffer->Render();
 
-	if (m_bDEAD)
-		Set_Dead(true);
-
 	return S_OK;
 
 }
@@ -233,11 +301,12 @@ HRESULT CMissile::SetUp_Component()
 
 
 	m_pBoxCollider->Set_ParentInfo(this);
-	Set_Type(OBJ_STATIC);
+	Set_Type(OBJ_ENEMY);
 	m_pBoxCollider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
 	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	m_pArm = static_cast<CArm*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Arm")));
+	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ,m_pBoxCollider);
+
 	m_pPlayer = static_cast<CPlayer*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -266,7 +335,7 @@ _float3 CMissile::BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _f
 	return vTesult6;
 }
 
-CMissile * CMissile::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)
+CMissile* CMissile::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 {
 	CMissile* pMissile = new CMissile(m_pGraphic_Device);
 	if (FAILED(pMissile->NativeConstruct_Prototype()))
@@ -278,7 +347,7 @@ CMissile * CMissile::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	return pMissile;
 }
 
-CGameObject * CMissile::Clone(void * pArg)
+CGameObject* CMissile::Clone(void* pArg)
 {
 	CMissile* pMissile = new CMissile(*this);
 	if (FAILED(pMissile->NativeConstruct(pArg)))

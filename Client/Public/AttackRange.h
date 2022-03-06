@@ -40,8 +40,6 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
-	/* 충돌체 */
-	CBoxCollider*		 m_pBoxColliderCom = nullptr;
 private:
 	_uint				m_iTextureIndex = 2;
 	_bool				m_valid = true;

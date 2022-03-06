@@ -46,6 +46,7 @@ private:
 
 private:
 	_bool m_Open_1 = false;
+	_bool m_Close_1 = false;
 	_bool m_Open_2 = false;
 	_bool m_Open_3 = false;
 
@@ -56,6 +57,7 @@ private:
 
 	CChangeLevel* m_Change = nullptr;
 
+	CPlayer* m_player = nullptr;
 
 public:
 	static CLevel_StageOne* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

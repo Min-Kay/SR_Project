@@ -82,6 +82,7 @@ private:
 private:
 	_float				m_fGravity = 9.8f;
 	_float				m_fVelocity = 0.f;
+	_float				m_Press = 0.f;
 	_float3				m_vForceAxis = _float3(0.f,0.f,0.f);
 	_float				m_fForce = 0.f;
 

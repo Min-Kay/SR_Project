@@ -67,8 +67,7 @@ _int Client::CCubeBullet::LateTick(_float fTimeDelta)
 	if (Get_Dead())
 		return 0;
 
-	m_Timer += fTimeDelta;
-	if(Check_Collide() || m_Timer >= 5.f)
+	if(Check_Collide())
 	{
 		m_pBoxCollider->Set_Dead(true);
 		Set_Dead(true);

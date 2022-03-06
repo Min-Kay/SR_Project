@@ -40,13 +40,13 @@ public:
 	const _int& Get_Hp() const;
 	void Set_Hp(_int _hp);
 	void Add_Hp(_int _add);
-
 	typedef struct tagpalyerinfo
 	{
 		_float3    Pos;
 		_int		Hp;
 
 	}PLAYERINFO;
+	PLAYERINFO Get_Info() { return m_Info; }
 
 private:
 

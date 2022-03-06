@@ -123,7 +123,29 @@ _int CCamera_Player::Tick(_float fTimeDelta)
         Control_Menu(!isCursorOn);
     }
 
+    if(pGameInstance->Get_Key_Up(DIK_E))
+    {
+        if (isGrabed)
+        {
+            static_cast<CBoxCollider*>(m_GrabInteraction->Get_Component(COM_COLLIDER))->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
+            m_GrabInteraction = nullptr;
+            isGrabed = false;
+        }
+        else
+            Grab_Interaction();
+    }
+
+
     RELEASE_INSTANCE(CGameInstance);
+
+    if(m_GrabInteraction)
+    {
+        _float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+        D3DXVec3Normalize(&vLook, &vLook);
+
+        static_cast<CTransform*>(m_GrabInteraction->Get_Component(COM_TRANSFORM))->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION) + vLook * 1.5f);
+	    
+    }
 
     return _int();
 }
@@ -212,4 +234,61 @@ void CCamera_Player::Control_Menu(_bool _bool)
         isCursorOn = true;
     }
     RELEASE_INSTANCE(CGameInstance);
+}
+
+void CCamera_Player::Grab_Interaction()
+{
+
+    _float4		vTargetPos = { 0.f,0.f,0.f,1.f };
+    //_float4		vTargetPos = { 0.5f,0.5f,0.f,1.f };
+
+    /* 뷰스페이스 상의 위치로 변환한다. */
+    /* 로컬위치 * 월드 * 뷰 */
+
+    _float4x4		ProjMatrix;
+
+    _float3 m_vRayDirCH, m_vRayPosCH;
+
+    const CCamera::CAMERADESC camDesc = m_CameraDesc;
+    D3DXMatrixPerspectiveFovLH(&ProjMatrix, camDesc.fFovy, camDesc.fAspect, camDesc.fNear, camDesc.fFar);
+    D3DXMatrixInverse(&ProjMatrix, nullptr, &ProjMatrix);
+    D3DXVec4Transform(&vTargetPos, &vTargetPos, &ProjMatrix);
+    memcpy(&m_vRayDirCH, &(vTargetPos - _float4(0.f, 0.f, 0.f, 1.f)), sizeof(_float3));
+
+    m_vRayPosCH = _float3(0.f, 0.f, 0.f);
+
+    /* 월드스페이스 상의 위치로 변환한다. */
+    /* 로컬위치 * 월드 */
+    const _float4x4		ViewMatrixInverse = m_pTransform->Get_WorldMatrix();
+    D3DXVec3TransformNormal(&m_vRayDirCH, &m_vRayDirCH, &ViewMatrixInverse);
+    D3DXVec3TransformCoord(&m_vRayPosCH, &m_vRayPosCH, &ViewMatrixInverse);
+
+    D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
+
+
+
+    CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+    list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(m_vRayDirCH,m_vRayPosCH,1.f , true);
+
+    if(collList.empty())
+    {
+        RELEASE_INSTANCE(CGameInstance);
+        return;
+    }
+
+
+    for(auto& i : collList)
+    {
+        if(i.CollObj->Get_Type() == OBJ_INTERACTION)
+        {
+            m_GrabInteraction = i.CollObj;
+            static_cast<CBoxCollider*>(m_GrabInteraction->Get_Component(COM_COLLIDER))->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
+            isGrabed = true;
+            break;
+        }
+    }
+
+
+    RELEASE_INSTANCE(CGameInstance);
+
 }

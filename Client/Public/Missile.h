@@ -14,6 +14,7 @@ BEGIN(Client)
 class CArm;
 class CPlayer;
 class CTargeting;
+class CBoss;
 
 class CMissile :
 	public CEnemy
@@ -32,6 +33,17 @@ public:
 
 	_float3 Get_Bezier() { return m_fFront_BezierPos; }
 	HRESULT Set_Bezier(_float3  Pos);
+
+	typedef enum tagArmMissle{ ARMMISSLE_LEFT, ATMMISSLE_RIGHT, ATMMISSLE_END}ArmMissle;
+	
+
+	typedef struct tagarmmissle {
+		ArmMissle ArmMissle;
+		_float	FireCount;
+		_bool	Left;
+		_bool	Right;
+		void*  pParent;
+	}ARMMISSLE;
 private:
 	HRESULT SetUp_Component();
 	_float3		BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _float time);
@@ -47,7 +59,9 @@ private:
 	CArm*		m_pArm = nullptr;
 	CPlayer*	m_pPlayer = nullptr;
 	CTargeting*	m_pTageting = nullptr;
+	CBoss*		m_pBoss = nullptr;
 
+	ARMMISSLE	m_ArmMissle;
 	_float3		PlayerPos;
 	_float3		MissilePos;
 	_float3		m_fvecdir;
@@ -56,6 +70,8 @@ private:
 	_float		m_Timer = 0.f;
 	_float3		RandPos1;
 	_float3		RandPos2;
+	_float3		BossPos;
+	_float3		BossUp;
 
 	_float m_fMissileTimer = 0.f;
 	_float m_fTargetTimer = 0.f;

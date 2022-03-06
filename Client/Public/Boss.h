@@ -52,7 +52,7 @@ private:
 	void Resizing(_float fTimeDelta);
 	void Sizing(_float fTimeDelta);
 	void Reset_Arm_Direction(ARM _arm);
-	_bool InitArmPosition(_float fTimeDelta);
+	_bool InitArmPosition(_float fTimeDelta, _bool _left = true, _bool _right = true);
 	_bool Move_By_Bazier(ARM _arm, _float fTimeDelta);
 	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);
 	void Blowing(_float fTimeDelta);
@@ -60,6 +60,8 @@ private:
 	void Sizing_Particles();
 
 
+	void Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer);
+	void Arm_Posing(_float fTimeDelta, _bool _left = true, _bool _right = true);
 private:
 	// 인우형 꺼
 
@@ -98,14 +100,23 @@ private:
 	// 인우형 패턴 변수
 	CAttackRange* m_pAttackRange = nullptr;
 	CTransform* m_RangeTrans = nullptr;
-	_float3				m_playerPos = { 0.f, 0.f, 0.f };
+
+	_uint				m_TotalPunchCount = 4;
+	_uint				m_CurrPunchCount = 0;
 	_bool				m_bRangeValid = false;
-	_bool				m_bCalled = true;
+	_bool				m_bCalled = false;
+	_bool				m_Hand = false;
+
 
 private:
 	// 태우형 패턴 변수
 	_bool  m_bMissile = false;
-
+	_float m_fMissileCount = 0.f;
+	_int m_fFireCount = 0;
+	_float m_fFireFrame = 0.f;
+	_bool    m_bLeft = false;
+	_bool    m_bRight = false;
+	_bool    m_btargetCollider = true;
 private:
 	// 내꺼
 	_float3 m_vScale = _float3(5.f,5.f,5.f);

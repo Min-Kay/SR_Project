@@ -27,7 +27,10 @@ HRESULT CLevel_StageOne::NativeConstruct()
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Event()))
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Map()))
@@ -36,15 +39,12 @@ HRESULT CLevel_StageOne::NativeConstruct()
 	if (FAILED(Ready_Layer_Monster_Map()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Event()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Second_Entrance()))
 		return E_FAIL;
 	
-	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -88,8 +88,9 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 		}
 	}
 
-	if(m_Open_1 && !m_Open_2)
+	if(!m_Close_1 || !m_Open_2)
 	{
+		m_player->Get_Info().Pos = _float3(15.f,1.f,35.f);
 		if (FAILED(Close_Exit_Open_Door2()))
 		{
 			MSGBOX("Failed to Close_Exit_Open_Door2 in CLevel_StageOne");
@@ -277,6 +278,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Player(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+	m_player = static_cast<CPlayer*>(pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, pLayerTag));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -712,18 +714,6 @@ HRESULT CLevel_StageOne::Ready_Layer_Event()
 	}
 
 
-	// Open Event용 충돌체 cube
-	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"), TEXT("Prototype_GameObject_Block"))))
-			return E_FAIL;
-
-		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"), 0);
-		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Scaled(_float3(1.f, 1.f, 1.f));
-		trans->Set_State(CTransform::STATE_POSITION, _float3(12.f, 1.f, ((_float)iLineZ) - 3.f));
-
-		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
-	}
 	RELEASE_INSTANCE(CGameInstance);
 }
 
@@ -846,10 +836,10 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 
 	CTransform* ExitTrans = static_cast<CTransform*>(m_Change->Get_Component(COM_TRANSFORM));
 	ExitTrans->Scaled(_float3(1.f, 1.f, 1.f));
-	ExitTrans->Set_State(CTransform::STATE_POSITION, _float3(30.f, 2.f, 0.f));
+	ExitTrans->Set_State(CTransform::STATE_POSITION, _float3(11.f, 1.f, 51.f));
 
 	CBoxCollider* ExitBox = static_cast<CBoxCollider*>(m_Change->Get_Component(COM_COLLIDER));
-	ExitBox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	ExitBox->Set_State(CBoxCollider::COLL_SIZE, _float3(3.f, 1.f, 3.f));
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -1082,7 +1072,102 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
 	}
 
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Button_Block"), TEXT("Prototype_GameObject_Block"))))
+			return E_FAIL;
+
+		CGameObject* tileCollider = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Button_Block"), 0);
+		// tile의 위치
+		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
+		transform->Scaled(_float3(5.f, 1.f, 5.f));
+		transform->Set_State(CTransform::STATE_POSITION, _float3(5.f, 5.f, 47.f));
+
+
+		// collider의 위치
+		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 1.f, 5.f));
+		box->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
+
+	}
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 2.f, 40.f));
+	}
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Set_State(CTransform::STATE_POSITION, _float3(15.f, 5.f, 40.f));
+	}
+
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Set_State(CTransform::STATE_POSITION, _float3(15.f, 2.f, 45.f));
+	}
+
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Set_State(CTransform::STATE_POSITION, _float3(20.f, 2.f, 45.f));
+	}
+
+
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Set_State(CTransform::STATE_POSITION, _float3(20.f, 2.f, 45.f));
+	}
+
+
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 4.f, 45.f));
+	}
+
+
+
+
 	// 몬스터를 다 잡으면 오픈 큐브 나오게 나중에 수정
+
+	// Open Event용 충돌체 cube
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"), TEXT("Prototype_GameObject_Block"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"), 0);
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Scaled(_float3(1.f, 1.f, 1.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(12.f, 1.f, ((_float)iLineZ) - 3.f));
+
+		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
+	}
 
 	// Open Event용 충돌체 cube
 	{
@@ -1091,10 +1176,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Exit2_Switch"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Scaled(_float3(1.f, 1.f, 1.f));
-		trans->Set_State(CTransform::STATE_POSITION, _float3(12.f, 1.f, (_float)iLineZ * 2.f - 2.5f));
+		static_cast<CTile_Cube*>(Switch)->Set_TextureIndex(2);
+		trans->Scaled(_float3(1.f, 0.7f, 1.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(5.f, 5.5f, 47.f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 0.7f, 1.f));
 	}
 
 
@@ -1211,7 +1298,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Next_Stage()
 		CTransform* transform = (CTransform*)tileCollider->Get_Component(COM_TRANSFORM);
 		static_cast<CTileCollider*>(tileCollider)->Set_TextureIndex(1);
 		transform->Scaled(_float3((_float)iWaterZ, (_float)iWaterZ + 1.f, (_float)iWaterZ));
-		transform->Set_State(CTransform::STATE_POSITION, _float3((iLineX) * 0.5f - 0.5f, (_float)iWaterZ - 1.f, (_float)iLineZ * 2.f + 5.f));
+		transform->Set_State(CTransform::STATE_POSITION, _float3((iLineX) * 0.5f - 0.5f, (_float)iWaterZ - 1.f, (_float)iLineZ * 2.f + 5.f -2.f) );
 
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
@@ -1239,8 +1326,8 @@ HRESULT CLevel_StageOne::Close_Exit_Open_Door2()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
+	m_Close_1 = m_EventCube2->Close_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 	m_Open_2 = m_EventCube2->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Entrance"), TEXT("Layer_Second_Right_Entrance"));
-	m_EventCube1->Close_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -1251,7 +1338,7 @@ HRESULT CLevel_StageOne::Open_Exit2()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	m_Open_3 = m_EventCube3->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Exit"), TEXT("Layer_Second_Right_Exit"));
+	m_Open_3 = m_EventCube3->Open_Block_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Exit"), TEXT("Layer_Second_Right_Exit"));
 
 	RELEASE_INSTANCE(CGameInstance);
 

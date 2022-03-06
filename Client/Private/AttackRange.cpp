@@ -45,12 +45,10 @@ _int CAttackRange::Tick(_float fTimeDelta)
 	if (!m_valid)
 		return 0;
 
+	m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta  );
+
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
-
-	if (m_pBoxColliderCom)
-		m_pBoxColliderCom->Set_Collider();
-
 
 	return _int();
 }
@@ -83,11 +81,8 @@ HRESULT CAttackRange::Render()
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(0)))
 		return E_FAIL;
 
-	//SetUp_RenderState();
 
 	m_pVIBufferCom->Render();
-
-	//Release_RenderState();
 
 	return S_OK;
 }
@@ -117,20 +112,9 @@ HRESULT CAttackRange::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_AttackRange"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
-	/* For.Com_Box */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
-		return E_FAIL;
-
 
 	m_pTransformCom->Scaled(_float3(7.f, 7.f, 7.f));
 	m_pTransformCom->Rotation(_float3(1.f,0.f,0.f),D3DXToRadian(90));
-
-	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLL_SIZE, _float3(7.f, 1.f, 7.f));
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pBoxColliderCom);
-	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -139,17 +123,11 @@ HRESULT CAttackRange::SetUp_RenderState()
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
-
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	return S_OK;
 }
 
 HRESULT CAttackRange::Release_RenderState()
 {
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	
 
 	return S_OK;
 }
@@ -185,8 +163,6 @@ CGameObject * CAttackRange::Clone(void* pArg )
 void CAttackRange::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pBoxColliderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
