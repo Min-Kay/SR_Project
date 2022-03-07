@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Shield.h"
 
+#include "Boss.h"
 #include "Transform.h"
 #include "Renderer.h"
 #include "Texture.h"
@@ -60,12 +61,17 @@ _int CShield::Tick(_float fTimeDelta)
 	if (Get_Dead())
 		return 0;
 
+	if(m_On && !m_Complete)
+		Spawn_Shield(fTimeDelta);
+
 	if (Check_HP())
-		Set_Valid(false);
+		Break_Shield(fTimeDelta);
 
-	Synchronize_Transform();
-	m_pCollider->Set_Collider();
-
+	if(m_Complete)
+	{
+		Synchronize_Transform();
+		m_pCollider->Set_Collider();
+	}
 
 	if (0 > __super ::Tick(fTimeDelta))
 		return -1;
@@ -128,8 +134,11 @@ HRESULT CShield::SetUp_Component()
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
-	m_Hp = 100;
+	m_Hp = 200;
 	m_EnemyType = ENEMY_SHIELD;
+
+	m_CanPortal = false;
+
 	return S_OK;
 }
 
@@ -143,13 +152,31 @@ void CShield::Add_HP(_int _add)
 	return;
 }
 
-void CShield::Spawn_Shield()
+void CShield::Spawn_Shield(_float fTimeDelta)
 {
-	
+	m_Timer += fTimeDelta;
+
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, m_ParentTr->Get_State(CTransform::STATE_RIGHT) * m_Timer);
+	m_pTransform->Set_State(CTransform::STATE_UP, m_ParentTr->Get_State(CTransform::STATE_UP) * m_Timer);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, m_ParentTr->Get_State(CTransform::STATE_LOOK) * m_Timer);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, m_ParentTr->Get_State(CTransform::STATE_POSITION));
+
+	m_pTransform->Turn(_float3(1.f, 1.f, 0.f), m_Timer * 10.f);
+
+	if(m_Timer >= 1.5f)
+	{
+		m_Timer = 0.f;
+		m_Complete = true;
+	}
 }
 
-void CShield::Break_Shield()
+void CShield::Break_Shield(_float fTimeDelta)
 {
+	m_Parent->Set_Grogy();
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Play_Sound(TEXT("Shield_Break.wav"), CSoundMgr::EFFECT, 1.f);
+	RELEASE_INSTANCE(CGameInstance);
+	Set_Valid(false);
 }
 
 void CShield::Add_ShieldHp(_int _add)
@@ -162,6 +189,7 @@ void CShield::Set_Valid(_bool _bool)
 	m_Valid = _bool;
 	if(m_Valid)
 	{
+		m_On = true;
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pCollider);
 		RELEASE_INSTANCE(CGameInstance);
@@ -174,6 +202,11 @@ void CShield::Set_Valid(_bool _bool)
 const _bool CShield::Get_Valid() const
 {
 	return m_Valid;
+}
+
+void CShield::Set_Parent(CBoss* _boss)
+{
+	m_Parent = _boss;
 }
 
 void CShield::Synchronize_Transform()

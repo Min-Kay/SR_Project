@@ -74,8 +74,7 @@ private:
 	_float3		PlayerPos;
 	_float3		MissilePos;
 	_float3		m_fvecdir;
-	_int		m_Damage = 5;
-	_float		m_Speed = 1.f;
+	_int		m_Damage = 10;
 	_float		m_Timer = 0.f;
 	_float3		RandPos1;
 	_float3		RandPos2;
@@ -92,6 +91,9 @@ private:
 
 	_bool	m_bTargetCollider = false;
 	_uint	Count = 0;
+
+	CTargeting* pTarget = nullptr;
+	CTransform* targetTrans = nullptr;
 
 public:
 	static CMissile* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);

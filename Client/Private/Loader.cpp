@@ -37,10 +37,12 @@
 
 #include "Level.h"
 #include "Level_StageOne.h"
+#include "Minimy.h"
 #include "Missile.h"
 #include "Targeting.h"
 #include "Unportal.h"
 #include "Shield.h"
+#include "Shield_Effect.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -317,6 +319,12 @@ HRESULT CLoader::Loading_ForStageTwo()
 
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Targeting"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Effect/Tageting_%d.png"), 13))))
 		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Shield_Effect"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Shield_Effect.dds")))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Minimy"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Minimy.dds")))))
+		return E_FAIL;
 	/////////////////
 
 	////////////
@@ -329,9 +337,6 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Arm"), CArm::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_BazierBullet"), CBazierBullet::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Missile"), CMissile::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
@@ -342,8 +347,13 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Targeting"), CTargeting::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Shield"), CShield::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Shield_Effect"), CShield_Effect::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Minimy"), CMinimy::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

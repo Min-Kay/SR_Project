@@ -66,9 +66,19 @@ void CEnemy::Set_Portaling(_bool _bool)
 	m_Portaling = _bool;
 }
 
-const _bool& CEnemy::Get_Portaliing() const
+const _bool& CEnemy::Get_Portaling() const
 {
 	return m_Portaling; 
+}
+
+void CEnemy::Set_CanPortal(_bool _bool)
+{
+	m_CanPortal = _bool;
+}
+
+const _bool& CEnemy::Get_CanPortal() const
+{
+	return m_CanPortal;
 }
 
 void CEnemy::Set_EnemyType(ENEMY _enemy)

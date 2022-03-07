@@ -92,7 +92,7 @@ _int CPlayer::LateTick(_float fTimeDelta)
 		m_HP = m_Info.Hp;
 	}
 
-	if (FAILED(Synchronize_Camera()))
+	if (FAILED(Synchronize_Camera(fTimeDelta)))
 		return -1;
 
 
@@ -157,7 +157,7 @@ HRESULT CPlayer::SetUp_Components()
 
 	Set_Type(OBJ_PLAYER);
 	m_pBoxColliderCom->Set_ParentInfo(this);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(0.5f, 1.f, 0.5f));
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
@@ -188,6 +188,13 @@ HRESULT CPlayer::Reset_PlayerPos(_float3 resetPos)
 {
 	m_Info.Pos = resetPos;
 	return S_OK;
+}
+
+void CPlayer::Set_Shake(_float _timer, _float _force)
+{
+	m_ShakeTime = _timer;
+	m_ShakeForce = _force;
+	m_Shake = true;
 }
 
 void CPlayer::Erase_Portal()
@@ -237,6 +244,13 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 		RELEASE_INSTANCE(CGameInstance);
 		return 0;
 	}
+
+
+	if (pGameInstance->Get_Key_Down(DIK_TAB))
+	{
+		Set_Shake(5.f,1.f);
+	}
+
 
 	if (pGameInstance->Get_Key_Press(DIK_W))
 	{
@@ -345,12 +359,39 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 	return 0;
 }
 
-HRESULT CPlayer::Synchronize_Camera()
+HRESULT CPlayer::Synchronize_Camera(_float fTimeDelta)
 {
 	if (!m_Camera || !m_pTransformCom)
 		return E_FAIL;
 
-	m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_float3 vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION); 
+
+	if (m_Shake && m_fTimer <= m_ShakeTime)
+	{
+		m_fTimer += fTimeDelta;
+		_float3 vRight, vUp;
+		vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+		D3DXVec3Normalize(&vRight, &vRight);
+		D3DXVec3Normalize(&vUp, &vUp);
+
+		_int force = (_int)(m_ShakeForce * 10000);
+
+		_float randRight = _float(rand() % 2 == 0 ? (rand() % force) : -(rand() % force));
+		_float randUp = _float(rand() % 2 == 0 ? (rand() % force) : -(rand() % force));
+
+		randRight /= 100000;
+		randUp /= 100000;
+
+		vPos += vRight * randRight + vUp * randUp;
+	}
+	else
+	{
+		m_fTimer = 0.f;
+		m_Shake = false;
+	}
+
+	m_Camera->Get_CameraTransform()->Set_State(CTransform::STATE_POSITION, vPos);
 
 	_float3 vRight, vUp, vLook;
 

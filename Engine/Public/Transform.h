@@ -35,6 +35,8 @@ public:
 	
 	_float	Get_Gravity() const { return m_fGravity; }
 
+	_float	Get_Force() const { return m_fForce; }
+
 	void Set_WorldMatrix(_float4x4 _wm) { m_WorldMatrix = _wm; }
 
 	void Set_State(STATE eState, const _float3& vState) {

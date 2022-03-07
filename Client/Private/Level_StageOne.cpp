@@ -715,6 +715,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Event()
 
 
 	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
 }
 
 HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()

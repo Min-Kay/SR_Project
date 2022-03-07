@@ -32,7 +32,10 @@ public:
 	const _int& Get_Damage() const;
 
 	void Set_Portaling(_bool _bool);
-	const _bool& Get_Portaliing() const;
+	const _bool& Get_Portaling() const;
+
+	void Set_CanPortal(_bool _bool);
+	const _bool& Get_CanPortal() const;
 
 	void Set_EnemyType(ENEMY _enemy);
 	const ENEMY& Get_EnemyType() const;
@@ -47,6 +50,7 @@ protected:
 	ENEMY m_EnemyType = ENEMY_NONE;
 protected:
 	_bool m_Portaling = false;
+	_bool m_CanPortal = true;
 
 
 public:

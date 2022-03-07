@@ -91,6 +91,8 @@ HRESULT CUnportal::Render()
 		return E_FAIL;
 
 	m_pBuffer->Render();
+
+	return S_OK; 
 }
 
 HRESULT CUnportal::SetUp_Component()

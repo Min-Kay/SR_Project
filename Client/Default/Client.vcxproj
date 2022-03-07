@@ -186,11 +186,13 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\Public\LoadingLoader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\Minimy.h" />
     <ClInclude Include="..\Public\Missile.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Portal.h" />
     <ClInclude Include="..\Public\PortalControl.h" />
     <ClInclude Include="..\Public\Shield.h" />
+    <ClInclude Include="..\Public\Shield_Effect.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Targeting.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -234,11 +236,13 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\Private\LoadingLoader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\Minimy.cpp" />
     <ClCompile Include="..\Private\Missile.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Portal.cpp" />
     <ClCompile Include="..\Private\PortalControl.cpp" />
     <ClCompile Include="..\Private\Shield.cpp" />
+    <ClCompile Include="..\Private\Shield_Effect.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Targeting.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />

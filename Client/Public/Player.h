@@ -36,6 +36,9 @@ public:
 	void Tick_JumpState(_float fTimeDelta);
 	void Erase_Portal();
 	HRESULT Reset_PlayerPos(_float3 resetPos);
+
+public:
+	void Set_Shake(_float _timer, _float _force);
 public:
 	const _int& Get_Hp() const;
 	void Set_Hp(_int _hp);
@@ -84,6 +87,11 @@ private:
 
 	PLAYERINFO			m_Info;
 
+	_bool				m_Shake = false;
+	_float				m_ShakeTime = 0.f;
+	_float				m_fTimer = 0.f;
+	_float				m_ShakeForce = 0.f;
+
 private:
 	HRESULT SetUp_Components();
 
@@ -96,7 +104,7 @@ public:
 	CCamera* Get_Camera();
 private:
 	_int Player_Control(_float fTimeDelta);
-	HRESULT Synchronize_Camera();
+	HRESULT Synchronize_Camera(_float fTimeDelta);
 	void Check_OnGround();
 
 public:

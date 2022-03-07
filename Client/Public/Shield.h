@@ -12,6 +12,7 @@ class CBoxCollider;
 END
 
 BEGIN(Client)
+class CBoss;
 class CShield :
     public CEnemy
 {
@@ -32,13 +33,16 @@ public:
 	void Set_ParentTransform(CTransform* _tr);
 	virtual void Add_HP(_int _add) override;
 
-	void Spawn_Shield();
-	void Break_Shield();
+	void Spawn_Shield(_float fTimeDelta);
+	void Break_Shield(_float fTimeDelta);
 
 	void Add_ShieldHp(_int _add);
 
 	void Set_Valid(_bool _bool);
 	const _bool Get_Valid() const ;
+
+
+	void Set_Parent(CBoss* _boss); 
 private:
 	void Synchronize_Transform();
 	void Sizing_Particles();
@@ -51,11 +55,15 @@ private:
 	CBoxCollider* m_pCollider = nullptr;
 
 private:
+	CBoss* m_Parent = nullptr;
 	CTransform* m_ParentTr = nullptr;
 
 private:
-	_bool m_Valid = false;
 
+	_float m_Timer = 0.f;
+	_bool m_Valid = false;
+	_bool m_On = false;
+	_bool m_Complete = false;
 public:
 	static CShield* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

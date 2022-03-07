@@ -34,6 +34,7 @@ public:
 	void Control_Menu(_bool _bool);
 	void Grab_Interaction();
 
+
 private:
 	CPlayer* m_pPlayer = nullptr;
 	_bool	m_Break = false;

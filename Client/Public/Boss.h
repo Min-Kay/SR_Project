@@ -16,7 +16,8 @@ class CArm;
 class CAttackRange;
 class CShield;
 class CMissile;
-class CTargeting; 
+class CTargeting;
+class CShield_Effect;
 
 class CBoss :
     public CEnemy
@@ -27,9 +28,11 @@ protected:
 	virtual ~CBoss() = default;
 
 public:
-	typedef enum tagBossState {BOSS_IDLE, BOSS_MOVE, BOSS_ATTACK,BOSS_PHASECHANGE, BOSS_DIE}BOSSSTATE;
+	typedef enum tagBossState {BOSS_IDLE, BOSS_MOVE, BOSS_ATTACK,BOSS_PHASECHANGE, BOSS_GROGY, BOSS_DIE}BOSSSTATE;
 	typedef enum tagBossPhase {BOSS_PHASEONE, BOSS_PHASETWO}BOSSPHASE;
-	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH, BOSSATT_MIXED }BOSSATTACK;
+	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH }BOSSATTACK;
+	typedef enum tagBossRage { BOSSRAGE_TAEBO, BOSSRAGE_LASER }BOSSRAGE;
+
 
 
 public:
@@ -54,6 +57,8 @@ public:
 	void Add_ShieldHp(_int _add);
 	const _int Get_ShieldHp();
 
+	void Set_Grogy();
+
 private:
 	void Synchronize_Transform();
 	void Set_BossState(BOSSSTATE _state);
@@ -70,7 +75,7 @@ private:
 	void Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end);
 	void Blowing(_float fTimeDelta);
 	void Randomize_Pattern(_float fTimeDelta);
-	void Sizing_Particles();
+	void Sizing_Particles(_float4 _color, _int time, _float _speed);
 
 
 	void Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer);
@@ -78,6 +83,8 @@ private:
 
 	void Start_Pattern(_tchar* filename);
 	void Spawn_Shield();
+	void Shield_Effect(_float fTimeDelta);
+
 private:
 
 	void Init_Attack_Punch();
@@ -105,21 +112,29 @@ private:
 	void Move(_float fTimeDelta);
 	void Phase(_float fTimeDelta);
 	void Attack(_float fTimeDelta);
+	void Rage(_float fTimeDelta);
+	void Grogy(_float fTimeDelta);
 	void Die(_float fTimeDelta);
 
 private:
 	void Attack_Missile(_float fTimeDelta);
 	void Attack_Punch(_float fTimeDelta);
-	void Attack_Mixed(_float fTimeDelta);
-
 
 private:
+	void Rage_Laser(_float fTimeDelta);
+	void Rage_Taebo(_float fTimeDelta);
+
+private:
+	_float m_ShieldTimer = 0.f;
+
 	_float m_fTimer = 0.f; 
 	_uint m_ImageIndex = 0;
-	_int m_InitHp = 100;
+	_int m_InitHp = 1000;
 	_bool m_OnShield = false;
 	_bool m_OnPattern = false;
 	_bool m_SpawnShield = false;
+
+
 private:
 	// 인우형 패턴 변수
 	CAttackRange* m_pAttackRange = nullptr;
@@ -130,6 +145,7 @@ private:
 	_bool				m_bRangeValid = false;
 	_bool				m_bCalled = false;
 	_bool				m_Hand = false;
+	_bool				m_Shaking = false;
 
 
 private:
@@ -176,7 +192,7 @@ private:
 	_float m_fRightPos = 10.f;
 
 	// Move
-	_float m_fMoveLength = 30.f;
+	_float m_fMoveLength = 20.f;
 
 
 	// Init Positioning
@@ -198,6 +214,8 @@ private:
 	_bool m_Charging = false;
 	_bool m_Striking = false;
 
+	//Grogy
+	_bool m_Grogy = false;
 
 	// Die
 	_bool m_Dying = false;
@@ -207,8 +225,8 @@ private:
 	BOSSPHASE m_Phase = BOSS_PHASEONE;
 	BOSSSTATE m_State = BOSS_IDLE;
 
-	BOSSATTACK m_AttState;
-
+	BOSSATTACK m_AttState = BOSSATT_PUNCH;
+	BOSSRAGE m_RageState = BOSSRAGE_TAEBO;
 private:
 	CPlayer* m_pPlayer = nullptr;
 	CTransform* m_pPlayerTr = nullptr;
@@ -220,8 +238,9 @@ private:
 	CTransform* m_LeftArmTr = nullptr;
 	CTransform* m_RightArmTr = nullptr;
 
-
 	CShield* m_Shield = nullptr;
+
+	list<CShield_Effect*> m_shield_effects_;
 
 private:
 	CTransform* m_pOnlyRotation = nullptr;

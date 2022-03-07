@@ -92,7 +92,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
     CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-    Set_Type(OBJ_STATIC);
+    Set_Type(OBJ_PORTAL);
 
     m_Collider->Set_ParentInfo(this);
     m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
@@ -176,7 +176,7 @@ _int CPortal::Tick(_float fTimeDelta)
 {
     m_Collider->Set_Collider();
     Portaling();
-     return _int();
+	return _int();
 }
 
 _int CPortal::LateTick(_float fTimeDelta)
@@ -261,6 +261,9 @@ void CPortal::Portaling()
     for (auto& obj : collList)
     {
         if (obj->Get_Type() == OBJ_STATIC || obj == m_pOpponent)
+            continue;
+
+        if (obj->Get_Type() == OBJ_ENEMY && !static_cast<CEnemy*>(obj)->Get_CanPortal())
             continue;
 
         CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));

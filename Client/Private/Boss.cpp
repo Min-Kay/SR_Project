@@ -16,9 +16,9 @@
 #include "AttackRange.h"
 #include "Missile.h"
 #include "Targeting.h"
-#include "Missile.h"
 
 #include "Shield.h"
+#include "Shield_Effect.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -96,6 +96,8 @@ _int CBoss::Tick(_float fTimeDelta)
 
 
 	Spawn_Shield();
+
+	Shield_Effect(fTimeDelta);
 
 	State_Machine(fTimeDelta);
 
@@ -229,11 +231,27 @@ HRESULT CBoss::SetUp_Component()
 	m_Shield = static_cast<CShield*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Shield")));
 	m_Shield->Set_ParentTransform(m_pOnlyRotation);
 	m_Shield->Set_Valid(false);
+	m_Shield->Set_Parent(this);
 
+	for(_uint i = 0 ; i < 60 ; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Shield_Effect"), TEXT("Prototype_GameObject_Shield_Effect"))))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return E_FAIL;
+		}
+
+		CShield_Effect* se = static_cast<CShield_Effect*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Shield_Effect")));
+		se->Set_Valid(false);
+
+		se->Set_TurnType(i >= 30 ? true : false);
+		se->Set_Parent(m_pOnlyRotation);
+		m_shield_effects_.push_back(se);
+	}
 
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
 
-	p_instance->PlayBGM(TEXT("Boss_Stage.wav"));
+	p_instance->PlayBGM(TEXT("Boss_Stage.mp3"));
 
 	p_instance->Play_Sound(TEXT("Boss_Sound.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
 
@@ -245,8 +263,8 @@ HRESULT CBoss::SetUp_Component()
 	m_Hp = m_InitHp;
 	m_Damage = 10;
 	m_EnemyType = ENEMY_BOSS;
-
-
+	m_CanPortal = false;
+	m_Phase = BOSS_PHASEONE;
 	return S_OK; 
 
 }
@@ -288,6 +306,11 @@ void CBoss::Add_ShieldHp(_int _add)
 const _int CBoss::Get_ShieldHp()
 {
 	return m_Shield->Get_HP();
+}
+
+void CBoss::Set_Grogy()
+{
+	Set_BossState(BOSS_GROGY);
 }
 
 _bool CBoss::InitArmPosition(_float fTimeDelta, _bool _left, _bool _right)
@@ -425,16 +448,16 @@ void CBoss::Init_Idle()
 	m_Reset = false;
 }
 
-void CBoss::Sizing_Particles()
+void CBoss::Sizing_Particles(_float4 _color, _int time, _float _speed)
 {
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
 	Impact1.Pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
-	Impact1.Size = _float3(0.1f, 0.1f, 0.1f);
+	Impact1.Size = _float3(0.4f, 0.4f, 0.4f);
 	Impact1.randomPos = 7;
-	Impact1.Speed = 15;
-	Impact1.deleteCount = 2;//rand() % 5 + 2;
-	Impact1.Color = D3DXCOLOR(0.0f, 0.5f, 1.0f, 0.0f);
+	Impact1.Speed = _speed;
+	Impact1.deleteCount = time;//rand() % 5 + 2;
+	Impact1.Color = D3DXCOLOR(_color);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < 10 ; ++i)
@@ -482,7 +505,7 @@ void CBoss::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 	if(_watchPlayer)
 		m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
 
-	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 6.f, 0.f) + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 2.f));
+	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 10.f, 0.f) + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 2.f));
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -527,11 +550,51 @@ void CBoss::Spawn_Shield()
 	if (m_SpawnShield)
 		return;
 
-	if (m_Hp < 50)
+	if (m_Hp < m_InitHp * 0.5f && !m_SpawnShield)
 	{
+		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 10, 30.f);
 		m_Shield->Set_Valid(true);
 		m_SpawnShield = true;
+
+		_float timer = 0.f;
+		for(auto& se : m_shield_effects_)
+		{
+			se->Set_CoolTime(timer);
+			timer += 0.1f;
+		}
+
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		for(_uint i = 0; i < 10; ++i)
+		{
+			if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Minimy"),TEXT("Prototype_GameObject_Minimy"))))
+			{
+				RELEASE_INSTANCE(CGameInstance);
+				return;
+			}
+
+			CTransform* tr = static_cast<CTransform*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Minimy"))->Get_Component(COM_TRANSFORM));
+
+			_float3 vPos = m_InitPos;
+			vPos.x += rand() % 2 == 0 ? rand() % 20: -(rand() % 20);
+			vPos.z += rand() % 2 == 0 ? rand() % 20 : -(rand() % 20);
+
+			tr->Set_State(CTransform::STATE_POSITION, vPos);
+		}
+		RELEASE_INSTANCE(CGameInstance); 
 	}
+}
+
+void CBoss::Shield_Effect(_float fTimeDelta)
+{
+	if (!m_OnShield)
+		return;
+
+	m_ShieldTimer += fTimeDelta;
+	for (auto& se : m_shield_effects_)
+	{
+		se->Set_SpreadRange(2.f * sinf(m_ShieldTimer) + 7.f);
+	}
+
 }
 
 void CBoss::Init_Attack_Punch()
@@ -562,7 +625,7 @@ void CBoss::Resizing(_float fTimeDelta)
 
 	m_pOnlyRotation->Scaled(_float3(m_vScale.x - m_fTimer, m_vScale.y - m_fTimer, m_vScale.z - m_fTimer));
 
-	Sizing_Particles();
+	Sizing_Particles(_float4(0.f,0.f,0.f,1.f), 2, 20.f);
 
 	if(m_pOnlyRotation->Get_Scale().x <= 0.1f)
 	{
@@ -582,7 +645,7 @@ void CBoss::Sizing(_float fTimeDelta)
 
 	m_pOnlyRotation->Scaled(_float3( m_fTimer,  m_fTimer, m_fTimer));
 
-	Sizing_Particles();
+	Sizing_Particles(_float4(0.f, 0.f, 0.f, 1.f), 2, 20.f);
 
 	if (m_fTimer >= m_vScale.x)
 	{
@@ -657,11 +720,25 @@ void CBoss::Randomize_Pattern(_float fTimeDelta)
 	if( m_Reset && (m_State == BOSS_IDLE || m_State == BOSS_MOVE))
 	{
 		m_AttPatternTimer += fTimeDelta;
-		if(m_AttPatternTimer > 5.f)
+
+		switch (m_Phase)
 		{
-			m_AttState = (BOSSATTACK)(rand() % 2);
-			m_AttPatternTimer = 0.f;
-			Set_BossState(BOSS_ATTACK);
+		case BOSS_PHASEONE:
+			if (m_AttPatternTimer > 5.f)
+			{
+				m_AttState = m_AttState == BOSSATT_PUNCH ? BOSSATT_MISSILE : BOSSATT_PUNCH;
+				m_AttPatternTimer = 0.f;
+				Set_BossState(BOSS_ATTACK);
+			}
+			break;
+		case BOSS_PHASETWO:
+			if (m_AttPatternTimer > 3.f)
+			{
+				m_RageState = m_RageState == BOSSRAGE_TAEBO ? BOSSRAGE_LASER : BOSSRAGE_TAEBO;
+				m_AttPatternTimer = 0.f;
+				Set_BossState(BOSS_ATTACK);
+			}
+			break;
 		}
 	}
 }
@@ -724,6 +801,9 @@ void CBoss::State_Machine(_float fTimeDelta)
 		break;
 	case BOSS_ATTACK:
 		Phase(fTimeDelta);
+		break;
+	case BOSS_GROGY:
+		Grogy(fTimeDelta);
 		break;
 	case BOSS_PHASECHANGE:
 		break; 
@@ -806,7 +886,7 @@ void CBoss::Phase(_float fTimeDelta)
 		Attack(fTimeDelta);
 		break;
 	case BOSS_PHASETWO:
-		//其捞令 2
+		Rage(fTimeDelta);
 		break;
 	}
 }
@@ -823,14 +903,105 @@ void CBoss::Attack(_float fTimeDelta)
 	case BOSSATT_MISSILE:
 		Attack_Missile(fTimeDelta);
 		break;
-	case BOSSATT_MIXED:
-		Attack_Mixed(fTimeDelta);
-		break;
 	}
+}
+
+void CBoss::Rage(_float fTimeDelta)
+{
+}
+
+void CBoss::Grogy(_float fTimeDelta)
+{
+	m_fTimer += fTimeDelta;
+
+	m_pTransform->Gravity(1.0f, fTimeDelta);
+
+	if (!m_Grogy)
+	{
+		g_ControlTime = 0.2f;
+		m_Grogy = true;
+		m_ImageIndex = 2;
+
+
+		_float3 vRight, vUp;
+		vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+		vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+
+		D3DXVec3Normalize(&vRight, &vRight);
+		D3DXVec3Normalize(&vUp, &vUp);
+
+
+		Set_ArmPos(ARM_LEFT, m_LeftArmTr->Get_State(CTransform::STATE_POSITION), m_LeftArmTr->Get_State(CTransform::STATE_POSITION) -  vRight * 10.f + vUp * 30.f, m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - vRight * 20.f - vUp * 10.f);
+
+		Set_ArmPos(ARM_RIGHT, m_RightArmTr->Get_State(CTransform::STATE_POSITION), m_RightArmTr->Get_State(CTransform::STATE_POSITION) + vRight * 10.f + vUp * 30.f, m_RightArmTr->Get_State(CTransform::STATE_POSITION) + vRight * 20.f - vUp * 10.f);
+
+		m_LeftArm->Set_RollingSpeed(0.4f);
+		m_RightArm->Set_RollingSpeed(0.4f);
+
+		m_LeftArm->Set_Rolling(true);
+		m_RightArm->Set_Rolling(true);
+
+		m_LeftArm->Set_CanPortal(false);
+		m_RightArm->Set_CanPortal(false);
+
+
+		Start_Pattern(TEXT("Grogy.wav"));
+		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 4.f, 30.f);
+
+		for(auto iter = m_shield_effects_.begin(); iter != m_shield_effects_.end();)
+		{
+			(*iter)->Set_Split(true);
+			iter = m_shield_effects_.erase(iter);
+		}
+
+		return;
+	}
+	else
+	{
+		if (m_LeftArmTr->Get_OnCollide())
+		{
+			m_LeftArm->Set_Rolling(false);
+			m_LeftArmTr->Gravity(1.f, fTimeDelta);
+		}
+		else
+			Move_By_Bazier(ARM_LEFT, fTimeDelta);
+
+		if (m_RightArmTr->Get_OnCollide())
+		{
+			m_RightArm->Set_Rolling(false);
+
+			m_RightArmTr->Gravity(1.f, fTimeDelta);
+		}
+		else
+			Move_By_Bazier(ARM_RIGHT, fTimeDelta);
+
+		if (m_fTimer >= 1.f && g_ControlTime <= 0.5f)
+		{
+			g_ControlTime = 1.f;
+			m_fTimer = 0.f;
+		}
+
+	}
+
+
+	if(m_fTimer >= 5.f)
+	{
+		m_LeftArm->Set_CanPortal(true);
+		m_RightArm->Set_CanPortal(true);
+
+		Set_BossState(BOSS_IDLE);
+		m_Phase = BOSS_PHASETWO;
+		m_ImageIndex = 0;
+	}
+	
 }
 
 void CBoss::Die(_float fTimeDelta)
 {
+	m_LeftArm->Set_CanPortal(false);
+	m_RightArm->Set_CanPortal(false);
+
+
 	m_pTransform->Gravity(0.3f, fTimeDelta);
 	m_LeftArmTr->Gravity(0.3f, fTimeDelta);
 	m_RightArmTr->Gravity(0.3f, fTimeDelta);
@@ -891,10 +1062,10 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 		switch (m_CurrLaunchArm)
 		{
 		case ARM_LEFT:
-			m_LeftArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_LEFT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 50.f)) * 10.f);
+			m_LeftArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_LEFT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 120.f)) * 10.f);
 			break;
 		case ARM_RIGHT:
-			m_RightArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_RIGHT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 50.f)) * 10.f);
+			m_RightArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_RIGHT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 120.f)) * 10.f);
 			break;
 		}
 	}
@@ -995,7 +1166,7 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			m_LeftArm->Set_State(CArm::ARM_IDLE);
 			m_Hand = false;
 		}
-
+		m_Shaking = false;
 		m_bCalled = true;
 	}
 
@@ -1003,11 +1174,16 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 	{
 		Arm_Posing(fTimeDelta, false, true);
 
-		if (m_LeftArm->Get_Portaliing())
+		if (m_LeftArm->Get_Portaling())
 		{
 			m_LeftArmTr->Go_Straight(fTimeDelta * 10.f );
 			if (m_LeftArm->Get_ParentCollide() || m_LeftArmTr->Get_OnCollide())
 			{
+				if (!m_Shaking)
+				{
+					m_pPlayer->Set_Shake(0.5f, 2.f);
+					m_Shaking = true;
+				}
 				p_instance->StopSound( CSoundMgr::WEAPON_EFFECT3);
 				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
 
@@ -1031,6 +1207,11 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 		}
 		else if (Move_By_Bazier(ARM_LEFT, fTimeDelta))
 		{
+			if (!m_Shaking)
+			{
+				m_pPlayer->Set_Shake(0.5f, 2.f);
+				m_Shaking = true;
+			}
 			p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
 
@@ -1055,11 +1236,16 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 	{
 		Arm_Posing(fTimeDelta, true, false);
 
-		if (m_RightArm->Get_Portaliing())
+		if (m_RightArm->Get_Portaling())
 		{
 			m_RightArmTr->Go_Straight(fTimeDelta * 10.f);
 			if (m_RightArm->Get_ParentCollide() ||m_RightArmTr->Get_OnCollide())
 			{
+				if (!m_Shaking)
+				{
+					m_pPlayer->Set_Shake(0.5f, 2.f);
+					m_Shaking = true;
+				}
 				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
 
@@ -1082,6 +1268,12 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 		}
 		else if (Move_By_Bazier(ARM_RIGHT, fTimeDelta))
 		{
+			if (!m_Shaking)
+			{
+				m_pPlayer->Set_Shake(0.5f, 2.f);
+				m_Shaking = true;
+			}
+
 			p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
 
@@ -1105,15 +1297,6 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 
 }
 
-void CBoss::Attack_Mixed(_float fTimeDelta)
-{
-	// 林冈 客府啊府
-	m_fTimer += fTimeDelta;
-	
-
-
-
-}
 
 CBoss* CBoss::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 {
