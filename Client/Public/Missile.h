@@ -54,7 +54,7 @@ private:
 	HRESULT Missle_Move(_float fTimeDelta);
 	//HRESULT Check_Portaling(_float fTimeDelta);
 	_float3		BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _float time);
-
+	void Impact(_float3 _Pos);
 protected:
 	CVIBuffer_Cube* m_pVIBuffer = nullptr;
 	CRenderer* m_pRenderer = nullptr;
@@ -63,11 +63,13 @@ protected:
 	CBoxCollider* m_pBoxCollider = nullptr;
 
 private:
-	CArm* m_pArm = nullptr;
+	CArm* m_Arm = nullptr;
 	CPlayer* m_pPlayer = nullptr;
 	CTargeting* m_pTageting = nullptr;
 	CBoss* m_pBoss = nullptr;
 
+
+	_float3        Add_RandomPos;
 	ARMMISSLE	m_ArmMissle;
 	_float3		PlayerPos;
 	_float3		MissilePos;
@@ -91,7 +93,6 @@ private:
 	_bool	m_bTargetCollider = false;
 	_uint	Count = 0;
 
-	CArm* m_Arm = nullptr;
 public:
 	static CMissile* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

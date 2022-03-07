@@ -645,10 +645,11 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 HRESULT CBoss::Init_Attack_Missile()
 {
 	m_bMissile = false;
+	m_btargetCollider = true;
 	m_fFireFrame = 0.f;
-	m_fFireCount = 0.f;
+	m_fFireCount = 0;
 	m_fWaiting = 0.f;
-	
+	m_LaunchTimer = 0.f;
 	return S_OK;
 }
 
@@ -788,6 +789,7 @@ void CBoss::Die(_float fTimeDelta)
 		static_cast<CBoxCollider*>(m_RightArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
 		m_LeftArm->Set_Dead(true);
 		m_RightArm->Set_Dead(true);
+		m_Shield->Set_Dead(true);
 		Set_Dead(true);
 	}
 }
@@ -803,46 +805,41 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 	Armtarget1.ArmMissle = CMissile::ARMMISSLE_LEFT;
 	Armtarget1.pParent = this;
 
+
+	Gravity_Blowing(fTimeDelta, true);
+
 	m_fWaiting += fTimeDelta;
 	if (m_fFireCount >= Armtarget1.FireCount)
 	{
+		m_RightArm->Set_Rolling(false);
+		m_LeftArm->Set_Rolling(false);
+		Reset_Arm_Direction(ARM_RIGHT);
+		Reset_Arm_Direction(ARM_LEFT);
+
 		if (m_fWaiting >= 5.f)
 		{
-			if (FAILED(m_pMissile = static_cast<CMissile*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Missile")))))
-			{
-				MSGBOX("Boss_Missile_check_false")
-					RELEASE_INSTANCE(CGameInstance);
-				return;
-			}
-			if (m_pMissile != nullptr)
-				m_pMissile->Set_Dead(true);
-
-			if (FAILED(m_pTargeting_Main = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target")))))
-			{
-				MSGBOX("Boss_Target_check_false")
-					RELEASE_INSTANCE(CGameInstance);
-				return;
-			}
-			if (m_pTargeting_Main != nullptr)
-				m_pTargeting_Main->Set_Dead(true);
-
-			if (FAILED(m_pTargeting_Sub = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target_sub")))))
-			{
-				MSGBOX("Boss_Target_sub_check_false")
-					RELEASE_INSTANCE(CGameInstance);
-				return;
-			}
-			if (m_pTargeting_Sub != nullptr)
-				m_pTargeting_Sub->Set_Dead(true);
-			RELEASE_INSTANCE(CGameInstance);
-
 			Set_BossState(BOSS_IDLE);
-			m_fFireCount = 0;
-			m_btargetCollider = true;
+			RELEASE_INSTANCE(CGameInstance);
 			return;
 		}
 	}
 
+	if(m_fFireCount > 0 && Armtarget1.FireCount < m_fFireCount)
+	{
+		m_LaunchTimer += fTimeDelta;
+		_float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+		D3DXVec3Normalize(&vLook, &vLook);
+		switch (m_CurrLaunchArm)
+		{
+		case ARM_LEFT:
+			m_LeftArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_LEFT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 50.f)) * 10.f);
+			break;
+		case ARM_RIGHT:
+			m_RightArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_RIGHT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 50.f)) * 10.f);
+			break;
+		}
+	}
+	
 	if (m_btargetCollider && m_fFireCount < Armtarget1.FireCount)
 	{
 
@@ -857,18 +854,31 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 				Armtarget1.ArmMissle = CMissile::ARMMISSLE_LEFT;
 				Armtarget1.Left = false;
 				Armtarget1.Right = true;
+				m_LeftArm->Set_Rolling(true, -m_pTransform->Get_State(CTransform::STATE_LOOK));
+				m_RightArm->Set_Rolling(false);
+				Reset_Arm_Direction(ARM_RIGHT);
+				m_CurrLaunchArm = ARM_LEFT;
+				m_LaunchTimer = 0.f;
+				m_InitLaunchPos[ARM_LEFT] = m_LeftArmTr->Get_State(CTransform::STATE_POSITION);
 				break;
 			case 1:
 				Armtarget1.ArmMissle = CMissile::ATMMISSLE_RIGHT;
 				Armtarget1.Left = true;
 				Armtarget1.Right = false;
+				m_RightArm->Set_Rolling(true, m_pTransform->Get_State(CTransform::STATE_LOOK));
+				m_LeftArm->Set_Rolling(false);
+				Reset_Arm_Direction(ARM_LEFT);
+				m_CurrLaunchArm = ARM_RIGHT;
+				m_LaunchTimer = 0.f;
+				m_InitLaunchPos[ARM_RIGHT] = m_RightArmTr->Get_State(CTransform::STATE_POSITION);
 				break;
-
 			}
+
 			if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Missile"), TEXT("Prototype_GameObject_Missile"), &Armtarget1)))
 			{
 				RELEASE_INSTANCE(CGameInstance);
 			}
+
 			m_fWaiting = 0.f;
 		}
 
@@ -905,9 +915,9 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 
 			D3DXVec3Normalize(&vUp, &vUp);
 			D3DXVec3Normalize(&vRight, &vRight);
-
 			Set_ArmPos(ARM_LEFT, left_position, left_position + vUp * 5.f - vRight * 4.f, vDest);
 			m_LeftArm->Set_State(CArm::ARM_ATTACK);
+			m_RightArm->Set_State(CArm::ARM_IDLE);
 			m_Hand = true;
 		}
 		else
@@ -920,6 +930,7 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 
 			Set_ArmPos(ARM_RIGHT, right_position, right_position + vUp * 5.f + vRight * 4.f, vDest);
 			m_RightArm->Set_State(CArm::ARM_ATTACK);
+			m_LeftArm->Set_State(CArm::ARM_IDLE);
 			m_Hand = false;
 		}
 
@@ -936,7 +947,6 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			if (m_LeftArm->Get_ParentCollide() || m_LeftArmTr->Get_OnCollide())
 			{
 				m_LeftArm->Set_Portaling(false);
-				m_LeftArm->Set_State(CArm::ARM_IDLE);
 				m_pAttackRange->Set_Valid(false);
 
 				if(InitArmPosition(fTimeDelta,true, false))
@@ -955,7 +965,6 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 		else if (Move_By_Bazier(ARM_LEFT, fTimeDelta))
 		{
 			m_pAttackRange->Set_Valid(false);
-			m_LeftArm->Set_State(CArm::ARM_IDLE);
 
 			if (InitArmPosition(fTimeDelta, true, false))
 			{
@@ -980,7 +989,6 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			if (m_RightArm->Get_ParentCollide() ||m_RightArmTr->Get_OnCollide())
 			{
 				m_RightArm->Set_Portaling(false);
-				m_RightArm->Set_State(CArm::ARM_IDLE);
 				m_pAttackRange->Set_Valid(false);
 
 				if (InitArmPosition(fTimeDelta, false, true))
@@ -997,7 +1005,6 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 		}
 		else if (Move_By_Bazier(ARM_RIGHT, fTimeDelta))
 		{
-			m_RightArm->Set_State(CArm::ARM_IDLE);
 			m_pAttackRange->Set_Valid(false);
 
 			if (InitArmPosition(fTimeDelta, false, true))

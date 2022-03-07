@@ -1,4 +1,5 @@
 #pragma once
+#include "Arm.h"
 #include "Enemy.h"
 
 BEGIN(Engine)
@@ -128,6 +129,12 @@ private:
 	CMissile* m_pMissile = nullptr;
 	CTargeting* m_pTargeting_Main = nullptr;
 	CTargeting* m_pTargeting_Sub = nullptr;
+
+	ARM m_CurrLaunchArm = ARM_LEFT;
+	_float m_LaunchTimer = 0.f;
+	_float3 m_InitLaunchPos[2];
+
+
 private:
 	// ³»²¨
 	_float3 m_vScale = _float3(5.f,5.f,5.f);

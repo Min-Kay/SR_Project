@@ -126,7 +126,34 @@ HRESULT CMissile::Set_Bezier(_float3  Pos)
 {
 
 	m_fFront_BezierPos = Pos;
-	return S_OK();
+	return S_OK;
+}
+
+void CMissile::Impact(_float3 _Pos)
+{
+	CImpact::IMPACT Impact1;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Pos = _Pos;
+	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
+	Impact1.randomPos = 5;
+	Impact1.Speed = 5;
+	Impact1.deleteCount = 1;//rand() % 5 + 2;
+	Impact1.DeleteImpact = false;
+
+	Impact1.Gradation = CImpact::GRADATION_DOWN;
+	Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
+	Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0f, 0.0f);
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	for (int i = 0; i < rand() % 10 + 25; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CMissile::SetUp_Component()
@@ -163,7 +190,7 @@ HRESULT CMissile::SetUp_Component()
 
 HRESULT CMissile::SetUp_First()
 {
-
+	Add_RandomPos = _float3(rand() % 10 - 5.f, rand() % 10 - 55.f, rand() % 10 - 5.f);
 	m_Damage = 20;
 	m_pTransform->Scaled(_float3(2.f, 2.f, 2.f));
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -196,7 +223,7 @@ _bool CMissile::Check_Dead()
 	{
 		m_pBoxCollider->Set_Dead(true);
 		Set_Dead(true);
-		return true; 
+		return true;
 	}
 
 	return false;
@@ -213,11 +240,13 @@ HRESULT CMissile::Check_ColliderTarget()
 			if (OBJ_PLAYER == iter->Get_Type())
 			{
 				m_bDEAD = true;
-				m_pPlayer->Add_Hp(-m_Damage);
+				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
+				//m_pPlayer->Add_Hp(-m_Damage);
 			}
 			else if (Get_Portaliing() && iter == m_pBoss)
 			{
 				m_bDEAD = true;
+				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
 				m_pBoss->Add_HP(-m_Damage);
 			}
 		}
@@ -315,15 +344,18 @@ HRESULT CMissile::Missle_Move(_float fTimeDelta)
 			CTargeting* ptarget = (CTargeting*)p_instance->Get_GameObject(g_CurrLevel, TEXT("Target"));
 			CTransform* targetTrans = static_cast<CTransform*>(ptarget->Get_Component(COM_TRANSFORM));
 			_float3 targetPos = targetTrans->Get_State(CTransform::STATE_POSITION);
-			m_fBezierPos = BezierCurve(MissilePos, RandPos1, targetPos, RandPos2, m_fMissileTimer);
+
+
+			m_fBezierPos = BezierCurve(MissilePos, RandPos1, targetPos + Add_RandomPos, RandPos2, m_fMissileTimer);
 			m_pTransform->Set_State(CTransform::STATE_POSITION, m_fBezierPos);
-
-
+			_float3 MissleLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+			D3DXVec3Normalize(&MissleLook, &MissleLook);
+			//Impact(m_pTransform->Get_State(CTransform::STATE_POSITION) - MissleLook*0.5f);
 		}
 		m_fTargetTimer = 0.f;//처음 타겟시간 초기화
 	}
 
-	else //충돌아
+	else //충돌전 미사일 손에서 대기?
 	{
 
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -334,18 +366,16 @@ HRESULT CMissile::Missle_Move(_float fTimeDelta)
 
 		CTransform* m_ArmTrans = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
 		m_pTransform->Set_State(CTransform::STATE_POSITION, m_ArmTrans->Get_State(CTransform::STATE_POSITION));
+
+
+		//Impact(_float3 _Pos)
 		RELEASE_INSTANCE(CGameInstance);
 	}
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
-//HRESULT CMissile::Check_Portaling(_float3 fTimeDelta)
-//{
-//	////포탈링확인하는 위치
-//
-//	return S_OK;
-//}
+
 
 _float3 CMissile::BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _float time)
 {

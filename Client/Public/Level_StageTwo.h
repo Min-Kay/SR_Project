@@ -27,6 +27,8 @@ private:
 	HRESULT Ready_Layer_JumpMap();
 	HRESULT Open_Exit();
 	HRESULT Save_Point();
+
+	HRESULT Close_Exit();
 private:
 	_int iLineX = 25;
 	_int iLineY = 10;

@@ -27,12 +27,6 @@ HRESULT CLevel_StageTwo::NativeConstruct()
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Map()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_JumpMap()))
-		return E_FAIL;
-
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -45,6 +39,13 @@ HRESULT CLevel_StageTwo::NativeConstruct()
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Map()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_JumpMap()))
+		return E_FAIL;
+
 
 	SetWindowText(g_hWnd, TEXT("PORTAL_STAGE2"));
 
@@ -76,6 +77,10 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 			return E_FAIL;
 		}
 	}
+	else
+	{
+		Close_Exit();
+	}
 
 	if (!m_Save)
 	{
@@ -85,6 +90,8 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 			return E_FAIL;
 		}
 	}
+
+
 	if (m_Save && m_BossSpone == false)
 	{
 		if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
@@ -97,6 +104,7 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 	{
 		CPlayer* Player = static_cast<CPlayer*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Player")));
 		Player->Add_Hp(-100);
+		Close_Exit();
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -218,8 +226,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Monster(const _tchar* pLayerTag)
 	}
 
 	CBoss* tr = static_cast<CBoss*>(pGameInstance->Get_GameObject_End(LEVEL_STAGETWO, TEXT("Boss")));
-	tr->Set_InitPos(_float3(0.f,10.f,0.f));
-
+	tr->Set_InitPos(_float3(0.f, 10.f, 0.f));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -231,6 +238,38 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	//문
+
+
+	// Start Left Door
+	{
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Left_Door"), TEXT("Prototype_GameObject_Left_Door"))))
+			return E_FAIL;
+
+		CGameObject* Left_Door = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Left_Door"));
+		CTransform* Lefttrans = (CTransform*)Left_Door->Get_Component(COM_TRANSFORM);
+
+		Lefttrans->Scaled(_float3(fDoorSizeX, fDoorSizeY, 1.f));
+		Lefttrans->Set_State(CTransform::STATE_POSITION, _float3(-10.f, 90.f, 85.f));
+
+		CBoxCollider* box = static_cast<CBoxCollider*>(Left_Door->Get_Component(COM_COLLIDER));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+	}
+	// Start Right Door
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right_Door"), TEXT("Prototype_GameObject_Right_Door"))))
+			return E_FAIL;
+
+		CGameObject* Right_Door = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Right_Door"));
+		CTransform* Righttrans = (CTransform*)Right_Door->Get_Component(COM_TRANSFORM);
+
+		Righttrans->Scaled(_float3(fDoorSizeX, fDoorSizeY, 1.f));
+		Righttrans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 90.f, 85.f));
+
+		CBoxCollider* box = static_cast<CBoxCollider*>(Right_Door->Get_Component(COM_COLLIDER));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+	}
+
 
 	// Exit Left Door
 	{
@@ -466,7 +505,6 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 	//충돌박스
 	box33->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, WallSize));
 	box33->Set_AdditionalPos(_float3(0.f, 0.f, -HalfWallSize));
-
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -729,7 +767,6 @@ HRESULT CLevel_StageTwo::Ready_Layer_JumpMap()
 	JumpTopbox6->Set_AdditionalPos(_float3(0.f, JumpHalfWallSize, 0.f));
 
 
-
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_UnPortal"), TEXT("Prototype_GameObject_UnPortal"))))
 		return E_FAIL;
 
@@ -740,7 +777,6 @@ HRESULT CLevel_StageTwo::Ready_Layer_JumpMap()
 	unPortalTr->Scaled(_float3(30.f, 80.f, 2.f));
 	CBoxCollider* unPortalBox = static_cast<CBoxCollider*>(unPortal->Get_Component(COM_COLLIDER));
 	unPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(30.f, 80.f, 2.f));
-
 
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -772,12 +808,22 @@ HRESULT CLevel_StageTwo::Save_Point()
 
 	if (m_Save)
 	{
+		m_Open_2 = true;
 		CPlayer* Player = static_cast<CPlayer*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Player")));
 		Player->Reset_PlayerPos(TransPos->Get_State(CTransform::STATE_POSITION));
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CLevel_StageTwo::Close_Exit()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Save_Exit"));
+	static_cast<CTile_Cube*>(Switch)->Close_Event(g_CurrLevel, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
