@@ -256,6 +256,12 @@ void CBoss::Set_InitPos(_float3 _pos)
 	m_InitPos = _pos;
 }
 
+void CBoss::Add_HP(_int _add)
+{
+	if(!m_Shield->Get_Valid())
+		__super::Add_HP(_add);
+}
+
 _bool CBoss::InitArmPosition(_float fTimeDelta, _bool _left, _bool _right)
 {
 	if (!m_LeftArmTr || !m_RightArmTr)

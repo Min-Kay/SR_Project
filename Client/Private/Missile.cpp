@@ -190,7 +190,7 @@ HRESULT CMissile::SetUp_Component()
 
 HRESULT CMissile::SetUp_First()
 {
-	Add_RandomPos = _float3(rand() % 10 - 5.f, rand() % 10 - 55.f, rand() % 10 - 5.f);
+	Add_RandomPos = _float3(rand() % 10 - 5.f, rand() % 10 - 5.f, rand() % 10 - 5.f);
 	m_Damage = 20;
 	m_pTransform->Scaled(_float3(2.f, 2.f, 2.f));
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -249,8 +249,17 @@ HRESULT CMissile::Check_ColliderTarget()
 				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
 				m_pBoss->Add_HP(-m_Damage);
 			}
+			else if (OBJ_STATIC == iter->Get_Type())
+			{
+				m_bDEAD = true;
+
+			}
+
+			Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
 		}
 	}
+
+	
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }

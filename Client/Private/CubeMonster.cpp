@@ -164,7 +164,7 @@ void CCubeMonster::Move(_float fTimeDelta)
 	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	if(0.5f >= D3DXVec3Length(&(myPos - m_MovePoint)) || m_pBoxCollider->Get_OnCollide())
 	{
-		m_MovePoint = _float3(m_InitPoint.x + rand() % 10, m_InitPoint.x + rand() % 10, m_InitPoint.x + rand() % 10);
+		m_MovePoint = _float3(m_InitPoint.x + rand() % 5, m_InitPoint.x + rand() % 5, m_InitPoint.x + rand() % 5);
 	}
 
 	_float3 vDir = m_MovePoint - myPos;
@@ -231,7 +231,7 @@ void CCubeMonster::Dying(_float fTimeDelta)
 void CCubeMonster::Set_InitPos(_float3 _pos)
 {
 	m_InitPoint = _pos;
-	m_MovePoint = _pos;
+	m_MovePoint = m_InitPoint;
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION,_pos);
 }

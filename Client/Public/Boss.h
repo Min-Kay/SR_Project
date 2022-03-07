@@ -44,7 +44,7 @@ public:
 
 public:
 	void Set_InitPos(_float3 _pos);
-
+	void Add_HP(_int _add) override;
 private:
 	void Synchronize_Transform();
 	void Set_BossState(BOSSSTATE _state);

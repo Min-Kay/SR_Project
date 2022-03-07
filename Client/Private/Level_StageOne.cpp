@@ -1098,6 +1098,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 2.f, 40.f));
+		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(10.f, 2.f, 40.f));
 	}
 
 	{
@@ -1107,6 +1108,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Set_State(CTransform::STATE_POSITION, _float3(15.f, 5.f, 40.f));
+		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(15.f, 5.f, 40.f));
 	}
 
 
@@ -1117,6 +1119,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Set_State(CTransform::STATE_POSITION, _float3(15.f, 2.f, 45.f));
+		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(15.f, 2.f, 45.f));
+
 	}
 
 
@@ -1127,6 +1131,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Set_State(CTransform::STATE_POSITION, _float3(20.f, 2.f, 45.f));
+		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(20.f, 2.f, 45.f));
+
 	}
 
 
@@ -1138,6 +1144,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Set_State(CTransform::STATE_POSITION, _float3(20.f, 2.f, 45.f));
+		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(20.f, 2.f, 45.f));
 	}
 
 
@@ -1149,6 +1156,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 4.f, 45.f));
+		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(10.f, 4.f, 45.f));
+
 	}
 
 

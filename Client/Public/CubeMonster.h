@@ -71,8 +71,8 @@ private:
 	CTransform* m_PlayerPos = nullptr;
 
 private:
-	_float m_SearchRange = 6.f;
-	_float m_AlertRange = 7.f;
+	_float m_SearchRange = 5.f;
+	_float m_AlertRange = 10.f;
 
 	_float m_CurrAlertRange= 0.f;
 	_float m_AttackRange = 7.f;
