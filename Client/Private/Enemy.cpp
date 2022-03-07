@@ -71,6 +71,16 @@ const _bool& CEnemy::Get_Portaliing() const
 	return m_Portaling; 
 }
 
+void CEnemy::Set_EnemyType(ENEMY _enemy)
+{
+	m_EnemyType = _enemy;
+}
+
+const CEnemy::ENEMY& CEnemy::Get_EnemyType() const
+{
+	return m_EnemyType;
+}
+
 _bool Client::CEnemy::Check_HP()
 {
 	if (m_Hp <= 0)

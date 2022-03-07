@@ -96,7 +96,7 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 
     m_Collider->Set_ParentInfo(this);
     m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-    m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.2f,0.2f,0.2f));
+    m_Collider->Set_State(CBoxCollider::COLL_SIZE, _float3(0.4f,0.4f,0.4f));
 
     PORTALDESC portalDesc = *static_cast<PORTALDESC*>(pArg);
 

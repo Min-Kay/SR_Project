@@ -180,12 +180,34 @@ void CGun::Fire()
 	Spark(point);
 
 	if(hittedObj->Get_Type() == OBJ_STATIC)
+	{
 		Spawn_BulletHole(point,nor);
+		p_instance->StopSound(CSoundMgr::WEAPON_EFFECT2);
+		p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("WAll_Hit1.wav") : TEXT("Wall_Hit.wav"), CSoundMgr::WEAPON_EFFECT2, 1.f);
+	}
 	else if(hittedObj->Get_Type() == OBJ_ENEMY)
 	{
 		static_cast<CEnemy*>(hittedObj)->Add_HP(-m_iDamage);
+
 		p_instance->StopSound(CSoundMgr::WEAPON_EFFECT2);
-		p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Metal Hit.wav") : TEXT("Metal Hit2.wav"), CSoundMgr::WEAPON_EFFECT2, 1.f);
+		CEnemy* enemy = static_cast<CEnemy*>(hittedObj);
+
+		switch (enemy->Get_EnemyType())
+		{
+		case CEnemy::ENEMY_NONE:
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Metal Hit.wav") : TEXT("Metal Hit2.wav"), CSoundMgr::WEAPON_EFFECT2, 1.f);
+			break;
+		case CEnemy::ENEMY_CUBEMONSTER:
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Metal Hit.wav") : TEXT("Metal Hit2.wav"), CSoundMgr::WEAPON_EFFECT2, 1.f);
+			break;
+		case CEnemy::ENEMY_BOSS:
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Boss_Hit.wav") : TEXT("Boss_Hit1.wav"), CSoundMgr::WEAPON_EFFECT2, 1.f);
+			break;
+		case CEnemy::ENEMY_SHIELD:
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Shield_Hit.wav") : TEXT("Shield_Hit1.wav"), CSoundMgr::WEAPON_EFFECT2, 1.f);
+			break;
+		}
+		
 	}
 
 

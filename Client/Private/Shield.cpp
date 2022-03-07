@@ -60,6 +60,9 @@ _int CShield::Tick(_float fTimeDelta)
 	if (Get_Dead())
 		return 0;
 
+	if (Check_HP())
+		Set_Valid(false);
+
 	Synchronize_Transform();
 	m_pCollider->Set_Collider();
 
@@ -125,12 +128,8 @@ HRESULT CShield::SetUp_Component()
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pCollider);
-	RELEASE_INSTANCE(CGameInstance);
-
 	m_Hp = 100;
-
+	m_EnemyType = ENEMY_SHIELD;
 	return S_OK;
 }
 
@@ -141,7 +140,7 @@ void CShield::Set_ParentTransform(CTransform* _tr)
 
 void CShield::Add_HP(_int _add)
 {
-	
+	return;
 }
 
 void CShield::Spawn_Shield()
@@ -153,9 +152,23 @@ void CShield::Break_Shield()
 {
 }
 
+void CShield::Add_ShieldHp(_int _add)
+{
+	__super::Add_HP(_add);
+}
+
 void CShield::Set_Valid(_bool _bool)
 {
 	m_Valid = _bool;
+	if(m_Valid)
+	{
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pCollider);
+		RELEASE_INSTANCE(CGameInstance);
+	}
+	else
+		m_pCollider->Set_Dead(true);
+
 }
 
 const _bool CShield::Get_Valid() const
@@ -186,7 +199,7 @@ void CShield::Synchronize_Transform()
 	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
 	m_pTransform->Set_State(CTransform::STATE_POSITION, vPos);
 
-	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, vScale);
+	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, vScale * 1.2f);
 
 }
 

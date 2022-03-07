@@ -50,6 +50,11 @@ HRESULT CMissile::NativeConstruct(void* pArg)
 	m_ArmMissle = *static_cast<ARMMISSLE*>(pArg);
 
 	SetUp_First();
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Play_Sound(TEXT("Missile_Move.wav"), CSoundMgr::ADDITIONAL_EFFECT2, 1.f);
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -239,23 +244,32 @@ HRESULT CMissile::Check_ColliderTarget()
 		{
 			if (OBJ_PLAYER == iter->Get_Type())
 			{
+				m_pPlayer->Add_Hp(-m_Damage);
 				m_bDEAD = true;
 				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
-				//m_pPlayer->Add_Hp(-m_Damage);
+
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Missile_0.wav") : TEXT("Explosion_Missile_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+
 			}
 			else if (Get_Portaliing() && iter == m_pBoss)
 			{
+				if (m_pBoss->Get_OnShield())
+					m_pBoss->Add_ShieldHp(-m_Damage);
+				else
+					m_pBoss->Add_HP(-m_Damage);
 				m_bDEAD = true;
 				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
-				m_pBoss->Add_HP(-m_Damage);
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Missile_0.wav") : TEXT("Explosion_Missile_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
 			}
-			else if (OBJ_STATIC == iter->Get_Type())
+			else if(iter->Get_Type() == OBJ_STATIC)
 			{
 				m_bDEAD = true;
-
+				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Missile_0.wav") : TEXT("Explosion_Missile_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
 			}
-
-			Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
 		}
 	}
 

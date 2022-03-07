@@ -152,7 +152,7 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-
+	m_EnemyType = ENEMY_CUBEMONSTER;
 
 	return S_OK;
 

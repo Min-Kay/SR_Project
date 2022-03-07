@@ -139,9 +139,6 @@
     <Filter Include="02.GameObjects\Enemy\CubeMonster\BazierBullet">
       <UniqueIdentifier>{01e8778e-281e-408e-b941-c8aa5222e141}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Enemy\Missile">
-      <UniqueIdentifier>{e249d9a0-f6e7-425b-b9ff-3214008c4378}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Effect\Targeting">
       <UniqueIdentifier>{2ecf10b7-9f53-4b08-a420-e51f430630c6}</UniqueIdentifier>
     </Filter>
@@ -153,6 +150,9 @@
     </Filter>
     <Filter Include="02.GameObjects\Enemy\Boss\Shield">
       <UniqueIdentifier>{3f7a4bf5-7edd-4ae4-85c3-a44b8eed79f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Enemy\Boss\Missile">
+      <UniqueIdentifier>{e249d9a0-f6e7-425b-b9ff-3214008c4378}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -286,7 +286,7 @@
       <Filter>02.GameObjects\Enemy\CubeMonster\BazierBullet</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Missile.h">
-      <Filter>02.GameObjects\Enemy\Missile</Filter>
+      <Filter>02.GameObjects\Enemy\Boss\Missile</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AttackRange.h">
       <Filter>02.GameObjects\Enemy\Boss\AttackRange</Filter>
@@ -420,7 +420,7 @@
       <Filter>02.GameObjects\Enemy\CubeMonster\BazierBullet</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Missile.cpp">
-      <Filter>02.GameObjects\Enemy\Missile</Filter>
+      <Filter>02.GameObjects\Enemy\Boss\Missile</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AttackRange.cpp">
       <Filter>02.GameObjects\Enemy\Boss\AttackRange</Filter>

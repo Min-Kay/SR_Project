@@ -13,6 +13,9 @@ protected:
 	virtual ~CEnemy() = default;
 
 public:
+	typedef enum tagEnemy{ENEMY_NONE, ENEMY_CUBEMONSTER, ENEMY_BOSS, ENEMY_SHIELD}ENEMY;
+
+public:
 	HRESULT NativeConstruct_Prototype() override;
 	HRESULT NativeConstruct(void* pArg) override;
 	_int Tick(_float fTimeDelta) override;
@@ -29,7 +32,11 @@ public:
 	const _int& Get_Damage() const;
 
 	void Set_Portaling(_bool _bool);
-	const _bool& Get_Portaliing() const; 
+	const _bool& Get_Portaliing() const;
+
+	void Set_EnemyType(ENEMY _enemy);
+	const ENEMY& Get_EnemyType() const;
+
 protected:
 	_bool Check_HP();
 
@@ -37,7 +44,7 @@ protected:
 	_int m_Hp;
 	_int m_Damage;
 	_bool m_Invincible = false;
-
+	ENEMY m_EnemyType = ENEMY_NONE;
 protected:
 	_bool m_Portaling = false;
 

@@ -45,6 +45,15 @@ public:
 public:
 	void Set_InitPos(_float3 _pos);
 	void Add_HP(_int _add) override;
+	const _int& Get_InitHP() const;
+
+
+	void Set_OnShield(_bool _bool);
+	const _bool Get_OnShield() const;
+
+	void Add_ShieldHp(_int _add);
+	const _int Get_ShieldHp();
+
 private:
 	void Synchronize_Transform();
 	void Set_BossState(BOSSSTATE _state);
@@ -66,8 +75,10 @@ private:
 
 	void Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer);
 	void Arm_Posing(_float fTimeDelta, _bool _left = true, _bool _right = true);
+
+	void Start_Pattern(_tchar* filename);
+	void Spawn_Shield();
 private:
-	// 인우형 꺼
 
 	void Init_Attack_Punch();
 
@@ -79,6 +90,7 @@ private:
 
 	// Range랑 주먹이랑 충돌했나 안했나 bool값 반환 함수
 	_bool IsCollision();
+
 
 
 private:
@@ -99,11 +111,15 @@ private:
 	void Attack_Missile(_float fTimeDelta);
 	void Attack_Punch(_float fTimeDelta);
 	void Attack_Mixed(_float fTimeDelta);
+
+
 private:
 	_float m_fTimer = 0.f; 
 	_uint m_ImageIndex = 0;
-
-
+	_int m_InitHp = 100;
+	_bool m_OnShield = false;
+	_bool m_OnPattern = false;
+	_bool m_SpawnShield = false;
 private:
 	// 인우형 패턴 변수
 	CAttackRange* m_pAttackRange = nullptr;

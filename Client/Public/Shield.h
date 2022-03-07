@@ -35,6 +35,8 @@ public:
 	void Spawn_Shield();
 	void Break_Shield();
 
+	void Add_ShieldHp(_int _add);
+
 	void Set_Valid(_bool _bool);
 	const _bool Get_Valid() const ;
 private:

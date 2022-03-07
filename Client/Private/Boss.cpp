@@ -69,6 +69,7 @@ _int CBoss::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	Set_OnShield(m_Shield->Get_Valid());
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	if(p_instance->Get_Key_Down(DIK_P))
@@ -94,10 +95,7 @@ _int CBoss::Tick(_float fTimeDelta)
 	m_pCollider->Set_Collider();
 
 
-	if(m_Hp < 70)
-	{
-		m_Shield->Set_Valid(true);
-	}
+	Spawn_Shield();
 
 	State_Machine(fTimeDelta);
 
@@ -244,9 +242,11 @@ HRESULT CBoss::SetUp_Component()
 	if (!m_pPlayer || !m_RightArm || !m_LeftArm)
 		return E_FAIL;
 	
-	m_Hp = 100;
+	m_Hp = m_InitHp;
 	m_Damage = 10;
-	
+	m_EnemyType = ENEMY_BOSS;
+
+
 	return S_OK; 
 
 }
@@ -260,6 +260,34 @@ void CBoss::Add_HP(_int _add)
 {
 	if(!m_Shield->Get_Valid())
 		__super::Add_HP(_add);
+}
+
+const _int& CBoss::Get_InitHP() const
+{
+	return m_InitHp;
+}
+
+void CBoss::Set_OnShield(_bool _bool)
+{
+	m_OnShield = _bool;
+}
+
+const _bool CBoss::Get_OnShield() const
+{
+	return m_OnShield;
+}
+
+void CBoss::Add_ShieldHp(_int _add)
+{
+	if (!m_Shield->Get_Valid())
+		return;
+
+	m_Shield->Add_ShieldHp(_add);
+}
+
+const _int CBoss::Get_ShieldHp()
+{
+	return m_Shield->Get_HP();
 }
 
 _bool CBoss::InitArmPosition(_float fTimeDelta, _bool _left, _bool _right)
@@ -377,6 +405,7 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 	Init_Attack_Punch();
 	Init_Attack_Missile();
 	m_State = _state;
+	m_OnPattern = false;
 	
 }
 
@@ -480,6 +509,29 @@ void CBoss::Arm_Posing(_float fTimeDelta, _bool _left, _bool _right)
 		Reset_Arm_Direction(ARM_RIGHT);
 	}
 
+}
+
+void CBoss::Start_Pattern(_tchar* filename)
+{
+	if (m_OnPattern)
+		return;
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
+	p_instance->Play_Sound(filename, CSoundMgr::ENEMY_EFFECT2, 1.f); 
+	RELEASE_INSTANCE(CGameInstance);
+	m_OnPattern = true;
+}
+
+void CBoss::Spawn_Shield()
+{
+	if (m_SpawnShield)
+		return;
+
+	if (m_Hp < 50)
+	{
+		m_Shield->Set_Valid(true);
+		m_SpawnShield = true;
+	}
 }
 
 void CBoss::Init_Attack_Punch()
@@ -802,10 +854,9 @@ void CBoss::Die(_float fTimeDelta)
 void CBoss::Attack_Missile(_float fTimeDelta)
 {
 	// ¹Ì»çÀÏ
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
-	p_instance->Play_Sound(TEXT("Boss_AttackAlarm.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
 
+	Start_Pattern(TEXT("Boss_AttackAlarm.wav"));
+	
 	CMissile::ARMMISSLE Armtarget1;
 	Armtarget1.FireCount = 8;
 	Armtarget1.ArmMissle = CMissile::ARMMISSLE_LEFT;
@@ -814,9 +865,11 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 
 	Gravity_Blowing(fTimeDelta, true);
 
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	m_fWaiting += fTimeDelta;
 	if (m_fFireCount >= Armtarget1.FireCount)
 	{
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3); 
 		m_RightArm->Set_Rolling(false);
 		m_LeftArm->Set_Rolling(false);
 		Reset_Arm_Direction(ARM_RIGHT);
@@ -866,6 +919,8 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 				m_CurrLaunchArm = ARM_LEFT;
 				m_LaunchTimer = 0.f;
 				m_InitLaunchPos[ARM_LEFT] = m_LeftArmTr->Get_State(CTransform::STATE_POSITION);
+				p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"),CSoundMgr::ENEMY_EFFECT3,1.f );
 				break;
 			case 1:
 				Armtarget1.ArmMissle = CMissile::ATMMISSLE_RIGHT;
@@ -877,6 +932,8 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 				m_CurrLaunchArm = ARM_RIGHT;
 				m_LaunchTimer = 0.f;
 				m_InitLaunchPos[ARM_RIGHT] = m_RightArmTr->Get_State(CTransform::STATE_POSITION);
+				p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
 				break;
 			}
 
@@ -896,11 +953,10 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 void CBoss::Attack_Punch(_float fTimeDelta)
 {
 	// ÆÝÄ¡
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
-	p_instance->Play_Sound(TEXT("Boss_AttackAlarm1.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
-	RELEASE_INSTANCE(CGameInstance);
 
+	Start_Pattern(TEXT("Boss_AttackAlarm1.wav"));
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	Gravity_Blowing(fTimeDelta, false);
 
 	if (!m_bCalled)
@@ -952,14 +1008,19 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			m_LeftArmTr->Go_Straight(fTimeDelta * 10.f );
 			if (m_LeftArm->Get_ParentCollide() || m_LeftArmTr->Get_OnCollide())
 			{
+				p_instance->StopSound( CSoundMgr::WEAPON_EFFECT3);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+
 				m_LeftArm->Set_Portaling(false);
 				m_pAttackRange->Set_Valid(false);
 
 				if(InitArmPosition(fTimeDelta,true, false))
 				{
+					p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 					if (m_TotalPunchCount <= m_CurrPunchCount)
 					{
 						Set_BossState(BOSS_IDLE);
+						RELEASE_INSTANCE(CGameInstance);
 						return;
 					}
 					m_bCalled = false;
@@ -970,13 +1031,18 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 		}
 		else if (Move_By_Bazier(ARM_LEFT, fTimeDelta))
 		{
+			p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+
 			m_pAttackRange->Set_Valid(false);
 
 			if (InitArmPosition(fTimeDelta, true, false))
 			{
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 				if (m_TotalPunchCount <= m_CurrPunchCount)
 				{
 					Set_BossState(BOSS_IDLE);
+					RELEASE_INSTANCE(CGameInstance);
 					return;
 				}
 				m_bCalled = false;
@@ -994,14 +1060,19 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			m_RightArmTr->Go_Straight(fTimeDelta * 10.f);
 			if (m_RightArm->Get_ParentCollide() ||m_RightArmTr->Get_OnCollide())
 			{
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+
 				m_RightArm->Set_Portaling(false);
 				m_pAttackRange->Set_Valid(false);
 
 				if (InitArmPosition(fTimeDelta, false, true))
 				{
+					p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 					if (m_TotalPunchCount <= m_CurrPunchCount)
 					{
 						Set_BossState(BOSS_IDLE);
+						RELEASE_INSTANCE(CGameInstance);
 						return;
 					}
 					m_bCalled = false;
@@ -1011,13 +1082,18 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 		}
 		else if (Move_By_Bazier(ARM_RIGHT, fTimeDelta))
 		{
+			p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+
 			m_pAttackRange->Set_Valid(false);
 
 			if (InitArmPosition(fTimeDelta, false, true))
 			{
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 				if (m_TotalPunchCount <= m_CurrPunchCount)
 				{
 					Set_BossState(BOSS_IDLE);
+					RELEASE_INSTANCE(CGameInstance);
 					return;
 				}
 				m_bCalled = false;
@@ -1025,7 +1101,8 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			}
 		}
 	}
-	
+	RELEASE_INSTANCE(CGameInstance);
+
 }
 
 void CBoss::Attack_Mixed(_float fTimeDelta)

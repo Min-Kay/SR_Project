@@ -131,7 +131,7 @@ HRESULT CArm::SetUp_Component()
 	RELEASE_INSTANCE(CGameInstance);
 
 
-	m_Damage = 10;
+	m_Damage = 30;
 
 	return S_OK; 
 }
@@ -233,8 +233,11 @@ void CArm::Mode(_float fTimeDelta)
 			else if(m_Portaling && p_instance->Get_Collide(m_Collider, static_cast<CBoxCollider*>(m_Parent->Get_Component(COM_COLLIDER))))
 			{
 				RELEASE_INSTANCE(CGameInstance);
-				m_Parent->Add_HP(-m_Damage);
-				m_ParentCollide = true;
+				if(m_Parent->Get_OnShield())
+					m_Parent->Add_ShieldHp(-m_Damage);
+				else
+					m_Parent->Add_HP(-m_Damage);
+
 				m_Timer = 0.f;
 				m_Portaling = false;
 				break;
