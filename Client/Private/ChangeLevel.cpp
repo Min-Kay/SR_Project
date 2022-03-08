@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Level_Loading.h"
+#include "Shader.h"
 
 CChangeLevel::CChangeLevel(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -84,22 +85,35 @@ HRESULT CChangeLevel::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
 
 
-	//m_pBoxColliderCom->Draw_Box();
+	////m_pBoxColliderCom->Draw_Box();
 
-	SetUp_RenderState();
+	//SetUp_RenderState();
 
+	//m_pVIBufferCom->Render();
+
+	//Release_RenderState();
+
+
+	m_pTransformCom->Bind_OnShader(m_pShader);
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR);
 	m_pVIBufferCom->Render();
 
-	Release_RenderState();
+	m_pShader->End_Shader();
+
 	return S_OK;
 }
 
@@ -131,6 +145,11 @@ HRESULT CChangeLevel::SetUp_Components()
 	/* For.Com_Box */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
 		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
+		return E_FAIL;
+
+
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
@@ -204,4 +223,5 @@ void CChangeLevel::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
 }

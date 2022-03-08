@@ -7,6 +7,7 @@ class CTransform;
 class CRenderer;
 class CVIBuffer_Cube;
 class CTexture;
+class CShader;
 END
 
 BEGIN(Client)
@@ -55,6 +56,7 @@ private:
 	CRenderer* m_pRenderer = nullptr;
 	CVIBuffer_Cube* m_pBuffer = nullptr;
 	CTexture* m_pTexture = nullptr;
+	CShader* m_pShader = nullptr;
 
 
 public:

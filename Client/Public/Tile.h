@@ -9,7 +9,7 @@ class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
 class CBoxCollider;
-
+class CShader;
 END
 
 BEGIN(Client)
@@ -40,6 +40,7 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
+	CShader*			m_pShader = nullptr;
 private:
 	_uint				m_iTextureIndex = 2;
 

@@ -28,9 +28,6 @@
     <Filter Include="02.GameObjects\Camera">
       <UniqueIdentifier>{9d68a6fd-1ba3-4a11-9780-9bb5c2907f32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Terrain">
-      <UniqueIdentifier>{ba685d1e-8ccc-41ee-ad00-e1f6233b24e0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{43516271-a655-4bfa-a75e-3f02feb17bcb}</UniqueIdentifier>
     </Filter>
@@ -115,9 +112,6 @@
     <Filter Include="02.GameObjects\Tile\Tile_Collider">
       <UniqueIdentifier>{860f94dd-38f0-479a-9b64-bef721851530}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Camera\BackGround">
-      <UniqueIdentifier>{63f2bf48-694b-45c7-bc46-9dd27c3a3734}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Effect\Alert">
       <UniqueIdentifier>{f9449769-6541-4c90-9145-64d7f0ac3504}</UniqueIdentifier>
     </Filter>
@@ -197,12 +191,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Loader.h">
       <Filter>01.Levels\Loading\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\BackGround.h">
-      <Filter>02.GameObjects\Camera\BackGround</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObjects\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObjects\Player</Filter>
@@ -337,12 +325,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Loader.cpp">
       <Filter>01.Levels\Loading\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>02.GameObjects\Camera\BackGround</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObjects\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObjects\Player</Filter>
@@ -480,6 +462,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Resources\ShaderFiles\Shader_Rect.hlsl">
+      <Filter>97.ShaderFile</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Resources\ShaderFiles\Shader_Cube.hlsl">
       <Filter>97.ShaderFile</Filter>
     </FxCompile>
   </ItemGroup>

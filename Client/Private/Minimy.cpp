@@ -9,6 +9,7 @@
 #include "GameInstance.h"
 #include "Impact.h"
 #include "Shield.h"
+#include "Shader.h"
 
 
 CMinimy::CMinimy(LPDIRECT3DDEVICE9 m_pGraphic_Device)
@@ -17,13 +18,14 @@ CMinimy::CMinimy(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 }
 
 CMinimy::CMinimy(const CMinimy& rhs)
-	:CEnemy(rhs)
-	,m_pTransform(rhs.m_pTransform)
-	,m_pCollider(rhs.m_pCollider)
-	,m_pOnlyRotation(rhs.m_pOnlyRotation)
-	,m_pTexture(rhs.m_pTexture)
-	,m_pBuffer(rhs.m_pBuffer)
-	,m_pRenderer(rhs.m_pRenderer)
+	: CEnemy(rhs)
+	, m_pTransform(rhs.m_pTransform)
+	, m_pCollider(rhs.m_pCollider)
+	, m_pOnlyRotation(rhs.m_pOnlyRotation)
+	, m_pTexture(rhs.m_pTexture)
+	, m_pBuffer(rhs.m_pBuffer)
+	, m_pRenderer(rhs.m_pRenderer)
+	, m_pShader(rhs.m_pShader)
 {
 	Safe_AddRef(m_pTransform);
 	Safe_AddRef(m_pCollider);
@@ -31,6 +33,7 @@ CMinimy::CMinimy(const CMinimy& rhs)
 	Safe_AddRef(m_pBuffer);
 	Safe_AddRef(m_pRenderer);
 	Safe_AddRef(m_pTexture);
+	Safe_AddRef(m_pShader);
 
 
 }
@@ -90,13 +93,24 @@ HRESULT CMinimy::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
+	/*if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
 	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
+	m_pBuffer->Render();*/
+
+
+	m_pOnlyRotation->Bind_OnShader(m_pShader);
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
+	m_pShader->End_Shader();
 
 	return S_OK;
 }
@@ -123,6 +137,9 @@ HRESULT CMinimy::SetUp_Component()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_CUBE, COM_BUFFER, (CComponent**)&m_pBuffer)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	Set_Type(OBJ_ENEMY);
@@ -369,5 +386,6 @@ void CMinimy::Free()
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTexture);
+	Safe_Release(m_pShader);
 
 }

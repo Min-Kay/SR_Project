@@ -7,6 +7,7 @@ class CBoxCollider;
 class CTexture;
 class CTransform;
 class CVIBuffer_Cube;
+class CShader;
 END
 
 BEGIN(Client) 
@@ -47,6 +48,7 @@ private:
 
 	CTransform* m_pOnlyRotation = nullptr;
 
+	CShader* m_pShader = nullptr; 
 
 private:
 	_int m_Damage = 5;

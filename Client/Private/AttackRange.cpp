@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\AttackRange.h"
 #include "GameInstance.h"
+#include "Shader.h"
 
 CAttackRange::CAttackRange(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -74,15 +75,14 @@ HRESULT CAttackRange::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
+	m_pTransformCom->Bind_OnShader(m_pShader);
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(0)))
-		return E_FAIL;
-
-
+	m_pShader->Begin_Shader(SHADER_SETCOLOR);
 	m_pVIBufferCom->Render();
+	m_pShader->End_Shader();
+
 
 	return S_OK;
 }
@@ -112,6 +112,8 @@ HRESULT CAttackRange::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_AttackRange"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
+		return E_FAIL;
 
 	m_pTransformCom->Scaled(_float3(7.f, 7.f, 7.f));
 	m_pTransformCom->Rotation(_float3(1.f,0.f,0.f),D3DXToRadian(90));

@@ -9,6 +9,7 @@ class CRenderer;
 class CTexture;
 class CVIBuffer_Cube;
 class CBoxCollider;
+class CShader;
 END
 
 BEGIN(Client)
@@ -53,7 +54,7 @@ private:
 	CTexture* m_pTexture = nullptr;
 	CVIBuffer_Cube* m_pBuffer = nullptr;
 	CBoxCollider* m_pCollider = nullptr;
-
+	CShader* m_pShader = nullptr;
 private:
 	CBoss* m_Parent = nullptr;
 	CTransform* m_ParentTr = nullptr;

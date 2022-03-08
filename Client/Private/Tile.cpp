@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Tile.h"
 #include "GameInstance.h"
+#include "Shader.h"
 
 CTile::CTile(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -69,15 +70,23 @@ HRESULT CTile::Render()
 		return E_FAIL;
 
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
-		return E_FAIL;
+	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
+	//	return E_FAIL;
 
 	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
+	m_pTransformCom->Bind_OnShader(m_pShader);
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iTextureIndex);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR);
 	m_pVIBufferCom->Render();
+	m_pShader->End_Shader();
 
 
 	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
@@ -104,6 +113,9 @@ HRESULT CTile::SetUp_Components()
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
@@ -150,4 +162,5 @@ void CTile::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
 }

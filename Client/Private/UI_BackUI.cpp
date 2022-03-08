@@ -45,6 +45,8 @@ HRESULT CUI_BackUI::NativeConstruct(void* pArg)
 		desc3.Alpha = ALPHA_BLEND;
 		desc3.Texture = TEXT("Prototype_Component_Texture_Continue");
 		desc3.FrameCount = 2;
+		desc3.Shader_Control = &g_ControlShader;
+		desc3.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 		if (FAILED(p_instance->Add_GameObject(LEVEL_STATIC, TEXT("Continue"), TEXT("Prototype_GameObject_Continue"), &desc3)))
 			return E_FAIL;
@@ -71,6 +73,8 @@ HRESULT CUI_BackUI::NativeConstruct(void* pArg)
 		desc4.Alpha = ALPHA_BLEND;
 		desc4.FrameCount = 2;
 		desc4.Texture = TEXT("Prototype_Component_Texture_Exit");
+		desc4.Shader_Control = &g_ControlShader;
+		desc4.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 		if (FAILED(p_instance->Add_GameObject(LEVEL_STATIC, TEXT("Exit"), TEXT("Prototype_GameObject_Exit"), &desc4)))
 			return E_FAIL;
@@ -106,9 +110,9 @@ HRESULT CUI_BackUI::Render()
 	return S_OK;
 }
 
-HRESULT CUI_BackUI::SetUp_Components(const _tchar* _texture)
+HRESULT CUI_BackUI::SetUp_Components()
 {
-	if (FAILED(__super::SetUp_Components(_texture)))
+	if (FAILED(__super::SetUp_Components()))
 		return E_FAIL;
 	return S_OK;
 }

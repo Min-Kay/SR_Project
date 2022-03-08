@@ -34,6 +34,8 @@ HRESULT CShader::SetUp_ValueOnShader(D3DXHANDLE hParameter, void* pData, _uint i
 		return E_FAIL;
 
 	return m_pEffect->SetRawValue(hParameter, pData, 0, iLength);	
+
+
 }
 
 HRESULT CShader::SetUp_TextureOnShader(D3DXHANDLE hParameter, LPDIRECT3DBASETEXTURE9 pTexture)

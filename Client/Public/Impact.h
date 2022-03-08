@@ -10,6 +10,7 @@ class CTransform;
 class CVIBuffer_Rect;
 class CVIBuffer_Color;
 class CBoxCollider;
+class CShader;
 END
 
 BEGIN(Client)
@@ -56,6 +57,7 @@ private:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
+	CShader*			 m_pShader = nullptr;
 
 private:
 	IMPACT			m_Impact;

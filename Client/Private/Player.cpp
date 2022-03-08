@@ -112,21 +112,21 @@ HRESULT CPlayer::Render()
 	if (Get_Dead())
 		return 0;
 
-	if (nullptr == m_pVIBufferCom)
-		return E_FAIL;
+	//if (nullptr == m_pVIBufferCom)
+	//	return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
-	//m_pBoxColliderCom->Draw_Box();
+	////m_pBoxColliderCom->Draw_Box();
 
-	if (FAILED(SetUp_RenderState()))
-		return E_FAIL;
+	//if (FAILED(SetUp_RenderState()))
+	//	return E_FAIL;
 
-	m_pVIBufferCom->Render();
+	//m_pVIBufferCom->Render();
 
-	if (FAILED(Release_RenderState()))
-		return E_FAIL;
+	//if (FAILED(Release_RenderState()))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -246,6 +246,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerHpUi.AnimateSpeed = 30.f;
 	PlayerHpUi.Style = CUI::STYLE_FIX;
 	PlayerHpUi.Texture = TEXT("Prototype_Component_PlayerUI");
+	PlayerHpUi.Shader_Control = &g_ControlShader;
+	PlayerHpUi.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHp_Image"), PROTO_UI, &PlayerHpUi)))
@@ -273,6 +275,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerHP_Font100.AnimateSpeed = 100.f;
 	PlayerHP_Font100.Style = CUI::STYLE_FIX;
 	PlayerHP_Font100.Texture = TEXT("Prototype_Component_Texture_Font");
+	PlayerHP_Font100.Shader_Control = &g_ControlShader;
+	PlayerHP_Font100.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHP_Font100"), PROTO_UI, &PlayerHP_Font100)))
 	{
@@ -299,6 +303,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerHP_Font10.AnimateSpeed = 100.f;
 	PlayerHP_Font10.Style = CUI::STYLE_FIX;
 	PlayerHP_Font10.Texture = TEXT("Prototype_Component_Texture_Font");
+	PlayerHP_Font10.Shader_Control = &g_ControlShader;
+	PlayerHP_Font10.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHP_Font10"), PROTO_UI, &PlayerHP_Font10)))
 	{
@@ -325,6 +331,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerHP_Font1.AnimateSpeed = 100.f;
 	PlayerHP_Font1.Style = CUI::STYLE_FIX;
 	PlayerHP_Font1.Texture = TEXT("Prototype_Component_Texture_Font");
+	PlayerHP_Font1.Shader_Control = &g_ControlShader;
+	PlayerHP_Font1.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHP_Font1"), PROTO_UI, &PlayerHP_Font1)))
 	{
@@ -350,6 +358,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerHp_slash.AnimateSpeed = 100.f;
 	PlayerHp_slash.Style = CUI::STYLE_FIX;
 	PlayerHp_slash.Texture = TEXT("Prototype_Component_Texture_Slash");
+	PlayerHp_slash.Shader_Control = &g_ControlShader;
+	PlayerHp_slash.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHp_slash"), PROTO_UI, &PlayerHp_slash)))
 	{
@@ -378,6 +388,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerFullHP_Font100.AnimateSpeed = 100.f;
 	PlayerFullHP_Font100.Style = CUI::STYLE_FIX;
 	PlayerFullHP_Font100.Texture = TEXT("Prototype_Component_Texture_Font");
+	PlayerFullHP_Font100.Shader_Control = &g_ControlShader;
+	PlayerFullHP_Font100.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font100"), PROTO_UI, &PlayerFullHP_Font100)))
 	{
@@ -404,6 +416,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerFullHP_Font10.AnimateSpeed = 100.f;
 	PlayerFullHP_Font10.Style = CUI::STYLE_FIX;
 	PlayerFullHP_Font10.Texture = TEXT("Prototype_Component_Texture_Font");
+	PlayerFullHP_Font10.Shader_Control = &g_ControlShader;
+	PlayerFullHP_Font10.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font10"), PROTO_UI, &PlayerFullHP_Font10)))
 	{
@@ -430,6 +444,8 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerFullHP_Font1.AnimateSpeed = 100.f;
 	PlayerFullHP_Font1.Style = CUI::STYLE_FIX;
 	PlayerFullHP_Font1.Texture = TEXT("Prototype_Component_Texture_Font");
+	PlayerFullHP_Font1.Shader_Control = &g_ControlShader;
+	PlayerFullHP_Font1.Shader_Style = SHADER_SETCOLOR_BLEND;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font1"), PROTO_UI, &PlayerFullHP_Font1)))
 	{
@@ -456,6 +472,9 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerHitUI.AnimateSpeed = 100.f;
 	PlayerHitUI.Style = CUI::STYLE_FIX;
 	PlayerHitUI.Texture = TEXT("Prototype_Component_PlayerHit");
+	PlayerHitUI.Shader_Control = &g_ControlShader;
+	PlayerHitUI.Shader_Style = SHADER_SETCOLOR_BLEND;
+
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Player_hit"), PROTO_UI, &PlayerHitUI)))
 	{

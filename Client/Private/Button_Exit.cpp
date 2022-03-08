@@ -51,9 +51,9 @@ HRESULT CButton_Exit::Render()
 	return S_OK;
 }
 
-HRESULT CButton_Exit::SetUp_Components(const _tchar* _texture)
+HRESULT CButton_Exit::SetUp_Components()
 {
-	if (FAILED(__super::SetUp_Components(_texture)))
+	if (FAILED(__super::SetUp_Components()))
 		return E_FAIL;
 	return S_OK;
 

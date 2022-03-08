@@ -124,7 +124,7 @@ HRESULT CTileCollider::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER, COM_SHADER, (CComponent**)&m_pShader)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	m_pBoxColliderCom->Set_ParentInfo(this);

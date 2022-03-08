@@ -7,9 +7,18 @@ CUI::CUI(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 }
 
-CUI::CUI(const CUI & rhs)
+CUI::CUI(const CUI& rhs)
 	: CGameObject(rhs)
+	, m_pShader(rhs.m_pShader)
+	, m_pTransformCom(rhs.m_pTransformCom)
+	, m_pRendererCom(rhs.m_pRendererCom)
+	, m_pVIBufferCom(rhs.m_pVIBufferCom)
 {
+	Safe_AddRef(m_pShader);
+	Safe_AddRef(m_pTransformCom);
+	Safe_AddRef(m_pRendererCom);
+	Safe_AddRef(m_pVIBufferCom);
+
 }
 
 HRESULT CUI::NativeConstruct_Prototype()
@@ -28,26 +37,16 @@ HRESULT CUI::NativeConstruct(void * pArg)
 	Set_Type(OBJ_UI);
 
 	UIDESC desc = *static_cast<UIDESC*>(pArg);
-	m_WinCY = (_float)desc.WinCY;
-	m_WinCX = (_float)desc.WinCX;
-	m_fSizeX = desc.SizeX;
-	m_fSizeY = desc.SizeY;
-	m_fX = desc.PosX;
-	m_fY = desc.PosY;
-	Set_Layer(desc.Layer);
-	m_AnimSpd = desc.AnimateSpeed;
-	m_Style = desc.Style;
-	m_FrameCount = desc.FrameCount;
 
-	m_Alpha = desc.Alpha;
-	m_AlphaRef = desc.Ref;
-	m_func = desc.Func;
+	m_desc = desc;
+
+	Set_Layer(m_desc.Layer);
 
 	/* 현재 객체에게 추가되어야할 컴포넌트들을 복제(or 참조)하여 멤버변수에 보관한다.  */
-	if (FAILED(SetUp_Components(desc.Texture)))
+	if (FAILED(SetUp_Components()))
 		return E_FAIL;	
 	
-	Set_UI(desc.WinCX, desc.WinCY, m_fX, m_fY, m_fSizeX, m_fSizeY);
+	Set_UI(m_desc.WinCX, m_desc.WinCY, m_desc.PosX, m_desc.PosY, m_desc.SizeX, m_desc.SizeY);
 	
 	return S_OK;
 }
@@ -89,14 +88,14 @@ HRESULT CUI::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	Bind_UI();
+	//Bind_UI();
 
 	Set_RenderState();
 
 	return S_OK;
 }
 
-HRESULT CUI::SetUp_Components(const _tchar* _texture)
+HRESULT CUI::SetUp_Components()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -116,8 +115,11 @@ HRESULT CUI::SetUp_Components(const _tchar* _texture)
 	if (FAILED(__super::Add_Component(0, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(0, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
+		return E_FAIL;
+
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(0, _texture,COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Component(0, m_desc.Texture,COM_TEXTURE, (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -125,7 +127,7 @@ HRESULT CUI::SetUp_Components(const _tchar* _texture)
 
 HRESULT CUI::Set_CurrFrameIndex(_uint iIndex)
 {
-	if (m_FrameCount <= iIndex)
+	if (m_desc.FrameCount <= iIndex)
 		return E_FAIL;
 
 	m_CurrFrame = iIndex;
@@ -143,14 +145,14 @@ HRESULT CUI::Set_UI(_uint iWinCX, _uint iWinCY, _float x, _float y, _float sizeX
 {
 	D3DXMatrixOrthoLH(&m_ProjMatrix, (_float)iWinCX, (_float)iWinCY, 0.0f, 1.f);
 
-	m_fSizeX = sizeX;
-	m_fSizeY = sizeY;
+	m_desc.SizeX = sizeX;
+	m_desc.SizeY = sizeY;
 
-	m_fX = x;
-	m_fY = y;
+	m_desc.PosX = x;
+	m_desc.PosY = y;
 
-	m_pTransformCom->Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_fX - iWinCX * 0.5f, -m_fY + iWinCY * 0.5f, 0.f));
+	m_pTransformCom->Scaled(_float3(m_desc.SizeX, m_desc.SizeY, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_desc.PosX - iWinCX * 0.5f, -m_desc.PosY + iWinCY * 0.5f, 0.f));
 
 	return S_OK;
 }
@@ -160,41 +162,41 @@ HRESULT CUI::Set_Style(STYLE _style)
 	if (_style >= STYLE_END)
 		return E_FAIL;
 
-	m_Style = _style;
+	m_desc.Style = _style;
 
 	return S_OK;
 }
 
 HRESULT CUI::Tick_UI(_float fTimeDelta)
 {
-	switch (m_Style)
+	switch (m_desc.Style)
 	{
 	case STYLE_FIX:
 		break;
 	case STYLE_STRAIGHT:
-		if ((_uint)m_fFrame >= m_FrameCount)
+		if ((_uint)m_fFrame >= m_desc.FrameCount)
 			break;
 
 		m_CurrFrame = (_uint)m_fFrame;
-		m_fFrame += m_AnimSpd * fTimeDelta;
+		m_fFrame += m_desc.AnimateSpeed * fTimeDelta;
 
 		break;
 	case STYLE_REPEAT:
-		if ((_uint)m_fFrame >= m_FrameCount)
+		if ((_uint)m_fFrame >= m_desc.FrameCount)
 			m_fFrame = 0.f;
 
 		m_CurrFrame = (_uint)m_fFrame;
-		m_fFrame += m_AnimSpd * fTimeDelta;
+		m_fFrame += m_desc.AnimateSpeed * fTimeDelta;
 
 		break;
 	case STYLE_WAVE:
-		if ((_uint)m_fFrame >= m_FrameCount)
+		if ((_uint)m_fFrame >= m_desc.FrameCount)
 			m_wave = true;
 		else if ((_uint)m_fFrame <= 0)
 			m_wave = false;
 
 		m_CurrFrame = (_uint)m_fFrame;
-		m_fFrame = m_wave ? m_fFrame - m_AnimSpd * fTimeDelta : m_fFrame + m_AnimSpd * fTimeDelta;
+		m_fFrame = m_wave ? m_fFrame - m_desc.AnimateSpeed * fTimeDelta : m_fFrame + m_desc.AnimateSpeed * fTimeDelta;
 
 		break;
 	}
@@ -204,15 +206,23 @@ HRESULT CUI::Tick_UI(_float fTimeDelta)
 
 HRESULT CUI::Set_RenderState()
 {
+	_float4x4		WorldMatrix, ViewMatrix, ProjMatrix;
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_CurrFrame)))
-		return E_FAIL;
+	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	D3DXMatrixIdentity(&ViewMatrix);
 
-	switch (m_Alpha)
+	m_pShader->SetUp_ValueOnShader("g_WorldMatrix", D3DXMatrixTranspose(&WorldMatrix, &WorldMatrix), sizeof(_float4x4));
+	m_pShader->SetUp_ValueOnShader("g_ViewMatrix", D3DXMatrixTranspose(&ViewMatrix, &ViewMatrix), sizeof(_float4x4));
+	m_pShader->SetUp_ValueOnShader("g_ProjMatrix", D3DXMatrixTranspose(&ProjMatrix, &m_ProjMatrix), sizeof(_float4x4));
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", m_desc.Shader_Control, sizeof(_float));
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture",m_CurrFrame);
+	m_pShader->Begin_Shader(m_desc.Shader_Style);
+	m_pVIBufferCom->Render();
+	/*switch (m_desc.Alpha)
 	{
 	case ALPHA_DEFAULT:
 		m_pVIBufferCom->Render();
-
 		break;
 	case ALPHA_BLEND:
 		m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -227,15 +237,17 @@ HRESULT CUI::Set_RenderState()
 		break;
 	case ALPHA_TEST:
 		m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-		m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, m_AlphaRef);
-		m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, m_func);
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, m_desc.Ref);
+		m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, m_desc.Func);
 
 		m_pVIBufferCom->Render();
 
 		m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 		break;
-	}
+	}*/
+
+	m_pShader->End_Shader();
 
 	return S_OK;
 }
@@ -252,28 +264,29 @@ const _bool CUI::Get_Vaild() const
 
 void CUI::Set_AlphaTest(D3DCMPFUNC _func, _uint ref)
 {
-	m_func = _func;
-	m_AlphaRef = ref;
+	m_desc.Func = _func;
+	m_desc.Ref = ref;
 }
 
 HRESULT CUI::Set_Pos(_float fx, _float fy)
 {
-	m_fX = fx;
-	m_fY = fy;
+	m_desc.PosX = fx;
+	m_desc.PosY = fy;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_fX - m_WinCX * 0.5f, -m_fY + m_WinCY * 0.5f, 0.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_desc.PosX - m_desc.SizeX * 0.5f, -m_desc.PosY + m_desc.SizeY * 0.5f, 0.f));
 
 	return S_OK;
 }
 
 HRESULT CUI::Set_Size(_float sizeX, _float sizeY)
 {
-	m_fSizeX = sizeX;
-	m_fSizeY = sizeY;
+	m_desc.SizeX = sizeX;
+	m_desc.SizeY = sizeY;
 
-	m_pTransformCom->Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
+	m_pTransformCom->Scaled(_float3(m_desc.SizeX, m_desc.SizeY, 1.f));
 	return S_OK;
 }
+
 
 HRESULT CUI::Bind_UI()	
 {
@@ -323,4 +336,6 @@ void CUI::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
+
 }

@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CRenderer;
 class CVIBuffer_Portal;
 class CTexture;
+class CShader;
 END
 
 BEGIN(Client)
@@ -42,7 +43,7 @@ private:
 	CVIBuffer_Portal* m_pVIBuffer = nullptr;
 	CRenderer* m_pRender = nullptr;
 	CTransform* m_pRenderTransform = nullptr;
-
+	CShader* m_pShader = nullptr;
 private:
 	LPDIRECT3DSURFACE9 m_pSurface = nullptr;
 	_uint m_TextureIndex = 0;

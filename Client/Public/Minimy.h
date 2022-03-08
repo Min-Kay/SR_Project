@@ -8,6 +8,7 @@ class CRenderer;
 class CVIBuffer_Cube;
 class CTexture;
 class CBoxCollider;
+class CShader;
 END
 
 BEGIN(Client)
@@ -62,6 +63,7 @@ private:
 	CTexture* m_pTexture = nullptr;
 	CBoxCollider* m_pCollider = nullptr;
 	CVIBuffer_Cube* m_pBuffer = nullptr;
+	CShader* m_pShader = nullptr;
 
 private:
 	_bool m_Sizing = false;

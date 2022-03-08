@@ -2,6 +2,7 @@
 #include "Door_right.h"
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
+#include "Shader.h"
 
 CDoor_right::CDoor_right(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -63,7 +64,7 @@ _int CDoor_right::LateTick(_float fTimeDelta)
 		return -1;
 
 	
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
 }
@@ -73,16 +74,26 @@ HRESULT CDoor_right::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
+
+	////m_pBoxColliderCom->Draw_Box();
+
+	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
+	//	return E_FAIL;
+
+
+
+	if (FAILED(m_pTransformCom->Bind_OnShader(m_pShader)))
 		return E_FAIL;
 
-	//m_pBoxColliderCom->Draw_Box();
-
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
-		return E_FAIL;
-
-
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBufferCom->Render();
+	m_pShader->End_Shader();
+
+	//m_pVIBufferCom->Render();
 
 
 	return S_OK;
@@ -115,6 +126,9 @@ HRESULT CDoor_right::SetUp_Components()
 
 	/* For.Com_Box */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
@@ -200,4 +214,5 @@ void CDoor_right::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
 }

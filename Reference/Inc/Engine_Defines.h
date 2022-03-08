@@ -63,7 +63,8 @@ using namespace std;
 #define PROTO_TERRAIN TEXT("Prototype_Component_VIBuffr_Terrain")
 
 #define PROTO_COLLIDER TEXT("Prototype_Component_Collider")
-#define PROTO_SHADER TEXT("Prototype_Component_Shader")
+#define PROTO_SHADER_RECT TEXT("Prototype_Component_Shader_Rect")
+#define PROTO_SHADER_CUBE TEXT("Prototype_Component_Shader_Cube")
 
 #define PROTO_UI TEXT("Prototype_GameObject_UI")
 #define PROTO_BUTTON TEXT("Prototype_GameObject_Button")

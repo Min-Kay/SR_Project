@@ -17,7 +17,7 @@ public:
 	_int LateTick(_float fTimeDelta) override;
 	HRESULT Render() override;
 protected:
-	HRESULT SetUp_Components(const _tchar* _texture) override;
+	HRESULT SetUp_Components() override;
 public:
 	HRESULT Tick_UI(_float fTimeDelta) override;
 	HRESULT Set_RenderState() override;

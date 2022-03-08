@@ -208,6 +208,10 @@ HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	desc2.SizeY = g_iWinCY;
 	desc2.Alpha = Engine::CUI::ALPHA_BLEND;
 	desc2.Texture = TEXT("Prototype_Component_Texture_BackUI");
+	desc2.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc2.Shader_Control = &g_ControlShader;
+
+
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("BackUI"), TEXT("Prototype_GameObject_BackUI"), &desc2)))
 	{

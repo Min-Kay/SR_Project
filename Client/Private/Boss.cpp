@@ -12,6 +12,7 @@
 #include "Impact.h"
 #include "Player.h"
 #include "Texture.h"
+#include "Shader.h"
 
 #include "AttackRange.h"
 #include "Missile.h"
@@ -34,6 +35,7 @@ CBoss::CBoss(const CBoss& rhs)
 	,m_pRenderer(rhs.m_pRenderer)
 	,m_pCollider(rhs.m_pCollider)
 	,m_pBuffer(rhs.m_pBuffer)
+	,m_pShader(rhs.m_pShader)
 {
 	Safe_AddRef(m_pOnlyRotation);
 	Safe_AddRef(m_pTransform);
@@ -41,6 +43,7 @@ CBoss::CBoss(const CBoss& rhs)
 	Safe_AddRef(m_pRenderer);
 	Safe_AddRef(m_pCollider);
 	Safe_AddRef(m_pBuffer);
+	Safe_AddRef(m_pShader);
 
 }
 
@@ -132,16 +135,16 @@ HRESULT CBoss::Render()
 	if (Get_Dead())
 		return 0;
 
-	if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	m_pOnlyRotation->Bind_OnShader(m_pShader);
 
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice(m_ImageIndex)))
-		return E_FAIL;
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
 
-	m_pBuffer->Render(); 
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
 
-	if (FAILED(__super::Render()))
-		return E_FAIL;
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
+	m_pBuffer->Render();
+	m_pShader->End_Shader();
+
 	return S_OK; 
 }
 
@@ -170,7 +173,8 @@ HRESULT CBoss::SetUp_Component()
 		return E_FAIL;
 
 
-
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
+		return E_FAIL;
 
 	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
 	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
@@ -298,6 +302,9 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_Black.AnimateSpeed = 30.f;
 	BossUI_Black.Style = CUI::STYLE_FIX;
 	BossUI_Black.Texture = TEXT("Prototype_Component_BossHP_Black");
+	BossUI_Black.Shader_Style = SHADER_SETCOLOR_BLEND;
+	BossUI_Black.Shader_Control = &g_ControlShader;
+
 
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_Block"), PROTO_UI, &BossUI_Black)))
@@ -324,6 +331,8 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_HP.AnimateSpeed = 30.f;
 	BossUI_HP.Style = CUI::STYLE_FIX;
 	BossUI_HP.Texture = TEXT("Prototype_Component_BossHP");
+	BossUI_HP.Shader_Style = SHADER_SETCOLOR_BLEND;
+	BossUI_HP.Shader_Control = &g_ControlShader;
 
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_HP"), PROTO_UI, &BossUI_HP)))
@@ -355,7 +364,8 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_ShieldHP.AnimateSpeed = 30.f;
 	BossUI_ShieldHP.Style = CUI::STYLE_FIX;
 	BossUI_ShieldHP.Texture = TEXT("Prototype_Component_BossShield");
-
+	BossUI_ShieldHP.Shader_Style = SHADER_SETCOLOR_BLEND;
+	BossUI_ShieldHP.Shader_Control = &g_ControlShader;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP"), PROTO_UI, &BossUI_ShieldHP)))
 	{
@@ -386,7 +396,8 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_HPBaar.AnimateSpeed = 30.f;
 	BossUI_HPBaar.Style = CUI::STYLE_FIX;
 	BossUI_HPBaar.Texture = TEXT("Prototype_Component_BossHPBar");
-
+	BossUI_HPBaar.Shader_Style = SHADER_SETCOLOR_BLEND;
+	BossUI_HPBaar.Shader_Control = &g_ControlShader;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_HPBaar"), PROTO_UI, &BossUI_HPBaar)))
 	{
@@ -1499,6 +1510,7 @@ void CBoss::Free()
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pCollider);
 	Safe_Release(m_pRenderer);
+	Safe_Release(m_pShader);
 
 }
 

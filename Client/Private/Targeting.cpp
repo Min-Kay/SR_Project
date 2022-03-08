@@ -148,35 +148,35 @@ _int CTargeting::LateTick(_float fTimeDelta)
 
 HRESULT CTargeting::Render()
 {
-	if (Get_Dead())
-		return 0;
+	//if (Get_Dead())
+	//	return 0;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-
-		if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(1)))
-			return E_FAIL;
-
-	if (m_bcheckCollider == true)
-	{
-		if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
-			return E_FAIL;
-
-	}
+	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
 
-	//FaceOn_Camera();
-	Set_RanderState();
-	if(m_Target.MainTarget == true)
-	m_pVIBufferCom->Render();
+	//	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(1)))
+	//		return E_FAIL;
 
-	if (m_Target.MainTarget == false && m_bcheckCollider == true)
-	{
-		m_pVIBufferCom->Render();
-	}
+	//if (m_bcheckCollider == true)
+	//{
+	//	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
+	//		return E_FAIL;
 
-	Release_RanderState();
+	//}
+
+
+	////FaceOn_Camera();
+	//Set_RanderState();
+	//if(m_Target.MainTarget == true)
+	//m_pVIBufferCom->Render();
+
+	//if (m_Target.MainTarget == false && m_bcheckCollider == true)
+	//{
+	//	m_pVIBufferCom->Render();
+	//}
+
+	//Release_RanderState();
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 

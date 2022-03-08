@@ -7,7 +7,6 @@
 
 #include "Player.h"
 #include "Portal.h"
-#include "BackGround.h"
 #include "Ball.h"
 #include "BazierBullet.h"
 #include "Boss.h"
@@ -216,10 +215,6 @@ HRESULT CLoader::Loading_ForStageOne()
 
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"), CSky::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_BackUI */

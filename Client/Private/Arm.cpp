@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Shader.h"
 
 CArm::CArm(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -84,7 +85,16 @@ HRESULT CArm::Render()
 	if (Get_Dead())
 		return 0;
 
-	if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
+	m_pOnlyRotation->Bind_OnShader(m_pShader);
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
+	m_pBuffer->Render();
+	m_pShader->End_Shader();
+
+
+	/*if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
 
@@ -94,7 +104,7 @@ HRESULT CArm::Render()
 	m_pBuffer->Render();
 
 	if (FAILED(__super::Render()))
-		return E_FAIL;
+		return E_FAIL;*/
 	return S_OK;
 }
 
@@ -115,6 +125,9 @@ HRESULT CArm::SetUp_Component()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_CUBE, COM_BUFFER, (CComponent**)&m_pBuffer)))
 		return E_FAIL;
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Arm"), COM_TEXTURE, (CComponent**)&m_pTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	Set_Type(OBJ_ENEMY);

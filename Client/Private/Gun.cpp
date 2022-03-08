@@ -254,7 +254,8 @@ HRESULT CGun::SetUp_UI()
 	desc.AnimateSpeed = 30.f;
 	desc.Style = CUI::STYLE_FIX;
 	desc.Texture = TEXT("Prototype_Component_Texture_Gun_Reload");
-
+	desc.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc.Shader_Control = &g_ControlShader;
 
 	m_fGun_fx = desc.PosX;
 	m_fGun_fy = desc.PosY;
@@ -284,7 +285,8 @@ HRESULT CGun::SetUp_UI()
 	desc2.AnimateSpeed = 100.f;
 	desc2.Style = CUI::STYLE_REPEAT;
 	desc2.Texture = TEXT("Prototype_Component_Texture_Gun_Muzzle");
-
+	desc2.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc2.Shader_Control = &g_ControlShader;
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Muzzle_UI"), PROTO_UI, &desc2)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -315,7 +317,8 @@ HRESULT CGun::SetUp_UI()
 	desc3.AnimateSpeed = 100.f;
 	desc3.Style = CUI::STYLE_FIX;
 	desc3.Texture = TEXT("Prototype_Component_Texture_Font");
-
+	desc3.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc3.Shader_Control = &g_ControlShader;
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("FullBullet_UI_1"), PROTO_UI, &desc3)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -341,7 +344,8 @@ HRESULT CGun::SetUp_UI()
 	desc4.AnimateSpeed = 100.f;
 	desc4.Style = CUI::STYLE_FIX;
 	desc4.Texture = TEXT("Prototype_Component_Texture_Font");
-
+	desc4.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc4.Shader_Control = &g_ControlShader;
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("FullBullet_UI_2"), PROTO_UI, &desc4)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -368,7 +372,8 @@ HRESULT CGun::SetUp_UI()
 	desc5.AnimateSpeed = 100.f;
 	desc5.Style = CUI::STYLE_FIX;
 	desc5.Texture = TEXT("Prototype_Component_Texture_Slash");
-
+	desc5.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc5.Shader_Control = &g_ControlShader;
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Slash_UI"), PROTO_UI, &desc5)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -394,7 +399,8 @@ HRESULT CGun::SetUp_UI()
 	desc6.AnimateSpeed = 100.f;
 	desc6.Style = CUI::STYLE_FIX;
 	desc6.Texture = TEXT("Prototype_Component_Texture_Font");
-
+	desc6.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc6.Shader_Control = &g_ControlShader;
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_1"), PROTO_UI, &desc6)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -420,7 +426,8 @@ HRESULT CGun::SetUp_UI()
 	desc7.AnimateSpeed = 100.f;
 	desc7.Style = CUI::STYLE_FIX;
 	desc7.Texture = TEXT("Prototype_Component_Texture_Font");
-
+	desc7.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc7.Shader_Control = &g_ControlShader;
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_2"), PROTO_UI, &desc7)))
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -447,7 +454,8 @@ HRESULT CGun::SetUp_UI()
 	GunIcon.AnimateSpeed = 30.f;
 	GunIcon.Style = CUI::STYLE_FIX;
 	GunIcon.Texture = TEXT("Prototype_Component_Gunicon");
-
+	GunIcon.Shader_Style = SHADER_SETCOLOR_BLEND;
+	GunIcon.Shader_Control = &g_ControlShader;
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Gun_icon"), PROTO_UI, &GunIcon)))
 	{
@@ -561,7 +569,8 @@ void CGun::Spawn_BulletHole(_float3 _point, _float3 _nor)
 	eDesc.Style = CEffect::EFFECTSTYLE_FIX;
 	eDesc.LifeTime = 5.f;
 	eDesc.Tick = true;
-
+	eDesc.Shader_Style = SHADER_SETCOLOR_BLEND;
+	eDesc.Shader_Control = &g_ControlShader;
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BulletHole"), PROTO_EFFECT, &eDesc)))
 	{
 		RELEASE_INSTANCE(CGameInstance);

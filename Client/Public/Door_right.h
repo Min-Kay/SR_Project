@@ -9,7 +9,8 @@ class CRenderer;
 class CTransform;
 class CVIBuffer_Cube;
 class CBoxCollider;
-END
+class CShader;
+END 
 
 BEGIN(Client)
 
@@ -53,6 +54,8 @@ private:
 
 	/* �浹ü */
 	CBoxCollider*		m_pBoxColliderCom = nullptr;
+
+	CShader*			m_pShader = nullptr; 
 
 private:
 	_uint		 m_iTextureIndex = 0;

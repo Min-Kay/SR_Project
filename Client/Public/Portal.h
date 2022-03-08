@@ -8,6 +8,7 @@ class CRenderer;
 class CTexture;
 class CVIBuffer_Rect;
 class CBoxCollider;
+class CShader;
 END
 
 BEGIN(Client)
@@ -61,7 +62,8 @@ private:
 
 	CPortal* m_pOpponent = nullptr;
 	CCam_Portal* m_pCam_Portal = nullptr;
-	CBoxCollider* m_Collider = nullptr; 
+	CBoxCollider* m_Collider = nullptr;
+	CShader* m_pShader = nullptr;
 
 	const _tchar* tag = nullptr;
 

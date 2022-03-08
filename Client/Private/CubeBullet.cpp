@@ -8,6 +8,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "Shader.h"
 
 Client::CCubeBullet::CCubeBullet(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CGameObject(m_pGraphic_Device)
@@ -22,6 +23,7 @@ Client::CCubeBullet::CCubeBullet(const CCubeBullet& rhs)
 	,m_pTextureCom(rhs.m_pTextureCom)
 	,m_pVIBufferCom(rhs.m_pVIBufferCom)
 	,m_pOnlyRotation(rhs.m_pOnlyRotation)
+	,m_pShader(rhs.m_pShader)
 {
 	Safe_AddRef(m_pOnlyRotation);
 	Safe_AddRef(m_pTransformCom);
@@ -29,6 +31,8 @@ Client::CCubeBullet::CCubeBullet(const CCubeBullet& rhs)
 	Safe_AddRef(m_pRendererCom);
 	Safe_AddRef(m_pTextureCom);
 	Safe_AddRef(m_pVIBufferCom);
+	Safe_AddRef(m_pShader);
+
 }
 
 HRESULT Client::CCubeBullet::NativeConstruct_Prototype()
@@ -80,13 +84,26 @@ _int Client::CCubeBullet::LateTick(_float fTimeDelta)
 
 HRESULT Client::CCubeBullet::Render()
 {
-	if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
+	/*if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
 		return -1;
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
 		return -1;
 
+	m_pVIBufferCom->Render();*/
+
+
+	m_pOnlyRotation->Bind_OnShader(m_pShader);
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
+
 	m_pVIBufferCom->Render();
+
+	m_pShader->End_Shader();
 
 	return S_OK; 
 }
@@ -165,6 +182,10 @@ HRESULT Client::CCubeBullet::SetUp_Component()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, TEXT("AnimationOnly"), (CComponent**)&m_pOnlyRotation)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
+		return E_FAIL;
+
+
 
 	m_pOnlyRotation->Scaled(_float3(0.3f,0.3f,0.3f));
 
@@ -208,6 +229,6 @@ void Client::CCubeBullet::Free()
 	Safe_Release(m_pOnlyRotation);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
-
+	Safe_Release(m_pShader);
 
 }

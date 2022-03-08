@@ -6,7 +6,7 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
-
+class CShader;
 class ENGINE_DLL CUI  : public CGameObject
 {
 protected:
@@ -39,22 +39,40 @@ public:
 		ALPHA	Alpha;
 		D3DCMPFUNC Func;
 		_uint	Ref;
+		_float* Shader_Control;
+		_uint	Shader_Style;
 		const _tchar* Texture;
+
+
+		taguidesc& operator=(const taguidesc& a)
+		{
+			WinCX = a.WinCX;
+			WinCY = a.WinCY;
+			Layer = a.Layer;
+			PosX = a.PosX;
+			PosY = a.PosY;
+			SizeX = a.SizeX;
+			SizeY = a.SizeY;
+			FrameCount = a.FrameCount;
+			AnimateSpeed = a.AnimateSpeed;
+			Texture = a.Texture;
+			Style = a.Style;
+			Shader_Control = a.Shader_Control;
+			Shader_Style = a.Shader_Style;
+			Func = a.Func;
+			Alpha = a.Alpha;
+			Ref = a.Ref;
+			return *this;
+		}
 	}UIDESC;
 
 protected:
-	_float4x4			m_ProjMatrix;
-	_float				m_WinCX, m_WinCY, m_fX, m_fY, m_fSizeX, m_fSizeY;
-	_float				m_fFrame = 0.f;
-	_float				m_AnimSpd = 0.f;
-	_uint				m_FrameCount = 0;
-	_uint				m_CurrFrame = 0;
-	STYLE				m_Style;
-	ALPHA				m_Alpha;
+	UIDESC				m_desc;
 
-protected:
-	D3DCMPFUNC			m_func;
-	_uint				m_AlphaRef = 0;
+	_float4x4			m_ProjMatrix;
+
+	_float				m_fFrame = 0.f;
+	_uint				m_CurrFrame = 0;
 
 protected:
 	_bool				m_wave = false;
@@ -73,8 +91,10 @@ protected:
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
 
+	CShader*			m_pShader = nullptr;
+
 protected:
-	virtual HRESULT SetUp_Components(const _tchar* _texture);
+	virtual HRESULT SetUp_Components();
 
 public:
 	HRESULT Set_UI(_uint iWinCX, _uint iWinCY, _float x,_float y, _float sizeX, _float sizeY);
@@ -87,7 +107,6 @@ public:
 public:
 	HRESULT Set_Pos(_float fx, _float fy);
 	HRESULT Set_Size(_float sizeX, _float sizeY);
-
 public:
 	virtual HRESULT Tick_UI(_float fTimeDelta);
 	virtual HRESULT Set_RenderState();

@@ -275,7 +275,8 @@ HRESULT CPortalControl::SetUp_UI()
 	desc.SizeY = 70.f;
 	desc.Style = CUI::STYLE_FIX;
 	desc.Texture = TEXT("Prototype_Component_Texture_Portal_Orange_UI");
-
+	desc.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc.Shader_Control = &g_ControlShader;
 
 	if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Portal_Orange_UI"), PROTO_UI, &desc)))
 	{
@@ -296,7 +297,8 @@ HRESULT CPortalControl::SetUp_UI()
 	desc2.SizeY = 70.f;
 	desc2.Style = CUI::STYLE_FIX;
 	desc2.Texture = TEXT("Prototype_Component_Texture_Portal_Blue_UI");
-
+	desc2.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc2.Shader_Control = &g_ControlShader;
 
 	if (FAILED(p_instance->Add_GameObject(LEVEL_STAGEONE, TEXT("Portal_Blue_UI"), PROTO_UI, &desc2)))
 	{
@@ -318,6 +320,8 @@ HRESULT CPortalControl::SetUp_UI()
 	desc3.SizeY = 350.f;
 	desc3.Style = CUI::STYLE_FIX;
 	desc3.Texture = TEXT("Prototype_Component_Texture_Portal_Gun_UI");
+	desc3.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc3.Shader_Control = &g_ControlShader;
 
 
 	m_fGun_fx = desc3.PosX;

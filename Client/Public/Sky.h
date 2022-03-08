@@ -8,7 +8,7 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Cube;
-
+class CShader;
 END
 
 BEGIN(Client)
@@ -41,6 +41,8 @@ private:
 
 	/* 그려진다. */
 	CRenderer*			m_pRendererCom = nullptr;
+
+	CShader*			m_pShader = nullptr;
 
 private:
 	CTransform*		m_pTarget = nullptr; 

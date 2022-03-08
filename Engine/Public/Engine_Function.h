@@ -12,6 +12,9 @@ namespace Engine
 		template <typename T>
 		bool operator () (T& Pair)
 		{
+
+
+
 			if (0 == lstrcmp(Pair.first, m_pTag))
 				return true;
 			return false;

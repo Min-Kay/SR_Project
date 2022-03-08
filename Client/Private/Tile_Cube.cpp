@@ -71,28 +71,29 @@ HRESULT CTile_Cube::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
-	//m_pBoxColliderCom->Draw_Box();
+	////m_pBoxColliderCom->Draw_Box();
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
-		return E_FAIL;
+	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
+	//	return E_FAIL;
 
-	//_float blend = 0;
+	_float blend = 0;
 
-	//m_pTransformCom->Bind_OnShader(m_pShader);
+	m_pTransformCom->Bind_OnShader(m_pShader);
 
-	//m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	//m_pShader->SetUp_ValueOnShader("g_Alpha", &blend, sizeof(_uint));
-	//m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
-	//m_pTextureCom->Bind_OnShader(m_pShader, "g_texture_cube", m_iTextureIndex);
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pShader->SetUp_ValueOnShader("g_Alpha", &blend, sizeof(_uint));
+	m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iTextureIndex);
 
-	//m_pShader->Begin_Shader(SHADER_SETCOLOR);
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 
 	m_pVIBufferCom->Render();
 
-	//m_pShader->End_Shader();
+	m_pShader->End_Shader();
+
 	return S_OK;
 }
 
@@ -119,6 +120,10 @@ HRESULT CTile_Cube::SetUp_Components()
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Block"), COM_TEXTURE, (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	/* For.Com_Box */

@@ -24,10 +24,10 @@ HRESULT CButton::NativeConstruct(void* pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
-	m_Rect.left = (_long)(m_fX - m_fSizeX * 0.5f);
-	m_Rect.top = (_long)(m_fY - m_fSizeY * 0.5f);
-	m_Rect.right = (_long)(m_fX + m_fSizeX * 0.5f);
-	m_Rect.bottom = (_long)(m_fY + m_fSizeY * 0.5f);
+	m_Rect.left = (_long)(m_desc.PosX - m_desc.SizeX * 0.5f);
+	m_Rect.top = (_long)(m_desc.PosY - m_desc.SizeY * 0.5f);
+	m_Rect.right = (_long)(m_desc.PosX + m_desc.SizeX * 0.5f);
+	m_Rect.bottom = (_long)(m_desc.PosY + m_desc.SizeY * 0.5f);
 
 	return S_OK;
 
@@ -59,9 +59,9 @@ HRESULT CButton::Render()
 	return S_OK;
 }
 
-HRESULT CButton::SetUp_Components(const _tchar* _texture)
+HRESULT CButton::SetUp_Components()
 {
-	if (FAILED(__super::SetUp_Components(_texture)))
+	if (FAILED(__super::SetUp_Components()))
 		return E_FAIL;
 	return S_OK;
 }

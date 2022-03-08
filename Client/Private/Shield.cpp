@@ -9,6 +9,7 @@
 #include "BoxCollider.h"
 #include "GameInstance.h"
 #include "Impact.h"
+#include "Shader.h"
 
 
 CShield::CShield(LPDIRECT3DDEVICE9 m_pGraphic_Device)
@@ -23,12 +24,14 @@ CShield::CShield(const CShield& rhs)
 	,m_pTexture(rhs.m_pTexture)
 	,m_pBuffer(rhs.m_pBuffer)
 	,m_pRenderer(rhs.m_pRenderer)
+	,m_pShader(rhs.m_pShader)
 {
 	Safe_AddRef(m_pBuffer);
 	Safe_AddRef(m_pCollider);
 	Safe_AddRef(m_pTransform);
 	Safe_AddRef(m_pTexture);
 	Safe_AddRef(m_pRenderer);
+	Safe_AddRef(m_pShader);
 
 }
 
@@ -96,13 +99,14 @@ HRESULT CShield::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	m_pTransform->Bind_OnShader(m_pShader);
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
 
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
 
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_BLEND_CUBE);
 	m_pBuffer->Render();
+	m_pShader->End_Shader();
 
 	return S_OK;
 }
@@ -126,6 +130,9 @@ HRESULT CShield::SetUp_Component()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Shield"), COM_TEXTURE, (CComponent**)&m_pTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	Set_Type(OBJ_ENEMY);
@@ -293,4 +300,5 @@ void CShield::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pTransform);
+	Safe_Release(m_pShader);
 }

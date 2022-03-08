@@ -6,7 +6,8 @@ class CTransform;
 class CTexture;
 class CBoxCollider;
 class CRenderer;
-class CVIBuffer_Cube; 
+class CVIBuffer_Cube;
+class CShader;
 END
 
 BEGIN(Client)
@@ -84,6 +85,8 @@ private:
 	CTexture* m_pTexture = nullptr;
 	CBoxCollider* m_Collider = nullptr;
 	CVIBuffer_Cube* m_pBuffer = nullptr;
+	CShader* m_pShader = nullptr;
+
 
 public:
 	static CArm* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);

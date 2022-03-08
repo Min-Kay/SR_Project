@@ -24,8 +24,16 @@ Client::CCubeMonster::CCubeMonster(const CCubeMonster& rhs)
 	, m_pVIBuffer(rhs.m_pVIBuffer)
 	, m_pRenderer(rhs.m_pRenderer)
 	, m_pBoxCollider(rhs.m_pBoxCollider)
+	, m_pShader(rhs.m_pShader)
 
 {
+
+	Safe_AddRef(m_pTransform);
+	Safe_AddRef(m_pTexture);
+	Safe_AddRef(m_pVIBuffer);
+	Safe_AddRef(m_pBoxCollider);
+	Safe_AddRef(m_pShader);
+	Safe_AddRef(m_pRenderer);
 }
 
 HRESULT Client::CCubeMonster::NativeConstruct_Prototype()
@@ -71,14 +79,25 @@ _int Client::CCubeMonster::LateTick(_float fTimeDelta)
 HRESULT Client::CCubeMonster::Render()
 {
 
-	if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
+	/*if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
 		return -1;
 
 	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
 		return -1;
 
 
+	m_pVIBuffer->Render();*/
+
+
+	m_pTransform->Bind_OnShader(m_pShader);
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBuffer->Render();
+	m_pShader->End_Shader();
 
 	return CEnemy::Render();
 }
@@ -110,6 +129,10 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 	/* For.Com_Box */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxCollider)))
 		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
+		return E_FAIL;
+
 	Set_Type(OBJ_ENEMY);
 
 	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.5f,1.5f,1.5f));
@@ -137,6 +160,8 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 	desc.Bilboard = true;
 	desc.Style = CEffect::EFFECTSTYLE_FIX;
 	desc.Texture = TEXT("Prototype_Component_Texture_Alert");
+	desc.Shader_Style = SHADER_SETCOLOR_BLEND;
+	desc.Shader_Control = &g_ControlShader;
 
 	if (FAILED(p_Instance->Add_GameObject(g_CurrLevel,TEXT("Alert"), TEXT("Prototype_GameObject_Alert"), &desc)))
 	{
@@ -570,9 +595,10 @@ CGameObject* Client::CCubeMonster::Clone(void* pArg)
 void Client::CCubeMonster::Free()
 {
 	__super::Free();
-	Safe_Release(m_pBoxCollider);
 	Safe_Release(m_pTransform);
-	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pBoxCollider);
+	Safe_Release(m_pShader);
+	Safe_Release(m_pRenderer);
 }

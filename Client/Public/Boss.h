@@ -1,5 +1,4 @@
 #pragma once
-#include "Arm.h"
 #include "Enemy.h"
 
 BEGIN(Engine)
@@ -9,6 +8,7 @@ class CVIBuffer_Cube;
 class CRenderer;
 class CBoxCollider;
 class CUI;
+class CShader;
 END
 
 BEGIN(Client)
@@ -265,7 +265,7 @@ private:
 	CTexture* m_pTexture = nullptr;
 	CBoxCollider* m_pCollider = nullptr;
 	CVIBuffer_Cube* m_pBuffer = nullptr;
-
+	CShader* m_pShader = nullptr;
 
 public:
 	static CBoss* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);

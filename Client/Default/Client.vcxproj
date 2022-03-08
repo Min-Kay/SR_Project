@@ -174,7 +174,6 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Arm.h" />
     <ClInclude Include="..\Public\AttackRange.h" />
-    <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Ball.h" />
     <ClInclude Include="..\Public\BazierBullet.h" />
     <ClInclude Include="..\Public\Boss.h" />
@@ -210,7 +209,6 @@
     <ClInclude Include="..\Public\Shield_Effect.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Targeting.h" />
-    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Tile.h" />
     <ClInclude Include="..\Public\Tile_Collider.h" />
     <ClInclude Include="..\Public\Tile_Cube.h" />
@@ -225,7 +223,6 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Arm.cpp" />
     <ClCompile Include="..\Private\AttackRange.cpp" />
-    <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Ball.cpp" />
     <ClCompile Include="..\Private\BazierBullet.cpp" />
     <ClCompile Include="..\Private\Boss.cpp" />
@@ -260,7 +257,6 @@
     <ClCompile Include="..\Private\Shield_Effect.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Targeting.cpp" />
-    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Tile.cpp" />
     <ClCompile Include="..\Private\Tile_Collider.cpp" />
     <ClCompile Include="..\Private\Tile_Cube.cpp" />
@@ -292,6 +288,7 @@
     <None Include="..\..\resources\textures\portal\logo\cursor1.cur" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\Resources\ShaderFiles\Shader_Cube.hlsl" />
     <FxCompile Include="..\..\Resources\ShaderFiles\Shader_Rect.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

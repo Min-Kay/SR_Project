@@ -108,6 +108,9 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	desc.SizeX = g_iWinCX;
 	desc.SizeY = g_iWinCY;
 	desc.Layer = 1;
+	desc.Shader_Control = &g_ControlShader;
+	desc.Shader_Style = SHADER_NONE;
+
 	desc.Texture = TEXT("Prototype_Component_Texture_Logo");
 
 	/* 사본객체를 생성ㅎ나다. */
@@ -124,6 +127,9 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	desc2.SizeX = 640.f;
 	desc2.SizeY = 360.f;
 	desc2.Layer = 0;
+	desc2.Shader_Control = &g_ControlShader;
+	desc2.Shader_Style = SHADER_NONE_BLEND;
+
 	desc2.Texture = TEXT("Prototype_Component_Texture_Press");
 
 	pGameInstance->Add_GameObject(LEVEL_LOGO, TEXT("Layer_Press_Start"), PROTO_UI, &desc2);

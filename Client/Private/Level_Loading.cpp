@@ -126,6 +126,8 @@ HRESULT CLevel_Loading::Ready()
 	desc.FrameCount = 50;
 	desc.AnimateSpeed = 100.f;
 	desc.Style = CUI::STYLE_REPEAT;
+	desc.Shader_Control = &g_ControlShader;
+	desc.Shader_Style = SHADER_NONE;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Loading"), PROTO_UI, &desc)))
 	{

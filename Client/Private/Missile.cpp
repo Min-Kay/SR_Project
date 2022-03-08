@@ -10,6 +10,7 @@
 #include "Impact.h"
 #include "Targeting.h"
 #include "Boss.h"
+#include "Shader.h"
 
 CMissile::CMissile(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -23,7 +24,15 @@ CMissile::CMissile(const CMissile& rhs)
 	, m_pVIBuffer(rhs.m_pVIBuffer)
 	, m_pRenderer(rhs.m_pRenderer)
 	, m_pBoxCollider(rhs.m_pBoxCollider)
+	,m_pShader(rhs.m_pShader)
 {
+	Safe_AddRef(m_pTexture);
+	Safe_AddRef(m_pTransform);
+	Safe_AddRef(m_pRenderer);
+	Safe_AddRef(m_pVIBuffer);
+	Safe_AddRef(m_pShader);
+	Safe_AddRef(m_pBoxCollider);
+
 
 
 }
@@ -114,13 +123,14 @@ HRESULT CMissile::Render()
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
 
-	if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	m_pTransform->Bind_OnShader(m_pShader);
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
 
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBuffer->Render();
+	m_pShader->End_Shader();
 
 	return S_OK;
 
@@ -177,7 +187,8 @@ HRESULT CMissile::SetUp_Component()
 		return E_FAIL;
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Missile"), COM_TEXTURE, (CComponent**)&m_pTexture)))
 		return E_FAIL;
-
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
+		return E_FAIL;
 
 	m_pBoxCollider->Set_ParentInfo(this);
 	Set_Type(OBJ_ENEMY);
@@ -449,4 +460,6 @@ void CMissile::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pShader);
+
 }

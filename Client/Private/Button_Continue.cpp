@@ -52,9 +52,9 @@ HRESULT CButton_Continue::Render()
 
 }
 
-HRESULT CButton_Continue::SetUp_Components(const _tchar* _texture)
+HRESULT CButton_Continue::SetUp_Components()
 {
-	if (FAILED(__super::SetUp_Components(_texture)))
+	if (FAILED(__super::SetUp_Components()))
 		return E_FAIL;
 	return S_OK;
 

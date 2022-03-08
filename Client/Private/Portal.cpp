@@ -8,6 +8,7 @@
 #include "GameInstance.h"
 #include "BoxCollider.h"
 #include "Enemy.h"
+#include "Shader.h"
 #include "Player.h"
 
 CPortal::CPortal(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -22,12 +23,14 @@ CPortal::CPortal(const CPortal& rhs)
     , m_pTransform(rhs.m_pTransform)
     , m_pVIBuffer(rhs.m_pVIBuffer)
     , m_Collider(rhs.m_Collider)
+	, m_pShader(rhs.m_pShader)
 {
     Safe_AddRef(m_Collider);
     Safe_AddRef(m_pRenderer);
     Safe_AddRef(m_pTexture);
     Safe_AddRef(m_pTransform);
     Safe_AddRef(m_pVIBuffer);
+    Safe_AddRef(m_pShader);
 }
 
 
@@ -68,6 +71,7 @@ void CPortal::Free()
     Safe_Release(m_pTexture);
     Safe_Release(m_pVIBuffer);
     Safe_Release(m_pTransform);
+    Safe_Release(m_pShader);
 }
 
 HRESULT CPortal::NativeConstruct_Prototype()
@@ -154,6 +158,8 @@ HRESULT CPortal::NativeConstruct(void* pArg)
     if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBuffer)))
         return E_FAIL;
 
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
+        return E_FAIL;
 
     if (portalDesc.iPortalColor == PORTAL_ORANGE)
     {
@@ -181,14 +187,14 @@ _int CPortal::Tick(_float fTimeDelta)
 
 _int CPortal::LateTick(_float fTimeDelta)
 {
-    m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA,this);
+    m_pRenderer->Add_RenderGroup(CRenderer::RENDER_ALPHA,this);
 
     return _int();
 }
 
 HRESULT CPortal::Render()
 {
-    if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
+   /* if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
         return E_FAIL;
 
     if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
@@ -203,7 +209,15 @@ HRESULT CPortal::Render()
     m_pVIBuffer->Render();
 
 
-    m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);*/
+
+    m_pTransform->Bind_OnShader(m_pShader);
+
+    m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+    m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
+    m_pShader->Begin_Shader(SHADER_SETCOLOR_BLEND);
+    m_pVIBuffer->Render();
+    m_pShader->End_Shader();
 
     return S_OK;
 }

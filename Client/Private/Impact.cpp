@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Impact.h"
 #include "GameInstance.h"
+#include "Shader.h"
 
 CImpact::CImpact(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
@@ -111,23 +112,29 @@ HRESULT CImpact::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	/*if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
 	if (FAILED(SetUp_RenderState()))
-		return E_FAIL;
+		return E_FAIL;*/
 
-	FaceOn_Camera();
 
 	m_pVIBufferCom->Render();
 
-	if (FAILED(Release_RenderState()))
-		return E_FAIL;
+	//if (FAILED(Release_RenderState()))
+	//	return E_FAIL;
 
+	//if (m_Impact.deleteCount <= 0)
+		//Set_Dead(true);
 
+	FaceOn_Camera();
 
-	if (m_Impact.deleteCount <= 0)
-		Set_Dead(true);
+	m_pTransformCom->Bind_OnShader(m_pShader);
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pShader->Begin_Shader(SHADER_SETCOLOR);
+	m_pVIBufferCom->Render();
+	m_pShader->End_Shader();
 	return S_OK;
 }
 
@@ -153,6 +160,9 @@ HRESULT CImpact::SetUp_Components()
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLOR, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	return S_OK;
@@ -272,4 +282,5 @@ void CImpact::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
 }

@@ -72,7 +72,8 @@ HRESULT CCamera_Player::NativeConstruct(void* pArg)
     desc.Func = D3DCMP_GREATER;
     desc.Ref = 70;
     desc.Texture = TEXT("Prototype_Component_Texture_Crosshair");
-
+    desc.Shader_Style = SHADER_SETCOLOR_BLEND;
+    desc.Shader_Control = &g_ControlShader;
     if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Crosshair"), PROTO_UI, &desc)))
         return E_FAIL;
 

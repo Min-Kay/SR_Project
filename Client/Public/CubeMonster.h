@@ -8,6 +8,7 @@ class CTexture;
 class CRenderer;
 class CVIBuffer_Cube;
 class CBoxCollider;
+class CShader;
 END
 
 BEGIN(Client)
@@ -120,6 +121,7 @@ protected:
 	CVIBuffer_Cube* m_pVIBuffer = nullptr;
 	CRenderer* m_pRenderer = nullptr;
 	CBoxCollider* m_pBoxCollider = nullptr;
+	CShader* m_pShader = nullptr;
 
 public:
 	static CCubeMonster* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);

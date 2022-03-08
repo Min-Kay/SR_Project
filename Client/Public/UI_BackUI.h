@@ -23,7 +23,7 @@ public:
 	HRESULT Render() override;
 
 protected:
-	HRESULT SetUp_Components(const _tchar* _texture) override;
+	HRESULT SetUp_Components() override;
 
 public:
 	void Open_Menu();

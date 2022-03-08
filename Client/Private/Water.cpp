@@ -3,7 +3,7 @@
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
 #include "Player.h"
-
+#include "Shader.h"
 CWater::CWater(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
 {
@@ -95,22 +95,33 @@ HRESULT CWater::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
+	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	//	return E_FAIL;
 
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
-		return E_FAIL;
+	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice((_uint)m_fFrame)))
+	//	return E_FAIL;
 
 
 
-	//m_pBoxColliderCom->Draw_Box();
+	////m_pBoxColliderCom->Draw_Box();
 
-	SetUp_RenderState();
+	//SetUp_RenderState();
 
+	//m_pVIBufferCom->Render();
+
+	//Release_RenderState();
+
+
+	m_pTransformCom->Bind_OnShader(m_pShader);
+
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", (_uint)m_fFrame);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBufferCom->Render();
-
-	Release_RenderState();
+	m_pShader->End_Shader();
 	return S_OK;
 }
 
@@ -141,6 +152,10 @@ HRESULT CWater::SetUp_Components()
 
 	/* For.Com_Box */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
+
+	/* For.Com_Box */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_CUBE, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
@@ -212,4 +227,5 @@ void CWater::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
 }

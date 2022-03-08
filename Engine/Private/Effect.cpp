@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "VIBuffer_Rect.h"
 #include "Texture.h"
+#include "Shader.h"
 
 CEffect::CEffect(LPDIRECT3DDEVICE9 pGraphic_Device)
     :CGameObject(pGraphic_Device)
@@ -15,7 +16,14 @@ CEffect::CEffect(const CEffect& rhs)
     ,m_pTextureCom(rhs.m_pTextureCom)
     ,m_pTransformCom(rhs.m_pTransformCom)
     ,m_pVIBufferCom(rhs.m_pVIBufferCom)
+	,m_pShader(rhs.m_pShader)
 {
+    Safe_AddRef(m_pRendererCom);
+    Safe_AddRef(m_pTextureCom);
+    Safe_AddRef(m_pTransformCom);
+    Safe_AddRef(m_pVIBufferCom);
+    Safe_AddRef(m_pShader);
+
 }
 
 HRESULT CEffect::SetUp_Components()
@@ -41,6 +49,10 @@ HRESULT CEffect::SetUp_Components()
     /* For.Com_Texture */
     if (FAILED(__super::Add_Component(0, m_Desc.Texture, COM_TEXTURE, (CComponent**)&m_pTextureCom)))
         return E_FAIL;
+
+    if (FAILED(__super::Add_Component(0, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
+        return E_FAIL;
+
 
     return S_OK;
 }
@@ -180,6 +192,7 @@ void CEffect::Free()
     Safe_Release(m_pTransformCom);
     Safe_Release(m_pVIBufferCom);
     Safe_Release(m_pRendererCom);
+    Safe_Release(m_pShader);
 }
 
 
@@ -252,15 +265,25 @@ HRESULT CEffect::Render()
     if (nullptr == m_pVIBufferCom)
         return E_FAIL;
 
-    if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-        return E_FAIL;
+    //if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+    //    return E_FAIL;
 
-    if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iCurrFrameIndex)))
-        return E_FAIL;
+    //if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iCurrFrameIndex)))
+    //    return E_FAIL;
 
-    SetUp_RenderState();
+    //SetUp_RenderState();
 
-    Release_RenderState();
+    //Release_RenderState();
+
+    m_pTransformCom->Bind_OnShader(m_pShader);
+
+    m_pShader->SetUp_ValueOnShader("g_ColorStack", m_Desc.Shader_Control, sizeof(_float));
+    m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iCurrFrameIndex);
+
+    m_pShader->Begin_Shader(m_Desc.Shader_Style);
+    m_pVIBufferCom->Render();
+    m_pShader->End_Shader();
+    
 
 
     return S_OK;

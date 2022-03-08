@@ -6,6 +6,7 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
+class CShader;
 
 class ENGINE_DLL CEffect :
     public CGameObject
@@ -44,6 +45,8 @@ public:
 		_bool FixY;
 		_bool Tick;
 		_float LifeTime;
+		_float* Shader_Control;
+		_uint Shader_Style;
 		const _tchar* Texture;
 	}EFFECTDESC;
 
@@ -59,6 +62,8 @@ protected:
 
 	/* 그려진다. */
 	CRenderer* m_pRendererCom = nullptr;
+
+	CShader* m_pShader = nullptr;
 
 protected:
 	_bool				m_Vaild = true; 

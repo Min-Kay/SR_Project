@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Portal.h"
 #include "VIBuffer_Portal.h"
+#include "Shader.h"
 
 CCam_Portal* CCam_Portal::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
@@ -38,6 +39,7 @@ void CCam_Portal::Free()
     Safe_Release(m_pVIBuffer);
     Safe_Release(m_pRender);
     Safe_Release(m_pRenderTransform);
+    Safe_Release(m_pShader);
 }
 
 CCam_Portal::CCam_Portal(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -53,6 +55,7 @@ CCam_Portal::CCam_Portal(const CCam_Portal& rhs)
     , m_pVIBuffer(rhs.m_pVIBuffer)
     , pBackBuffer(rhs.pBackBuffer)
     , m_pTextureCom(rhs.m_pTextureCom)
+	, m_pShader(rhs.m_pShader)
 
 {
     Safe_AddRef(m_pSurface);
@@ -61,6 +64,7 @@ CCam_Portal::CCam_Portal(const CCam_Portal& rhs)
     Safe_AddRef(pBackBuffer);
     Safe_AddRef(m_pRenderTransform);
     Safe_AddRef(m_pRender);
+    Safe_AddRef(m_pShader);
 
 
 }
@@ -95,6 +99,9 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
     if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_PORTAL, COM_BUFFER, (CComponent**)&m_pVIBuffer)))
         return E_FAIL;
 
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
+        return E_FAIL;
+
     m_pTextureCom->Add_Texture(g_iWinCX,g_iWinCY);
     LPDIRECT3DBASETEXTURE9 texture = *m_pTextureCom->GetTexture(0);
     (static_cast<LPDIRECT3DTEXTURE9>(texture))->GetSurfaceLevel(0, &m_pSurface);
@@ -122,13 +129,22 @@ _int CCam_Portal::LateTick(_float fTimeDelta)
 
 HRESULT CCam_Portal::Render()
 {
-    if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
-        return E_FAIL;
+    //if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
+    //    return E_FAIL;
 
-    if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-        return E_FAIL;
+    //if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
+    //    return E_FAIL;
 
+    //m_pVIBuffer->Render();
+
+    m_pRenderTransform->Bind_OnShader(m_pShader);
+    m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+
+    m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
+
+    m_pShader->Begin_Shader(SHADER_SETCOLOR_BLEND);
     m_pVIBuffer->Render();
+    m_pShader->End_Shader();
 
     return S_OK;
 }

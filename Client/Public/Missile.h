@@ -8,6 +8,7 @@ class CBoxCollider;
 class CTexture;
 class CTransform;
 class CVIBuffer_Cube;
+class CShader;
 END
 
 BEGIN(Client)
@@ -61,7 +62,7 @@ protected:
 	CTexture* m_pTexture = nullptr;
 	CTransform* m_pTransform = nullptr;
 	CBoxCollider* m_pBoxCollider = nullptr;
-
+	CShader* m_pShader = nullptr;
 private:
 	CArm* m_Arm = nullptr;
 	CPlayer* m_pPlayer = nullptr;
