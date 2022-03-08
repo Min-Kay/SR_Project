@@ -160,6 +160,9 @@
     <Filter Include="02.GameObjects\Enemy\Boss\Shield_Effect">
       <UniqueIdentifier>{69218b4f-9fbc-4900-9c94-fe85e3315f7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ShaderFile">
+      <UniqueIdentifier>{f78c7573-74dc-4b1f-b877-db320d269696}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -474,5 +477,10 @@
     <None Include="..\..\resources\textures\portal\logo\cursor1.cur" />
     <None Include="..\..\Resources\Textures\Portal\Default\Blue Portal Gun Normal Select.cur" />
     <None Include="..\..\resources\textures\portal\default\cursor2.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Resources\ShaderFiles\Shader_Rect.hlsl">
+      <Filter>97.ShaderFile</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

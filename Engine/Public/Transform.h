@@ -5,7 +5,7 @@
 #include "Component.h"
 
 BEGIN(Engine)
-
+class CShader;
 class ENGINE_DLL CTransform final : public CComponent
 {
 public:
@@ -47,6 +47,8 @@ public:
 
 	void Set_TransformDesc(const TRANSFORMDESC& TransformDesc);
 	const TRANSFORMDESC& Get_TransformDesc() const;
+
+	HRESULT Bind_OnShader(CShader* _shader);
 
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;

@@ -5,6 +5,7 @@
 #include "Door_left.h"
 #include "Door_right.h"
 #include "Player.h"
+#include "Shader.h"
 
 CTile_Cube::CTile_Cube(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)	
@@ -78,10 +79,20 @@ HRESULT CTile_Cube::Render()
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
 		return E_FAIL;
 
+	//_float blend = 0;
+
+	//m_pTransformCom->Bind_OnShader(m_pShader);
+
+	//m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	//m_pShader->SetUp_ValueOnShader("g_Alpha", &blend, sizeof(_uint));
+	//m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
+	//m_pTextureCom->Bind_OnShader(m_pShader, "g_texture_cube", m_iTextureIndex);
+
+	//m_pShader->Begin_Shader(SHADER_SETCOLOR);
 
 	m_pVIBufferCom->Render();
 
-
+	//m_pShader->End_Shader();
 	return S_OK;
 }
 
@@ -251,4 +262,6 @@ void CTile_Cube::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
+
 }

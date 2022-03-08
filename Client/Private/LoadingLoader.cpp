@@ -61,6 +61,11 @@ HRESULT CLoadingLoader::LoadToLoading()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_COLOR, CVIBuffer_Color::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, PROTO_SHADER, CShader::Create(m_pGraphic_Device,TEXT("../../Resources/ShaderFiles/Shader_Rect.hlsl")))))
+		return E_FAIL;
+
+
+
 	/* For.Prototype_Component_Texture_Camera */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Camera"), CTexture::Create(m_pGraphic_Device, g_iWinCX, g_iWinCY))))
 		return E_FAIL;

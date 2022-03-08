@@ -43,10 +43,10 @@ private:
 
 private:
 	CCamera_Player* m_camera_ = nullptr;
-
 private:
 	CUI*	m_pGun_UI = nullptr;
 	CUI*	m_pMuzzle_UI = nullptr;
+	CUI*	m_pGunIcon = nullptr;
 
 	_float m_fGun_fx = 0.f;
 	_float m_fGun_fy = 0.f;

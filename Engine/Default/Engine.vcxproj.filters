@@ -115,6 +115,9 @@
     <Filter Include="01.Utility\04.Components\Collider\Box">
       <UniqueIdentifier>{161df6bf-3539-4aec-8cc7-c7d1bce1b5b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Components\Shader">
+      <UniqueIdentifier>{5d64ae67-d2d6-40b7-9f0b-e00ec73bd108}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -234,6 +237,9 @@
     <ClInclude Include="..\Public\VIBuffer_Color.h">
       <Filter>01.Utility\04.Components\Model\Color</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Shader.h">
+      <Filter>01.Utility\04.Components\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -337,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Color.cpp">
       <Filter>01.Utility\04.Components\Model\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shader.cpp">
+      <Filter>01.Utility\04.Components\Shader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

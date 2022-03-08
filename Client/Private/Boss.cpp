@@ -19,6 +19,7 @@
 
 #include "Shield.h"
 #include "Shield_Effect.h"
+#include "UI.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -56,6 +57,9 @@ HRESULT CBoss::NativeConstruct(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(SetUp_Component()))
+		return E_FAIL;
+
+	if (FAILED(SetUp_UI()))
 		return E_FAIL;
 
 	return S_OK;
@@ -103,6 +107,9 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	if(m_Resizing && m_Sizing)
 		Synchronize_Transform();
+
+
+	Setting_HpUi();
 
 	return 0;
 }
@@ -269,6 +276,169 @@ HRESULT CBoss::SetUp_Component()
 
 }
 
+HRESULT CBoss::SetUp_UI()
+{
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
+
+
+	/* Player_hit_UI*/
+	CUI::UIDESC BossUI_Black;
+	ZeroMemory(&BossUI_Black, sizeof(BossUI_Black));
+	BossUI_Black.WinCX = g_iWinCX;
+	BossUI_Black.WinCY = g_iWinCY;
+
+	BossUI_Black.Layer = 2;
+	BossUI_Black.FrameCount = 0;
+	BossUI_Black.Alpha = CUI::ALPHA_BLEND;
+	BossUI_Black.PosX = g_iWinCX / 1.92f;
+	BossUI_Black.PosY = g_iWinCY / 14.f;
+	BossUI_Black.SizeX = g_iWinCX / 1.6f;
+	BossUI_Black.SizeY = g_iWinCY / 18.f;
+	BossUI_Black.AnimateSpeed = 30.f;
+	BossUI_Black.Style = CUI::STYLE_FIX;
+	BossUI_Black.Texture = TEXT("Prototype_Component_BossHP_Black");
+
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_Block"), PROTO_UI, &BossUI_Black)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_BossUI_Black = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_Block")));
+
+
+	CUI::UIDESC BossUI_HP;
+	ZeroMemory(&BossUI_HP, sizeof(BossUI_HP));
+	BossUI_HP.WinCX = g_iWinCX;
+	BossUI_HP.WinCY = g_iWinCY;
+
+	BossUI_HP.Layer = 2;
+	BossUI_HP.FrameCount = 1;
+	BossUI_HP.Alpha = CUI::ALPHA_DEFAULT;
+	BossUI_HP.PosX = g_iWinCX / 1.92f;
+	BossUI_HP.PosY = g_iWinCY / 14.f;
+	BossUI_HP.SizeX = g_iWinCX / 1.6f;
+	BossUI_HP.SizeY = g_iWinCY / 18.f;
+	BossUI_HP.AnimateSpeed = 30.f;
+	BossUI_HP.Style = CUI::STYLE_FIX;
+	BossUI_HP.Texture = TEXT("Prototype_Component_BossHP");
+
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_HP"), PROTO_UI, &BossUI_HP)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+
+	m_BossUI_HP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_HP")));
+
+	m_fHpbarPos = g_iWinCX / 1.92f;
+	m_beforeHp = Get_HP();
+
+
+
+	CUI::UIDESC BossUI_ShieldHP;
+	ZeroMemory(&BossUI_ShieldHP, sizeof(BossUI_ShieldHP));
+	BossUI_ShieldHP.WinCX = g_iWinCX;
+	BossUI_ShieldHP.WinCY = g_iWinCY;
+
+	BossUI_ShieldHP.Layer = 1;
+	BossUI_ShieldHP.FrameCount = 2;
+	BossUI_ShieldHP.Alpha = CUI::ALPHA_TEST;
+	BossUI_ShieldHP.PosX = g_iWinCX / 1.91f;
+	BossUI_ShieldHP.PosY = g_iWinCY / 48.f;
+	BossUI_ShieldHP.SizeX = g_iWinCX / 2.8f; // 457
+	BossUI_ShieldHP.SizeY = g_iWinCY / 36.f;
+	BossUI_ShieldHP.AnimateSpeed = 30.f;
+	BossUI_ShieldHP.Style = CUI::STYLE_FIX;
+	BossUI_ShieldHP.Texture = TEXT("Prototype_Component_BossShield");
+
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP"), PROTO_UI, &BossUI_ShieldHP)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_BossUI_ShieldHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP")));
+
+
+	m_beforeShiledHP = Get_ShieldHp();
+	m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
+	m_ShiledHpPos = g_iWinCX / 1.91f;
+
+	/* Player_hit_UI*/
+	CUI::UIDESC BossUI_HPBaar;
+	ZeroMemory(&BossUI_HPBaar, sizeof(BossUI_HPBaar));
+	BossUI_HPBaar.WinCX = g_iWinCX;
+	BossUI_HPBaar.WinCY = g_iWinCY;
+
+	BossUI_HPBaar.Layer = 2;
+	BossUI_HPBaar.FrameCount = 0;
+	BossUI_HPBaar.Alpha = CUI::ALPHA_BLEND;
+	BossUI_HPBaar.PosX = g_iWinCX * 0.5f;
+	BossUI_HPBaar.PosY = g_iWinCY * 0.06f;
+	BossUI_HPBaar.SizeX = g_iWinCY / 14.2f;
+	BossUI_HPBaar.SizeY = g_iWinCY / 9.f;
+	BossUI_HPBaar.AnimateSpeed = 30.f;
+	BossUI_HPBaar.Style = CUI::STYLE_FIX;
+	BossUI_HPBaar.Texture = TEXT("Prototype_Component_BossHPBar");
+
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_HPBaar"), PROTO_UI, &BossUI_HPBaar)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_BossUI_HpBar = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_HPBaar")));
+
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+void CBoss::Setting_HpUi()
+{
+	m_uChageHp = Get_HP();
+
+	if (m_beforeHp != m_uChageHp)
+	{
+		if (m_beforeHp <= 0)
+			m_beforeHp = Get_HP();
+
+		_int hp = m_beforeHp - m_uChageHp;
+		m_BossUI_HP->Set_Size(m_uChageHp * 8.f, g_iWinCY / 18.f);
+		m_BossUI_HP->Set_Pos((m_fHpbarPos -= hp * 4.f), g_iWinCY / 14.f);
+		m_beforeHp = m_uChageHp;
+
+
+	}
+
+	if (m_OnShield == true)
+	{
+
+		m_uChageShiledHp = Get_ShieldHp();
+		m_BossUI_ShieldHP->Set_CurrFrameIndex(1);
+
+		if (m_beforeShiledHP != m_uChageShiledHp)
+		{
+			_int hp = m_beforeShiledHP - m_uChageShiledHp;
+			m_BossUI_ShieldHP->Set_Size(m_uChageShiledHp * 4.5f, g_iWinCY / 36.f);
+			m_BossUI_ShieldHP->Set_Pos((m_ShiledHpPos -= hp * 4.5f * 0.5), g_iWinCY / 48.f);
+			m_beforeShiledHP = m_uChageShiledHp;
+		}
+	}
+	else
+		m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
+
+
+
+
+}
 void CBoss::Set_InitPos(_float3 _pos)
 {
 	m_InitPos = _pos;

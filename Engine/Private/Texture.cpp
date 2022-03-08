@@ -1,4 +1,5 @@
 #include "..\Public\Texture.h"
+#include "Shader.h"
 
 CTexture::CTexture(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent(pGraphic_Device)
@@ -98,6 +99,16 @@ const _uint CTexture::Get_Textures_Count() const
 {
 	return (_uint)m_Textures.size();
 }
+
+
+HRESULT CTexture::Bind_OnShader(CShader* pShader, D3DXHANDLE hParameter, _uint iTextureIndex)
+{
+	if (iTextureIndex >= m_Textures.size())
+		return E_FAIL;
+
+	return pShader->SetUp_TextureOnShader(hParameter, m_Textures[iTextureIndex]);
+}
+
 
 CTexture * CTexture::Create(LPDIRECT3DDEVICE9 pGraphic_Device, TYPE eType, const _tchar * pTextureFilePath, _uint iNumTextures)
 {

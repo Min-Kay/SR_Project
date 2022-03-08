@@ -8,6 +8,7 @@ class CTexture;
 class CVIBuffer_Cube;
 class CRenderer;
 class CBoxCollider;
+class CUI;
 END
 
 BEGIN(Client)
@@ -104,7 +105,8 @@ private:
 	// ÅÂ¿ìÇü ²¨
 	HRESULT Init_Attack_Missile();
 
-
+	HRESULT SetUp_UI();
+	void Setting_HpUi();
 
 private:
 	void State_Machine(_float fTimeDelta);
@@ -166,7 +168,21 @@ private:
 	_float m_LaunchTimer = 0.f;
 	_float3 m_InitLaunchPos[2];
 
+	//UI
+	_uint                m_uChageHp = 0;
+	_uint                m_beforeHp = 0;
+	_float                m_fHpbarPos = 0.f;
 
+	_uint                m_uChageShiledHp = 0;
+	_uint                m_beforeShiledHP = 0;
+	_uint                m_ShiledHpPos = 0;
+
+
+	CUI* m_BossUI_HP = nullptr;
+	CUI* m_BossUI_Shield = nullptr;
+	CUI* m_BossUI_Black = nullptr;
+	CUI* m_BossUI_HpBar = nullptr;
+	CUI* m_BossUI_ShieldHP = nullptr;
 private:
 	// ³»²¨
 	_float3 m_vScale = _float3(5.f,5.f,5.f);

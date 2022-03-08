@@ -84,6 +84,7 @@ HRESULT CGun::Render()
 void CGun::Set_Vaild(_bool _bool)
 {
 	m_Vaild = _bool;
+	m_pGunIcon->Set_Vaild(m_Vaild);
 	m_pGun_UI->Set_Vaild(m_Vaild);
 	m_pMuzzle_UI->Set_Vaild(false);
 
@@ -235,12 +236,11 @@ void CGun::Reload()
 		RELEASE_INSTANCE(CGameInstance);
 	}
 }
-
 HRESULT CGun::SetUp_UI()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	CUI::UIDESC desc;
-	ZeroMemory(&desc,sizeof(desc));
+	ZeroMemory(&desc, sizeof(desc));
 	desc.WinCX = g_iWinCX;
 	desc.WinCY = g_iWinCY;
 
@@ -273,7 +273,7 @@ HRESULT CGun::SetUp_UI()
 	ZeroMemory(&desc2, sizeof(desc2));
 	desc2.WinCX = g_iWinCX;
 	desc2.WinCY = g_iWinCY;
-		
+
 	desc2.Layer = 3;
 	desc2.FrameCount = 4;
 	desc2.Alpha = CUI::ALPHA_BLEND;
@@ -308,8 +308,8 @@ HRESULT CGun::SetUp_UI()
 	desc3.Layer = 2;
 	desc3.FrameCount = 10;
 	desc3.Alpha = CUI::ALPHA_BLEND;
-	desc3.PosX = g_iWinCX * 0.16f;
-	desc3.PosY = g_iWinCY * 0.9f;
+	desc3.PosX = g_iWinCX * 0.25f;
+	desc3.PosY = g_iWinCY * 0.8f;
 	desc3.SizeX = 50.f;
 	desc3.SizeY = 50.f;
 	desc3.AnimateSpeed = 100.f;
@@ -334,8 +334,8 @@ HRESULT CGun::SetUp_UI()
 	desc4.Layer = 2;
 	desc4.FrameCount = 10;
 	desc4.Alpha = CUI::ALPHA_BLEND;
-	desc4.PosX = g_iWinCX * 0.13f;
-	desc4.PosY = g_iWinCY * 0.9f;
+	desc4.PosX = g_iWinCX * 0.22f;
+	desc4.PosY = g_iWinCY * 0.8f;
 	desc4.SizeX = 50.f;
 	desc4.SizeY = 50.f;
 	desc4.AnimateSpeed = 100.f;
@@ -361,8 +361,8 @@ HRESULT CGun::SetUp_UI()
 	desc5.Layer = 2;
 	desc5.FrameCount = 0;
 	desc5.Alpha = CUI::ALPHA_BLEND;
-	desc5.PosX = g_iWinCX * 0.1f;
-	desc5.PosY = g_iWinCY * 0.9f;
+	desc5.PosX = g_iWinCX * 0.16f;
+	desc5.PosY = g_iWinCY * 0.8f;
 	desc5.SizeX = 50.f;
 	desc5.SizeY = 50.f;
 	desc5.AnimateSpeed = 100.f;
@@ -387,8 +387,8 @@ HRESULT CGun::SetUp_UI()
 	desc6.Layer = 2;
 	desc6.FrameCount = 10;
 	desc6.Alpha = CUI::ALPHA_BLEND;
-	desc6.PosX = g_iWinCX * 0.07f;
-	desc6.PosY = g_iWinCY * 0.9f;
+	desc6.PosX = g_iWinCX * 0.13f;
+	desc6.PosY = g_iWinCY * 0.8f;
 	desc6.SizeX = 50.f;
 	desc6.SizeY = 50.f;
 	desc6.AnimateSpeed = 100.f;
@@ -413,8 +413,8 @@ HRESULT CGun::SetUp_UI()
 	desc7.Layer = 2;
 	desc7.FrameCount = 10;
 	desc7.Alpha = CUI::ALPHA_BLEND;
-	desc7.PosX = g_iWinCX * 0.04f;
-	desc7.PosY = g_iWinCY * 0.9f;
+	desc7.PosX = g_iWinCX * 0.1f;
+	desc7.PosY = g_iWinCY * 0.8f;
 	desc7.SizeX = 50.f;
 	desc7.SizeY = 50.f;
 	desc7.AnimateSpeed = 100.f;
@@ -430,6 +430,33 @@ HRESULT CGun::SetUp_UI()
 	m_pCurrBullet_UI_2 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_2")));
 
 
+	/* player_hp_Image*/
+
+	CUI::UIDESC GunIcon;
+	ZeroMemory(&GunIcon, sizeof(GunIcon));
+	GunIcon.WinCX = g_iWinCX;
+	GunIcon.WinCY = g_iWinCY;
+
+	GunIcon.Layer = 2;
+	GunIcon.FrameCount = 0;
+	GunIcon.Alpha = CUI::ALPHA_BLEND;
+	GunIcon.PosX = g_iWinCX * 0.05f;
+	GunIcon.PosY = g_iWinCY * 0.79f;
+	GunIcon.SizeX = 80.f;
+	GunIcon.SizeY = 80.f;
+	GunIcon.AnimateSpeed = 30.f;
+	GunIcon.Style = CUI::STYLE_FIX;
+	GunIcon.Texture = TEXT("Prototype_Component_Gunicon");
+
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Gun_icon"), PROTO_UI, &GunIcon)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pGunIcon = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Gun_icon")));
+
 	if (!m_camera_)
 	{
 		RELEASE_INSTANCE(CGameInstance);
@@ -439,7 +466,6 @@ HRESULT CGun::SetUp_UI()
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
-
 void CGun::Animate(_float fTimeDelta)
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);

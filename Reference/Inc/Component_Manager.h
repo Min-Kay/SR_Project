@@ -9,6 +9,7 @@
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_Color.h"
 #include "BoxCollider.h"
+#include "Shader.h"
 /* 컴포넌트 원형들을 모아놓는다. */
 
 BEGIN(Engine)

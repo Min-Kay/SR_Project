@@ -3,6 +3,7 @@
 #include "Component.h"
 
 BEGIN(Engine)
+class CShader;
 
 class ENGINE_DLL CTexture final : public CComponent
 {
@@ -24,7 +25,7 @@ public:
 	LPDIRECT3DBASETEXTURE9* GetTexture(_uint iIndex);
 	HRESULT	Add_Texture(_uint iWidth, _uint iHeight);
 	const _uint Get_Textures_Count() const; 
-
+	HRESULT Bind_OnShader(CShader* pShader, D3DXHANDLE hParameter, _uint iTextureIndex);
 private:
 	vector<LPDIRECT3DBASETEXTURE9>			m_Textures;
 	typedef vector<LPDIRECT3DBASETEXTURE9>	TEXTURES;

@@ -69,18 +69,27 @@ HRESULT CTileCollider::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
+	/*if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
-		return E_FAIL;
+		return E_FAIL;*/
+
+	_float			blend = 0;
 
 
-	//m_pBoxColliderCom->Draw_Box();
+	m_pTransformCom->Bind_OnShader(m_pShader);
 
+	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pShader->SetUp_ValueOnShader("g_Alpha", &blend, sizeof(_uint));
+	m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f,0.f, 0.f), sizeof(_float4));
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iTextureIndex);
+
+	m_pShader->Begin_Shader(SHADER_SETCOLOR);
 
 	m_pVIBufferCom->Render();
 
+	m_pShader->End_Shader();
 
 
 	return S_OK;
@@ -113,6 +122,9 @@ HRESULT CTileCollider::SetUp_Components()
 
 	/* For.Com_Box */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pBoxColliderCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
@@ -163,4 +175,6 @@ void CTileCollider::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
+
 }

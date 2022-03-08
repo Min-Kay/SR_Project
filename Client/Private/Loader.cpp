@@ -287,6 +287,17 @@ HRESULT CLoader::Loading_ForStageOne()
 
 #pragma endregion
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_PlayerUI"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Player/ItemHp.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Gunicon"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Player/bullet.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_PlayerHit"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Player/BloodScreen_alpha_%d.png"), 5))))
+		return E_FAIL;
+
+
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_isFinished = true;
@@ -355,6 +366,19 @@ HRESULT CLoader::Loading_ForStageTwo()
 
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Minimy"), CMinimy::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossHP"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/HP.png")))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossHP_Black"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Back_HP.png")))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossHPBar"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/BossHpBar.png")))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossShield"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Shield_HP_%d.png"),2))))
+	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

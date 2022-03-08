@@ -4,11 +4,15 @@ static const unsigned int g_iWinCX = 1280;
 static const unsigned int g_iWinCY = 720;
 
 enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_STAGEONE,LEVEL_STAGETWO, LEVEL_END };
+enum SHADER { SHADER_NONE, SHADER_SETCOLOR, SHADER_GROWCOLOR, SHADER_GRAYCOLOR, SHADER_NONE_CUBE, SHADER_SETCOLOR_CUBE, SHADER_GROWCOLOR_CUBE, SHADER_GRAYCOLOR_CUBE
+};
 
 extern HINSTANCE	g_hInst;
 extern HWND		g_hWnd;
 extern LEVEL	g_CurrLevel;
 extern float     g_ControlTime;
+extern float	g_ControlShader;
+
 
 #define MAIN_CAM TEXT("Main_Camera")
 

@@ -115,6 +115,14 @@
       <AdditionalLibraryDirectories>../../Reference/bin/</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;d3d9.lib;d3dx9.lib;vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>2.0</ShaderModel>
+      <EnableDebuggingInformation>false</EnableDebuggingInformation>
+      <EntryPointName>VS_MAIN</EntryPointName>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -152,6 +160,13 @@
       <AdditionalLibraryDirectories>../../Reference/bin/</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>2.0</ShaderModel>
+      <EntryPointName>VS_MAIN</EntryPointName>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -275,6 +290,9 @@
     <None Include="..\..\Resources\Textures\Portal\Default\Blue Portal Gun Normal Select.cur" />
     <None Include="..\..\resources\textures\portal\default\cursor2.cur" />
     <None Include="..\..\resources\textures\portal\logo\cursor1.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Resources\ShaderFiles\Shader_Rect.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -39,10 +39,15 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Weapons()))
 		return E_FAIL;
 
+	
 	Set_Type(OBJ_PLAYER);
 	Set_Hp(m_Info.Hp);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_Info.Pos);
-	
+
+	m_beforeHp = m_HP;
+	if (FAILED(SetUp_UI()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -88,6 +93,7 @@ _int CPlayer::LateTick(_float fTimeDelta)
 
 	if (m_HP <= 0)
 	{
+		m_beforeHp = m_Info.Hp;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_Info.Pos));
 		m_HP = m_Info.Hp;
 	}
@@ -95,6 +101,7 @@ _int CPlayer::LateTick(_float fTimeDelta)
 	if (FAILED(Synchronize_Camera(fTimeDelta)))
 		return -1;
 
+	Setting_HpUi(fTimeDelta);
 
 	return _int();
 }
@@ -220,6 +227,287 @@ void CPlayer::Add_Hp(_int _add)
 	m_HP += _add;
 }
 
+HRESULT CPlayer::SetUp_UI()
+{
+	/* player_hp_Image*/
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	CUI::UIDESC PlayerHpUi;
+	ZeroMemory(&PlayerHpUi, sizeof(PlayerHpUi));
+	PlayerHpUi.WinCX = g_iWinCX;
+	PlayerHpUi.WinCY = g_iWinCY;
+
+	PlayerHpUi.Layer = 2;
+	PlayerHpUi.FrameCount = 0;
+	PlayerHpUi.Alpha = CUI::ALPHA_BLEND;
+	PlayerHpUi.PosX = g_iWinCX * 0.05f;
+	PlayerHpUi.PosY = g_iWinCY * 0.9f;
+	PlayerHpUi.SizeX = 150.f;
+	PlayerHpUi.SizeY = 150.f;
+	PlayerHpUi.AnimateSpeed = 30.f;
+	PlayerHpUi.Style = CUI::STYLE_FIX;
+	PlayerHpUi.Texture = TEXT("Prototype_Component_PlayerUI");
+
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHp_Image"), PROTO_UI, &PlayerHpUi)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+
+
+	/* Playerlhp_Font_100*/
+
+	CUI::UIDESC PlayerHP_Font100;
+	ZeroMemory(&PlayerHP_Font100, sizeof(PlayerHP_Font100));
+	PlayerHP_Font100.WinCX = g_iWinCX;
+	PlayerHP_Font100.WinCY = g_iWinCY;
+
+	PlayerHP_Font100.Layer = 2;
+	PlayerHP_Font100.FrameCount = 10;
+	PlayerHP_Font100.Alpha = CUI::ALPHA_BLEND;
+	PlayerHP_Font100.PosX = g_iWinCX * 0.1f;
+	PlayerHP_Font100.PosY = g_iWinCY * 0.9f;
+	PlayerHP_Font100.SizeX = 50.f;
+	PlayerHP_Font100.SizeY = 50.f;
+	PlayerHP_Font100.AnimateSpeed = 100.f;
+	PlayerHP_Font100.Style = CUI::STYLE_FIX;
+	PlayerHP_Font100.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHP_Font100"), PROTO_UI, &PlayerHP_Font100)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_PlayerHP_1 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("PlayerHP_Font100")));
+
+	/* Playerlhp_Font_10*/
+
+	CUI::UIDESC PlayerHP_Font10;
+	ZeroMemory(&PlayerHP_Font10, sizeof(PlayerHP_Font10));
+	PlayerHP_Font10.WinCX = g_iWinCX;
+	PlayerHP_Font10.WinCY = g_iWinCY;
+
+	PlayerHP_Font10.Layer = 2;
+	PlayerHP_Font10.FrameCount = 10;
+	PlayerHP_Font10.Alpha = CUI::ALPHA_BLEND;
+	PlayerHP_Font10.PosX = g_iWinCX * 0.13f;
+	PlayerHP_Font10.PosY = g_iWinCY * 0.9f;
+	PlayerHP_Font10.SizeX = 50.f;
+	PlayerHP_Font10.SizeY = 50.f;
+	PlayerHP_Font10.AnimateSpeed = 100.f;
+	PlayerHP_Font10.Style = CUI::STYLE_FIX;
+	PlayerHP_Font10.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHP_Font10"), PROTO_UI, &PlayerHP_Font10)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_PlayerHP_2 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("PlayerHP_Font10")));
+
+	/* Playerlhp_Font_1*/
+
+	CUI::UIDESC PlayerHP_Font1;
+	ZeroMemory(&PlayerHP_Font1, sizeof(PlayerHP_Font1));
+	PlayerHP_Font1.WinCX = g_iWinCX;
+	PlayerHP_Font1.WinCY = g_iWinCY;
+
+	PlayerHP_Font1.Layer = 2;
+	PlayerHP_Font1.FrameCount = 10;
+	PlayerHP_Font1.Alpha = CUI::ALPHA_BLEND;
+	PlayerHP_Font1.PosX = g_iWinCX * 0.16f;
+	PlayerHP_Font1.PosY = g_iWinCY * 0.9f;
+	PlayerHP_Font1.SizeX = 50.f;
+	PlayerHP_Font1.SizeY = 50.f;
+	PlayerHP_Font1.AnimateSpeed = 100.f;
+	PlayerHP_Font1.Style = CUI::STYLE_FIX;
+	PlayerHP_Font1.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHP_Font1"), PROTO_UI, &PlayerHP_Font1)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_PlayerHP_3 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("PlayerHP_Font1")));
+
+	/* Font 고정 slash*/
+
+	CUI::UIDESC PlayerHp_slash;
+	ZeroMemory(&PlayerHp_slash, sizeof(PlayerHp_slash));
+	PlayerHp_slash.WinCX = g_iWinCX;
+	PlayerHp_slash.WinCY = g_iWinCY;
+	PlayerHp_slash.Layer = 2;
+	PlayerHp_slash.FrameCount = 0;
+	PlayerHp_slash.Alpha = CUI::ALPHA_BLEND;
+	PlayerHp_slash.PosX = g_iWinCX * 0.19f;
+	PlayerHp_slash.PosY = g_iWinCY * 0.9f;
+	PlayerHp_slash.SizeX = 50.f;
+	PlayerHp_slash.SizeY = 50.f;
+	PlayerHp_slash.AnimateSpeed = 100.f;
+	PlayerHp_slash.Style = CUI::STYLE_FIX;
+	PlayerHp_slash.Texture = TEXT("Prototype_Component_Texture_Slash");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerHp_slash"), PROTO_UI, &PlayerHp_slash)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pSlash_UI = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("PlayerHp_slash")));
+
+
+
+	/* PlayerFullhp_Font_100*/
+
+	CUI::UIDESC PlayerFullHP_Font100;
+	ZeroMemory(&PlayerFullHP_Font100, sizeof(PlayerFullHP_Font100));
+	PlayerFullHP_Font100.WinCX = g_iWinCX;
+	PlayerFullHP_Font100.WinCY = g_iWinCY;
+
+	PlayerFullHP_Font100.Layer = 2;
+	PlayerFullHP_Font100.FrameCount = 10;
+	PlayerFullHP_Font100.Alpha = CUI::ALPHA_BLEND;
+	PlayerFullHP_Font100.PosX = g_iWinCX * 0.22f;
+	PlayerFullHP_Font100.PosY = g_iWinCY * 0.9f;
+	PlayerFullHP_Font100.SizeX = 50.f;
+	PlayerFullHP_Font100.SizeY = 50.f;
+	PlayerFullHP_Font100.AnimateSpeed = 100.f;
+	PlayerFullHP_Font100.Style = CUI::STYLE_FIX;
+	PlayerFullHP_Font100.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font100"), PROTO_UI, &PlayerFullHP_Font100)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_PlayerFullHP_1 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font100")));
+	m_PlayerFullHP_1->Set_CurrFrameIndex(1);
+
+	/* PlayerFullhp_Font_10*/
+	CUI::UIDESC PlayerFullHP_Font10;
+	ZeroMemory(&PlayerFullHP_Font10, sizeof(PlayerFullHP_Font10));
+	PlayerFullHP_Font10.WinCX = g_iWinCX;
+	PlayerFullHP_Font10.WinCY = g_iWinCY;
+
+	PlayerFullHP_Font10.Layer = 2;
+	PlayerFullHP_Font10.FrameCount = 10;
+	PlayerFullHP_Font10.Alpha = CUI::ALPHA_BLEND;
+	PlayerFullHP_Font10.PosX = g_iWinCX * 0.25f;
+	PlayerFullHP_Font10.PosY = g_iWinCY * 0.9f;
+	PlayerFullHP_Font10.SizeX = 50.f;
+	PlayerFullHP_Font10.SizeY = 50.f;
+	PlayerFullHP_Font10.AnimateSpeed = 100.f;
+	PlayerFullHP_Font10.Style = CUI::STYLE_FIX;
+	PlayerFullHP_Font10.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font10"), PROTO_UI, &PlayerFullHP_Font10)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+	m_PlayerFullHP_2 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font10")));
+	m_PlayerFullHP_2->Set_CurrFrameIndex(0);
+
+	/* PlayerFullhp_Font_1*/
+
+	CUI::UIDESC PlayerFullHP_Font1;
+	ZeroMemory(&PlayerFullHP_Font1, sizeof(PlayerFullHP_Font1));
+	PlayerFullHP_Font1.WinCX = g_iWinCX;
+	PlayerFullHP_Font1.WinCY = g_iWinCY;
+
+	PlayerFullHP_Font1.Layer = 2;
+	PlayerFullHP_Font1.FrameCount = 10;
+	PlayerFullHP_Font1.Alpha = CUI::ALPHA_BLEND;
+	PlayerFullHP_Font1.PosX = g_iWinCX * 0.28f;
+	PlayerFullHP_Font1.PosY = g_iWinCY * 0.9f;
+	PlayerFullHP_Font1.SizeX = 50.f;
+	PlayerFullHP_Font1.SizeY = 50.f;
+	PlayerFullHP_Font1.AnimateSpeed = 100.f;
+	PlayerFullHP_Font1.Style = CUI::STYLE_FIX;
+	PlayerFullHP_Font1.Texture = TEXT("Prototype_Component_Texture_Font");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font1"), PROTO_UI, &PlayerFullHP_Font1)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_PlayerFullHP_3 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("PlayerFullHP_Font1")));
+	m_PlayerFullHP_3->Set_CurrFrameIndex(0);
+
+
+	CUI::UIDESC PlayerHitUI;
+	ZeroMemory(&PlayerHitUI, sizeof(PlayerHitUI));
+	PlayerHitUI.WinCX = g_iWinCX;
+	PlayerHitUI.WinCY = g_iWinCY;
+
+	PlayerHitUI.Layer = 1;
+	PlayerHitUI.FrameCount = 9;
+	PlayerHitUI.Alpha = CUI::ALPHA_BLEND;
+	PlayerHitUI.PosX = g_iWinCX * 0.5;
+	PlayerHitUI.PosY = g_iWinCY * 0.5f;
+	PlayerHitUI.SizeX = g_iWinCX;
+	PlayerHitUI.SizeY = g_iWinCY;
+	PlayerHitUI.AnimateSpeed = 100.f;
+	PlayerHitUI.Style = CUI::STYLE_FIX;
+	PlayerHitUI.Texture = TEXT("Prototype_Component_PlayerHit");
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Player_hit"), PROTO_UI, &PlayerHitUI)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_pPlayerHit = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Player_hit")));
+	m_pPlayerHit->Set_CurrFrameIndex(0);
+
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+void CPlayer::Setting_HpUi(_float ftimedelta)
+{
+
+	m_uChageHp = m_HP;
+	m_PlayerHP_1->Set_CurrFrameIndex(m_uChageHp / 100);
+	m_PlayerHP_2->Set_CurrFrameIndex((m_uChageHp % 100) / 10);
+	m_PlayerHP_3->Set_CurrFrameIndex((m_uChageHp % 10));
+
+	//맞으면 쿨타이머 돌리고
+	if (m_bHit == true)
+		m_fHitCoolTime += ftimedelta;
+
+	//타이머가 시간 지나면 다시 맞을수있게
+	if (m_fHitCoolTime >= 1.f)
+	{
+		m_bHit = false;
+		m_fHitCoolTime = 0.f;
+		m_pPlayerHit->Set_CurrFrameIndex(0);
+	}
+	//이전이랑 체력이 다르고 맞을수 있으면 
+	if (m_beforeHp != m_uChageHp && m_bHit == false)
+	{
+		m_bHit = true;
+		_int test = (_int)m_uChageHp / 10;
+
+		if (test <= 2)
+			test = 1;
+		else if (test <= 5)
+			test = 2;
+		else if (test <= 8)
+			test = 3;
+		else if (test <= 10)
+			test = 4;
+		m_pPlayerHit->Set_CurrFrameIndex(test);
+		m_beforeHp = m_uChageHp;
+	}
+}
 
 HRESULT CPlayer::SetUp_RenderState()
 {

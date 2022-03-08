@@ -123,6 +123,19 @@ _int CCamera_Player::Tick(_float fTimeDelta)
         Control_Menu(!isCursorOn);
     }
 
+    if (pGameInstance->Get_Key_Down(DIK_1))
+    {
+        g_ControlShader -= 0.05f;
+
+    }
+
+    if (pGameInstance->Get_Key_Down(DIK_2))
+    {
+        g_ControlShader += 0.05f;
+
+    }
+
+
     if(pGameInstance->Get_Key_Up(DIK_E))
     {
         if (isGrabed)

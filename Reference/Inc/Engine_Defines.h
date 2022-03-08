@@ -49,6 +49,8 @@ using namespace std;
 #define COM_RENDERER TEXT("Com_Renderer")
 #define COM_BUFFER TEXT("Com_VIBuffer")
 #define COM_COLLIDER TEXT("Com_Collider")
+#define COM_SHADER TEXT("Com_Shader")
+
 
 #define PROTO_TRANSFORM TEXT("Prototype_Component_Transform")
 #define PROTO_RENDERER TEXT("Prototype_Component_Renderer")
@@ -61,7 +63,7 @@ using namespace std;
 #define PROTO_TERRAIN TEXT("Prototype_Component_VIBuffr_Terrain")
 
 #define PROTO_COLLIDER TEXT("Prototype_Component_Collider")
-
+#define PROTO_SHADER TEXT("Prototype_Component_Shader")
 
 #define PROTO_UI TEXT("Prototype_GameObject_UI")
 #define PROTO_BUTTON TEXT("Prototype_GameObject_Button")

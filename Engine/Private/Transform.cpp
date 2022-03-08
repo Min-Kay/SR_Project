@@ -1,4 +1,5 @@
 #include "..\Public\Transform.h"
+#include "Shader.h"
 
 CTransform::CTransform(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent(pGraphic_Device)
@@ -35,6 +36,25 @@ void CTransform::Set_TransformDesc(const TRANSFORMDESC & TransformDesc)
 const CTransform::TRANSFORMDESC& CTransform::Get_TransformDesc() const
 {
 	return m_TransformDesc;
+}
+
+HRESULT CTransform::Bind_OnShader(CShader* _shader)
+{
+	_float4x4		WorldMatrix, ViewMatrix, ProjMatrix;
+
+	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+	m_pGraphic_Device->GetTransform(D3DTS_PROJECTION, &ProjMatrix);
+
+	if(FAILED(_shader->SetUp_ValueOnShader("g_WorldMatrix", D3DXMatrixTranspose(&WorldMatrix, &m_WorldMatrix), sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(_shader->SetUp_ValueOnShader("g_ViewMatrix", D3DXMatrixTranspose(&ViewMatrix, &ViewMatrix), sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(_shader->SetUp_ValueOnShader("g_ProjMatrix", D3DXMatrixTranspose(&ProjMatrix, &ProjMatrix), sizeof(_float4x4))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CTransform::NativeConstruct_Prototype()

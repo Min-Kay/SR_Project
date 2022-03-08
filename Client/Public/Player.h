@@ -9,6 +9,7 @@ class CTransform;
 class CVIBuffer_Rect;
 class CCamera;
 class CBoxCollider;
+class CUI;
 END
 
 BEGIN(Client)
@@ -36,7 +37,6 @@ public:
 	void Tick_JumpState(_float fTimeDelta);
 	void Erase_Portal();
 	HRESULT Reset_PlayerPos(_float3 resetPos);
-
 public:
 	void Set_Shake(_float _timer, _float _force);
 public:
@@ -51,6 +51,9 @@ public:
 	}PLAYERINFO;
 	PLAYERINFO Get_Info() { return m_Info; }
 
+private:
+	HRESULT SetUp_UI();
+	void Setting_HpUi(_float ftimedelta);
 private:
 
 	/* ¸ðµ¨ */
@@ -81,7 +84,6 @@ private:
 	CPortalControl*		m_pPortalCtrl = nullptr;
 	CGun*				m_pGun = nullptr;
 
-
 private:
 	_int				m_HP = 100;
 
@@ -91,6 +93,24 @@ private:
 	_float				m_ShakeTime = 0.f;
 	_float				m_fTimer = 0.f;
 	_float				m_ShakeForce = 0.f;
+
+
+private:
+	_uint                m_uChageHp = 0;
+	_uint                m_beforeHp = 0;
+	_float               m_fHpbarPos = 0.f;
+	_bool                m_bHit = false;
+	_float               m_fHitCoolTime = 0.f;
+private:
+	CUI* m_PlayerHP_1 = nullptr;//100
+	CUI* m_PlayerHP_2 = nullptr;//10
+	CUI* m_PlayerHP_3 = nullptr;//1
+	CUI* m_PlayerFullHP_1 = nullptr; //100
+	CUI* m_PlayerFullHP_2 = nullptr;//10
+	CUI* m_PlayerFullHP_3 = nullptr;//1
+	CUI* m_pSlash_UI = nullptr;
+
+	CUI* m_pPlayerHit = nullptr;//1
 
 private:
 	HRESULT SetUp_Components();
