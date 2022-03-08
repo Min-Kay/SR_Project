@@ -91,7 +91,7 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	if (m_State != BOSS_DIE && Check_HP())
 	{
-		m_ImageIndex = 2;
+		m_ImageIndex = 5;
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
 		p_instance->Play_Sound(TEXT("Boss_Die.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
@@ -139,7 +139,7 @@ HRESULT CBoss::Render()
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
 
-	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", m_ImageIndex);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
@@ -996,7 +996,7 @@ void CBoss::State_Machine(_float fTimeDelta)
 
 void CBoss::Idle(_float fTimeDelta)
 {
-	
+	m_ImageIndex = m_Phase == BOSS_PHASEONE ? 0 : 3;
 	// 멍때리기
 	if(!m_Resizing)
 	{
@@ -1035,6 +1035,8 @@ void CBoss::Idle(_float fTimeDelta)
 
 void CBoss::Move(_float fTimeDelta)
 {
+	m_ImageIndex = m_Phase == BOSS_PHASEONE ? 0 : 3;
+
 	_float3 vOnlyRight = m_pOnlyRotation->Get_State(CTransform::STATE_RIGHT);
 
 	_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
@@ -1075,6 +1077,7 @@ void CBoss::Phase(_float fTimeDelta)
 
 void CBoss::Attack(_float fTimeDelta)
 {
+	m_ImageIndex = 1;
 	// 1페이즈 패턴 구현
 	switch (m_AttState)
 	{
@@ -1089,6 +1092,7 @@ void CBoss::Attack(_float fTimeDelta)
 
 void CBoss::Rage(_float fTimeDelta)
 {
+	m_ImageIndex = 4;
 }
 
 void CBoss::Grogy(_float fTimeDelta)
@@ -1099,7 +1103,8 @@ void CBoss::Grogy(_float fTimeDelta)
 
 	if (!m_Grogy)
 	{
-		g_ControlTime = 0.2f;
+		g_ControlTime = 0.1f;
+		g_ControlShader = 0.75f;
 		m_Grogy = true;
 		m_ImageIndex = 2;
 
@@ -1137,36 +1142,38 @@ void CBoss::Grogy(_float fTimeDelta)
 
 		return;
 	}
-	else
+	
+	if (m_LeftArmTr->Get_OnCollide())
 	{
-		if (m_LeftArmTr->Get_OnCollide())
-		{
-			m_LeftArm->Set_Rolling(false);
-			m_LeftArmTr->Gravity(1.f, fTimeDelta);
-		}
-		else
-			Move_By_Bazier(ARM_LEFT, fTimeDelta);
-
-		if (m_RightArmTr->Get_OnCollide())
-		{
-			m_RightArm->Set_Rolling(false);
-
-			m_RightArmTr->Gravity(1.f, fTimeDelta);
-		}
-		else
-			Move_By_Bazier(ARM_RIGHT, fTimeDelta);
-
-		if (m_fTimer >= 1.f && g_ControlTime <= 0.5f)
-		{
-			g_ControlTime = 1.f;
-			m_fTimer = 0.f;
-		}
-
+		m_LeftArm->Set_Rolling(false);
+		m_LeftArmTr->Gravity(1.f, fTimeDelta);
 	}
+	else
+		Move_By_Bazier(ARM_LEFT, fTimeDelta);
 
+	if (m_RightArmTr->Get_OnCollide())
+	{
+		m_RightArm->Set_Rolling(false);
+
+		m_RightArmTr->Gravity(1.f, fTimeDelta);
+	}
+	else
+		Move_By_Bazier(ARM_RIGHT, fTimeDelta);
+
+
+	g_ControlTime += 0.005f;
+	g_ControlShader -= 0.005f;
+
+	if (g_ControlTime >= 1.f)
+		g_ControlTime = 1.f;
+	if (g_ControlShader <= 0.f)
+		g_ControlShader = 0.f;
 
 	if(m_fTimer >= 5.f)
 	{
+		g_ControlTime = 1.f;
+		g_ControlShader = 0.f;
+
 		m_LeftArm->Set_CanPortal(true);
 		m_RightArm->Set_CanPortal(true);
 

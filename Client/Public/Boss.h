@@ -60,6 +60,8 @@ public:
 
 	void Set_Grogy();
 
+	const BOSSPHASE& Get_Phase() const { return m_Phase; }
+
 private:
 	void Synchronize_Transform();
 	void Set_BossState(BOSSSTATE _state);

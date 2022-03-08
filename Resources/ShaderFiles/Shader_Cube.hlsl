@@ -183,6 +183,7 @@ technique Default_Technique
 	pass Default_Blend_Cube
 	{
 		AlphaBlendEnable = true;
+		BlendOp = add;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 
@@ -193,6 +194,7 @@ technique Default_Technique
 	pass SetColor_Blend_Cube
 	{
 		AlphaBlendEnable = true;
+		BlendOp = add;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 
@@ -203,6 +205,7 @@ technique Default_Technique
 	pass GrowColor_Blend_Cube
 	{
 		AlphaBlendEnable = true;
+		BlendOp = add;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 
@@ -213,6 +216,7 @@ technique Default_Technique
 	pass GrayColor_Blend_Cube
 	{
 		AlphaBlendEnable = true;
+		BlendOp = add;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 

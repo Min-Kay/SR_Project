@@ -65,7 +65,7 @@ _int CAttackRange::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return -1;
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
 }
@@ -79,7 +79,7 @@ HRESULT CAttackRange::Render()
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
 
-	m_pShader->Begin_Shader(SHADER_SETCOLOR);
+	m_pShader->Begin_Shader(SHADER_SETCOLOR_BLEND);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();
 
@@ -169,4 +169,5 @@ void CAttackRange::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShader);
 }

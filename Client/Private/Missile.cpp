@@ -32,10 +32,8 @@ CMissile::CMissile(const CMissile& rhs)
 	Safe_AddRef(m_pVIBuffer);
 	Safe_AddRef(m_pShader);
 	Safe_AddRef(m_pBoxCollider);
-
-
-
 }
+
 HRESULT CMissile::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
@@ -326,6 +324,9 @@ HRESULT CMissile::Targeting_Main_Sub()
 			return -1;
 		}
 
+		pTarget = (CTargeting*)p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Target"));
+		targetTrans = static_cast<CTransform*>(pTarget->Get_Component(COM_TRANSFORM));
+
 		for (int i = 0; i < 3; ++i)
 		{
 			for (int j = 0; j < 3; ++j)
@@ -348,11 +349,8 @@ HRESULT CMissile::Targeting_Main_Sub()
 	}
 	else//한번 계산하고 다음에 오면 타겟의 충돌이있나 확인
 	{
-		pTarget = (CTargeting*)p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Target"));
 		if (nullptr != pTarget)
 			m_bTargetCollider = pTarget->Get_CheckCollider();
-
-		 targetTrans = static_cast<CTransform*>(pTarget->Get_Component(COM_TRANSFORM));
 
 	}
 	RELEASE_INSTANCE(CGameInstance);

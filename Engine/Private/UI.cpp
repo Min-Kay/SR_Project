@@ -18,7 +18,6 @@ CUI::CUI(const CUI& rhs)
 	Safe_AddRef(m_pTransformCom);
 	Safe_AddRef(m_pRendererCom);
 	Safe_AddRef(m_pVIBufferCom);
-
 }
 
 HRESULT CUI::NativeConstruct_Prototype()
@@ -210,7 +209,7 @@ HRESULT CUI::Set_RenderState()
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	D3DXMatrixIdentity(&ViewMatrix);
-
+	
 	m_pShader->SetUp_ValueOnShader("g_WorldMatrix", D3DXMatrixTranspose(&WorldMatrix, &WorldMatrix), sizeof(_float4x4));
 	m_pShader->SetUp_ValueOnShader("g_ViewMatrix", D3DXMatrixTranspose(&ViewMatrix, &ViewMatrix), sizeof(_float4x4));
 	m_pShader->SetUp_ValueOnShader("g_ProjMatrix", D3DXMatrixTranspose(&ProjMatrix, &m_ProjMatrix), sizeof(_float4x4));
@@ -219,6 +218,8 @@ HRESULT CUI::Set_RenderState()
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture",m_CurrFrame);
 	m_pShader->Begin_Shader(m_desc.Shader_Style);
 	m_pVIBufferCom->Render();
+	m_pShader->End_Shader();
+
 	/*switch (m_desc.Alpha)
 	{
 	case ALPHA_DEFAULT:
@@ -247,7 +248,6 @@ HRESULT CUI::Set_RenderState()
 		break;
 	}*/
 
-	m_pShader->End_Shader();
 
 	return S_OK;
 }

@@ -89,7 +89,8 @@ HRESULT CArm::Render()
 
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", m_ArmPos);
+
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", m_Parent->Get_Phase() == CBoss::BOSS_PHASEONE ? m_ArmPos : m_ArmPos + 2);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
