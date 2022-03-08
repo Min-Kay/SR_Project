@@ -63,6 +63,9 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 
 _int CImpact::Tick(_float fTimeDelta)
 {
+	if (m_Impact.deleteCount <= 0)
+		Set_Dead(true);
+
 	if (Get_Dead())
 		return 0;
 
@@ -117,10 +120,6 @@ HRESULT CImpact::Render()
 
 	if (FAILED(SetUp_RenderState()))
 		return E_FAIL;*/
-
-
-	m_pVIBufferCom->Render();
-
 	//if (FAILED(Release_RenderState()))
 	//	return E_FAIL;
 

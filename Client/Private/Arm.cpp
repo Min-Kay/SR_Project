@@ -24,6 +24,7 @@ CArm::CArm(const CArm& rhs)
 	,m_pTexture(rhs.m_pTexture)
 	,m_pRenderer(rhs.m_pRenderer)
 	,m_pBuffer(rhs.m_pBuffer)
+	,m_pShader(rhs.m_pShader)
 {
 	Safe_AddRef(m_pOnlyRotation);
 	Safe_AddRef(m_pTransform);
@@ -31,6 +32,7 @@ CArm::CArm(const CArm& rhs)
 	Safe_AddRef(m_pTexture);
 	Safe_AddRef(m_pRenderer);
 	Safe_AddRef(m_pBuffer);
+	Safe_AddRef(m_pShader);
 }
 
 HRESULT CArm::NativeConstruct_Prototype()
@@ -87,7 +89,7 @@ HRESULT CArm::Render()
 
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", m_ArmPos);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
@@ -295,5 +297,6 @@ void CArm::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTransform);
 	Safe_Release(m_pTexture);
+	Safe_Release(m_pShader);
 
 }

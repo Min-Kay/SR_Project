@@ -47,9 +47,9 @@ HRESULT CRenderer::Render(vector<_uint> exceptions)
 
 		switch (i)
 		{
-		case RENDER_ALPHA:
-			Alpha_Sorting();
-			break;
+		//case RENDER_ALPHA:
+			//Alpha_Sorting();
+			//break;
 		case RENDER_UI:
 			UI_Sorting();
 			break;
