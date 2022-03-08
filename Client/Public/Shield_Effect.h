@@ -29,7 +29,7 @@ public:
 	void Set_Parent(CTransform* _tr);
 	void Set_SpreadRange(_float _range);
 	void Set_Split(_bool _bool);
-	void Set_TurnType(_bool _bool);
+	void Set_TurnType(_bool _xz , _bool _y = false);
 	void Set_Valid(_bool _bool);
 	void Set_CoolTime(_float _cool);
 
@@ -46,6 +46,8 @@ private:
 	_bool m_CoolDown = false;
 	_bool m_Split = false;
 	_bool m_TurnType = false;
+	_bool m_YType = false;
+
 
 	_bool m_Valid = false;
 private:

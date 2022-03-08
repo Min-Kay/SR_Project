@@ -244,7 +244,7 @@ HRESULT CBoss::SetUp_Component()
 		CShield_Effect* se = static_cast<CShield_Effect*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Shield_Effect")));
 		se->Set_Valid(false);
 
-		se->Set_TurnType(i >= 30 ? true : false);
+		se->Set_TurnType(i >= 20 ? true : false, i >= 40 ? true : false );
 		se->Set_Parent(m_pOnlyRotation);
 		m_shield_effects_.push_back(se);
 	}
@@ -560,7 +560,7 @@ void CBoss::Spawn_Shield()
 		for(auto& se : m_shield_effects_)
 		{
 			se->Set_CoolTime(timer);
-			timer += 0.1f;
+			timer += 0.15f;
 		}
 
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);

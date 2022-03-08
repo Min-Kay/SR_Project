@@ -225,6 +225,7 @@ void CTransform::Add_Force(_float fTimeDelta)
 	}
 	else if (m_bOnCollide && m_Forcing)
 	{
+		m_FormalForce = m_fForce;
 		if (m_fForce <= 0.f)
 			m_Forcing = false;
 

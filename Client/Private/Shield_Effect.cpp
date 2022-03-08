@@ -133,9 +133,10 @@ void CShield_Effect::Set_Split(_bool _bool)
 		m_Timer = 0.f;
 }
 
-void CShield_Effect::Set_TurnType(_bool _bool)
+void CShield_Effect::Set_TurnType(_bool _xz, _bool _y)
 {
-	m_TurnType = _bool;
+	m_TurnType = _xz;
+	m_YType = _y;
 }
 
 void CShield_Effect::Set_Valid(_bool _bool)
@@ -156,7 +157,7 @@ void CShield_Effect::Set_Parent(CTransform* _tr)
 
 void CShield_Effect::Turning(_float fTimeDelta)
 {
-	m_Timer += fTimeDelta * 120.f;
+	m_Timer += fTimeDelta * 150.f;
 	if (!m_pParent)
 		return;
 
@@ -166,7 +167,7 @@ void CShield_Effect::Turning(_float fTimeDelta)
 	_float radian = D3DXToRadian(m_Timer);
 
 	vTurningPos.x = m_TurnType ? cosf(radian) * m_SpreadRange + vParentPos.x : sinf(radian) * m_SpreadRange + vParentPos.x;
-	vTurningPos.y = sinf(radian) * m_SpreadRange + vParentPos.y ;
+	vTurningPos.y = m_YType? 0 : sinf(radian) * m_SpreadRange + vParentPos.y;
 	vTurningPos.z = m_TurnType ? sinf(radian) * m_SpreadRange + vParentPos.z : cosf(radian) * m_SpreadRange + vParentPos.z;
 
 	_float3 vRight, vUp, vLook, vScale;
@@ -179,13 +180,13 @@ void CShield_Effect::Turning(_float fTimeDelta)
 	if(m_TurnType)
 	{
 		vRight.x = cosf(degree) * m_SpreadRange + vParentPos.x;
-		vRight.y = sinf(degree) * m_SpreadRange + vParentPos.y;
+		vRight.y = m_YType ?  0 : sinf(degree) * m_SpreadRange + vParentPos.y;
 		vRight.z = sinf(degree) * m_SpreadRange + vParentPos.z;
 	}
 	else
 	{
 		vRight.x = sinf(degree) * m_SpreadRange + vParentPos.x;
-		vRight.y = sinf(degree) * m_SpreadRange + vParentPos.y;
+		vRight.y = m_YType ? 0 : sinf(degree) * m_SpreadRange + vParentPos.y;
 		vRight.z = cosf(degree) * m_SpreadRange + vParentPos.z;
 	}
 

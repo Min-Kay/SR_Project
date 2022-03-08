@@ -37,6 +37,8 @@ public:
 
 	_float	Get_Force() const { return m_fForce; }
 
+	_float	Get_CollideFormalForce() const { return m_FormalForce; }
+
 	void Set_WorldMatrix(_float4x4 _wm) { m_WorldMatrix = _wm; }
 
 	void Set_State(STATE eState, const _float3& vState) {
@@ -85,6 +87,7 @@ private:
 	_float				m_fGravity = 9.8f;
 	_float				m_fVelocity = 0.f;
 	_float				m_Press = 0.f;
+	_float				m_FormalForce = 0.f;
 	_float3				m_vForceAxis = _float3(0.f,0.f,0.f);
 	_float				m_fForce = 0.f;
 

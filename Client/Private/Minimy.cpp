@@ -265,7 +265,7 @@ void CMinimy::Die(_float fTimeDelta)
 	m_pTransform->Add_Force(fTimeDelta);
 
 
-	if(m_pTransform->Get_Force() >= 20.f)
+	if(m_pTransform->Get_CollideFormalForce() >= 5.f)
 	{
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		list<CGameObject*> colllist = p_instance->Get_Collision_Object_List(m_pCollider);
@@ -283,6 +283,10 @@ void CMinimy::Die(_float fTimeDelta)
 				if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_SHIELD)
 				{
 					static_cast<CShield*>(obj)->Add_ShieldHp(-(m_Damage * 10));
+				}
+				else if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_BOSS)
+				{
+					static_cast<CEnemy*>(obj)->Add_HP(-(m_Damage * 3));
 				}
 			}
 			Impact();
