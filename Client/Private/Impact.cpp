@@ -53,7 +53,7 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 	randomPos[1] = (_float)spread(ranY);
 	randomPos[2] = (_float)spread(ranZ);
 
-	m_fvecdir = _float3((centerPos.x + randomPos[0]), (centerPos.y + randomPos[1]), (centerPos.z + spread(ranZ))) - centerPos;
+	m_fvecdir = _float3((centerPos.x + randomPos[0]), (centerPos.y + randomPos[1]), (centerPos.z + (_float)spread(ranZ))) - centerPos;
 	D3DXVec3Normalize(&m_fvecdir, &m_fvecdir);
 
 	m_pVIBufferCom->ChangeColor(m_Impact.Color);//rgba

@@ -136,13 +136,14 @@ _int CCamera_Player::Tick(_float fTimeDelta)
 
     }
 
-
     if(pGameInstance->Get_Key_Up(DIK_E))
     {
         if (isGrabed)
         {
             static_cast<CBoxCollider*>(m_GrabInteraction->Get_Component(COM_COLLIDER))->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-            m_GrabInteraction = nullptr;
+            m_GrabInteraction->Set_Grab(false);
+        	m_GrabInteraction = nullptr;
+            m_GrabInteractionTr = nullptr;
             isGrabed = false;
         }
         else
@@ -157,7 +158,8 @@ _int CCamera_Player::Tick(_float fTimeDelta)
         _float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
         D3DXVec3Normalize(&vLook, &vLook);
 
-        static_cast<CTransform*>(m_GrabInteraction->Get_Component(COM_TRANSFORM))->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION) + vLook * 1.5f);
+        m_GrabInteractionTr->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION) + vLook * 1.5f);
+        m_GrabInteractionTr->Set_Velocity(0);
 	    
     }
 
@@ -298,6 +300,8 @@ void CCamera_Player::Grab_Interaction()
             m_GrabInteraction = i.CollObj;
             static_cast<CBoxCollider*>(m_GrabInteraction->Get_Component(COM_COLLIDER))->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
             isGrabed = true;
+            m_GrabInteractionTr = static_cast<CTransform*>(m_GrabInteraction->Get_Component(COM_TRANSFORM));
+            m_GrabInteraction->Set_Grab(true);
             break;
         }
     }

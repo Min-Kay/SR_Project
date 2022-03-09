@@ -59,6 +59,7 @@ _int Client::CCubeBullet::Tick(_float fTimeDelta)
 {
 	if (Get_Dead())
 		return 0;
+	m_Timer += fTimeDelta;
 	Move(fTimeDelta);
 	Synchronize_Transform(fTimeDelta);
 	m_pBoxCollider->Set_Collider();
@@ -96,14 +97,11 @@ HRESULT Client::CCubeBullet::Render()
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
-
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
-
 	m_pVIBufferCom->Render();
-
 	m_pShader->End_Shader();
+
 
 	return S_OK; 
 }

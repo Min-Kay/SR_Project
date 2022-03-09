@@ -54,6 +54,7 @@ private:
 	_int m_Damage = 5;
 	_float m_Speed = 1.f;
 	_float m_Timer = 0.f;
+
 public:
 	static CCubeBullet* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

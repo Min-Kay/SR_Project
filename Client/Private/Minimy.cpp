@@ -8,8 +8,10 @@
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
 #include "Impact.h"
+#include "Player.h"
 #include "Shield.h"
 #include "Shader.h"
+#include "Boss.h"
 
 
 CMinimy::CMinimy(LPDIRECT3DDEVICE9 m_pGraphic_Device)
@@ -93,24 +95,18 @@ HRESULT CMinimy::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	/*if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-	m_pBuffer->Render();*/
-
 
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, sinf(D3DXToRadian(m_fTimer* 0.01f )),0.f,0.f), sizeof(_float4));
 	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
 	m_pShader->End_Shader();
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, 0.f ,0.f, 0.f), sizeof(_float4));
+
 
 	return S_OK;
 }
@@ -151,7 +147,7 @@ HRESULT CMinimy::SetUp_Component()
 	m_pCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
 	m_pCollider->Set_ParentInfo(this);
 
-	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_Size);
+	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_Size * 1.5f);
 
 	m_Hp = 30;
 	m_Damage = 10;
@@ -179,11 +175,10 @@ void CMinimy::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 
 	m_fTimer += fTimeDelta;
 
-	m_pTransform->Gravity(0.3f, fTimeDelta);
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-m_pTransform->Get_State(CTransform::STATE_UP), m_pTransform->Get_State(CTransform::STATE_POSITION), 100, true);
 
-	if (collList.empty() || collList.size() == 1)
+	if (collList.empty())
 	{
 		RELEASE_INSTANCE(CGameInstance);
 		return;
@@ -194,7 +189,7 @@ void CMinimy::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 
 	for (; iter != collList.end();)
 	{
-		if (iter->CollObj->Get_Type() != OBJ_STATIC)
+		if (iter->CollObj == this)
 			++iter;
 		else
 			break;
@@ -202,14 +197,16 @@ void CMinimy::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 
 	if (iter == collList.end())
 	{
+
+		m_pTransform->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
 		RELEASE_INSTANCE(CGameInstance);
 		return;
 	}
 
-	if (_watchPlayer)
-		m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+	//if (_watchPlayer)
+		//m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
 
-	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 2.f, 0.f) /*+ _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 0.5f)*/);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 2.f, 0.f)  + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 0.5f));
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -218,6 +215,18 @@ void CMinimy::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 void CMinimy::Add_HP(_int _add)
 {
 	__super::Add_HP(_add);
+}
+
+void CMinimy::Set_Player(CPlayer* _player)
+{
+	m_pPlayer = _player;
+	m_pPlayerTr = static_cast<CTransform*>(m_pPlayer->Get_Component(COM_TRANSFORM));
+}
+
+void CMinimy::Set_Boss(CBoss* _boss)
+{
+	m_pBoss = _boss;
+	m_pBossTr = static_cast<CTransform*>(m_pBoss->Get_Component(COM_TRANSFORM));
 }
 
 void CMinimy::State_Machine(_float fTimeDelta)
@@ -245,11 +254,11 @@ _bool CMinimy::Sizing(_float fTimeDelta)
 	if (!m_Sizing)
 	{
 		Impact();
-		m_pTransform->Turn(_float3(0.f,1.f,1.f), fTimeDelta);
-		m_pTransform->Scaled(_float3(m_fTimer, m_fTimer, m_fTimer));
+		m_pOnlyRotation->Turn(_float3(0.f,1.f,1.f), fTimeDelta);
+		m_pOnlyRotation->Scaled(_float3(m_fTimer, m_fTimer, m_fTimer));
 		if (m_fTimer >= m_Size.x)
 		{
-			m_pTransform->Scaled(m_Size);
+			m_pOnlyRotation->Scaled(m_Size);
 			m_Sizing = true;
 			m_fTimer = 0.f;
 
@@ -264,7 +273,8 @@ _bool CMinimy::Sizing(_float fTimeDelta)
 void CMinimy::Idle(_float fTimeDelta)
 {
 	if (Sizing(fTimeDelta))
-		Gravity_Blowing(fTimeDelta);
+		Gravity_Blowing(fTimeDelta,true);
+
 }
 
 void CMinimy::Move(_float fTimeDelta)
@@ -281,8 +291,7 @@ void CMinimy::Die(_float fTimeDelta)
 	m_pTransform->Gravity(1.0f, fTimeDelta);
 	m_pTransform->Add_Force(fTimeDelta);
 
-
-	if(m_pTransform->Get_CollideFormalForce() >= 5.f)
+	if(m_pTransform->Get_CollideFormalForce() >= 1.f && !Get_Grab())
 	{
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		list<CGameObject*> colllist = p_instance->Get_Collision_Object_List(m_pCollider);
@@ -305,7 +314,10 @@ void CMinimy::Die(_float fTimeDelta)
 				{
 					static_cast<CEnemy*>(obj)->Add_HP(-(m_Damage * 3));
 				}
+
 			}
+			p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Minimy_Die1.wav") : TEXT("Minimy_Die.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
 			Impact();
 			m_pCollider->Set_Dead(true);
 			Set_Dead(true);
@@ -330,7 +342,7 @@ void CMinimy::Impact()
 	Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	for (int i = 0; i < rand() % 5 + 10; ++i)
+	for (int i = 0; i < rand() % 5 + 5; ++i)
 	{
 		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
 		{

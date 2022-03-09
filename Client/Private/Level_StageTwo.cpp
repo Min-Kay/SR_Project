@@ -34,9 +34,6 @@ HRESULT CLevel_StageTwo::NativeConstruct()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-	//	return E_FAIL;
-
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -99,15 +96,6 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 		m_BossSpone = true;
 	}
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	if (pGameInstance->Get_Key_Down(DIK_Z))
-	{
-		CPlayer* Player = static_cast<CPlayer*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Player")));
-		Player->Add_Hp(-100);
-		Close_Exit();
-
-	}
-	RELEASE_INSTANCE(CGameInstance);
 	m_setting = true;
 
 	return 0;
@@ -138,7 +126,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Camera(const _tchar* pLayerTag)
 	ZeroMemory(&CameraDesc, sizeof(CameraDesc));
 
 	CameraDesc.vEye = _float3(0.f, 0.f, -7.f);
-	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
+	CameraDesc.vAt = _float3(0.f, 0.f, -10.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.fFovy = D3DXToRadian(60.0f);
@@ -775,7 +763,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_JumpMap()
 	CGameObject* unPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGETWO, TEXT("Layer_UnPortal"));
 	CTransform* unPortalTr = static_cast<CTransform*>(unPortal->Get_Component(COM_TRANSFORM));
 
-	unPortalTr->Set_State(CTransform::STATE_POSITION, _float3(0.f, 80.f, 60.f));
+	unPortalTr->Set_State(CTransform::STATE_POSITION, _float3(0.f, 80.f, 62.f));
 	unPortalTr->Scaled(_float3(30.f, 80.f, 2.f));
 	CBoxCollider* unPortalBox = static_cast<CBoxCollider*>(unPortal->Get_Component(COM_COLLIDER));
 	unPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(30.f, 80.f, 2.f));

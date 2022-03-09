@@ -15,6 +15,7 @@
 #include "Shader.h"
 
 #include "AttackRange.h"
+#include "Minimy.h"
 #include "Missile.h"
 #include "Targeting.h"
 
@@ -86,7 +87,6 @@ _int CBoss::Tick(_float fTimeDelta)
 		m_Reset = false;
 		Set_BossState(BOSS_IDLE);
 	}
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (m_State != BOSS_DIE && Check_HP())
@@ -134,6 +134,8 @@ HRESULT CBoss::Render()
 {
 	if (Get_Dead())
 		return 0;
+
+	//m_pCollider->Draw_Box();
 
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 
@@ -378,7 +380,7 @@ HRESULT CBoss::SetUp_UI()
 
 	m_beforeShiledHP = Get_ShieldHp();
 	m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
-	m_ShiledHpPos = g_iWinCX / 1.91f;
+	m_ShiledHpPos = (_uint)(g_iWinCX / 1.91f);
 
 	/* Player_hit_UI*/
 	CUI::UIDESC BossUI_HPBaar;
@@ -391,7 +393,7 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_HPBaar.Alpha = CUI::ALPHA_BLEND;
 	BossUI_HPBaar.PosX = g_iWinCX * 0.5f;
 	BossUI_HPBaar.PosY = g_iWinCY * 0.06f;
-	BossUI_HPBaar.SizeX = g_iWinCX / 1.42;
+	BossUI_HPBaar.SizeX = g_iWinCX / 1.42f;
 	BossUI_HPBaar.SizeY = g_iWinCY / 9.f;
 	BossUI_HPBaar.AnimateSpeed = 30.f;
 	BossUI_HPBaar.Style = CUI::STYLE_FIX;
@@ -408,8 +410,8 @@ HRESULT CBoss::SetUp_UI()
 	m_BossUI_HpBar = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_HPBaar")));
 
 
-	m_fBossMaxHp = Get_HP();
-	m_fMaxShield = Get_ShieldHp();
+	m_fBossMaxHp = (_float)Get_HP();
+	m_fMaxShield = (_float)Get_ShieldHp();
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
@@ -423,7 +425,7 @@ void CBoss::Setting_HpUi()
 		if (m_beforeHp <= 0)
 			m_beforeHp = Get_HP();
 		// 나 / 전체 * 100
-		_int hp = m_fBossMaxHp - m_uChageHp;
+		_int hp = (_int)(m_fBossMaxHp - m_uChageHp);
 		_float hpPercent = hp / m_fBossMaxHp * 100.f; //10
 		_float hpbar = (100.f - hpPercent) * (1280 / 1.6f / 100.f);
 		_float pos = (1280 / 1.6f / 100.f) * hpPercent;
@@ -442,19 +444,17 @@ void CBoss::Setting_HpUi()
 
 		if (m_beforeShiledHP != m_uChageShiledHp)
 		{
-			_int hp = m_fMaxShield - m_uChageShiledHp;
+			_int hp = (_int)(m_fMaxShield - m_uChageShiledHp);
 			_float ShieldPercent = hp / m_fMaxShield * 100;//몇 퍼센트 달았는지
 			_float ShieldBar = (100.f - ShieldPercent) * (1280 / 2.8f / 100.f);
 			_float pos = (1280 / 2.8f / 100.f) * ShieldPercent;
 			m_BossUI_ShieldHP->Set_Size(ShieldBar, 720 / 36.f);
-			m_BossUI_ShieldHP->Set_Pos(m_ShiledHpPos - 390 - pos * 0.5, 720 / 48.f - 350.f);
+			m_BossUI_ShieldHP->Set_Pos(m_ShiledHpPos - 390.f - pos * 0.5f, 720.f / 48.f - 350.f);
 			m_beforeShiledHP = m_uChageShiledHp;
 		}
 	}
 	else
 		m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
-
-
 
 
 }
@@ -608,6 +608,10 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
 	RELEASE_INSTANCE(CGameInstance);
 
+
+	m_LeftArm->Set_Portaling(false);
+	m_RightArm->Set_Portaling(false);
+
 	Init_Idle();
 	Init_Attack_Punch();
 	Init_Attack_Missile();
@@ -760,14 +764,18 @@ void CBoss::Spawn_Shield()
 				RELEASE_INSTANCE(CGameInstance);
 				return;
 			}
-
-			CTransform* tr = static_cast<CTransform*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Minimy"))->Get_Component(COM_TRANSFORM));
-
+			CMinimy* mini = static_cast<CMinimy*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Minimy")));
+			CTransform* tr = static_cast<CTransform*>(mini->Get_Component(COM_TRANSFORM));
+			mini->Set_Boss(this);
+			mini->Set_Player(m_pPlayer);
 			_float3 vPos = m_InitPos;
 			vPos.x += rand() % 2 == 0 ? rand() % 20: -(rand() % 20);
 			vPos.z += rand() % 2 == 0 ? rand() % 20 : -(rand() % 20);
 
 			tr->Set_State(CTransform::STATE_POSITION, vPos);
+
+
+			
 		}
 		RELEASE_INSTANCE(CGameInstance); 
 	}
@@ -802,6 +810,10 @@ void CBoss::Init_Attack_Rolling()
 	 m_RollingCharged = false;
 	 m_MoveToPlayer = false;
 	 m_RollingHitCount = 0;
+
+	 m_LeftArm->Set_Color(_float4(0.f, 0.f, 0.f, 0.f));
+	 m_RightArm->Set_Color(_float4(0.f, 0.f, 0.f, 0.f));
+
 }
 
 void CBoss::Init_Attack_Punch()
@@ -1042,11 +1054,12 @@ void CBoss::Idle(_float fTimeDelta)
 	}
 	else if(!m_Reset)
 	{
-		
 		Gravity_Blowing(fTimeDelta, false);
 		
 		if(InitArmPosition(fTimeDelta))
 		{
+			m_LeftArm->Set_CanPortal(true);
+			m_RightArm->Set_CanPortal(true);
 			m_Invincible = false;
 			m_Reset = true;
 			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -1172,7 +1185,7 @@ void CBoss::Grogy(_float fTimeDelta)
 
 
 		Start_Pattern(TEXT("Grogy.wav"));
-		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 4.f, 30.f);
+		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 4, 30.f);
 
 		for(auto iter = m_shield_effects_.begin(); iter != m_shield_effects_.end();)
 		{

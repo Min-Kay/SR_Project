@@ -45,6 +45,8 @@ private:
 	_bool	isGrabed = false;
 
 	CGameObject* m_GrabInteraction = nullptr;
+	CTransform* m_GrabInteractionTr = nullptr;
+
 
 public:
 	static CCamera_Player* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

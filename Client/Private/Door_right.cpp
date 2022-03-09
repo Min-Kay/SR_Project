@@ -145,7 +145,7 @@ HRESULT CDoor_right::Open(_bool IsOpen)
 	if (IsOpen)
 	{
 
-		m_Count += 0.1;
+		m_Count += 0.1f;
 		if (m_Count > m_MaxCount)
 		{
 			m_Count = m_MaxCount;
@@ -162,7 +162,7 @@ HRESULT CDoor_right::Close(_bool IsClose)
 {
 	if (IsClose)
 	{
-		m_Count -= 0.1;
+		m_Count -= 0.1f;
 
 		if (m_Count < 0)
 		{

@@ -95,7 +95,7 @@ HRESULT CSky::Render()
 	m_pTransformCom->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 2);
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 1);
 	m_pShader->Begin_Shader(SHADER_SKYBOX);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();

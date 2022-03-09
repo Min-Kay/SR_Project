@@ -59,6 +59,10 @@ public:
 	void Set_Dead(_bool _bool) { m_Dead = _bool; }
 	const _bool Get_Dead() const { return m_Dead; }
 
+	void Set_Grab(_bool _bool) { m_Grab = _bool; }
+	const _bool Get_Grab() const { return m_Grab; }
+
+
 public:
 	void Set_Type(OBJTYPE _type);
 	const OBJTYPE& Get_Type() const;
@@ -73,7 +77,7 @@ private:
 
 private:
 	_bool				m_Dead = false;
-
+	_bool				m_Grab = false;
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;

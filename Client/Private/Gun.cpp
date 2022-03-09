@@ -124,8 +124,8 @@ void CGun::Fire()
 
 	_float randomPos[2];
 
-	randomPos[0] = spread(ranX);
-	randomPos[1] = spread(ranY);
+	randomPos[0] = (_float)spread(ranX);
+	randomPos[1] = (_float)spread(ranY);
 
 	m_iCurrSpread += m_iSpread;
 
@@ -534,7 +534,7 @@ void CGun::Spark(_float3 _point)
 	Impact1.Pos = _point;
 	Impact1.Size = _float3(0.03f, 0.03f, 0.03f);
 	Impact1.randomPos = 3;
-	Impact1.deleteCount = 1.f;//rand() % 5 + 2;
+	Impact1.deleteCount = 1;//rand() % 5 + 2;
 	Impact1.DeleteImpact = false;
 	Impact1.Speed = 10.f;
 	Impact1.Gradation = CImpact::GRADATION_DOWN;

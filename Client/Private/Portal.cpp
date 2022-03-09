@@ -281,6 +281,9 @@ void CPortal::Portaling()
         if (obj->Get_Type() == OBJ_ENEMY && !static_cast<CEnemy*>(obj)->Get_CanPortal())
             continue;
 
+        if (obj->Get_Grab())
+            continue;
+
         CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
         if (objTr == nullptr)
             continue;

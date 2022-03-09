@@ -42,6 +42,10 @@ private:
 public:
 	void Add_HP(_int _add) override;
 	void Calling();
+
+	void Set_Player(CPlayer* _player);
+	void Set_Boss(CBoss* _boss);
+
 private:
 	void State_Machine(_float fTimeDelta);
 	_bool Sizing(_float fTimeDelta);
