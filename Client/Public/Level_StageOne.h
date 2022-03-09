@@ -26,11 +26,11 @@ private:
 	HRESULT Ready_Layer_Second_Entrance();
 	HRESULT Ready_Layer_Monster_Map();
 	HRESULT Ready_Layer_Next_Stage();
-
-
+	HRESULT Ready_Layer_Ball_Map();
+	HRESULT Ready_Layer_Gravity_Map();
 private:
 	HRESULT Open_Exit();
-	HRESULT Close_Exit_Open_Door2(); 
+	HRESULT Close_Exit_Open_Door2();
 	HRESULT Open_Exit2();
 private:
 	_int iLineX = 25;
@@ -40,6 +40,17 @@ private:
 
 	_float fDoorSizeX = 3.f;
 	_float fDoorSizeY = 3.f;
+
+	_float	m_iBoxSize = 20.f; //<-여기 바꾸면 전체크기다 바뀜 
+	_float HalfBoxSize = m_iBoxSize * 0.5f;
+	_float WallSize = 5.f;//벽의 두께
+	_float HalfWallSize = WallSize * 0.5f;//벽의 두께
+
+
+	_float	m_iGravityBoxSize = 30.f; //<-여기 바꾸면 전체크기다 바뀜 
+	_float GravityhalfBoxSize = m_iGravityBoxSize * 0.5f;
+	_float GravityWallSize = 5.f;//벽의 두께
+	_float HalfGravityWallSize = GravityWallSize * 0.5f;//벽의 두께
 
 private:
 	_bool m_setting = false;

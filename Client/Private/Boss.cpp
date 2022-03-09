@@ -198,6 +198,7 @@ HRESULT CBoss::SetUp_Component()
 	m_LeftArm->Set_Player(m_pPlayer);
 	m_LeftArm->Set_ArmPos(CArm::ARMPOS_LEFT);
 	m_LeftArmTr = static_cast<CTransform*>(m_LeftArm->Get_Component(COM_TRANSFORM));
+	m_LeftArmRotationTr = static_cast<CTransform*>(m_LeftArm->Get_Component(TEXT("OnlyRotation")));
 
 
 	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Arm_Right"), TEXT("Prototype_GameObject_Arm"))))
@@ -212,7 +213,7 @@ HRESULT CBoss::SetUp_Component()
 	m_RightArm->Set_Player(m_pPlayer);
 	m_RightArm->Set_ArmPos(CArm::ARMPOS_RIGHT);
 	m_RightArmTr = static_cast<CTransform*>(m_RightArm->Get_Component(COM_TRANSFORM));
-
+	m_RightArmRotationTr = static_cast<CTransform*>(m_RightArm->Get_Component(TEXT("OnlyRotation")));
 
 	Set_Type(OBJ_ENEMY);
 
@@ -279,7 +280,6 @@ HRESULT CBoss::SetUp_Component()
 	return S_OK; 
 
 }
-
 HRESULT CBoss::SetUp_UI()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -292,7 +292,7 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_Black.WinCX = g_iWinCX;
 	BossUI_Black.WinCY = g_iWinCY;
 
-	BossUI_Black.Layer = 2;
+	BossUI_Black.Layer = 3;
 	BossUI_Black.FrameCount = 0;
 	BossUI_Black.Alpha = CUI::ALPHA_BLEND;
 	BossUI_Black.PosX = g_iWinCX / 1.92f;
@@ -321,7 +321,7 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_HP.WinCX = g_iWinCX;
 	BossUI_HP.WinCY = g_iWinCY;
 
-	BossUI_HP.Layer = 2;
+	BossUI_HP.Layer = 3;
 	BossUI_HP.FrameCount = 1;
 	BossUI_HP.Alpha = CUI::ALPHA_DEFAULT;
 	BossUI_HP.PosX = g_iWinCX / 1.92f;
@@ -354,7 +354,7 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_ShieldHP.WinCX = g_iWinCX;
 	BossUI_ShieldHP.WinCY = g_iWinCY;
 
-	BossUI_ShieldHP.Layer = 1;
+	BossUI_ShieldHP.Layer = 2;
 	BossUI_ShieldHP.FrameCount = 2;
 	BossUI_ShieldHP.Alpha = CUI::ALPHA_TEST;
 	BossUI_ShieldHP.PosX = g_iWinCX / 1.91f;
@@ -386,12 +386,12 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_HPBaar.WinCX = g_iWinCX;
 	BossUI_HPBaar.WinCY = g_iWinCY;
 
-	BossUI_HPBaar.Layer = 2;
+	BossUI_HPBaar.Layer = 1;
 	BossUI_HPBaar.FrameCount = 0;
 	BossUI_HPBaar.Alpha = CUI::ALPHA_BLEND;
 	BossUI_HPBaar.PosX = g_iWinCX * 0.5f;
 	BossUI_HPBaar.PosY = g_iWinCY * 0.06f;
-	BossUI_HPBaar.SizeX = g_iWinCY / 14.2f;
+	BossUI_HPBaar.SizeX = g_iWinCX / 1.42;
 	BossUI_HPBaar.SizeY = g_iWinCY / 9.f;
 	BossUI_HPBaar.AnimateSpeed = 30.f;
 	BossUI_HPBaar.Style = CUI::STYLE_FIX;
@@ -408,6 +408,8 @@ HRESULT CBoss::SetUp_UI()
 	m_BossUI_HpBar = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_HPBaar")));
 
 
+	m_fBossMaxHp = Get_HP();
+	m_fMaxShield = Get_ShieldHp();
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
@@ -420,12 +422,15 @@ void CBoss::Setting_HpUi()
 	{
 		if (m_beforeHp <= 0)
 			m_beforeHp = Get_HP();
-
-		_int hp = m_beforeHp - m_uChageHp;
-		m_BossUI_HP->Set_Size(m_uChageHp * 8.f, g_iWinCY / 18.f);
-		m_BossUI_HP->Set_Pos((m_fHpbarPos -= hp * 4.f), g_iWinCY / 14.f);
+		// 나 / 전체 * 100
+		_int hp = m_fBossMaxHp - m_uChageHp;
+		_float hpPercent = hp / m_fBossMaxHp * 100.f; //10
+		_float hpbar = (100.f - hpPercent) * (1280 / 1.6f / 100.f);
+		_float pos = (1280 / 1.6f / 100.f) * hpPercent;
+		m_BossUI_HP->Set_Size(hpbar, 720 / 18.f);
+		m_BossUI_HP->Set_Pos(390 - pos/**0.5*/, 720 / 14.f - 340.f);
 		m_beforeHp = m_uChageHp;
-
+		//100/100 1
 
 	}
 
@@ -437,9 +442,12 @@ void CBoss::Setting_HpUi()
 
 		if (m_beforeShiledHP != m_uChageShiledHp)
 		{
-			_int hp = m_beforeShiledHP - m_uChageShiledHp;
-			m_BossUI_ShieldHP->Set_Size(m_uChageShiledHp * 4.5f, g_iWinCY / 36.f);
-			m_BossUI_ShieldHP->Set_Pos((m_ShiledHpPos -= hp * 4.5f * 0.5), g_iWinCY / 48.f);
+			_int hp = m_fMaxShield - m_uChageShiledHp;
+			_float ShieldPercent = hp / m_fMaxShield * 100;//몇 퍼센트 달았는지
+			_float ShieldBar = (100.f - ShieldPercent) * (1280 / 2.8f / 100.f);
+			_float pos = (1280 / 2.8f / 100.f) * ShieldPercent;
+			m_BossUI_ShieldHP->Set_Size(ShieldBar, 720 / 36.f);
+			m_BossUI_ShieldHP->Set_Pos(m_ShiledHpPos - 390 - pos * 0.5, 720 / 48.f - 350.f);
 			m_beforeShiledHP = m_uChageShiledHp;
 		}
 	}
@@ -499,7 +507,7 @@ _bool CBoss::InitArmPosition(_float fTimeDelta, _bool _left, _bool _right)
 	if (!m_LeftArmTr || !m_RightArmTr)
 		return false;
 
-	if(!initPos)
+	if(!initPos[0] && _left)
 	{
 		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 		_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
@@ -508,68 +516,63 @@ _bool CBoss::InitArmPosition(_float fTimeDelta, _bool _left, _bool _right)
 		D3DXVec3Normalize(&vUp, &vUp);
 		D3DXVec3Normalize(&vRight, &vRight);
 
+		m_LeftTimer = 0.f;
+		Set_ArmPos(ARM_LEFT,m_LeftArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * m_fUpMidPos - vRight * m_fRightMidPos, vPos + vUp * m_fUpPos - vRight * m_fRightPos);
+		m_LeftArm->Set_Rolling(true, _float3(1.f, 1.f, 0.f));
 
-		if(_left)
-		{
-			m_LeftTimer = 0.f;
-			Set_ArmPos(ARM_LEFT,m_LeftArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * m_fUpMidPos - vRight * m_fRightMidPos, vPos + vUp * m_fUpPos - vRight * m_fRightPos);
-			m_LeftArm->Set_Rolling(true, _float3(1.f, 1.f, 0.f));
-			
-		}
-		if(_right)
-		{
-			m_RightTimer = 0.f;
-			Set_ArmPos(ARM_RIGHT, m_RightArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * m_fUpMidPos + vRight * m_fRightMidPos, vPos + vUp * m_fUpPos + vRight * m_fRightPos);
-			m_RightArm->Set_Rolling(true, _float3(1.f, -1.f, 0.f));
-		}
-
-
-		idlePos = false;
-		initPos = true;
+		idlePos[0] = false;
+		initPos[0] = true;
 	}
 
-	if (!idlePos)
+	if(!initPos[1] && _right)
 	{
-		_bool leftReach, rightReadch;
-		if (_left)
-		{
-			leftReach = Move_By_Bazier(ARM_LEFT, fTimeDelta);
-		}
+		_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+		_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
 
-		if(_right)
-		{
-			rightReadch = Move_By_Bazier(ARM_RIGHT, fTimeDelta);
-		}
+		D3DXVec3Normalize(&vUp, &vUp);
+		D3DXVec3Normalize(&vRight, &vRight);
 
-		if(_left && _right && leftReach && rightReadch)
-		{
-			m_LeftTimer = 0.f;
-			m_RightTimer = 0.f;
-			initPos = false;
-			idlePos = true;
-			m_init = false;
-			return true;
+		m_RightTimer = 0.f;
+		Set_ArmPos(ARM_RIGHT, m_RightArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * m_fUpMidPos + vRight * m_fRightMidPos, vPos + vUp * m_fUpPos + vRight * m_fRightPos);
+		m_RightArm->Set_Rolling(true, _float3(1.f, -1.f, 0.f));
 
-		}
+		idlePos[1] = false;
+		initPos[1] = true;
+	}
 
-		if(_left && leftReach)
+	if (!idlePos[0] && _left)
+	{
+		_bool leftReach;
+		leftReach = Move_By_Bazier(ARM_LEFT, fTimeDelta);
+
+		if(leftReach)
 		{
 			m_LeftTimer = 0.f;
-			initPos = false;
-			idlePos = true;
+			initPos[0] = false;
+			idlePos[0] = true;
 			m_init = false;
 			return true;
 		}
+	
+	}
 
-		if (_right && rightReadch)
+	if(!idlePos[1] && _right)
+	{
+		_bool rightReadch;
+
+		rightReadch = Move_By_Bazier(ARM_RIGHT, fTimeDelta);
+
+		if (rightReadch)
 		{
 			m_RightTimer = 0.f;
-			initPos = false;
-			idlePos = true;
+			initPos[1] = false;
+			idlePos[1] = true;
 			m_init = false;
 			return true;
 		}
 	}
+
 	return false;
 }
 
@@ -608,6 +611,7 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 	Init_Idle();
 	Init_Attack_Punch();
 	Init_Attack_Missile();
+	Init_Attack_Rolling();
 	m_State = _state;
 	m_OnPattern = false;
 	
@@ -618,8 +622,12 @@ void CBoss::Init_Idle()
 	m_init = true;
 	m_LeftTimer = 0.f;
 	m_RightTimer = 0.f;
-	initPos = false;
-	idlePos = true;
+
+	for(_uint i = 0; i < 2 ;++i)
+	{
+		initPos[i] = false;
+		idlePos[i] = true;
+	}
 
 	if (m_State == BOSS_MOVE || m_State == BOSS_IDLE)
 		return;
@@ -778,6 +786,24 @@ void CBoss::Shield_Effect(_float fTimeDelta)
 
 }
 
+void CBoss::Init_Attack_Rolling()
+{
+	m_RollingReady = false;
+	for (auto& i : m_RollingShake)
+	{
+		i = false;
+	}
+
+	for (auto& i : m_RollingHit)
+	{
+		i = false;
+	}
+	 m_RollingChargingGauge = 0.f;
+	 m_RollingCharged = false;
+	 m_MoveToPlayer = false;
+	 m_RollingHitCount = 0;
+}
+
 void CBoss::Init_Attack_Punch()
 {
 	m_bCalled = false;
@@ -785,6 +811,11 @@ void CBoss::Init_Attack_Punch()
 	m_RightArm->Set_State(CArm::ARM_IDLE);
 	m_LeftArm->Set_State(CArm::ARM_IDLE);
 	m_pAttackRange->Set_Valid(false);
+
+	for(auto& i : m_RollingHit)
+	{
+		i = false;
+	}
 	m_CurrPunchCount = 0;
 }
 
@@ -905,15 +936,20 @@ void CBoss::Randomize_Pattern(_float fTimeDelta)
 		switch (m_Phase)
 		{
 		case BOSS_PHASEONE:
-			if (m_AttPatternTimer > 5.f)
+			if (m_AttPatternTimer > 4.f)
 			{
-				m_AttState = m_AttState == BOSSATT_PUNCH ? BOSSATT_MISSILE : BOSSATT_PUNCH;
+				_uint pattern = m_AttState;
+				while(m_AttState == pattern)
+				{
+					m_AttState = (BOSSATTACK)(rand() % 3);
+				}
+				
 				m_AttPatternTimer = 0.f;
 				Set_BossState(BOSS_ATTACK);
 			}
 			break;
 		case BOSS_PHASETWO:
-			if (m_AttPatternTimer > 3.f)
+			if (m_AttPatternTimer > 2.f)
 			{
 				m_RageState = m_RageState == BOSSRAGE_TAEBO ? BOSSRAGE_LASER : BOSSRAGE_TAEBO;
 				m_AttPatternTimer = 0.f;
@@ -986,8 +1022,6 @@ void CBoss::State_Machine(_float fTimeDelta)
 	case BOSS_GROGY:
 		Grogy(fTimeDelta);
 		break;
-	case BOSS_PHASECHANGE:
-		break; 
 	case BOSS_DIE:
 		Die(fTimeDelta);
 		break;
@@ -1078,6 +1112,7 @@ void CBoss::Phase(_float fTimeDelta)
 void CBoss::Attack(_float fTimeDelta)
 {
 	m_ImageIndex = 1;
+
 	// 1페이즈 패턴 구현
 	switch (m_AttState)
 	{
@@ -1086,6 +1121,9 @@ void CBoss::Attack(_float fTimeDelta)
 		break;
 	case BOSSATT_MISSILE:
 		Attack_Missile(fTimeDelta);
+		break;
+	case BOSSATT_ROLLING:
+		Attack_Rolling(fTimeDelta);
 		break;
 	}
 }
@@ -1106,6 +1144,8 @@ void CBoss::Grogy(_float fTimeDelta)
 		g_ControlTime = 0.1f;
 		g_ControlShader = 0.75f;
 		m_Grogy = true;
+		m_Invincible = false;
+		m_Shield->Set_Valid(false);
 		m_ImageIndex = 2;
 
 
@@ -1173,15 +1213,13 @@ void CBoss::Grogy(_float fTimeDelta)
 	{
 		g_ControlTime = 1.f;
 		g_ControlShader = 0.f;
-
+		m_Grogy = false;
 		m_LeftArm->Set_CanPortal(true);
 		m_RightArm->Set_CanPortal(true);
 
 		Set_BossState(BOSS_IDLE);
 		m_Phase = BOSS_PHASETWO;
-		m_ImageIndex = 0;
 	}
-	
 }
 
 void CBoss::Die(_float fTimeDelta)
@@ -1354,7 +1392,8 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			m_LeftArm->Set_State(CArm::ARM_IDLE);
 			m_Hand = false;
 		}
-		m_Shaking = false;
+		m_Shaking[0] = false;
+		m_Shaking[1] = false;
 		m_bCalled = true;
 	}
 
@@ -1364,41 +1403,40 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 
 		if (m_LeftArm->Get_Portaling())
 		{
-			m_LeftArmTr->Go_Straight(fTimeDelta * 10.f );
-			if (m_LeftArm->Get_ParentCollide() || m_LeftArmTr->Get_OnCollide())
+			if(!m_RollingHit[0])
 			{
-				if (!m_Shaking)
+				m_LeftArmTr->Go_Straight(fTimeDelta * 10.f);
+				if (m_LeftArm->Get_ParentCollide() || m_LeftArmTr->Get_OnCollide())
 				{
 					m_pPlayer->Set_Shake(0.5f, 2.f);
-					m_Shaking = true;
-				}
-				p_instance->StopSound( CSoundMgr::WEAPON_EFFECT3);
-				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
-
-				m_LeftArm->Set_Portaling(false);
-				m_pAttackRange->Set_Valid(false);
-
-				if(InitArmPosition(fTimeDelta,true, false))
-				{
+					m_RollingHit[0] = true;
 					p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
-					if (m_TotalPunchCount <= m_CurrPunchCount)
-					{
-						Set_BossState(BOSS_IDLE);
-						RELEASE_INSTANCE(CGameInstance);
-						return;
-					}
-					m_bCalled = false;
-					++m_CurrPunchCount;
+					p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+					m_pAttackRange->Set_Valid(false);
 				}
-				
 			}
+			else if (InitArmPosition(fTimeDelta, true, false))
+			{
+				m_RollingHit[0] = false;
+				m_LeftArm->Set_Portaling(false);
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+				if (m_TotalPunchCount <= m_CurrPunchCount)
+				{
+					Set_BossState(BOSS_IDLE);
+					RELEASE_INSTANCE(CGameInstance);
+					return;
+				}
+				m_bCalled = false;
+				++m_CurrPunchCount;
+			}
+			
 		}
 		else if (Move_By_Bazier(ARM_LEFT, fTimeDelta))
 		{
-			if (!m_Shaking)
+			if (!m_Shaking[0])
 			{
 				m_pPlayer->Set_Shake(0.5f, 2.f);
-				m_Shaking = true;
+				m_Shaking[0] = true;
 			}
 			p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
@@ -1426,40 +1464,42 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 
 		if (m_RightArm->Get_Portaling())
 		{
-			m_RightArmTr->Go_Straight(fTimeDelta * 10.f);
-			if (m_RightArm->Get_ParentCollide() ||m_RightArmTr->Get_OnCollide())
+			if(!m_RollingHit[1])
 			{
-				if (!m_Shaking)
+				m_RightArmTr->Go_Straight(fTimeDelta * 10.f);
+				if (m_RightArm->Get_ParentCollide() || m_RightArmTr->Get_OnCollide())
 				{
 					m_pPlayer->Set_Shake(0.5f, 2.f);
-					m_Shaking = true;
-				}
-				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
-				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
-
-				m_RightArm->Set_Portaling(false);
-				m_pAttackRange->Set_Valid(false);
-
-				if (InitArmPosition(fTimeDelta, false, true))
-				{
+					m_RollingHit[1] = true;
 					p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
-					if (m_TotalPunchCount <= m_CurrPunchCount)
-					{
-						Set_BossState(BOSS_IDLE);
-						RELEASE_INSTANCE(CGameInstance);
-						return;
-					}
-					m_bCalled = false;
-					++m_CurrPunchCount;
+					p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+
+					m_pAttackRange->Set_Valid(false);
 				}
 			}
+			else if (InitArmPosition(fTimeDelta, false, true))
+			{
+				m_RollingHit[1] = false;
+				m_RightArm->Set_Portaling(false);
+				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
+				if (m_TotalPunchCount <= m_CurrPunchCount)
+				{
+					Set_BossState(BOSS_IDLE);
+					RELEASE_INSTANCE(CGameInstance);
+					return;
+				}
+				m_bCalled = false;
+				++m_CurrPunchCount;
+			}
+
+			
 		}
 		else if (Move_By_Bazier(ARM_RIGHT, fTimeDelta))
 		{
-			if (!m_Shaking)
+			if (!m_Shaking[1])
 			{
 				m_pPlayer->Set_Shake(0.5f, 2.f);
-				m_Shaking = true;
+				m_Shaking[1] = true;
 			}
 
 			p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
@@ -1482,6 +1522,224 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);
+
+}
+
+void CBoss::Attack_Rolling(_float fTimeDelta)
+{
+	Start_Pattern(TEXT("Boss_Attack_Rolling.wav"));
+
+	m_CanPortal = false; 
+	m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+
+	if(!m_RollingShake[0] || !m_RollingShake[1] || !m_RollingShake[2] )
+	{
+		if (!m_RollingShake[0] && m_pTransform->Get_OnCollide())
+		{
+			m_RollingShake[0] = true;
+			m_pPlayer->Set_Shake(0.5f, 1.5f);
+		}
+
+		if (!m_RollingShake[1] && m_LeftArmTr->Get_OnCollide())
+		{
+			m_RollingShake[1] = true;
+			m_pPlayer->Set_Shake(0.5f, 1.5f);
+		}
+
+
+		if (!m_RollingShake[2] && m_RightArmTr->Get_OnCollide())
+		{
+			m_RollingShake[2] = true;
+			m_pPlayer->Set_Shake(0.5f, 1.5f);
+		}
+	}
+
+	if (!m_RollingReady && m_pTransform->Get_OnCollide() && m_LeftArmTr->Get_OnCollide() && m_RightArmTr->Get_OnCollide())
+	{
+		m_RollingReady = true;
+		m_LeftArm->Set_State(CArm::ARM_ATTACK);
+		m_RightArm->Set_State(CArm::ARM_ATTACK);
+	}
+	else if(!m_RollingReady)
+	{
+		m_pTransform->Gravity(0.3f, fTimeDelta);
+		m_LeftArmTr->Gravity(0.3f, fTimeDelta);
+		m_RightArmTr->Gravity(0.3f, fTimeDelta);
+		return;
+	}
+
+	m_fTimer += fTimeDelta;
+
+	_float3 vLeftPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	_float3 vRightPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+
+	if (m_LeftArm->Get_Portaling())
+	{
+		if(!m_RollingHit[0])
+		{
+			m_LeftArmTr->Go_Straight(fTimeDelta * 10.f);
+			if (m_LeftArm->Get_ParentCollide() || m_LeftArmTr->Get_OnCollide())
+			{
+				m_RollingHit[0] = true;
+				if (m_LeftArm->Get_ParentCollide())
+					++m_RollingHitCount;
+
+				m_pPlayer->Set_Shake(0.5f, 2.f);
+
+				CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+				p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT1);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::ADDITIONAL_EFFECT1, 1.f);
+				RELEASE_INSTANCE(CGameInstance);
+			}
+		}
+		else if(InitArmPosition(fTimeDelta, true, false))
+		{
+			m_LeftArm->Set_Portaling(false);
+			m_LeftArm->Set_CanPortal(true);
+			m_Shaking[0] = false;
+			m_RollingHit[0] = false;
+			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+			p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT1);
+			RELEASE_INSTANCE(CGameInstance);
+		}
+		else
+		{
+			m_LeftArm->Set_CanPortal(false);
+		}
+
+	}
+	else
+	{
+		vLeftPos.x = vLeftPos.x + sinf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
+		vLeftPos.z = vLeftPos.z + cosf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
+
+		_float3 vRight, vUp, vLook, vScale;
+		
+		vScale = m_LeftArmRotationTr->Get_Scale();
+		vLook = vLeftPos - m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vUp = m_LeftArmRotationTr->Get_State(CTransform::STATE_UP);
+		D3DXVec3Normalize(&vLook, &vLook);
+		D3DXVec3Normalize(&vUp, &vUp);
+		vRight = *D3DXVec3Cross(&vRight, &vUp, &vLook);
+
+		m_LeftArmRotationTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+		m_LeftArmRotationTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+		m_LeftArmRotationTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-vUp, m_LeftArmTr->Get_State(CTransform::STATE_POSITION), 100, true);
+
+		if(!collList.empty())
+		{
+			auto iter = collList.begin();
+
+			if(iter != collList.end())
+			{
+				vLeftPos.y = (*iter).Point.y + 0.01f + vScale.y * 0.5f;
+			}
+		}
+
+		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, vLeftPos);
+		RELEASE_INSTANCE(CGameInstance);
+	}
+
+	if (m_RightArm->Get_Portaling())
+	{
+		if(!m_RollingHit[1])
+		{
+			m_RightArmTr->Go_Straight(fTimeDelta * 10.f);
+
+			if (m_RightArm->Get_ParentCollide() || m_RightArmTr->Get_OnCollide())
+			{
+				m_RollingHit[1] = true;
+				if (m_RightArm->Get_ParentCollide())
+					++m_RollingHitCount;
+
+				m_pPlayer->Set_Shake(0.5f, 2.f);
+				CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+				p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT2);
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::ADDITIONAL_EFFECT2, 1.f);
+				RELEASE_INSTANCE(CGameInstance);
+			}
+		}
+		else if (InitArmPosition(fTimeDelta, false, true))
+		{
+			m_RightArm->Set_Portaling(false);
+			m_RightArm->Set_CanPortal(true);
+			m_Shaking[1] = false;
+			m_RollingHit[1] = false;
+			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+			p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT2);
+			RELEASE_INSTANCE(CGameInstance);
+		}
+		else
+		{
+			m_RightArm->Set_CanPortal(false);
+		}
+	}
+	else
+	{
+		vRightPos.x = vRightPos.x - sinf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
+		vRightPos.z = vRightPos.z - cosf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
+
+		_float3 vRight, vUp, vLook, vScale;
+
+		vScale = m_RightArmRotationTr->Get_Scale();
+		vLook = vRightPos - m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vUp = m_RightArmRotationTr->Get_State(CTransform::STATE_UP);
+		D3DXVec3Normalize(&vLook, &vLook);
+		D3DXVec3Normalize(&vUp, &vUp);
+		vRight = *D3DXVec3Cross(&vRight, &vUp, &vLook);
+
+		m_RightArmRotationTr->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+		m_RightArmRotationTr->Set_State(CTransform::STATE_UP, vUp * vScale.y);
+		m_RightArmRotationTr->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-vUp, m_RightArmTr->Get_State(CTransform::STATE_POSITION), 100, true);
+
+		if (!collList.empty())
+		{
+			auto iter = collList.begin();
+
+			if (iter != collList.end())
+			{
+				vRightPos.y = (*iter).Point.y + 0.01f + vScale.y * 0.5f;
+			}
+		}
+
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vRightPos);
+		RELEASE_INSTANCE(CGameInstance);
+	}
+
+	if(!m_RollingCharged && fTimeDelta >= 0.f)
+	{
+		m_LeftArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f,0.f,0.f));
+		m_RightArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f, 0.f, 0.f));
+
+		m_RollingChargingGauge += 2.f;
+	}
+
+	if(!m_RollingCharged && m_fTimer >=  m_RollingChargingTime)
+	{
+		m_RollingCharged = true;
+		m_MoveToPlayer = true;
+		m_fTimer = 0.f;
+	}
+
+	if(m_MoveToPlayer)
+	{
+		m_pTransform->Go_Straight(fTimeDelta * 1.3f);
+
+		if(m_RollingMovingTime <= m_fTimer || m_RollingHitCount >= 2)
+		{
+			m_LeftArm->Set_Color(_float4(0.f, 0.f, 0.f, 0.f));
+			m_RightArm->Set_Color(_float4(0.f, 0.f, 0.f, 0.f));
+			m_LeftArm->Set_Portaling(false);
+			m_RightArm->Set_Portaling(false);
+			Set_BossState(BOSS_IDLE);
+		}
+	}
 
 }
 

@@ -314,8 +314,8 @@ HRESULT CPortalControl::SetUp_UI()
 		
 	desc3.Layer = 2;
 	desc3.Alpha = CUI::ALPHA_BLEND;
-	desc3.PosX = g_iWinCX * 0.90f;
-	desc3.PosY = g_iWinCY * 0.82f;
+	desc3.PosX = g_iWinCX / 2;//g_iWinCX * 0.90f;
+	desc3.PosY = g_iWinCY / 2;//g_iWinCY * 0.82f;
 	desc3.SizeX = 500.f;
 	desc3.SizeY = 350.f;
 	desc3.Style = CUI::STYLE_FIX;

@@ -54,6 +54,8 @@ public:
 
 	const _bool& Get_ParentCollide() const;
 	void Set_ParentCollide(_bool _bool);
+
+	void Set_Color(_float4 _color) { m_Color = _color; }
 private:
 	void Synchronize_Transform();
 	void Rolling(_float fTimeDelta);
@@ -77,6 +79,9 @@ private:
 	_bool m_Rolling = false;
 	_float m_RollingSpeed = 0.3f;
 	_float3 m_RollingAxis = _float3(0.f, 1.f, 0.f);
+
+
+	_float4 m_Color = _float4(0.f,0.f,0.f,0.f);
 
 private:
 	CTransform* m_pOnlyRotation = nullptr;

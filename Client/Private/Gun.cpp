@@ -235,8 +235,7 @@ void CGun::Reload()
 		p_instance->Play_Sound(TEXT("Reload.wav"), CSoundMgr::WEAPON_EFFECT1, 1.f);
 		RELEASE_INSTANCE(CGameInstance);
 	}
-}
-HRESULT CGun::SetUp_UI()
+}HRESULT CGun::SetUp_UI()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	CUI::UIDESC desc;
@@ -247,10 +246,10 @@ HRESULT CGun::SetUp_UI()
 	desc.Layer = 2;
 	desc.FrameCount = 76;
 	desc.Alpha = CUI::ALPHA_BLEND;
-	desc.PosX = g_iWinCX * 0.75f;
-	desc.PosY = g_iWinCY * 0.65f;
-	desc.SizeX = 750.f;
-	desc.SizeY = 500.f;
+	desc.PosX = g_iWinCX / 1.7f;//g_iWinCX * 0.75f;
+	desc.PosY = g_iWinCY / 1.95f;//g_iWinCY * 0.65f;
+	desc.SizeX = g_iWinCX / 1.7f;
+	desc.SizeY = g_iWinCY / 1.44f;
 	desc.AnimateSpeed = 30.f;
 	desc.Style = CUI::STYLE_FIX;
 	desc.Texture = TEXT("Prototype_Component_Texture_Gun_Reload");
@@ -278,10 +277,10 @@ HRESULT CGun::SetUp_UI()
 	desc2.Layer = 3;
 	desc2.FrameCount = 4;
 	desc2.Alpha = CUI::ALPHA_BLEND;
-	desc2.PosX = m_fGun_fx - 100.f;
-	desc2.PosY = m_fGun_fy - 20.f;
-	desc2.SizeX = 400.f;
-	desc2.SizeY = 400.f;
+	desc2.PosX = 100.f;
+	desc2.PosY = 100.f;
+	desc2.SizeX = g_iWinCX / 3.2f;
+	desc2.SizeY = g_iWinCY / 1.8f;
 	desc2.AnimateSpeed = 100.f;
 	desc2.Style = CUI::STYLE_REPEAT;
 	desc2.Texture = TEXT("Prototype_Component_Texture_Gun_Muzzle");
@@ -312,8 +311,8 @@ HRESULT CGun::SetUp_UI()
 	desc3.Alpha = CUI::ALPHA_BLEND;
 	desc3.PosX = g_iWinCX * 0.25f;
 	desc3.PosY = g_iWinCY * 0.8f;
-	desc3.SizeX = 50.f;
-	desc3.SizeY = 50.f;
+	desc3.SizeX = g_iWinCX / 25.6f;
+	desc3.SizeY = g_iWinCY / 14.4f;
 	desc3.AnimateSpeed = 100.f;
 	desc3.Style = CUI::STYLE_FIX;
 	desc3.Texture = TEXT("Prototype_Component_Texture_Font");
@@ -339,8 +338,8 @@ HRESULT CGun::SetUp_UI()
 	desc4.Alpha = CUI::ALPHA_BLEND;
 	desc4.PosX = g_iWinCX * 0.22f;
 	desc4.PosY = g_iWinCY * 0.8f;
-	desc4.SizeX = 50.f;
-	desc4.SizeY = 50.f;
+	desc4.SizeX = g_iWinCX / 25.6f;
+	desc4.SizeY = g_iWinCY / 14.4f;
 	desc4.AnimateSpeed = 100.f;
 	desc4.Style = CUI::STYLE_FIX;
 	desc4.Texture = TEXT("Prototype_Component_Texture_Font");
@@ -367,8 +366,8 @@ HRESULT CGun::SetUp_UI()
 	desc5.Alpha = CUI::ALPHA_BLEND;
 	desc5.PosX = g_iWinCX * 0.16f;
 	desc5.PosY = g_iWinCY * 0.8f;
-	desc5.SizeX = 50.f;
-	desc5.SizeY = 50.f;
+	desc5.SizeX = g_iWinCX / 25.6f;
+	desc5.SizeY = g_iWinCY / 14.4f;
 	desc5.AnimateSpeed = 100.f;
 	desc5.Style = CUI::STYLE_FIX;
 	desc5.Texture = TEXT("Prototype_Component_Texture_Slash");
@@ -394,8 +393,8 @@ HRESULT CGun::SetUp_UI()
 	desc6.Alpha = CUI::ALPHA_BLEND;
 	desc6.PosX = g_iWinCX * 0.13f;
 	desc6.PosY = g_iWinCY * 0.8f;
-	desc6.SizeX = 50.f;
-	desc6.SizeY = 50.f;
+	desc6.SizeX = g_iWinCX / 25.6f;
+	desc6.SizeY = g_iWinCY / 14.4f;
 	desc6.AnimateSpeed = 100.f;
 	desc6.Style = CUI::STYLE_FIX;
 	desc6.Texture = TEXT("Prototype_Component_Texture_Font");
@@ -421,8 +420,8 @@ HRESULT CGun::SetUp_UI()
 	desc7.Alpha = CUI::ALPHA_BLEND;
 	desc7.PosX = g_iWinCX * 0.1f;
 	desc7.PosY = g_iWinCY * 0.8f;
-	desc7.SizeX = 50.f;
-	desc7.SizeY = 50.f;
+	desc7.SizeX = g_iWinCX / 25.6f;
+	desc7.SizeY = g_iWinCY / 14.4f;
 	desc7.AnimateSpeed = 100.f;
 	desc7.Style = CUI::STYLE_FIX;
 	desc7.Texture = TEXT("Prototype_Component_Texture_Font");
@@ -449,8 +448,8 @@ HRESULT CGun::SetUp_UI()
 	GunIcon.Alpha = CUI::ALPHA_BLEND;
 	GunIcon.PosX = g_iWinCX * 0.05f;
 	GunIcon.PosY = g_iWinCY * 0.79f;
-	GunIcon.SizeX = 80.f;
-	GunIcon.SizeY = 80.f;
+	GunIcon.SizeX = g_iWinCX / 16.f;
+	GunIcon.SizeY = g_iWinCY / 9.f;
 	GunIcon.AnimateSpeed = 30.f;
 	GunIcon.Style = CUI::STYLE_FIX;
 	GunIcon.Texture = TEXT("Prototype_Component_Gunicon");
@@ -516,7 +515,7 @@ void CGun::Animate(_float fTimeDelta)
 
 	m_pGun_UI->Set_Pos(m_fGun_fx + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
-	m_pMuzzle_UI->Set_Pos(m_fGun_fx - 100.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy - 20.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
+	m_pMuzzle_UI->Set_Pos(m_fGun_fx - 300.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy - 70.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
 }
 

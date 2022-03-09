@@ -29,9 +29,9 @@ protected:
 	virtual ~CBoss() = default;
 
 public:
-	typedef enum tagBossState {BOSS_IDLE, BOSS_MOVE, BOSS_ATTACK,BOSS_PHASECHANGE, BOSS_GROGY, BOSS_DIE}BOSSSTATE;
+	typedef enum tagBossState {BOSS_IDLE, BOSS_MOVE, BOSS_ATTACK, BOSS_GROGY, BOSS_DIE}BOSSSTATE;
 	typedef enum tagBossPhase {BOSS_PHASEONE, BOSS_PHASETWO}BOSSPHASE;
-	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH }BOSSATTACK;
+	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH, BOSSATT_ROLLING}BOSSATTACK;
 	typedef enum tagBossRage { BOSSRAGE_TAEBO, BOSSRAGE_LASER }BOSSRAGE;
 
 
@@ -88,6 +88,8 @@ private:
 	void Spawn_Shield();
 	void Shield_Effect(_float fTimeDelta);
 
+
+	void Init_Attack_Rolling();
 private:
 
 	void Init_Attack_Punch();
@@ -123,6 +125,7 @@ private:
 private:
 	void Attack_Missile(_float fTimeDelta);
 	void Attack_Punch(_float fTimeDelta);
+	void Attack_Rolling(_float fTimeDelta);
 
 private:
 	void Rage_Laser(_float fTimeDelta);
@@ -149,7 +152,7 @@ private:
 	_bool				m_bRangeValid = false;
 	_bool				m_bCalled = false;
 	_bool				m_Hand = false;
-	_bool				m_Shaking = false;
+	_bool				m_Shaking[2] = { false , false};
 
 
 private:
@@ -185,6 +188,9 @@ private:
 	CUI* m_BossUI_Black = nullptr;
 	CUI* m_BossUI_HpBar = nullptr;
 	CUI* m_BossUI_ShieldHP = nullptr;
+
+	_float m_fBossMaxHp;
+	_float m_fMaxShield;
 private:
 	// ³»²¨
 	_float3 m_vScale = _float3(5.f,5.f,5.f);
@@ -194,8 +200,8 @@ private:
 	_float m_AttPatternTimer = 0.f;
 
 	// Idle
-	_bool initPos = false;
-	_bool idlePos = true;
+	_bool initPos[2] = { false,false };
+	_bool idlePos[2] = { true,true };
 
 	_float m_LeftTimer = 0.f;
 	_float m_RightTimer = 0.f;
@@ -225,19 +231,25 @@ private:
 	_float3 m_SizingAxis = _float3(1.f, 1.f, 0.f);
 	
 
-	// Attack_Mixed
-	_float m_ChargingTime = 3.f;
-	_float m_StrikingTime = 5.f;
-
-	_bool m_Charging = false;
-	_bool m_Striking = false;
+	// Attack_Rolling
+	_bool m_RollingReady = false;
+	_bool m_RollingShake[3] = {false,false,false};
+	_float	m_RollingChargingTime = 3.f;
+	_float m_RollingChargingGauge = 0.f;
+	_bool m_RollingCharged = false;
+	_bool m_MoveToPlayer = false;
+	_float	m_RollingMovingTime = 5.f;
+	_uint	m_RollingHitCount = 0;
+	_bool m_RollingHit[2] = { false,false };
 
 	//Grogy
 	_bool m_Grogy = false;
 
 	// Die
 	_bool m_Dying = false;
-	
+
+
+
 
 private:
 	BOSSPHASE m_Phase = BOSS_PHASEONE;
@@ -249,12 +261,14 @@ private:
 	CPlayer* m_pPlayer = nullptr;
 	CTransform* m_pPlayerTr = nullptr;
 
-
 	CArm* m_LeftArm = nullptr;
 	CArm* m_RightArm = nullptr;
 
 	CTransform* m_LeftArmTr = nullptr;
 	CTransform* m_RightArmTr = nullptr;
+
+	CTransform* m_LeftArmRotationTr = nullptr;
+	CTransform* m_RightArmRotationTr = nullptr;
 
 	CShield* m_Shield = nullptr;
 

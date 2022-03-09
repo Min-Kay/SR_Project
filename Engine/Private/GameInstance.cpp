@@ -62,6 +62,12 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 		nullptr == m_pObject_Manager)
 		return -1;
 
+	if (FAILED(m_pCollision_Manager->Check_DeadCollider()))
+		return -1;
+
+	if (FAILED(m_pCollision_Manager->Collision()))
+		return -1;
+
 	if (FAILED(m_pInput_Device->SetUp_InputDeviceState()))
 		return -1;
 
@@ -84,12 +90,6 @@ _int CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (0 > m_pCamera_Manager->LateTick(fTimeDelta))
 		return -1;
 
-
-	if (FAILED(m_pCollision_Manager->Check_DeadCollider()))
-		return -1;
-
-	if (FAILED(m_pCollision_Manager->Collision()))
-		return -1;
 
 	m_pInput_Device->Tick_KeyState();
 

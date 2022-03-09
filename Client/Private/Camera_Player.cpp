@@ -124,13 +124,13 @@ _int CCamera_Player::Tick(_float fTimeDelta)
         Control_Menu(!isCursorOn);
     }
 
-    if (pGameInstance->Get_Key_Down(DIK_1))
+    if (pGameInstance->Get_Key_Down(DIK_3))
     {
         g_ControlShader -= 0.05f;
 
     }
 
-    if (pGameInstance->Get_Key_Down(DIK_2))
+    if (pGameInstance->Get_Key_Down(DIK_4))
     {
         g_ControlShader += 0.05f;
 

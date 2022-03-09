@@ -89,6 +89,7 @@ HRESULT CArm::Render()
 
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pShader->SetUp_ValueOnShader("g_Color",m_Color, sizeof(_float4));
 
 	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", m_Parent->Get_Phase() == CBoss::BOSS_PHASEONE ? m_ArmPos : m_ArmPos + 2);
 
@@ -96,7 +97,7 @@ HRESULT CArm::Render()
 	m_pBuffer->Render();
 	m_pShader->End_Shader();
 
-
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f,0.f,0.f,0.f), sizeof(_float4));
 	/*if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
 		return E_FAIL;
 

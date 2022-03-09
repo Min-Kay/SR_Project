@@ -60,7 +60,7 @@ private:
 	CTransform* m_ParentTr = nullptr;
 
 private:
-
+	_float4 m_Color = _float4(0.f,0.f,0.f,0.f); 
 	_float m_Timer = 0.f;
 	_bool m_Valid = false;
 	_bool m_On = false;

@@ -101,12 +101,13 @@ HRESULT CShield::Render()
 
 	m_pTransform->Bind_OnShader(m_pShader);
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
-
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_BLEND_CUBE);
 	m_pBuffer->Render();
 	m_pShader->End_Shader();
+	m_Color = _float4(0.f, 0.f, 0.f, 0.f);
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 
 	return S_OK;
 }
@@ -156,7 +157,7 @@ void CShield::Set_ParentTransform(CTransform* _tr)
 
 void CShield::Add_HP(_int _add)
 {
-	return;
+	m_Color = _float4(0.f,0.f,0.f,0.5f);
 }
 
 void CShield::Spawn_Shield(_float fTimeDelta)

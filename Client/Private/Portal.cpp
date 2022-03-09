@@ -181,12 +181,13 @@ HRESULT CPortal::NativeConstruct(void* pArg)
 _int CPortal::Tick(_float fTimeDelta)
 {
     m_Collider->Set_Collider();
-    Portaling();
+
 	return _int();
 }
 
 _int CPortal::LateTick(_float fTimeDelta)
 {
+    Portaling();
     m_pRenderer->Add_RenderGroup(CRenderer::RENDER_ALPHA,this);
 
     return _int();
@@ -283,6 +284,9 @@ void CPortal::Portaling()
         CTransform* objTr = static_cast<CTransform*>(obj->Get_Component(COM_TRANSFORM));
         if (objTr == nullptr)
             continue;
+
+        objTr->Set_OnCollide(false);
+
         CTransform* opponentTr = static_cast<CTransform*>(m_pOpponent->Get_Component(COM_TRANSFORM));
         _float3 vOpLook = opponentTr->Get_State(CTransform::STATE_LOOK);
         D3DXVec3Normalize(&vOpLook, &vOpLook);

@@ -137,7 +137,6 @@ PS_OUT PS_GRAYCOLOR_CUBE(PS_IN In)
 	return Out;
 }
 
-
 //어떤 테크니커로 그린다. 
 //
 //어떤 쉐이더로 그린다. 
@@ -222,6 +221,16 @@ technique Default_Technique
 
 		VertexShader = compile vs_3_0 VS_MAIN();
 		PixelShader = compile ps_3_0 PS_GRAYCOLOR_CUBE();
+	}
+
+	pass Default_SkyBox
+	{
+		zenable = false;
+		zwriteenable = false;
+		cullmode = cw;
+
+		VertexShader = compile vs_3_0 VS_MAIN();
+		PixelShader = compile ps_3_0 PS_MAIN_CUBE();
 	}
 
 }

@@ -88,7 +88,7 @@ HRESULT CDoor_right::Render()
 		return E_FAIL;
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
+	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iTextureIndex);
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();
