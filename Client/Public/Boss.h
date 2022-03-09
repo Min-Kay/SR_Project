@@ -90,6 +90,7 @@ private:
 
 
 	void Init_Attack_Rolling();
+	void Init_Rage_Laser();
 private:
 
 	void Init_Attack_Punch();
@@ -136,7 +137,7 @@ private:
 
 	_float m_fTimer = 0.f; 
 	_uint m_ImageIndex = 0;
-	_int m_InitHp = 1000;
+	_int m_InitHp = 100;
 	_bool m_OnShield = false;
 	_bool m_OnPattern = false;
 	_bool m_SpawnShield = false;
@@ -241,6 +242,22 @@ private:
 	_float	m_RollingMovingTime = 5.f;
 	_uint	m_RollingHitCount = 0;
 	_bool m_RollingHit[2] = { false,false };
+
+
+	// Rage_Laser
+	_bool m_Strike[2] = { false, false };
+	_bool m_Aiming = false;
+	_bool m_ReachPoint[2] = { false,false };
+	_float3 m_TargetPos;
+	_float m_AimTime = 2.0f;
+	_float m_ShootTime = 0.2f;
+	_float m_ShootTimer = 0.f;
+	_float m_StrikeTimer = 0.f;
+	_float m_StrikeTime = 1.f;
+	_bool m_Striking = false;
+
+	_float m_LaserTime = 30.f;
+
 
 	//Grogy
 	_bool m_Grogy = false;

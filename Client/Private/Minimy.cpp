@@ -203,8 +203,8 @@ void CMinimy::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 		return;
 	}
 
-	//if (_watchPlayer)
-		//m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+	if (_watchPlayer)
+		m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 2.f, 0.f)  + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 0.5f));
 

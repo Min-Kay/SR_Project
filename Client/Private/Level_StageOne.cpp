@@ -127,6 +127,8 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 			RELEASE_INSTANCE(CGameInstance);
 			return -1;
 		}
+		RELEASE_INSTANCE(CGameInstance);
+		return 0;
 	}
 
 	if (m_Change->Get_LevelOut())
@@ -1499,7 +1501,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	CTransform* MiddleTrans1 = (CTransform*)MiddleTile1->Get_Component(COM_TRANSFORM);
 	static_cast<CTileCollider*>(MiddleTile1)->Set_TextureIndex(1);
 	//실제 보이는 박스
-	MiddleTrans1->Scaled(_float3((m_iBoxSize + HalfBoxSize) * 0.5, m_iBoxSize, m_iBoxSize));
+	MiddleTrans1->Scaled(_float3((m_iBoxSize + HalfBoxSize) * 0.5f, m_iBoxSize, m_iBoxSize));
 	MiddleTrans1->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 	MiddleTrans1->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x - HalfBoxSize * 0.25f, BallMapPos.y + HalfBoxSize, BallMapPos.z + HalfBoxSize * 0.75f));;
 	CBoxCollider* Middlebox1 = static_cast<CBoxCollider*>(MiddleTile1->Get_Component(COM_COLLIDER));
@@ -1562,7 +1564,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	PassageTrans->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 2.5f, GravityMapPos.y + m_iGravityBoxSize * 0.5f, GravityMapPos.z - m_iGravityBoxSize * 0.625f));
 	CBoxCollider* Passagebox = static_cast<CBoxCollider*>(PassageTile->Get_Component(COM_COLLIDER));
 	//충돌박스
-	Passagebox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1));
+	Passagebox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	Passagebox->Set_AdditionalPos(_float3(0.f, -HalfGravityWallSize, 0.f));
 
 
@@ -1578,7 +1580,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	PassageTransUp->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 2.5f, GravityMapPos.y + m_iGravityBoxSize, GravityMapPos.z - m_iGravityBoxSize * 0.625f - 0.1f));
 	CBoxCollider* PassageboxUp = static_cast<CBoxCollider*>(PassageTileUp->Get_Component(COM_COLLIDER));
 	//충돌박스
-	PassageboxUp->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1));
+	PassageboxUp->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	PassageboxUp->Set_AdditionalPos(_float3(0.f, HalfGravityWallSize, 0.f));
 
 
@@ -1986,7 +1988,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	PassageGravityTrans->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 2.5f + 18.f + m_iGravityBoxSize, GravityMapPos.y + m_iGravityBoxSize * 0.5f, GravityMapPos.z - m_iGravityBoxSize * 0.625f));
 	CBoxCollider* PassageGravitybox = static_cast<CBoxCollider*>(PassageGravityTile->Get_Component(COM_COLLIDER));
 	//충돌박스
-	PassageGravitybox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1));
+	PassageGravitybox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	PassageGravitybox->Set_AdditionalPos(_float3(0.f, -HalfGravityWallSize, 0.f));
 
 
@@ -2002,7 +2004,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	PassageGravityTransUp->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 2.5f + 18.f + m_iGravityBoxSize, GravityMapPos.y + m_iGravityBoxSize, GravityMapPos.z - m_iGravityBoxSize * 0.625f - 0.1f));
 	CBoxCollider* PassageGravityboxUp = static_cast<CBoxCollider*>(PassageGravityTileUp->Get_Component(COM_COLLIDER));
 	//충돌박스
-	PassageGravityboxUp->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1));
+	PassageGravityboxUp->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	PassageGravityboxUp->Set_AdditionalPos(_float3(0.f, HalfGravityWallSize, 0.f));
 
 

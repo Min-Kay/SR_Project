@@ -157,6 +157,9 @@
     <Filter Include="97.ShaderFile">
       <UniqueIdentifier>{f78c7573-74dc-4b1f-b877-db320d269696}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Enemy\Boss\Laser">
+      <UniqueIdentifier>{3632e02f-5bf7-4aac-9364-3a7f62c8cd17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -303,6 +306,9 @@
     <ClInclude Include="..\Public\Shield_Effect.h">
       <Filter>02.GameObjects\Enemy\Boss\Shield_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Laser.h">
+      <Filter>02.GameObjects\Enemy\Boss\Laser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -436,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Shield_Effect.cpp">
       <Filter>02.GameObjects\Enemy\Boss\Shield_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Laser.cpp">
+      <Filter>02.GameObjects\Enemy\Boss\Laser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

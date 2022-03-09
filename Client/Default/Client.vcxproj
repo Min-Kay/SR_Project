@@ -193,6 +193,7 @@
     <ClInclude Include="..\Public\Enemy.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Impact.h" />
+    <ClInclude Include="..\Public\Laser.h" />
     <ClInclude Include="..\Public\Level_StageOne.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="..\Private\Enemy.cpp" />
     <ClCompile Include="..\Private\Gun.cpp" />
     <ClCompile Include="..\Private\Impact.cpp" />
+    <ClCompile Include="..\Private\Laser.cpp" />
     <ClCompile Include="..\Private\Level_StageOne.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />

@@ -15,6 +15,7 @@
 #include "Shader.h"
 
 #include "AttackRange.h"
+#include "Laser.h"
 #include "Minimy.h"
 #include "Missile.h"
 #include "Targeting.h"
@@ -101,14 +102,13 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	m_pCollider->Set_Collider();
 
-
 	Spawn_Shield();
 
 	Shield_Effect(fTimeDelta);
 
 	State_Machine(fTimeDelta);
 
-	if(m_Resizing && m_Sizing)
+	if(m_Resizing && m_Sizing && !m_Striking)
 		Synchronize_Transform();
 
 
@@ -134,8 +134,6 @@ HRESULT CBoss::Render()
 {
 	if (Get_Dead())
 		return 0;
-
-	//m_pCollider->Draw_Box();
 
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 
@@ -596,7 +594,7 @@ void CBoss::Synchronize_Transform()
 
 	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
 	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
-
+	
 }
 
 void CBoss::Set_BossState(BOSSSTATE _state)
@@ -616,6 +614,8 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 	Init_Attack_Punch();
 	Init_Attack_Missile();
 	Init_Attack_Rolling();
+	Init_Rage_Laser();
+
 	m_State = _state;
 	m_OnPattern = false;
 	
@@ -816,6 +816,19 @@ void CBoss::Init_Attack_Rolling()
 
 }
 
+void CBoss::Init_Rage_Laser()
+{
+	m_Aiming = false;
+	m_ShootTimer = 0.f;
+	for(_uint i = 0; i < 2; ++i)
+	{
+		m_Strike[i] = false;
+		m_ReachPoint[i] = false;
+	}
+	m_StrikeTimer = 0.f;
+	m_Striking = false;
+}
+
 void CBoss::Init_Attack_Punch()
 {
 	m_bCalled = false;
@@ -963,7 +976,7 @@ void CBoss::Randomize_Pattern(_float fTimeDelta)
 		case BOSS_PHASETWO:
 			if (m_AttPatternTimer > 2.f)
 			{
-				m_RageState = m_RageState == BOSSRAGE_TAEBO ? BOSSRAGE_LASER : BOSSRAGE_TAEBO;
+				m_RageState = BOSSRAGE_LASER;// m_RageState == BOSSRAGE_TAEBO ? BOSSRAGE_LASER : BOSSRAGE_TAEBO;
 				m_AttPatternTimer = 0.f;
 				Set_BossState(BOSS_ATTACK);
 			}
@@ -1144,6 +1157,15 @@ void CBoss::Attack(_float fTimeDelta)
 void CBoss::Rage(_float fTimeDelta)
 {
 	m_ImageIndex = 4;
+	switch (m_RageState)
+	{
+	case BOSSRAGE_LASER:
+		Rage_Laser(fTimeDelta);
+		break;
+	case BOSSRAGE_TAEBO:
+		Rage_Taebo(fTimeDelta);
+		break;
+	}
 }
 
 void CBoss::Grogy(_float fTimeDelta)
@@ -1151,6 +1173,7 @@ void CBoss::Grogy(_float fTimeDelta)
 	m_fTimer += fTimeDelta;
 
 	m_pTransform->Gravity(1.0f, fTimeDelta);
+	Synchronize_Transform();
 
 	if (!m_Grogy)
 	{
@@ -1753,6 +1776,241 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 			Set_BossState(BOSS_IDLE);
 		}
 	}
+
+}
+
+void CBoss::Rage_Laser(_float fTimeDelta)
+{
+	if(!m_ReachPoint[0] && !m_ReachPoint[1])
+		Gravity_Blowing(fTimeDelta, true);
+	else
+		m_pTransform->Gravity(0.3f, fTimeDelta);
+
+	// 주먹 스트레이트 꽂기
+	if (!m_Strike[0])
+	{
+
+		if (!m_Aiming)
+		{
+			Arm_Posing(fTimeDelta, true, true);
+			m_LeftArmTr->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+
+			m_fTimer += fTimeDelta;
+
+			if (m_fTimer >= m_AimTime)
+			{
+				m_Aiming = true;
+			}
+		}
+		else
+		{
+			m_LeftArmTr->Go_Straight(fTimeDelta * 10.f);
+		}
+
+		if (m_LeftArmTr->Get_OnCollide())
+		{
+			m_Strike[0] = true;
+			m_Aiming = false;
+			m_fTimer = 0.f;
+		}
+	}
+	else if (!m_Strike[1])
+	{
+		if (!m_Aiming)
+		{
+			Arm_Posing(fTimeDelta, false, true);
+			m_RightArmTr->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+
+			m_fTimer += fTimeDelta;
+
+			if (m_fTimer >= m_AimTime)
+			{
+				m_Aiming = true;
+			}
+		}
+		else
+		{
+			m_RightArmTr->Go_Straight(fTimeDelta * 10.f);
+		}
+
+		if (m_RightArmTr->Get_OnCollide())
+		{
+			m_Strike[1] = true;
+			m_Aiming = false;
+			m_fTimer = 0.f;
+		}
+	}
+
+	if (m_Strike[0] && m_Strike[1] && (!m_ReachPoint[0] || !m_ReachPoint[1]))
+	{
+		m_fTimer += fTimeDelta;
+		if (!initPos[0])
+		{
+			_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+			_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+			_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+
+			D3DXVec3Normalize(&vUp, &vUp);
+			D3DXVec3Normalize(&vRight, &vRight);
+
+			m_LeftTimer = 0.f;
+			Set_ArmPos(ARM_LEFT, m_LeftArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * (m_fUpMidPos + 5.f) - vRight * (m_fRightMidPos + 5.f), vPos + vUp * m_fUpMidPos - vRight * m_fRightMidPos);
+			m_LeftArm->Set_Rolling(true, _float3(1.f, 1.f, 0.f));
+
+			idlePos[0] = false;
+			initPos[0] = true;
+			m_fTimer = 0.f;
+		}
+
+		if (!initPos[1])
+		{
+			_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+			_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+			_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+
+			D3DXVec3Normalize(&vUp, &vUp);
+			D3DXVec3Normalize(&vRight, &vRight);
+
+			m_RightTimer = 0.f;
+			Set_ArmPos(ARM_RIGHT, m_RightArmTr->Get_State(CTransform::STATE_POSITION), vPos + vUp * (m_fUpMidPos + 5.f) + vRight * (m_fRightMidPos + 5.f), vPos + vUp * m_fUpMidPos + vRight * m_fRightMidPos);
+			m_RightArm->Set_Rolling(true, _float3(1.f, -1.f, 0.f));
+
+			idlePos[1] = false;
+			initPos[1] = true;
+			m_fTimer = 0.f;
+		}
+
+		if (!idlePos[0])
+		{
+
+			m_ReachPoint[0] = Move_By_Bazier(ARM_LEFT, fTimeDelta);
+
+			if (m_ReachPoint[0] || m_fTimer >= 1.f)
+			{
+				m_ReachPoint[0] = true;
+				m_LeftTimer = 0.f;
+				initPos[0] = false;
+				idlePos[0] = true;
+				m_init = false;
+				m_LeftArm->Set_Rolling(false);
+
+			}
+
+		}
+
+		if (!idlePos[1])
+		{
+			m_ReachPoint[1] = Move_By_Bazier(ARM_RIGHT, fTimeDelta);
+
+			if (m_ReachPoint[1] ||m_fTimer >= 1.f)
+			{
+				m_ReachPoint[1] = true;
+				m_RightTimer = 0.f;
+				initPos[1] = false;
+				idlePos[1] = true;
+				m_init = false;
+				m_RightArm->Set_Rolling(false);
+			}
+		}
+	}
+
+	if (m_ReachPoint[0] && m_ReachPoint[1])
+	{
+		m_fTimer += fTimeDelta;
+		m_ShootTimer += fTimeDelta;
+		if(m_ShootTime <= m_ShootTimer)
+		{
+			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+			
+			for (_uint i = 0; i < 6; ++i)
+			{
+				p_instance->Add_GameObject(g_CurrLevel, TEXT("Laser"), TEXT("Prototype_GameObject_Laser"));
+
+				CLaser* leftLaser = static_cast<CLaser*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Laser")));
+				CTransform* leftLaserTr = static_cast<CTransform*>(leftLaser->Get_Component(COM_TRANSFORM));
+
+				leftLaserTr->Set_State(CTransform::STATE_RIGHT, m_LeftArmRotationTr->Get_State(CTransform::STATE_RIGHT));
+				leftLaserTr->Set_State(CTransform::STATE_UP, m_LeftArmRotationTr->Get_State(CTransform::STATE_UP));
+				leftLaserTr->Set_State(CTransform::STATE_LOOK, m_LeftArmRotationTr->Get_State(CTransform::STATE_LOOK));
+				leftLaserTr->Set_State(CTransform::STATE_POSITION, m_LeftArmRotationTr->Get_State(CTransform::STATE_POSITION));
+				static_cast<CBoxCollider*>(leftLaser->Get_Component(COM_COLLIDER))->Set_State(CBoxCollider::COLL_SIZE, m_LeftArmRotationTr->Get_Scale());
+				leftLaser->Set_Player(m_pPlayer);
+				leftLaser->Set_Direction(i);
+
+
+				p_instance->Add_GameObject(g_CurrLevel, TEXT("Laser"), TEXT("Prototype_GameObject_Laser"));
+
+				CLaser* RightLaser = static_cast<CLaser*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Laser")));
+				CTransform* RightLaserTr = static_cast<CTransform*>(RightLaser->Get_Component(COM_TRANSFORM));
+
+				RightLaserTr->Set_State(CTransform::STATE_RIGHT, m_RightArmRotationTr->Get_State(CTransform::STATE_RIGHT));
+				RightLaserTr->Set_State(CTransform::STATE_UP, m_RightArmRotationTr->Get_State(CTransform::STATE_UP));
+				RightLaserTr->Set_State(CTransform::STATE_LOOK, m_RightArmRotationTr->Get_State(CTransform::STATE_LOOK));
+				RightLaserTr->Set_State(CTransform::STATE_POSITION, m_RightArmRotationTr->Get_State(CTransform::STATE_POSITION));
+				static_cast<CBoxCollider*>(RightLaser->Get_Component(COM_COLLIDER))->Set_State(CBoxCollider::COLL_SIZE, m_RightArmRotationTr->Get_Scale());
+				RightLaser->Set_Player(m_pPlayer);
+				RightLaser->Set_Direction(i);
+			}
+
+			RELEASE_INSTANCE(CGameInstance);
+			m_ShootTimer = 0.f;
+		}
+
+		m_LeftArmRotationTr->Turn(_float3(1.f,1.f,0.f),fTimeDelta * 0.01f);
+		m_RightArmRotationTr->Turn(_float3(-1.f, 1.f, 0.f), fTimeDelta * 0.01f);
+
+		m_pOnlyRotation->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * 0.2f);
+
+		m_pTransform->Go_Straight(fTimeDelta);
+
+		m_StrikeTimer += fTimeDelta;
+		if(m_StrikeTime <= m_StrikeTimer)
+		{
+			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+			if (p_instance->Get_Collide(m_pCollider, static_cast<CBoxCollider*>(m_pPlayer->Get_Component(COM_COLLIDER))))
+			{
+				m_pPlayer->Add_Hp(-m_Damage);
+				m_StrikeTimer = 0.f;
+			}
+			RELEASE_INSTANCE(CGameInstance);
+		}
+
+		_float3 m_pPlayerPos = m_pPlayerTr->Get_State(CTransform::STATE_POSITION);
+		m_pPlayerPos.y = m_pTransform->Get_State(CTransform::STATE_POSITION).y;
+
+		_float3 vRight, vUp, vLook, vScale;
+		vScale = m_pTransform->Get_Scale();
+		vLook = m_pPlayerPos - m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+		D3DXVec3Normalize(&vLook, &vLook);
+		D3DXVec3Normalize(&vUp, &vUp);
+		vRight = *D3DXVec3Cross(&vRight, &vUp, &vLook);
+
+		m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+		m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+		m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
+
+		m_Striking = true;
+
+		if(m_fTimer >= m_LaserTime)
+		{
+			m_Striking = false;
+			Set_BossState(BOSS_IDLE);
+		}
+
+	}
+
+
+	// 복귀 중에 사면으로 레이저 발사 하면서 공중 이동
+
+	// 본체가 스트레이트 꽂기
+
+	// 15초 진행후 끝
+}
+
+void CBoss::Rage_Taebo(_float fTimeDelta)
+{
 
 }
 

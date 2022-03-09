@@ -59,6 +59,9 @@ public:
 	void Go_BackWard(_float fTimeDelta);
 	void Go_Left(_float fTimeDelta);
 	void Go_Right(_float fTimeDelta);
+	void Go_Up(_float fTimeDelta);
+	void Go_Down(_float fTimeDelta);
+
 	void LookAt(_float3 vTargetPos);
 	void Turn(_float3 vAxis, _float fTimeDelta);
 	void Rotation(_float3 vAxis, _float fRadian);
