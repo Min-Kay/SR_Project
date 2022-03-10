@@ -69,14 +69,14 @@ private:
 	_float m_fFrShoot = 0.f;
 
 	_uint m_iCurrBulletCount = 0;
-	_uint m_iFullBulletCount = 40;
+	_uint m_iFullBulletCount = 60;
 
 	_int m_iCurrSpread = 0;
 	_uint m_iSpread = 3;
 
 	_float m_fRange = 30.f; 
 
-	_float m_fRebound = 1.f;
+	_float m_fRebound = 1.2f;
 
 	_float m_fTickShoot = 0.f;
 	_float m_fTickSpread = 0.f;

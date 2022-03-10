@@ -137,7 +137,7 @@ private:
 
 	_float m_fTimer = 0.f; 
 	_uint m_ImageIndex = 0;
-	_int m_InitHp = 100;
+	_int m_InitHp = 2000;
 	_bool m_OnShield = false;
 	_bool m_OnPattern = false;
 	_bool m_SpawnShield = false;

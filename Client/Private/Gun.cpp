@@ -470,6 +470,9 @@ void CGun::Reload()
 		return E_FAIL;
 	}
 
+	m_pFullBullet_UI_1->Set_CurrFrameIndex((m_iFullBulletCount % 10));
+	m_pFullBullet_UI_2->Set_CurrFrameIndex((m_iFullBulletCount % 100) / 10);
+
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }

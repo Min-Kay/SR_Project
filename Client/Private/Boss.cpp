@@ -463,8 +463,11 @@ void CBoss::Set_InitPos(_float3 _pos)
 
 void CBoss::Add_HP(_int _add)
 {
-	if(!m_Shield->Get_Valid())
+	if (m_Striking)
+		__super::Add_HP((_int)_add * 0.2f);
+	else if(!m_Shield->Get_Valid())
 		__super::Add_HP(_add);
+	
 }
 
 const _int& CBoss::Get_InitHP() const
@@ -1993,6 +1996,12 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 
 		m_Striking = true;
 
+		if(!m_Shaking[0] && m_pTransform->Get_OnCollide())
+		{
+			m_pPlayer->Set_Shake(1.0f, 2.0f);
+			m_Shaking[0] = true;
+		}
+
 		if(m_fTimer >= m_LaserTime)
 		{
 			m_Striking = false;
@@ -2001,12 +2010,6 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 
 	}
 
-
-	// 복귀 중에 사면으로 레이저 발사 하면서 공중 이동
-
-	// 본체가 스트레이트 꽂기
-
-	// 15초 진행후 끝
 }
 
 void CBoss::Rage_Taebo(_float fTimeDelta)
