@@ -33,6 +33,7 @@
 #include "Tile_Collider.h"
 #include "CubeBullet.h"
 #include "ChangeLevel.h"
+#include "CompanionCube.h"
 #include "Laser.h"
 
 #include "Level.h"
@@ -292,7 +293,8 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_PlayerHit"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Player/BloodScreen_alpha_%d.png"), 5))))
 		return E_FAIL;
 
-
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CompanionCube"), CCompanionCube::Create(m_pGraphic_Device))))
+		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

@@ -160,6 +160,9 @@
     <Filter Include="02.GameObjects\Enemy\Boss\Laser">
       <UniqueIdentifier>{3632e02f-5bf7-4aac-9364-3a7f62c8cd17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\CompanionCube">
+      <UniqueIdentifier>{d31de6fa-6ab4-45ee-9900-24b144963c6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -309,6 +312,9 @@
     <ClInclude Include="..\Public\Laser.h">
       <Filter>02.GameObjects\Enemy\Boss\Laser</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CompanionCube.h">
+      <Filter>02.GameObjects\CompanionCube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -445,6 +451,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Laser.cpp">
       <Filter>02.GameObjects\Enemy\Boss\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CompanionCube.cpp">
+      <Filter>02.GameObjects\CompanionCube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

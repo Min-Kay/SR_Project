@@ -178,11 +178,13 @@ _bool CTile_Cube::Open_Block_Event(_uint iLevelIndex, const _tchar* pLeftDoorLay
 		{
 			static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag))->Set_Open(true);
 			static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag))->Set_Open(true);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - _float3(0.0f, 0.6f, 0.0f));
 			RELEASE_INSTANCE(CGameInstance);
 			return true;
 
 		}
 	}
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return false;

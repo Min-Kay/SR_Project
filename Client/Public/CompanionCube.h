@@ -14,16 +14,15 @@ END
 
 BEGIN(Client)
 class CPlayer;
-class CTileCollider;
-class CBall final : public CGameObject
+class CCompanionCube final : public CGameObject
 {
 private:
-	explicit CBall(LPDIRECT3DDEVICE9 pGraphic_Device);
-	explicit CBall(const CBall& rhs);
-	virtual ~CBall() = default;
+	explicit CCompanionCube(LPDIRECT3DDEVICE9 pGraphic_Device);
+	explicit CCompanionCube(const CCompanionCube& rhs);
+	virtual ~CCompanionCube() = default;
 
 public:
-
+	
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;
@@ -32,8 +31,10 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	HRESULT Move(_float fTimeDelta);
-	_bool	Get_BallLive() { return m_bBallLive; }
+	void Set_Player(CPlayer* _player) {
+		m_Player = _player;
+	}
+
 private:
 	/* ÅØ½ºÃÄ */
 	CTexture*				m_pTextureCom = nullptr;
@@ -62,10 +63,8 @@ private:
 	HRESULT Release_RenderState();
 
 	CPlayer*		m_Player = nullptr;
-	CTileCollider* m_pCollider = nullptr;
-	_bool		m_bBallLive = true;
 public:
-	static CBall* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	static CCompanionCube* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

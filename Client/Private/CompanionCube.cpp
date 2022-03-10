@@ -1,22 +1,22 @@
 #include "stdafx.h"
-#include "Ball.h"
+#include "CompanionCube.h"
 #include "VIBuffer_Cube.h"
 #include "GameInstance.h"
 #include "Player.h"
 #include "Shader.h"
 
-CBall::CBall(LPDIRECT3DDEVICE9 pGraphic_Device)
+CCompanionCube::CCompanionCube(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
 {
 
 }
 
-CBall::CBall(const CBall & rhs)
+CCompanionCube::CCompanionCube(const CCompanionCube & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CBall::NativeConstruct_Prototype()
+HRESULT CCompanionCube::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
@@ -24,7 +24,7 @@ HRESULT CBall::NativeConstruct_Prototype()
 	return S_OK;
 }
 
-HRESULT CBall::NativeConstruct(void * pArg)
+HRESULT CCompanionCube::NativeConstruct(void * pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
@@ -32,31 +32,26 @@ HRESULT CBall::NativeConstruct(void * pArg)
 	/* 현재 객체에게 추가되어야할 컴포넌트들을 복제(or 참조)하여 멤버변수에 보관한다.  */
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
-	m_bBallLive = true;
+
 	Set_Type(OBJ_INTERACTION);
 	return S_OK;
 }
 
-_int CBall::Tick(_float fTimeDelta)
+_int CCompanionCube::Tick(_float fTimeDelta)
 {
-	if (FAILED(Get_Dead()))
-		return 0;
-
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	m_pTransformCom->Gravity(1.f, fTimeDelta);
+
+	m_pTransformCom->Add_Force(fTimeDelta*0.5);
 	if (m_pBoxColliderCom)
 		m_pBoxColliderCom->Set_Collider();
-	Move(fTimeDelta);
-
 	return _int();
 }
 
-_int CBall::LateTick(_float fTimeDelta)
+_int CCompanionCube::LateTick(_float fTimeDelta)
 {
-	if (FAILED(Get_Dead()))
-		return 0;
-
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
@@ -69,7 +64,7 @@ _int CBall::LateTick(_float fTimeDelta)
 	return _int();
 }
 
-HRESULT CBall::Render()
+HRESULT CCompanionCube::Render()
 {
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
@@ -84,43 +79,16 @@ HRESULT CBall::Render()
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();
-
-	if(m_bBallLive == false)
-		Set_Dead(true);
 	return S_OK;
 }
 
-HRESULT CBall::Move(_float fTimeDelta)
-{
-	m_pTransformCom->Go_Straight(fTimeDelta);
-
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	list<CGameObject*> collList = pGameInstance->Get_Collision_Object_List(m_pBoxColliderCom);
-
-	for (auto& i : collList)
-	{
-		if (i->Get_Type() == OBJ_STATIC)
-		{
-			//m_bBallLive = false;
-		}
-		else if (i->Get_Type() == OBJ_PLAYER)
-		{
-			//m_bBallLive = false;
-		}
-		
-	}
-	RELEASE_INSTANCE(CGameInstance);
-	return S_OK;
-}
-
-HRESULT CBall::SetUp_Components()
+HRESULT CCompanionCube::SetUp_Components()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 
-	TransformDesc.fSpeedPerSec = 2.0f;
+	TransformDesc.fSpeedPerSec = 0.0f;
 	TransformDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
 	/* For.Com_Transform */
@@ -153,13 +121,12 @@ HRESULT CBall::SetUp_Components()
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
-	//m_Player = static_cast<CPlayer*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CBall::SetUp_RenderState()
+HRESULT CCompanionCube::SetUp_RenderState()
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
@@ -170,7 +137,7 @@ HRESULT CBall::SetUp_RenderState()
 	return S_OK;
 }
 
-HRESULT CBall::Release_RenderState()
+HRESULT CCompanionCube::Release_RenderState()
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
@@ -181,34 +148,34 @@ HRESULT CBall::Release_RenderState()
 }
 
 
-CBall * CBall::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CCompanionCube * CCompanionCube::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CBall*	pInstance = new CBall(pGraphic_Device);
+	CCompanionCube*	pInstance = new CCompanionCube(pGraphic_Device);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSGBOX("Failed to Creating CBall");
+		MSGBOX("Failed to Creating CCompanionCube");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CBall::Clone(void* pArg)
+CGameObject * CCompanionCube::Clone(void* pArg)
 {
 	/* 새로운객체를 복제하여 생성한다. */
-	CBall*	pInstance = new CBall(*this);
+	CCompanionCube*	pInstance = new CCompanionCube(*this);
 
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSGBOX("Failed to Clone CBall");
+		MSGBOX("Failed to Clone CCompanionCube");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CBall::Free()
+void CCompanionCube::Free()
 {
 	__super::Free();
 	Safe_Release(m_pBoxColliderCom);

@@ -6,6 +6,7 @@
 
 BEGIN(Client)
 class CTile_Cube;
+class CBall;
 class CLevel_StageOne final : public CLevel
 {
 public:
@@ -29,9 +30,15 @@ private:
 	HRESULT Ready_Layer_Ball_Map();
 	HRESULT Ready_Layer_Gravity_Map();
 private:
+	HRESULT Door_OpenEvent();
 	HRESULT Open_Exit();
 	HRESULT Close_Exit_Open_Door2();
 	HRESULT Open_Exit2();
+	HRESULT Open_Exit3();
+	HRESULT Open_Exit4();
+	HRESULT Open_Exit5();
+	HRESULT Open_Exit6();
+	HRESULT Check_Ball();
 private:
 	_int iLineX = 25;
 	_int iLineY = 10;
@@ -60,16 +67,24 @@ private:
 	_bool m_Close_1 = false;
 	_bool m_Open_2 = false;
 	_bool m_Open_3 = false;
-
+	_bool m_Open_4 = false;
+	_bool m_Open_5 = false;
+	_bool m_Open_6 = false;
+	_bool m_Open_7 = false;
+	_bool m_bBallLive = false;
 private:
 	CTile_Cube* m_EventCube1 = nullptr;
 	CTile_Cube* m_EventCube2 = nullptr;
 	CTile_Cube* m_EventCube3 = nullptr;
-
+	CTile_Cube* m_EventCube4 = nullptr;
+	CTile_Cube* m_EventCube5 = nullptr;
+	CTile_Cube* m_EventCube6 = nullptr;
+	CTile_Cube* m_EventCube7 = nullptr;
+;
 	CChangeLevel* m_Change = nullptr;
 
 	CPlayer* m_player = nullptr;
-
+	CBall* m_pBall = nullptr;
 public:
 	static CLevel_StageOne* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual void Free() override;

@@ -185,6 +185,7 @@
     <ClInclude Include="..\Public\Cam_Portal.h" />
     <ClInclude Include="..\Public\ChangeLevel.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\CompanionCube.h" />
     <ClInclude Include="..\Public\CubeBullet.h" />
     <ClInclude Include="..\Public\CubeMonster.h" />
     <ClInclude Include="..\Public\Door_left.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="..\Private\Camera_Static.cpp" />
     <ClCompile Include="..\Private\Cam_Portal.cpp" />
     <ClCompile Include="..\Private\ChangeLevel.cpp" />
+    <ClCompile Include="..\Private\CompanionCube.cpp" />
     <ClCompile Include="..\Private\CubeBullet.cpp" />
     <ClCompile Include="..\Private\CubeMonster.cpp" />
     <ClCompile Include="..\Private\Door_left.cpp" />
