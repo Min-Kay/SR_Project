@@ -11,15 +11,24 @@ CImpact::CImpact(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 CImpact::CImpact(const CImpact & rhs)
 	: CGameObject(rhs)
+	,m_pTransformCom(rhs.m_pTransformCom)
+	,m_pShader(rhs.m_pShader)
+	,m_pVIBufferCom(rhs.m_pVIBufferCom)
+	,m_pRendererCom(rhs.m_pRendererCom)
+	,m_pTexture(rhs.m_pTexture)
 {
+	Safe_AddRef(m_pShader);
+	Safe_AddRef(m_pTransformCom);
+	Safe_AddRef(m_pVIBufferCom);
+	Safe_AddRef(m_pRendererCom);
+	Safe_AddRef(m_pTexture);
+
 }
 
 HRESULT CImpact::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }
@@ -36,16 +45,14 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 
 	m_Impact = *static_cast<IMPACT*>(pArg);
 	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_Impact.Pos);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_Impact.Position);
 	m_pTransformCom->Scaled(m_Impact.Size);
-
-	_float3 centerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);//임시로 만든 퍼지는점 중심
 
 	mt19937 ranX(rd());
 	mt19937 ranY(rd());
 	mt19937 ranZ(rd());
 
-	uniform_real_distribution <_double> spread(-m_Impact.randomPos, m_Impact.randomPos);
+	uniform_real_distribution <_double> spread(-m_Impact.RandomDirection, m_Impact.RandomDirection);
 
 	_float randomPos[3];
 
@@ -53,17 +60,22 @@ HRESULT CImpact::NativeConstruct(void * pArg)
 	randomPos[1] = (_float)spread(ranY);
 	randomPos[2] = (_float)spread(ranZ);
 
-	m_fvecdir = _float3((centerPos.x + randomPos[0]), (centerPos.y + randomPos[1]), (centerPos.z + (_float)spread(ranZ))) - centerPos;
-	D3DXVec3Normalize(&m_fvecdir, &m_fvecdir);
+	m_vDir = _float3((m_Impact.Position.x + randomPos[0]), (m_Impact.Position.y + randomPos[1]), (m_Impact.Position.z + (_float)spread(ranZ))) - m_Impact.Position;
+	D3DXVec3Normalize(&m_vDir, &m_vDir);
 
-	m_pVIBufferCom->ChangeColor(m_Impact.Color);//rgba
+	m_CurrColor = m_Impact.Color;
 
 	return S_OK;
 }
 
 _int CImpact::Tick(_float fTimeDelta)
 {
-	if (m_Impact.deleteCount <= 0)
+	if (fTimeDelta <= 0.f)
+		return 0;
+
+	m_fTimer += fTimeDelta;
+
+	if (m_Impact.DeleteTime <= m_fTimer)
 		Set_Dead(true);
 
 	if (Get_Dead())
@@ -72,22 +84,15 @@ _int CImpact::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	m_fFrame += 2 * fTimeDelta;
-
-
-	
-	if (m_fFrame >= 1)
+	if(m_Impact.Change)
 	{
-		m_Impact.deleteCount -= 1;
-		m_fFrame = 0.f;
+		m_CurrColor.x = m_CurrColor.x < m_Impact.EndColor.x ? m_CurrColor.x + fTimeDelta : m_CurrColor.x - fTimeDelta;
+		m_CurrColor.y = m_CurrColor.y < m_Impact.EndColor.y ? m_CurrColor.y + fTimeDelta : m_CurrColor.y - fTimeDelta;
+		m_CurrColor.z = m_CurrColor.z < m_Impact.EndColor.z ? m_CurrColor.z + fTimeDelta : m_CurrColor.z - fTimeDelta;
+		m_CurrColor.w = m_CurrColor.w < m_Impact.EndColor.w ? m_CurrColor.w + fTimeDelta : m_CurrColor.w - fTimeDelta;
 	}
-	else
-		Gradation_Pattern();	
 
-	
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_fvecdir * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta);
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_vDir * m_Impact.SpreadSpeed * fTimeDelta);
 
 	return _int();
 }
@@ -110,30 +115,21 @@ _int CImpact::LateTick(_float fTimeDelta)
 
 HRESULT CImpact::Render()
 {
-	
-
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
-
-	/*if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-	if (FAILED(SetUp_RenderState()))
-		return E_FAIL;*/
-	//if (FAILED(Release_RenderState()))
-	//	return E_FAIL;
-
-	//if (m_Impact.deleteCount <= 0)
-		//Set_Dead(true);
 
 	FaceOn_Camera();
 
 	m_pTransformCom->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pShader->SetUp_ValueOnShader("g_Color", m_CurrColor, sizeof(_float4));
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
 	m_pShader->Begin_Shader(SHADER_SETCOLOR);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f,0.f,0.f,0.f), sizeof(_float4));
+
 	return S_OK;
 }
 
@@ -158,12 +154,14 @@ HRESULT CImpact::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLOR, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RECT, COM_BUFFER, (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_SHADER_RECT, COM_SHADER, (CComponent**)&m_pShader)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Impact"), COM_TEXTURE, (CComponent**)&m_pTexture)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -216,37 +214,6 @@ HRESULT CImpact::Release_RenderState()
 	return S_OK;
 }
 
-HRESULT CImpact::Gradation_Pattern()
-{
-
-	switch (m_Impact.Gradation)
-	{
-	case GRADATION_NONE:
-		break;
-
-	case GRADATION_UP:
-		m_Impact.Color += m_Impact.ChangeColor;
-		m_pVIBufferCom->ChangeColor(m_Impact.Color);
-		break;
-
-	case GRADATION_DOWN:
-		m_Impact.Color -= m_Impact.ChangeColor;
-		m_pVIBufferCom->ChangeColor(m_Impact.Color);
-		break;
-	case GRADATION_FLASH:
-
-		m_pVIBufferCom->ChangeColor(m_Impact.Color);
-		if(m_fFrame > 1.5)
-		m_pVIBufferCom->ChangeColor(m_Impact.ChangeColor);
-		break;
-	default:
-		break;
-	}
-
-	return S_OK;
-}
-
-
 
 CImpact * CImpact::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
@@ -282,4 +249,6 @@ void CImpact::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pTexture);
+
 }

@@ -198,6 +198,10 @@ HRESULT CLoader::Loading_ForStageOne()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UnPortal"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Block/UnPortal.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Font_Slash*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Impact"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Impact.png")))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma  region PROTOTYPE_GAMEOBJECT
@@ -346,7 +350,7 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossHP_Black"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Back_HP.png")))))
 		return E_FAIL;
 
-	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossHPBar"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/BossHpBar.png")))))
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossHPBar"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Boss_HPBar_%d.png"),2))))
 		return E_FAIL;
 
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossShield"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/Shield_HP_%d.png"), 2))))

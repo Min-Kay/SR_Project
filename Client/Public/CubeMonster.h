@@ -54,7 +54,7 @@ private:
 
 public:
 	void Target_Turn(_float3 dir, _float fTimeDelta);
-
+	virtual void Add_HP(_int _add) override;
 private:
 	void Dying(_float fTimeDelta);
 
@@ -92,6 +92,8 @@ private:
 	_bool	m_YMove = false;
 	_bool	m_RMove = false;
 
+
+	_float	m_fTimer = 0.f;
 private:
 	_bool m_isCharging = false;
 	_float3 m_vChargingLook;
@@ -114,7 +116,7 @@ private:
 
 private:
 	CEffect* m_Effect = nullptr;
-
+	_float4 m_Color;
 protected:
 	CTexture* m_pTexture = nullptr;
 	CTransform* m_pTransform = nullptr;

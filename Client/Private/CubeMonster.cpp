@@ -78,26 +78,17 @@ _int Client::CCubeMonster::LateTick(_float fTimeDelta)
 
 HRESULT Client::CCubeMonster::Render()
 {
-
-	/*if (FAILED(m_pTransform->Bind_OnGraphicDevice()))
-		return -1;
-
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice()))
-		return -1;
-
-
-	m_pVIBuffer->Render();*/
-
-
 	m_pTransform->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
-
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBuffer->Render();
 	m_pShader->End_Shader();
+	m_Color = _float4(0.f,0.f,0.f,0.f);
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
+
 
 	return CEnemy::Render();
 }
@@ -185,11 +176,12 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 
 void CCubeMonster::Move(_float fTimeDelta)
 {
-
 	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
-	if(0.5f >= D3DXVec3Length(&(myPos - m_MovePoint)) || m_pBoxCollider->Get_OnCollide())
+	if(0.5f >= D3DXVec3Length(&(myPos - m_MovePoint)) || m_pTransform->Get_OnCollide())
 	{
-		m_MovePoint = _float3(m_InitPoint.x + rand() % 5, m_InitPoint.x + rand() % 5, m_InitPoint.x + rand() % 5);
+		m_MovePoint.x = rand() % 2 == 0 ? m_InitPoint.x + rand() % 5 : m_InitPoint.x - rand() % 5;
+		m_MovePoint.y = rand() % 2 == 0 ? m_InitPoint.y + rand() % 5 : m_InitPoint.y - rand() % 5;
+		m_MovePoint.z = rand() % 2 == 0 ? m_InitPoint.z + rand() % 5 : m_InitPoint.z - rand() % 5;
 	}
 
 	_float3 vDir = m_MovePoint - myPos;
@@ -244,6 +236,12 @@ void CCubeMonster::Target_Turn(_float3 dir, _float fTimeDelta)
 	_float3 vAxis = *D3DXVec3Cross(&vAxis, &(m_pTransform->Get_State(CTransform::STATE_LOOK)), &(_float3(dir.x, 0.f, dir.z)));
 
 	m_pTransform->Turn(vAxis, fTimeDelta);
+}
+
+void CCubeMonster::Add_HP(_int _add)
+{
+	__super::Add_HP(_add);
+	m_Color = _float4(1.f,1.f,1.f,0.5f);
 }
 
 void CCubeMonster::Dying(_float fTimeDelta)

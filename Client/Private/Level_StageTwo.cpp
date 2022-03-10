@@ -300,8 +300,8 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Scaled(_float3(1.f, 1.f, 1.f));
 		trans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 81.f, 55.f));
-
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
+		box->Set_State(CBoxCollider::COLL_SIZE,_float3(100.f,100.f,2.f));
 	}
 
 	//문 닫으면 서 세이브 포인트
@@ -315,6 +315,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 		trans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 81.f, 45.f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(100.f, 100.f, 2.f));
 	}
 
 	m_EventCube_Save_Exit = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Save_Exit"), 0));

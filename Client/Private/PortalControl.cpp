@@ -389,24 +389,22 @@ void CPortalControl::Spawn_Effect(_uint _index, _float3 _pos)
 {
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = _pos;
+	Impact1.Position = _pos;
 	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
-	Impact1.randomPos = 5;
-	Impact1.Speed = 5;
-	Impact1.deleteCount = 1;//rand() % 5 + 2;
-	Impact1.DeleteImpact = false;
+	Impact1.RandomDirection = 5.f;
+	Impact1.SpreadSpeed = 10.f;
+	Impact1.DeleteTime = 0.3f;//rand() % 5 + 2;
+	Impact1.Change = true;
 	if (_index == CPortal::PORTAL_ORANGE)
 	{
-		Impact1.Gradation = CImpact::GRADATION_DOWN;
-		Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
-		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0f, 0.0f);
+		Impact1.Color = _float4(1.0f, 0.8f, 0.0f, 0.0f);
+		Impact1.EndColor = _float4(0.0f, 0.05f, 0.0f, 0.0f);
 	}
 
 	else
 	{
-		Impact1.Gradation = CImpact::GRADATION_UP;
-		Impact1.Color = D3DXCOLOR(0.0f, 0.1f, 0.8f, 0.0f);
-		Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0001f, 0.0f);
+		Impact1.Color = _float4(0.0f, 0.2f, 1.f, 0.0f);
+		Impact1.EndColor = _float4(0.0f, 0.05f, 0.0001f, 0.0f);
 	}
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);

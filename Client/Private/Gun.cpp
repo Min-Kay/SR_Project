@@ -534,19 +534,16 @@ void CGun::Spark(_float3 _point)
 {
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = _point;
+	Impact1.Position = _point;
 	Impact1.Size = _float3(0.03f, 0.03f, 0.03f);
-	Impact1.randomPos = 3;
-	Impact1.deleteCount = 1;//rand() % 5 + 2;
-	Impact1.DeleteImpact = false;
-	Impact1.Speed = 10.f;
-	Impact1.Gradation = CImpact::GRADATION_DOWN;
-	Impact1.Color = D3DXCOLOR(1.0f, 1.0f, 0.0f, 0.0f);
-	Impact1.ChangeColor = D3DXCOLOR(0.005f, 0.15f, 0.0f, 0.0f);
-
-
+	Impact1.RandomDirection = 3.f;
+	Impact1.DeleteTime = 0.1f;//rand() % 5 + 2;
+	Impact1.SpreadSpeed = 10.f;
+	Impact1.Color = _float4(1.f,1.f, 0.f, 0.f);
+	Impact1.EndColor = _float4(1.f,0.1f,0.f,0.f);
+	Impact1.Change = true;
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	for (int i = 0; i < rand() % 10 + 30; ++i)
+	for (int i = 0; i < rand() % 10 + 20; ++i)
 	{
 		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact_Gun"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
 		{

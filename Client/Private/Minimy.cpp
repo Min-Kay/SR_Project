@@ -333,13 +333,12 @@ void CMinimy::Impact()
 {
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	Impact1.Position = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	Impact1.Size = _float3(0.08f, 0.08f, 0.08f);
-	Impact1.randomPos = 5;
-	Impact1.Speed = 5;
-	Impact1.deleteCount = 1;//rand() % 5 + 2;
-	Impact1.DeleteImpact = false;
-	Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
+	Impact1.RandomDirection = 5;
+	Impact1.SpreadSpeed = 5;
+	Impact1.DeleteTime = 1.f;//rand() % 5 + 2;
+	Impact1.Color = _float4(0.f,0.7f,0.f,0.f);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < rand() % 5 + 5; ++i)

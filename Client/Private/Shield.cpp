@@ -142,7 +142,7 @@ HRESULT CShield::SetUp_Component()
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
-	m_Hp = 10;
+	m_Hp = 100;
 	m_EnemyType = ENEMY_SHIELD;
 
 	m_CanPortal = false;
@@ -248,12 +248,12 @@ void CShield::Sizing_Particles()
 {
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	Impact1.Position = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	Impact1.Size = _float3(0.1f, 0.1f, 0.1f);
-	Impact1.randomPos = 7;
-	Impact1.Speed = 15;
-	Impact1.deleteCount = 2;//rand() % 5 + 2;
-	Impact1.Color = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+	Impact1.RandomDirection = 7;
+	Impact1.SpreadSpeed = 15;
+	Impact1.DeleteTime = 2.f;//rand() % 5 + 2;
+	Impact1.Color = _float4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < 10; ++i)

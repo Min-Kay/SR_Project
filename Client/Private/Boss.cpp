@@ -379,9 +379,9 @@ HRESULT CBoss::SetUp_UI()
 	m_BossUI_ShieldHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP")));
 
 
-	m_beforeShiledHP = Get_ShieldHp();
+	m_beforeShieldHP = Get_ShieldHp();
 	m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
-	m_ShiledHpPos = (_uint)(g_iWinCX / 1.91f);
+	m_ShieldHpPos = (_uint)(g_iWinCX / 1.91f);
 
 	/* Player_hit_UI*/
 	CUI::UIDESC BossUI_HPBaar;
@@ -390,7 +390,7 @@ HRESULT CBoss::SetUp_UI()
 	BossUI_HPBaar.WinCY = g_iWinCY;
 
 	BossUI_HPBaar.Layer = 1;
-	BossUI_HPBaar.FrameCount = 0;
+	BossUI_HPBaar.FrameCount = 2;
 	BossUI_HPBaar.Alpha = CUI::ALPHA_BLEND;
 	BossUI_HPBaar.PosX = g_iWinCX * 0.5f;
 	BossUI_HPBaar.PosY = g_iWinCY * 0.06f;
@@ -416,49 +416,65 @@ HRESULT CBoss::SetUp_UI()
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
-
 void CBoss::Setting_HpUi()
 {
-	m_uChageHp = Get_HP();
+	m_uChangeHp = Get_HP();
 
-	if (m_beforeHp != m_uChageHp)
+	if (m_beforeHp != m_uChangeHp)
 	{
 		if (m_beforeHp <= 0)
 			m_beforeHp = Get_HP();
 		// 나 / 전체 * 100
-		_int hp = (_int)(m_fBossMaxHp - m_uChageHp);
+		_int hp = (_int)(m_fBossMaxHp - m_uChangeHp);
 		_float hpPercent = hp / m_fBossMaxHp * 100.f; //10
 		_float hpbar = (100.f - hpPercent) * (1280 / 1.6f / 100.f);
 		_float pos = (1280 / 1.6f / 100.f) * hpPercent;
 		m_BossUI_HP->Set_Size(hpbar, 720 / 18.f);
-		m_BossUI_HP->Set_Pos(390 - pos/**0.5*/, 720 / 14.f - 340.f);
-		m_beforeHp = m_uChageHp;
+		m_BossUI_HP->Set_Pos(428 - pos/**0.5*/, 720 / 14.f - 340.f);
+		m_beforeHp = m_uChangeHp;
 		//100/100 1
-
+		if (m_uChangeHp <= 0)
+		{
+			m_uChangeHp = 0;
+		}
 	}
 
 	if (m_OnShield == true)
 	{
+		if (m_bShieldON == m_OnShield)
+			m_BossUI_HpBar->Set_CurrFrameIndex(1);
 
-		m_uChageShiledHp = Get_ShieldHp();
+		m_uChangeShieldHp = Get_ShieldHp();
 		m_BossUI_ShieldHP->Set_CurrFrameIndex(1);
 
-		if (m_beforeShiledHP != m_uChageShiledHp)
+		if (m_beforeShieldHP != m_uChangeShieldHp)
 		{
-			_int hp = (_int)(m_fMaxShield - m_uChageShiledHp);
-			_float ShieldPercent = hp / m_fMaxShield * 100;//몇 퍼센트 달았는지
+			_int hp = (_int)(m_fMaxShield - m_uChangeShieldHp);
+			_float ShieldPercent = hp / m_fMaxShield * 100.f;//몇 퍼센트 달았는지
 			_float ShieldBar = (100.f - ShieldPercent) * (1280 / 2.8f / 100.f);
 			_float pos = (1280 / 2.8f / 100.f) * ShieldPercent;
 			m_BossUI_ShieldHP->Set_Size(ShieldBar, 720 / 36.f);
-			m_BossUI_ShieldHP->Set_Pos(m_ShiledHpPos - 390.f - pos * 0.5f, 720.f / 48.f - 350.f);
-			m_beforeShiledHP = m_uChageShiledHp;
+			m_BossUI_ShieldHP->Set_Pos(258 - pos, 720.f / 48.f - 350.f);
+			m_beforeShieldHP = m_uChangeShieldHp;
 		}
+		if (m_uChangeShieldHp <= 0)
+		{
+			m_uChangeShieldHp = 0;
+			//m_BossUI_HpBar->Set_CurrFrameIndex(0);
+		}
+		m_bShieldON = false;
 	}
 	else
+	{
 		m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
+		m_BossUI_HpBar->Set_CurrFrameIndex(0);
+	}
+
 
 
 }
+
+
 void CBoss::Set_InitPos(_float3 _pos)
 {
 	m_InitPos = _pos;
@@ -657,12 +673,12 @@ void CBoss::Sizing_Particles(_float4 _color, _int time, _float _speed)
 {
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	Impact1.Position = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	Impact1.Size = _float3(0.4f, 0.4f, 0.4f);
-	Impact1.randomPos = 7;
-	Impact1.Speed = _speed;
-	Impact1.deleteCount = time;//rand() % 5 + 2;
-	Impact1.Color = D3DXCOLOR(_color);
+	Impact1.RandomDirection = 7;
+	Impact1.SpreadSpeed = _speed;
+	Impact1.DeleteTime = time;//rand() % 5 + 2;
+	Impact1.Color = _float4(0.f,0.f,0.8f,0.f);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < 10 ; ++i)
@@ -1921,6 +1937,8 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 
 	if (m_ReachPoint[0] && m_ReachPoint[1])
 	{
+		m_Striking = true;
+
 		m_fTimer += fTimeDelta;
 		m_ShootTimer += fTimeDelta;
 		if(m_ShootTime <= m_ShootTimer)
@@ -1990,13 +2008,13 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 		vRight = *D3DXVec3Cross(&vRight, &vUp, &vLook);
 
 		m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+		m_pTransform->Set_State(CTransform::STATE_UP, vUp* vScale.y);
 		m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
 
-		m_pOnlyRotation->Turn(vRight, fTimeDelta * 0.2f);
+		m_pOnlyRotation->Set_WorldMatrix(m_pTransform->Get_WorldMatrix());
 
-		m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
+		m_pOnlyRotation->Turn(vRight, D3DXToDegree(m_fTimer));
 
-		m_Striking = true;
 
 		if(!m_Shaking[0] && m_pTransform->Get_OnCollide())
 		{

@@ -8,8 +8,6 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Rect;
-class CVIBuffer_Color;
-class CBoxCollider;
 class CShader;
 END
 
@@ -28,28 +26,21 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	_bool Get_Delete() { return m_Impact.DeleteImpact; }
-
 public:
-	typedef	enum Colorgradation
-	{
-		GRADATION_NONE,GRADATION_UP, GRADATION_DOWN, GRADATION_FLASH, GRADATION_END
-	}GRADATION;
 	typedef struct tagImpact
 	{
-		_float3    Pos;
-		_float		Speed;
-		_double    randomPos;
-		D3DCOLOR	Color;
-		D3DCOLOR	ChangeColor;
-		_uint		deleteCount;
-		_bool		DeleteImpact;
+		_float3		Position;
+		_float		SpreadSpeed;
+		_float		RandomDirection;
+		_float4		Color;
+		_bool		Change;
+		_float4		EndColor;
+		_float		DeleteTime;
 		_float3		Size;
-		GRADATION	Gradation;
 	}IMPACT;
 private:
 	/* 모델 */
-	CVIBuffer_Color*		m_pVIBufferCom = nullptr;
+	CVIBuffer_Rect*		m_pVIBufferCom = nullptr;
 
 	/* 상태 (위치, 크기, 회전) */
 	CTransform*			m_pTransformCom = nullptr;
@@ -59,11 +50,13 @@ private:
 
 	CShader*			 m_pShader = nullptr;
 
+	CTexture*		m_pTexture = nullptr;
+
 private:
 	IMPACT			m_Impact;
-	_float			m_fFrame = 0.f;
-	_float			m_fcount =0.f;
-	_float3			m_fvecdir;
+	_float			m_fTimer =0.f;
+	_float4			m_CurrColor;
+	_float3			m_vDir;
 	CTransform*		m_pTarget = nullptr;
 	//_float3			m_size;
 private:
@@ -72,13 +65,9 @@ private:
 
 	
 private:
-	_uint m_iCurrSpread = 0;
-	_uint m_iSpread = 3;
 	random_device rd;
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
-	HRESULT Gradation_Pattern();
-	_uint m_iCount;
 public:
 	static CImpact* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

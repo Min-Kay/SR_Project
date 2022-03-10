@@ -146,16 +146,14 @@ void CMissile::Impact(_float3 _Pos)
 {
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
-	Impact1.Pos = _Pos;
+	Impact1.Position = _Pos;
 	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
-	Impact1.randomPos = 5;
-	Impact1.Speed = 5;
-	Impact1.deleteCount = 1;//rand() % 5 + 2;
-	Impact1.DeleteImpact = false;
-
-	Impact1.Gradation = CImpact::GRADATION_DOWN;
-	Impact1.Color = D3DXCOLOR(1.0f, 0.9f, 0.0f, 0.0f);
-	Impact1.ChangeColor = D3DXCOLOR(0.0f, 0.05f, 0.0f, 0.0f);
+	Impact1.RandomDirection = 5;
+	Impact1.SpreadSpeed = 5;
+	Impact1.DeleteTime = 1.f;//rand() % 5 + 2;
+	Impact1.Change = true;
+	Impact1.Color = _float4(1.f, 0.9f, 0.f, 0.f);
+	Impact1.EndColor = _float4(0.0f, 0.05f, 0.0f, 0.0f);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < rand() % 5 + 10; ++i)
