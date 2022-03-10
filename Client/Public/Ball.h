@@ -7,7 +7,7 @@ BEGIN(Engine)
 class CTexture;
 class CRenderer;
 class CTransform;
-class CVIBuffer_Cube;
+class CVIBuffer_Rect;
 class CBoxCollider;
 class CShader;
 END
@@ -31,26 +31,27 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	HRESULT FaceOn_Camera();
 public:
 	HRESULT Move(_float fTimeDelta);
 	_bool	Get_BallLive() { return m_bBallLive; }
 private:
 	/* 텍스쳐 */
-	CTexture*				m_pTextureCom = nullptr;
+	CTexture* m_pTextureCom = nullptr;
 
 	/* 모델 */
-	CVIBuffer_Cube*		m_pVIBufferCom = nullptr;
+	CVIBuffer_Rect* m_pVIBufferCom = nullptr;
 
 	/* 상태 (위치, 크기, 회전) */
-	CTransform*			m_pTransformCom = nullptr;
-
+	CTransform* m_pTransformCom = nullptr;
+	CTransform* m_pTransformCam = nullptr;
 	/* 그려진다. */
-	CRenderer*			m_pRendererCom = nullptr;
+	CRenderer* m_pRendererCom = nullptr;
 
 	/* 충돌체 */
-	CBoxCollider*		 m_pBoxColliderCom = nullptr;
+	CBoxCollider* m_pBoxColliderCom = nullptr;
 
-	CShader*				 m_pShader = nullptr;
+	CShader* m_pShader = nullptr;
 
 	_float				m_fFrame = 0.f;
 	_float				m_iCount = 0.f;
@@ -61,7 +62,8 @@ private:
 	HRESULT SetUp_RenderState();
 	HRESULT Release_RenderState();
 
-	CPlayer*		m_Player = nullptr;
+	CTransform* m_pTarget = nullptr;
+	CPlayer* m_Player = nullptr;
 	CTileCollider* m_pCollider = nullptr;
 	_bool		m_bBallLive = true;
 public:

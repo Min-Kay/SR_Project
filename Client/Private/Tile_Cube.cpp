@@ -152,6 +152,7 @@ _bool CTile_Cube::Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag,
 	{
 		static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag))->Set_Open(true);
 		static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag))->Set_Open(true);
+		pGameInstance->Play_Sound(TEXT("Door_Open_1.mp3"), CSoundMgr::ADDITIONAL_EFFECT1, 1.f);
 
 		RELEASE_INSTANCE(CGameInstance);
 		return true;
@@ -176,9 +177,12 @@ _bool CTile_Cube::Open_Block_Event(_uint iLevelIndex, const _tchar* pLeftDoorLay
 	{
 		if(i->Get_Type() == OBJ_INTERACTION)
 		{
+			pGameInstance->Play_Sound(TEXT("Press_Cube.mp3"), CSoundMgr::ADDITIONAL_EFFECT2, 1.f);
+
 			static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag))->Set_Open(true);
 			static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag))->Set_Open(true);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - _float3(0.0f, 0.6f, 0.0f));
+
 			RELEASE_INSTANCE(CGameInstance);
 			return true;
 
@@ -203,6 +207,7 @@ _bool CTile_Cube::Close_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag
 	{
 		static_cast<CDoor_left*>(pGameInstance->Get_GameObject(iLevelIndex, pLeftDoorLayerTag))->Set_Close(true);
 		static_cast<CDoor_right*>(pGameInstance->Get_GameObject(iLevelIndex, pRightDoorLayerTag))->Set_Close(true);
+		pGameInstance->Play_Sound(TEXT("Door_Close.mp3"), CSoundMgr::ADDITIONAL_EFFECT2, 1.f);
 
 		RELEASE_INSTANCE(CGameInstance);
 		return true;

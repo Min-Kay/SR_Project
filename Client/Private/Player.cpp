@@ -59,19 +59,23 @@ _int CPlayer::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-	Player_Control(fTimeDelta);
+	Setting_Dying(fTimeDelta);
 
-	Check_OnGround();
+	if(!m_PlayerDead)
+	{
+		Player_Control(fTimeDelta);
 
-	if (m_bJump)
-		Tick_JumpState(fTimeDelta);
+		Check_OnGround();
 
-	m_pTransformCom->Gravity(1.f, fTimeDelta);
+		if (m_bJump)
+			Tick_JumpState(fTimeDelta);
+		m_pTransformCom->Gravity(1.f, fTimeDelta);
 
-	m_pTransformCom->Add_Force(fTimeDelta);
+		m_pTransformCom->Add_Force(fTimeDelta);
 
-	if(m_pBoxColliderCom)
-		m_pBoxColliderCom->Set_Collider();
+		if (m_pBoxColliderCom)
+			m_pBoxColliderCom->Set_Collider();
+	}
 
 	return _int();
 }
@@ -93,9 +97,7 @@ _int CPlayer::LateTick(_float fTimeDelta)
 
 	if (m_HP <= 0)
 	{
-		m_beforeHp = m_Info.Hp;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_Info.Pos));
-		m_HP = m_Info.Hp;
+		m_PlayerDead = true;
 	}
 
 	if (FAILED(Synchronize_Camera(fTimeDelta)))
@@ -111,22 +113,6 @@ HRESULT CPlayer::Render()
 
 	if (Get_Dead())
 		return 0;
-
-	//if (nullptr == m_pVIBufferCom)
-	//	return E_FAIL;
-
-	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-	//	return E_FAIL;
-
-	////m_pBoxColliderCom->Draw_Box();
-
-	//if (FAILED(SetUp_RenderState()))
-	//	return E_FAIL;
-
-	//m_pVIBufferCom->Render();
-
-	//if (FAILED(Release_RenderState()))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -224,7 +210,14 @@ void CPlayer::Set_Hp(_int _hp)
 
 void CPlayer::Add_Hp(_int _add)
 {
+	if (m_PlayerDead)
+		return;
+
 	m_HP += _add;
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->StopSound(CSoundMgr::PLAYER_EFFECT3);
+	p_instance->Play_Sound(rand() % 2 ? TEXT("hurt_0.mp3") : TEXT("hurt_1.mp3"), CSoundMgr::PLAYER_EFFECT3, 1.f);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CPlayer::SetUp_UI()
@@ -351,7 +344,7 @@ HRESULT CPlayer::SetUp_UI()
 	PlayerHp_slash.Layer = 2;
 	PlayerHp_slash.FrameCount = 0;
 	PlayerHp_slash.Alpha = CUI::ALPHA_BLEND;
-	PlayerHp_slash.PosX = g_iWinCX * 0.19f;
+	PlayerHp_slash.PosX = g_iWinCX * 0.195f;
 	PlayerHp_slash.PosY = g_iWinCY * 0.9f;
 	PlayerHp_slash.SizeX = 50.f;
 	PlayerHp_slash.SizeY = 50.f;
@@ -528,6 +521,40 @@ void CPlayer::Setting_HpUi(_float ftimedelta)
 	}
 }
 
+void CPlayer::Setting_Dying(_float fTimeDelta)
+{
+	if (!m_PlayerDead)
+		return;
+
+	if(!m_FadeOut)
+	{
+		g_ControlShader -= fTimeDelta;
+
+
+		if (g_ControlShader <= -1.f)
+		{
+			m_pPortalCtrl->Erase_Portal();
+			m_pGun->Reset();
+			m_beforeHp = m_Info.Hp;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_Info.Pos));
+			m_HP = m_Info.Hp;
+			m_FadeOut = true;
+		}
+	}
+	else
+	{
+		g_ControlShader += fTimeDelta;
+		if (g_ControlShader >= 0.f)
+		{
+			g_ControlShader = 0.f;
+			m_PlayerDead = false;
+			m_FadeOut = false;
+		}
+	}
+	
+
+}
+
 HRESULT CPlayer::SetUp_RenderState()
 {
 	if (nullptr == m_pGraphic_Device)
@@ -544,6 +571,9 @@ HRESULT CPlayer::Release_RenderState()
 
 _int CPlayer::Player_Control(_float fTimeDelta)
 {
+	if (m_PlayerDead)
+		return 0;
+
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (static_cast<CCamera_Player*>(m_Camera)->Get_Break())

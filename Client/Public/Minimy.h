@@ -85,6 +85,7 @@ private:
 
 	_float m_fTimer = 0.f;
 	_float m_fForce = 0.f;
+	_float4 m_Color = _float4(0.f,0.f,0.f,0.f);
 public:
 	static CMinimy* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

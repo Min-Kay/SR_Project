@@ -175,13 +175,13 @@ private:
 	_float3 m_InitLaunchPos[2];
 
 	//UI
-	_uint                m_uChangeHp = 0;
-	_uint                m_beforeHp = 0;
+	_int                m_uChangeHp = 0;
+	_int                m_beforeHp = 0;
 	_float               m_fHpbarPos = 0.f;
 
-	_uint                m_uChangeShieldHp = 0;
-	_uint                m_beforeShieldHP = 0;
-	_uint                m_ShieldHpPos = 0;
+	_int                m_uChangeShieldHp = 0;
+	_int                m_beforeShieldHP = 0;
+	_int                m_ShieldHpPos = 0;
 
 
 	CUI* m_BossUI_HP = nullptr;

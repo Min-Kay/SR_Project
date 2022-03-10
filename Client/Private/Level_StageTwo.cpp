@@ -47,6 +47,7 @@ HRESULT CLevel_StageTwo::NativeConstruct()
 	SetWindowText(g_hWnd, TEXT("PORTAL_STAGE2"));
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	pInstance->PlayBGM(TEXT("Boss_Bgm.mp3"));
 	pInstance->SetMouseMode(false, g_hWnd);
 	RELEASE_INSTANCE(CGameInstance);
 

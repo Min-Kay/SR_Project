@@ -78,6 +78,9 @@ _int CBoss::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
+	if (m_pPlayer->Get_PlayerDead())
+		return 0;
+
 	Set_OnShield(m_Shield->Get_Valid());
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
@@ -124,6 +127,9 @@ _int CBoss::LateTick(_float fTimeDelta)
 
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
+
+	if (m_pPlayer->Get_PlayerDead())
+		Set_BossState(BOSS_IDLE);
 
 	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -265,7 +271,7 @@ HRESULT CBoss::SetUp_Component()
 	}
 
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
-
+	p_instance->StopSound(CSoundMgr::BGM);
 	p_instance->PlayBGM(TEXT("Boss_Stage.mp3"));
 
 	p_instance->Play_Sound(TEXT("Boss_Sound.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
@@ -427,10 +433,10 @@ void CBoss::Setting_HpUi()
 		// 나 / 전체 * 100
 		_int hp = (_int)(m_fBossMaxHp - m_uChangeHp);
 		_float hpPercent = hp / m_fBossMaxHp * 100.f; //10
-		_float hpbar = (100.f - hpPercent) * (1280 / 1.6f / 100.f);
+		_float hpbar = (100.f - hpPercent) * (g_iWinCX / 1.6f / 100.f);
 		_float pos = (1280 / 1.6f / 100.f) * hpPercent;
-		m_BossUI_HP->Set_Size(hpbar, 720 / 18.f);
-		m_BossUI_HP->Set_Pos(428 - pos/**0.5*/, 720 / 14.f - 340.f);
+		m_BossUI_HP->Set_Size(hpbar, g_iWinCY / 18.f);
+		m_BossUI_HP->Set_Pos(428 - pos/**0.5*/, g_iWinCY / 14.f - 340.f);
 		m_beforeHp = m_uChangeHp;
 		//100/100 1
 		if (m_uChangeHp <= 0)
@@ -451,10 +457,10 @@ void CBoss::Setting_HpUi()
 		{
 			_int hp = (_int)(m_fMaxShield - m_uChangeShieldHp);
 			_float ShieldPercent = hp / m_fMaxShield * 100.f;//몇 퍼센트 달았는지
-			_float ShieldBar = (100.f - ShieldPercent) * (1280 / 2.8f / 100.f);
+			_float ShieldBar = (100.f - ShieldPercent) * (g_iWinCX / 2.8f / 100.f);
 			_float pos = (1280 / 2.8f / 100.f) * ShieldPercent;
-			m_BossUI_ShieldHP->Set_Size(ShieldBar, 720 / 36.f);
-			m_BossUI_ShieldHP->Set_Pos(258 - pos, 720.f / 48.f - 350.f);
+			m_BossUI_ShieldHP->Set_Size(ShieldBar, g_iWinCY / 36.f);
+			m_BossUI_ShieldHP->Set_Pos(258 - pos, g_iWinCY / 48.f - 350.f);
 			m_beforeShieldHP = m_uChangeShieldHp;
 		}
 		if (m_uChangeShieldHp <= 0)
@@ -678,7 +684,7 @@ void CBoss::Sizing_Particles(_float4 _color, _int time, _float _speed)
 	Impact1.RandomDirection = 7;
 	Impact1.SpreadSpeed = _speed;
 	Impact1.DeleteTime = time;//rand() % 5 + 2;
-	Impact1.Color = _float4(0.f,0.f,0.8f,0.f);
+	Impact1.Color = _color;
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < 10 ; ++i)
@@ -773,7 +779,7 @@ void CBoss::Spawn_Shield()
 
 	if (m_Hp < m_InitHp * 0.5f && !m_SpawnShield)
 	{
-		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 10, 30.f);
+		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 3.f, 30.f);
 		m_Shield->Set_Valid(true);
 		m_SpawnShield = true;
 
@@ -890,7 +896,7 @@ void CBoss::Resizing(_float fTimeDelta)
 
 	m_pOnlyRotation->Scaled(_float3(m_vScale.x - m_fTimer, m_vScale.y - m_fTimer, m_vScale.z - m_fTimer));
 
-	Sizing_Particles(_float4(0.f,0.f,0.f,1.f), 2, 20.f);
+	Sizing_Particles(_float4(0.f,0.f,0.f,1.f), 1.f, 20.f);
 
 	if(m_pOnlyRotation->Get_Scale().x <= 0.1f)
 	{
@@ -910,7 +916,7 @@ void CBoss::Sizing(_float fTimeDelta)
 
 	m_pOnlyRotation->Scaled(_float3( m_fTimer,  m_fTimer, m_fTimer));
 
-	Sizing_Particles(_float4(0.f, 0.f, 0.f, 1.f), 2, 20.f);
+	Sizing_Particles(_float4(0.f, 0.f, 0.f, 1.f), 1.f, 20.f);
 
 	if (m_fTimer >= m_vScale.x)
 	{
@@ -982,6 +988,9 @@ void CBoss::Blowing(_float fTimeDelta)
 
 void CBoss::Randomize_Pattern(_float fTimeDelta)
 {
+	if (m_pPlayer->Get_PlayerDead())
+		return;
+
 	if( m_Reset && (m_State == BOSS_IDLE || m_State == BOSS_MOVE))
 	{
 		m_AttPatternTimer += fTimeDelta;
@@ -1236,7 +1245,7 @@ void CBoss::Grogy(_float fTimeDelta)
 
 
 		Start_Pattern(TEXT("Grogy.wav"));
-		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 4, 30.f);
+		Sizing_Particles(_float4(1.f, 0.f, 0.55f, 1.f), 1.f, 30.f);
 
 		for(auto iter = m_shield_effects_.begin(); iter != m_shield_effects_.end();)
 		{

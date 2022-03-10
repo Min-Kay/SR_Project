@@ -39,6 +39,8 @@ public:
 	HRESULT Reset_PlayerPos(_float3 resetPos);
 public:
 	void Set_Shake(_float _timer, _float _force);
+	const _bool Get_PlayerDead() {return m_PlayerDead;}
+
 public:
 	const _int& Get_Hp() const;
 	void Set_Hp(_int _hp);
@@ -54,6 +56,8 @@ public:
 private:
 	HRESULT SetUp_UI();
 	void Setting_HpUi(_float ftimedelta);
+	void Setting_Dying(_float fTimeDelta);
+
 private:
 
 	/* ¸ðµ¨ */
@@ -101,6 +105,12 @@ private:
 	_float               m_fHpbarPos = 0.f;
 	_bool                m_bHit = false;
 	_float               m_fHitCoolTime = 0.f;
+
+
+private:
+	_bool				m_PlayerDead = false;
+	_bool				m_FadeOut = false;
+
 private:
 	CUI* m_PlayerHP_1 = nullptr;//100
 	CUI* m_PlayerHP_2 = nullptr;//10

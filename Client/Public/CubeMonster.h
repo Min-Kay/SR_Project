@@ -73,7 +73,7 @@ private:
 
 private:
 	_float m_SearchRange = 5.f;
-	_float m_AlertRange = 10.f;
+	_float m_AlertRange = 8.f;
 
 	_float m_CurrAlertRange= 0.f;
 	_float m_AttackRange = 7.f;

@@ -235,7 +235,16 @@ void CGun::Reload()
 		p_instance->Play_Sound(TEXT("Reload.wav"), CSoundMgr::WEAPON_EFFECT1, 1.f);
 		RELEASE_INSTANCE(CGameInstance);
 	}
-}HRESULT CGun::SetUp_UI()
+}
+
+void CGun::Reset()
+{
+	m_iCurrBulletCount = m_iFullBulletCount;
+	m_Reloading = false;
+	m_pGun_UI->Set_CurrFrameIndex(0);
+}
+
+HRESULT CGun::SetUp_UI()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	CUI::UIDESC desc;
@@ -246,10 +255,10 @@ void CGun::Reload()
 	desc.Layer = 2;
 	desc.FrameCount = 76;
 	desc.Alpha = CUI::ALPHA_BLEND;
-	desc.PosX = g_iWinCX / 1.9f;//g_iWinCX * 0.75f;
-	desc.PosY = g_iWinCY / 2.0f;//g_iWinCY * 0.65f;
-	desc.SizeX = g_iWinCX / 2.4f;
-	desc.SizeY = g_iWinCY / 2.05f;
+	desc.PosX = g_iWinCX / 1.5f;//g_iWinCX * 0.75f;
+	desc.PosY = g_iWinCY / 1.25f;//g_iWinCY * 0.65f;
+	desc.SizeX = g_iWinCX / 1.2f;
+	desc.SizeY = g_iWinCY / 0.8f;
 	desc.AnimateSpeed = 30.f;
 	desc.Style = CUI::STYLE_FIX;
 	desc.Texture = TEXT("Prototype_Component_Texture_Gun_Reload");
@@ -277,8 +286,8 @@ void CGun::Reload()
 	desc2.Layer = 3;
 	desc2.FrameCount = 4;
 	desc2.Alpha = CUI::ALPHA_BLEND;
-	desc2.PosX = 150.f;
-	desc2.PosY = 150.f;
+	desc2.PosX = 0.f;//g_iWinCX * 0.75f;
+	desc2.PosY =0.f;//g_iWinCY * 0.65f;
 	desc2.SizeX = g_iWinCX / 3.5f;
 	desc2.SizeY = g_iWinCY / 2.0f;
 	desc2.AnimateSpeed = 100.f;
@@ -309,7 +318,7 @@ void CGun::Reload()
 	desc3.Layer = 2;
 	desc3.FrameCount = 10;
 	desc3.Alpha = CUI::ALPHA_BLEND;
-	desc3.PosX = g_iWinCX * 0.25f;
+	desc3.PosX = g_iWinCX * 0.255f;
 	desc3.PosY = g_iWinCY * 0.8f;
 	desc3.SizeX = g_iWinCX / 25.6f;
 	desc3.SizeY = g_iWinCY / 14.4f;
@@ -364,7 +373,7 @@ void CGun::Reload()
 	desc5.Layer = 2;
 	desc5.FrameCount = 0;
 	desc5.Alpha = CUI::ALPHA_BLEND;
-	desc5.PosX = g_iWinCX * 0.16f;
+	desc5.PosX = g_iWinCX * 0.175f;
 	desc5.PosY = g_iWinCY * 0.8f;
 	desc5.SizeX = g_iWinCX / 25.6f;
 	desc5.SizeY = g_iWinCY / 14.4f;
@@ -391,7 +400,7 @@ void CGun::Reload()
 	desc6.Layer = 2;
 	desc6.FrameCount = 10;
 	desc6.Alpha = CUI::ALPHA_BLEND;
-	desc6.PosX = g_iWinCX * 0.13f;
+	desc6.PosX = g_iWinCX * 0.135f;
 	desc6.PosY = g_iWinCY * 0.8f;
 	desc6.SizeX = g_iWinCX / 25.6f;
 	desc6.SizeY = g_iWinCY / 14.4f;
@@ -418,7 +427,7 @@ void CGun::Reload()
 	desc7.Layer = 2;
 	desc7.FrameCount = 10;
 	desc7.Alpha = CUI::ALPHA_BLEND;
-	desc7.PosX = g_iWinCX * 0.1f;
+	desc7.PosX = g_iWinCX * 0.105f;
 	desc7.PosY = g_iWinCY * 0.8f;
 	desc7.SizeX = g_iWinCX / 25.6f;
 	desc7.SizeY = g_iWinCY / 14.4f;
@@ -436,8 +445,7 @@ void CGun::Reload()
 	m_pCurrBullet_UI_2 = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("CurrBullet_UI_2")));
 
 
-	/* player_hp_Image*/
-
+	
 	CUI::UIDESC GunIcon;
 	ZeroMemory(&GunIcon, sizeof(GunIcon));
 	GunIcon.WinCX = g_iWinCX;
@@ -518,7 +526,7 @@ void CGun::Animate(_float fTimeDelta)
 
 	m_pGun_UI->Set_Pos(m_fGun_fx + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
-	m_pMuzzle_UI->Set_Pos(m_fGun_fx - 300.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy - 70.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
+	m_pMuzzle_UI->Set_Pos(m_fGun_fx - 500.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fx * 0.1f, m_fGun_fy - 300.f + sinf(D3DXToRadian(m_fFrShoot)) * m_fGun_fy * 0.11f + sinf(D3DXToRadian(m_fFrWalk)) * m_fGun_fy * 0.1f);
 
 }
 
@@ -532,20 +540,24 @@ void CGun::SynchroBullet()
 
 void CGun::Spark(_float3 _point)
 {
-	CImpact::IMPACT Impact1;
+	CImpact::IMPACT Impact1 , Impact2;
 	ZeroMemory(&Impact1, sizeof(Impact1));
 	Impact1.Position = _point;
 	Impact1.Size = _float3(0.03f, 0.03f, 0.03f);
 	Impact1.RandomDirection = 3.f;
 	Impact1.DeleteTime = 0.1f;//rand() % 5 + 2;
 	Impact1.SpreadSpeed = 10.f;
-	Impact1.Color = _float4(1.f,1.f, 0.f, 0.f);
+	Impact1.Color = _float4(1.f, 1.f, 0.f, 0.f);
 	Impact1.EndColor = _float4(1.f,0.1f,0.f,0.f);
 	Impact1.Change = true;
+
+	Impact2 = Impact1;
+	Impact2.Color = _float4(1.f, 0.6f, 0.f, 0.f);
+
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	for (int i = 0; i < rand() % 10 + 20; ++i)
 	{
-		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact_Gun"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact_Gun"), TEXT("Prototype_GameObject_Impact"), rand() % 2 == 0 ?  &Impact1 : &Impact2)))
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return;

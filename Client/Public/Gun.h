@@ -31,6 +31,8 @@ public:
 	void Rebound(_float fTimeDelta);
 	void Reload();
 
+
+	void Reset();
 private:
 	void Fire();
 	void SynchroBullet();

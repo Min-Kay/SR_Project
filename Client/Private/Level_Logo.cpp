@@ -27,6 +27,10 @@ HRESULT CLevel_Logo::NativeConstruct()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->PlayBGM(TEXT("Logo.mp3"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

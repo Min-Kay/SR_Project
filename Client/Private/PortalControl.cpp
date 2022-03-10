@@ -116,8 +116,8 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 
 	D3DXVec3Normalize(&m_vRayDirCH, &m_vRayDirCH);
 
-	pGameInstance->StopSound(CSoundMgr::EFFECT);
-	pGameInstance->Play_Sound(iIndex == CPortal::PORTAL_ORANGE ? TEXT("Portal_Orange_Fire.mp3") : TEXT("Portal_Blue_Fire.mp3"), CSoundMgr::EFFECT, 1.f);
+	pGameInstance->StopSound(CSoundMgr::EFFECT2);
+	pGameInstance->Play_Sound(iIndex == CPortal::PORTAL_ORANGE ? TEXT("Portal_Orange_Fire.mp3") : TEXT("Portal_Blue_Fire.mp3"), CSoundMgr::EFFECT2, 1.f);
 
 	_float range = 100.f;
 

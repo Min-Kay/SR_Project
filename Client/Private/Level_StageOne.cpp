@@ -67,6 +67,9 @@ HRESULT CLevel_StageOne::NativeConstruct()
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	pInstance->SetMouseMode(false, g_hWnd);
+
+	pInstance->PlayBGM(TEXT("Stage_One.wav"));
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -206,45 +209,6 @@ HRESULT CLevel_StageOne::Ready_Layer_BackGround(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
-	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return E_FAIL;
-	}
-
-	CCubeMonster* monster = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster")));
-	monster->Set_InitPos(_float3(10.f, 10.f, 10.f));
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return E_FAIL;
-	}
-
-
-	CCubeMonster* monster1 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster")));
-	monster1->Set_InitPos(_float3(15.f, 15.f, 10.f));
-
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return E_FAIL;
-	}
-
-	CCubeMonster* monster2 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster")));
-	monster2->Set_InitPos(_float3(10.f, 10.f, 15.f));
-
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return E_FAIL;
-	}
-
-
-	CCubeMonster* monster3 = static_cast<CCubeMonster*>(pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster")));
-	monster3->Set_InitPos(_float3(10.f, 10.f, 20.f));*/
 
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -2305,6 +2269,11 @@ HRESULT CLevel_StageOne::Open_Exit()
 
 	m_Open_1 = m_EventCube1->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 
+	if(m_Open_1)
+	{
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube1->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -2317,6 +2286,12 @@ HRESULT CLevel_StageOne::Close_Exit_Open_Door2()
 	m_Close_1 = m_EventCube2->Close_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 	m_Open_2 = m_EventCube2->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Entrance"), TEXT("Layer_Second_Right_Entrance"));
 
+	if (m_Open_2)
+	{
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube2->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
+	}
+
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -2327,6 +2302,11 @@ HRESULT CLevel_StageOne::Open_Exit2()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_Open_3 = m_EventCube3->Open_Block_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Exit"), TEXT("Layer_Second_Right_Exit"));
+	if (m_Open_3)
+	{
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube3->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
+	}
+
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -2338,6 +2318,11 @@ HRESULT CLevel_StageOne::Open_Exit3()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_Open_4 = m_EventCube4->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Passage_Left1_Exit"), TEXT("Layer_Passage_Right1_Exit"));
+
+	if (m_Open_4)
+	{
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube4->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -2351,6 +2336,12 @@ HRESULT CLevel_StageOne::Open_Exit4()
 
 	m_Open_5 = m_EventCube5->Open_Block_Event(LEVEL_STAGEONE, TEXT("Layer_Passage_Left_Door"), TEXT("Layer_Passage_Right_Door"));
 
+
+	if (m_Open_5)
+	{
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube5->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f,2.f,0.f));
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 	
 	return S_OK;
@@ -2361,6 +2352,10 @@ HRESULT CLevel_StageOne::Open_Exit5()////
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_Open_6 = m_EventCube6->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Passage_Left_Exit"), TEXT("Layer_Passage_Right_Exit"));
+	if (m_Open_6)
+	{
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube6->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -2371,6 +2366,10 @@ HRESULT CLevel_StageOne::Open_Exit6()////
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_Open_7 = m_EventCube7->Open_Block_Event(LEVEL_STAGEONE, TEXT("Layer_passageGravity_Left_Door"), TEXT("Layer_passageGravity_Right_Door"));
+	if (m_Open_7)
+	{
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube7->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
+	}
 
 		RELEASE_INSTANCE(CGameInstance);
 	return S_OK;

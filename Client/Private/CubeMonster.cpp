@@ -60,6 +60,9 @@ _int Client::CCubeMonster::Tick(_float fTimeDelta)
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return -1;
 
+	if (m_Player->Get_PlayerDead())
+		m_State = STATE_IDLE;
+		
 	State_Machine(fTimeDelta);
 	m_pBoxCollider->Set_Collider();
 
@@ -133,7 +136,7 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 	if(m_Player)
 		m_PlayerPos = static_cast<CTransform*>(m_Player->Get_Component(COM_TRANSFORM));
 
-	m_Hp = 100;
+	m_Hp = 50;
 	m_Damage = 5;
 
 	CGameInstance* p_Instance = GET_INSTANCE(CGameInstance);
@@ -240,8 +243,8 @@ void CCubeMonster::Target_Turn(_float3 dir, _float fTimeDelta)
 
 void CCubeMonster::Add_HP(_int _add)
 {
-	__super::Add_HP(_add);
 	m_Color = _float4(1.f,1.f,1.f,0.5f);
+	__super::Add_HP(_add);
 }
 
 void CCubeMonster::Dying(_float fTimeDelta)
@@ -261,6 +264,10 @@ void CCubeMonster::Set_InitPos(_float3 _pos)
 
 void CCubeMonster::Charging(_float fTimeDelta)
 {
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->Play_Sound(TEXT("Charging.mp3"), CSoundMgr::ENEMY_EFFECT1, 1.f);
+	RELEASE_INSTANCE(CGameInstance);
+
 	_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
 	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 
@@ -294,15 +301,19 @@ void CCubeMonster::Charging(_float fTimeDelta)
 		m_isCharging = false;
 	}
 
+
 }
 
 void CCubeMonster::Firing(_float fTimeDelta)
 {
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
+	p_instance->Play_Sound(TEXT("Cube_Fire.wav"), CSoundMgr::ENEMY_EFFECT2, 1.f);
+
 	_float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
 	D3DXVec3Normalize(&vLook, &vLook);
 
 	// 격발 구체 소환
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
 	if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("CubeBullet"),TEXT("Prototype_GameObject_CubeBullet"))))
 	{

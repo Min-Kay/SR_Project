@@ -315,6 +315,8 @@ void CPortal::Portaling()
           if (obj->Get_Type() == OBJ_ENEMY)
               static_cast<CEnemy*>(obj)->Set_Portaling(true);
 	    }
+        p_instance->StopSound(CSoundMgr::EFFECT1);
+        p_instance->Play_Sound(TEXT("Portaling.mp3"), CSoundMgr::EFFECT1, 1.f);
     }
 
 	RELEASE_INSTANCE(CGameInstance);

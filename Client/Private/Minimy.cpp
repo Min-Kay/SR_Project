@@ -99,13 +99,14 @@ HRESULT CMinimy::Render()
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, sinf(D3DXToRadian(m_fTimer* 0.01f )),0.f,0.f), sizeof(_float4));
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
 	m_pShader->End_Shader();
-	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, 0.f ,0.f, 0.f), sizeof(_float4));
+	m_Color = _float4(0.f,0.f,0.f,0.f);
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 
 
 	return S_OK;
@@ -214,6 +215,7 @@ void CMinimy::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 
 void CMinimy::Add_HP(_int _add)
 {
+	m_Color = _float4(1.f,1.f,1.f,0.5f); 
 	__super::Add_HP(_add);
 }
 

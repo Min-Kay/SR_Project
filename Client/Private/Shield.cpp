@@ -182,7 +182,7 @@ void CShield::Break_Shield(_float fTimeDelta)
 {
 	m_Parent->Set_Grogy();
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->Play_Sound(TEXT("Shield_Break.wav"), CSoundMgr::EFFECT, 1.f);
+	p_instance->Play_Sound(TEXT("Shield_Break.wav"), CSoundMgr::EFFECT3, 1.f);
 	RELEASE_INSTANCE(CGameInstance);
 	Set_Valid(false);
 }
