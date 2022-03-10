@@ -60,6 +60,12 @@ _int Client::CCubeBullet::Tick(_float fTimeDelta)
 	if (Get_Dead())
 		return 0;
 	m_Timer += fTimeDelta;
+	if(m_Timer >= 2.f)
+	{
+		m_pBoxCollider->Set_Dead(true);
+		Set_Dead(true);
+	}
+
 	Move(fTimeDelta);
 	Synchronize_Transform(fTimeDelta);
 	m_pBoxCollider->Set_Collider();

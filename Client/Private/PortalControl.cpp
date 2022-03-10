@@ -269,8 +269,8 @@ HRESULT CPortalControl::SetUp_UI()
 	desc.Layer = 2;
 	desc.FrameCount = 2;
 	desc.Alpha = CUI::ALPHA_BLEND;
-	desc.PosX = g_iWinCX * 0.47f;
-	desc.PosY = g_iWinCY * 0.46f;
+	desc.PosX = g_iWinCX * 0.45f;
+	desc.PosY = g_iWinCY * 0.50f;
 	desc.SizeX = 70.f;
 	desc.SizeY = 70.f;
 	desc.Style = CUI::STYLE_FIX;
@@ -291,8 +291,8 @@ HRESULT CPortalControl::SetUp_UI()
 	desc2.Layer = 2;
 	desc2.FrameCount = 2;
 	desc2.Alpha = CUI::ALPHA_BLEND;
-	desc2.PosX = g_iWinCX * 0.53f;
-	desc2.PosY = g_iWinCY * 0.54f;
+	desc2.PosX = g_iWinCX * 0.55f;
+	desc2.PosY = g_iWinCY * 0.50f;
 	desc2.SizeX = 70.f;
 	desc2.SizeY = 70.f;
 	desc2.Style = CUI::STYLE_FIX;

@@ -85,7 +85,7 @@ _int CWater::LateTick(_float fTimeDelta)
 		return -1;
 
 	
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
 
 	return _int();
 }
@@ -116,12 +116,15 @@ HRESULT CWater::Render()
 	m_pTransformCom->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(1.0f,0.3f,0.2f,0.f), sizeof(_float4));
 
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", (_uint)m_fFrame);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
+
 	return S_OK;
 }
 

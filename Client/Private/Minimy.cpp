@@ -147,7 +147,7 @@ HRESULT CMinimy::SetUp_Component()
 	m_pCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
 	m_pCollider->Set_ParentInfo(this);
 
-	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_Size * 1.5f);
+	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_Size);
 
 	m_Hp = 30;
 	m_Damage = 10;
@@ -308,7 +308,7 @@ void CMinimy::Die(_float fTimeDelta)
 			{
 				if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_SHIELD)
 				{
-					static_cast<CShield*>(obj)->Add_ShieldHp(-(m_Damage * 10));
+					static_cast<CShield*>(obj)->Add_ShieldHp(-(m_Damage * 30));
 				}
 				else if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_BOSS)
 				{

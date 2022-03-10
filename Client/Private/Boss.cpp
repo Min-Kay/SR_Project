@@ -138,12 +138,15 @@ HRESULT CBoss::Render()
 	m_pOnlyRotation->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", m_ImageIndex);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
 	m_pShader->End_Shader();
+
+	m_Color = m_InitColor;
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 
 	return S_OK; 
 }
@@ -464,10 +467,16 @@ void CBoss::Set_InitPos(_float3 _pos)
 void CBoss::Add_HP(_int _add)
 {
 	if (m_Striking)
+	{
 		__super::Add_HP((_int)_add * 0.2f);
+		m_Color = m_AmorColor;
+
+	}
 	else if(!m_Shield->Get_Valid())
+	{
 		__super::Add_HP(_add);
-	
+		m_Color = m_HitColor;
+	}
 }
 
 const _int& CBoss::Get_InitHP() const
@@ -1624,7 +1633,7 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 					++m_RollingHitCount;
 
 				m_pPlayer->Set_Shake(0.5f, 2.f);
-
+				m_LeftArm->Set_CanPortal(false);
 				CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 				p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT1);
 				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::ADDITIONAL_EFFECT1, 1.f);
@@ -1634,21 +1643,17 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 		else if(InitArmPosition(fTimeDelta, true, false))
 		{
 			m_LeftArm->Set_Portaling(false);
-			m_LeftArm->Set_CanPortal(true);
 			m_Shaking[0] = false;
 			m_RollingHit[0] = false;
 			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 			p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT1);
 			RELEASE_INSTANCE(CGameInstance);
 		}
-		else
-		{
-			m_LeftArm->Set_CanPortal(false);
-		}
-
 	}
 	else
 	{
+		m_LeftArm->Set_CanPortal(true);
+
 		vLeftPos.x = vLeftPos.x + sinf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
 		vLeftPos.z = vLeftPos.z + cosf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
 
@@ -1693,7 +1698,7 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 				m_RollingHit[1] = true;
 				if (m_RightArm->Get_ParentCollide())
 					++m_RollingHitCount;
-
+				m_RightArm->Set_CanPortal(false);
 				m_pPlayer->Set_Shake(0.5f, 2.f);
 				CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 				p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT2);
@@ -1704,20 +1709,16 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 		else if (InitArmPosition(fTimeDelta, false, true))
 		{
 			m_RightArm->Set_Portaling(false);
-			m_RightArm->Set_CanPortal(true);
 			m_Shaking[1] = false;
 			m_RollingHit[1] = false;
 			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 			p_instance->StopSound(CSoundMgr::ADDITIONAL_EFFECT2);
 			RELEASE_INSTANCE(CGameInstance);
 		}
-		else
-		{
-			m_RightArm->Set_CanPortal(false);
-		}
 	}
 	else
 	{
+		m_RightArm->Set_CanPortal(true); 
 		vRightPos.x = vRightPos.x - sinf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
 		vRightPos.z = vRightPos.z - cosf(D3DXToRadian(m_fTimer * m_RollingChargingGauge)) * 10.f;
 
@@ -1753,9 +1754,6 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 
 	if(!m_RollingCharged && fTimeDelta >= 0.f)
 	{
-		m_LeftArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f,0.f,0.f));
-		m_RightArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f, 0.f, 0.f));
-
 		m_RollingChargingGauge += 2.f;
 	}
 
@@ -1765,6 +1763,10 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 		m_MoveToPlayer = true;
 		m_fTimer = 0.f;
 	}
+
+	m_LeftArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f, 0.f, 0.f));
+	m_RightArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f, 0.f, 0.f));
+
 
 	if(m_MoveToPlayer)
 	{
@@ -1962,9 +1964,7 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 		m_LeftArmRotationTr->Turn(_float3(1.f,1.f,0.f),fTimeDelta * 0.01f);
 		m_RightArmRotationTr->Turn(_float3(-1.f, 1.f, 0.f), fTimeDelta * 0.01f);
 
-		m_pOnlyRotation->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * 0.2f);
-
-		m_pTransform->Go_Straight(fTimeDelta);
+		m_pTransform->Go_Straight(fTimeDelta * 1.1f);
 
 		m_StrikeTimer += fTimeDelta;
 		if(m_StrikeTime <= m_StrikeTimer)
@@ -1991,6 +1991,8 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 
 		m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
 		m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+
+		m_pOnlyRotation->Turn(vRight, fTimeDelta * 0.2f);
 
 		m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
 

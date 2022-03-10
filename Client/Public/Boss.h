@@ -137,7 +137,7 @@ private:
 
 	_float m_fTimer = 0.f; 
 	_uint m_ImageIndex = 0;
-	_int m_InitHp = 2000;
+	_int m_InitHp = 100;
 	_bool m_OnShield = false;
 	_bool m_OnPattern = false;
 	_bool m_SpawnShield = false;
@@ -199,6 +199,13 @@ private:
 	_bool m_init = false;
 
 	_float m_AttPatternTimer = 0.f;
+
+	_float4 m_Color = _float4(0.f,0.f,0.f,0.f);
+	_float4 m_HitColor = _float4(1.f, 1.f, 1.f, 0.5f);
+	_float4 m_AmorColor = _float4(0.5f, 0.5f, 0.f, 0.5f);
+
+	_float4 m_InitColor = _float4(0.f, 0.f, 0.f, 0.f);
+
 
 	// Idle
 	_bool initPos[2] = { false,false };

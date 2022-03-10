@@ -126,6 +126,8 @@ HRESULT CDoor_left::SetUp_Components()
 		return E_FAIL;
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
+	m_pBoxColliderCom->Set_CollStyle(CBoxCollider::COLLSTYLE_ENTER);
+
 	m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);

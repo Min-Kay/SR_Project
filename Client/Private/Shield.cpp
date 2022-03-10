@@ -142,7 +142,7 @@ HRESULT CShield::SetUp_Component()
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
-	m_Hp = 500;
+	m_Hp = 10;
 	m_EnemyType = ENEMY_SHIELD;
 
 	m_CanPortal = false;

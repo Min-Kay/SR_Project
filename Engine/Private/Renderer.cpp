@@ -47,9 +47,9 @@ HRESULT CRenderer::Render(vector<_uint> exceptions)
 
 		switch (i)
 		{
-		//case RENDER_ALPHA:
-			//Alpha_Sorting();
-			//break;
+		case RENDER_ALPHA:
+			Alpha_Sorting();
+			break;
 		case RENDER_UI:
 			UI_Sorting();
 			break;
@@ -186,14 +186,14 @@ HRESULT CRenderer::Alpha_Sorting()
 
 	m_RenderObjects[RENDER_ALPHA].sort([](CGameObject* a, CGameObject* b) -> _bool { return a->Get_Distance() > b->Get_Distance(); });
 
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
 
 	Render_GroupIndex(RENDER_ALPHA);
 
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
 
 	return S_OK;

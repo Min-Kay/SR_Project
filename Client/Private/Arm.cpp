@@ -96,19 +96,9 @@ HRESULT CArm::Render()
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pBuffer->Render();
 	m_pShader->End_Shader();
+	m_Color = _float4(0.f, 0.f, 0.f, 0.f);
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 
-	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f,0.f,0.f,0.f), sizeof(_float4));
-	/*if (FAILED(m_pOnlyRotation->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-
-	if (FAILED(m_pTexture->Bind_OnGraphicDevice(m_ArmPos)))
-		return E_FAIL;
-
-	m_pBuffer->Render();
-
-	if (FAILED(__super::Render()))
-		return E_FAIL;*/
 	return S_OK;
 }
 
@@ -161,6 +151,11 @@ void CArm::Set_Position(_float3 _pos)
 void CArm::Move_Dir(_float3 dir, _float range)
 {
 	m_pTransform->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION) + dir * range);
+}
+
+void CArm::Add_HP(_int _add)
+{
+	m_Color = m_HitColor;
 }
 
 void CArm::Set_Parent(CBoss* parent)

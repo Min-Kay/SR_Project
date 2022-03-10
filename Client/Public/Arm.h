@@ -39,7 +39,7 @@ public:
 	void Set_Position(_float3 _pos);
 	void Add_Position(_float3 _add);
 	void Move_Dir(_float3 dir, _float range);
-
+	virtual void Add_HP(_int _add) override;
 public:
 	void Set_State(ARMSTATE _state) { m_State = _state; }
 	const ARMSTATE Get_State() const { return m_State; }
@@ -82,6 +82,8 @@ private:
 
 
 	_float4 m_Color = _float4(0.f,0.f,0.f,0.f);
+	_float4 m_HitColor = _float4(0.5f, 0.5f, 0.5f, 0.5f);
+
 
 private:
 	CTransform* m_pOnlyRotation = nullptr;
