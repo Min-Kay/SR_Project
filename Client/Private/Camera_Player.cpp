@@ -140,11 +140,7 @@ _int CCamera_Player::Tick(_float fTimeDelta)
     {
         if (isGrabed)
         {
-            static_cast<CBoxCollider*>(m_GrabInteraction->Get_Component(COM_COLLIDER))->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-            m_GrabInteraction->Set_Grab(false);
-        	m_GrabInteraction = nullptr;
-            m_GrabInteractionTr = nullptr;
-            isGrabed = false;
+            Drop_Interaction();
         }
         else
             Grab_Interaction();
@@ -309,5 +305,17 @@ void CCamera_Player::Grab_Interaction()
 
     RELEASE_INSTANCE(CGameInstance);
 
+}
+
+void CCamera_Player::Drop_Interaction()
+{
+    if (!isGrabed || !m_GrabInteraction)
+        return;
+
+    static_cast<CBoxCollider*>(m_GrabInteraction->Get_Component(COM_COLLIDER))->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
+    m_GrabInteraction->Set_Grab(false);
+    m_GrabInteraction = nullptr;
+    m_GrabInteractionTr = nullptr;
+    isGrabed = false;
 }
 

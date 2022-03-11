@@ -32,7 +32,7 @@ public:
 	typedef enum tagBossState {BOSS_IDLE, BOSS_MOVE, BOSS_ATTACK, BOSS_GROGY, BOSS_DIE}BOSSSTATE;
 	typedef enum tagBossPhase {BOSS_PHASEONE, BOSS_PHASETWO}BOSSPHASE;
 	typedef enum tagBossAttack { BOSSATT_MISSILE, BOSSATT_PUNCH, BOSSATT_ROLLING}BOSSATTACK;
-	typedef enum tagBossRage { BOSSRAGE_TAEBO, BOSSRAGE_LASER }BOSSRAGE;
+	typedef enum tagBossRage { BOSSRAGE_SUNFLOWER, BOSSRAGE_LASER }BOSSRAGE;
 
 
 
@@ -70,7 +70,7 @@ private:
 	// ³»²¨
 	void Init_Idle();
 
-	void Resizing(_float fTimeDelta);
+	void Resizing(_float fTimeDelta, _float3 position);
 	void Sizing(_float fTimeDelta);
 	void Reset_Arm_Direction(ARM _arm);
 	_bool InitArmPosition(_float fTimeDelta, _bool _left = true, _bool _right = true);
@@ -80,8 +80,7 @@ private:
 	void Randomize_Pattern(_float fTimeDelta);
 	void Sizing_Particles(_float4 _color, _int time, _float _speed);
 
-
-	void Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer);
+	void Gravity_Blowing(_float fTimeDelta, _float PosY, _bool _watchPlayer);
 	void Arm_Posing(_float fTimeDelta, _bool _left = true, _bool _right = true);
 
 	void Start_Pattern(_tchar* filename);
@@ -130,7 +129,7 @@ private:
 
 private:
 	void Rage_Laser(_float fTimeDelta);
-	void Rage_Taebo(_float fTimeDelta);
+	void Rage_Sunflower(_float fTimeDelta);
 
 private:
 	_float m_ShieldTimer = 0.f;
@@ -266,6 +265,9 @@ private:
 	_float m_LaserTime = 30.f;
 
 
+	// Rage_Sunflower
+
+
 	//Grogy
 	_bool m_Grogy = false;
 
@@ -280,7 +282,7 @@ private:
 	BOSSSTATE m_State = BOSS_IDLE;
 
 	BOSSATTACK m_AttState = BOSSATT_PUNCH;
-	BOSSRAGE m_RageState = BOSSRAGE_TAEBO;
+	BOSSRAGE m_RageState = BOSSRAGE_SUNFLOWER;
 private:
 	CPlayer* m_pPlayer = nullptr;
 	CTransform* m_pPlayerTr = nullptr;

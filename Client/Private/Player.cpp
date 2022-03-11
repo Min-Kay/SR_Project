@@ -538,6 +538,7 @@ void CPlayer::Setting_Dying(_float fTimeDelta)
 			m_beforeHp = m_Info.Hp;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(m_Info.Pos));
 			m_HP = m_Info.Hp;
+			static_cast<CCamera_Player*>(m_Camera)->Drop_Interaction();
 			m_FadeOut = true;
 		}
 	}

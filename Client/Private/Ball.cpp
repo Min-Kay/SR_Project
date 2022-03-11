@@ -114,8 +114,8 @@ HRESULT CBall::Move(_float fTimeDelta)
 			CCollider* test = (CCollider*)i->Get_Component(COM_COLLIDER);
 			if (CCollider::COLLSTYLE_ENTER == test->Get_CollStyle())
 			{
-				m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(6.f, 4.0f, 73.f));
-				m_pTransformCom->Set_State(CTransform::STATE_LOOK, _float3(0.f, 0.f, 1.f));
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(6.f, 4.0f, 98.f));
+				m_pTransformCom->Set_State(CTransform::STATE_LOOK, _float3(0.f, 0.f, -1.f));
 				m_pTransformCom->Set_State(CTransform::STATE_RIGHT, _float3(1.f, 0.f, 0.f));
 				m_pTransformCom->Set_State(CTransform::STATE_UP, _float3(0.f, 1.f, 0.f));
 

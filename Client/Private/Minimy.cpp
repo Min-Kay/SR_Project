@@ -151,7 +151,7 @@ HRESULT CMinimy::SetUp_Component()
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, m_Size);
 
 	m_Hp = 30;
-	m_Damage = 10;
+	m_Damage = 20;
 	m_EnemyType = ENEMY_CUBEMONSTER;
 	m_CanPortal = true;
 
@@ -310,11 +310,11 @@ void CMinimy::Die(_float fTimeDelta)
 			{
 				if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_SHIELD)
 				{
-					static_cast<CShield*>(obj)->Add_ShieldHp(-(m_Damage * 30));
+					static_cast<CShield*>(obj)->Add_ShieldHp(-(m_Damage * 3));
 				}
 				else if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_BOSS)
 				{
-					static_cast<CEnemy*>(obj)->Add_HP(-(m_Damage * 3));
+					static_cast<CEnemy*>(obj)->Add_HP(-m_Damage);
 				}
 
 			}

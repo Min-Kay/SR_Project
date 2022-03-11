@@ -109,6 +109,8 @@ HRESULT CCam_Portal::NativeConstruct(void* pArg)
     __super::Add_Exception(CRenderer::RENDER_SKYBOX);
     __super::Add_Exception(CRenderer::RENDER_UI);
 
+    Set_Vaild(false);
+
     return S_OK;
 }
 
@@ -129,20 +131,12 @@ _int CCam_Portal::LateTick(_float fTimeDelta)
 
 HRESULT CCam_Portal::Render()
 {
-    //if (FAILED(m_pRenderTransform->Bind_OnGraphicDevice()))
-    //    return E_FAIL;
-
-    //if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-    //    return E_FAIL;
-
-    //m_pVIBuffer->Render();
-
     m_pRenderTransform->Bind_OnShader(m_pShader);
     m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
 
     m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", 0);
 
-    m_pShader->Begin_Shader(SHADER_SETCOLOR_BLEND);
+    m_pShader->Begin_Shader(SHADER_SETCOLOR);
     m_pVIBuffer->Render();
     m_pShader->End_Shader();
 
@@ -155,7 +149,7 @@ HRESULT CCam_Portal::BeforeRender()
     m_pGraphic_Device->Clear(0,
         nullptr,
         D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
-        D3DCOLOR_ARGB(255, 0, 255, 0),	// 백버퍼 색상
+        D3DCOLOR_ARGB(255, 0, 0, 0),	// 백버퍼 색상
         1.f, // z버퍼의 초기화 값
         0);	 // 스텐실 버퍼의 초기화 값
 

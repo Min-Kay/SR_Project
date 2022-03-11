@@ -221,7 +221,7 @@ void CTransform::Gravity(_float fWeight, _float fTimeDelta)
 	vPosition -= _float3(0.f,1.f,0.f) * fWeight * (m_fGravity  + m_Press) * fTimeDelta ;
 
 	m_fVelocity = !m_bOnCollide ? m_fVelocity + fTimeDelta : 0.f;
-	m_Press = !m_bOnCollide ? m_Press + fTimeDelta * 1.2f: 0.f;
+	m_Press = !m_bOnCollide ? m_Press + fTimeDelta * 1.1f: 0.f;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
@@ -251,7 +251,7 @@ void CTransform::Add_Force(_float fTimeDelta)
 		if (m_fForce > 0.f)
 		{
 			_float3 pos = Get_State(STATE_POSITION);
-			pos += m_vForceAxis * m_fForce * 0.3f;
+			pos += m_vForceAxis * m_fForce * 0.2f;
 			Set_State(CTransform::STATE_POSITION, pos);
 			m_fForce -= fTimeDelta ;
 		}
@@ -267,10 +267,13 @@ void CTransform::Add_Force(_float fTimeDelta)
 	{
 		m_FormalForce = m_fForce;
 		if (m_fForce <= 0.f)
+		{
 			m_Forcing = false;
+			return;
+		}
 
 		_float3 pos = Get_State(STATE_POSITION);
-		pos += m_vForceAxis * m_fForce * 0.05f;
+		pos += m_vForceAxis * m_fForce * 0.03f;
 		Set_State(CTransform::STATE_POSITION, pos);
 		m_fForce -= fTimeDelta * 5.f;
 	}

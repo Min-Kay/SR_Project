@@ -163,6 +163,9 @@
     <Filter Include="02.GameObjects\CompanionCube">
       <UniqueIdentifier>{d31de6fa-6ab4-45ee-9900-24b144963c6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Dispenser">
+      <UniqueIdentifier>{27889068-3c9f-485f-a83b-7e0f550672c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -315,6 +318,9 @@
     <ClInclude Include="..\Public\CompanionCube.h">
       <Filter>02.GameObjects\CompanionCube</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Dispenser.h">
+      <Filter>02.GameObjects\Dispenser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -454,6 +460,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CompanionCube.cpp">
       <Filter>02.GameObjects\CompanionCube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Dispenser.cpp">
+      <Filter>02.GameObjects\Dispenser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

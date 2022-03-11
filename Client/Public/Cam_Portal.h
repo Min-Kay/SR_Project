@@ -37,6 +37,8 @@ public:
 
 public:
 	void Set_ExitPortal(CPortal* _exit = nullptr);
+	void Set_OnRender(_bool _bool) { m_OnRender = _bool; }
+	const _bool& Get_OnRender() const { return m_OnRender; }
 
 private:
 	CTexture* m_pTextureCom = nullptr;
@@ -51,6 +53,8 @@ private:
 	
 private:
 	CCam_Portal* m_ExitPortal = nullptr;
+
+	_bool m_OnRender = false;
 
 public:
 	static CCam_Portal* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

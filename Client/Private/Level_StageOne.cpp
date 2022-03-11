@@ -94,7 +94,7 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 	Door_OpenEvent();
 	//밝고 있어야 열림
 	Check_Ball();
-		
+
 
 
 
@@ -1047,13 +1047,16 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 	}
 
+
+
+	// 큐브 몬스터 소환
 	{
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("CubeMonster"), TEXT("Prototype_GameObject_CubeMonster"))))
 			return E_FAIL;
 
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 2.f, 40.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 2.f, 30.f));
 		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(10.f, 2.f, 40.f));
 	}
 
@@ -1087,7 +1090,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Set_State(CTransform::STATE_POSITION, _float3(20.f, 2.f, 45.f));
-		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(20.f, 2.f, 45.f));
+		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(20.f, 2.f, 35.f));
 
 	}
 
@@ -1099,7 +1102,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		CGameObject* Switch = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("CubeMonster"));
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Set_State(CTransform::STATE_POSITION, _float3(20.f, 2.f, 45.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(20.f, 6.f, 45.f));
 		static_cast<CCubeMonster*>(Switch)->Set_InitPos(_float3(20.f, 2.f, 45.f));
 	}
 
@@ -1586,8 +1589,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	Middle5BottomTrans4->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 11.5f, GravityMapPos.y + m_iGravityBoxSize * 0.5f + 13.f, GravityMapPos.z - m_iGravityBoxSize * 0.625f));
 	CBoxCollider* Middle5box4 = static_cast<CBoxCollider*>(Middle5BottomTile4->Get_Component(COM_COLLIDER));
 	//충돌박스
-	Middle5box4->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iGravityBoxSize - 12.f, m_iGravityBoxSize * 0.25f));
-	Middle5box4->Set_AdditionalPos(_float3(HalfWallSize, 0.f, 0.f));
+	Middle5box4->Set_State(CBoxCollider::COLL_SIZE, _float3(0.2f, m_iGravityBoxSize - 12.f, m_iGravityBoxSize * 0.25f));
+	Middle5box4->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
 
 
 	//통로쪽 머리위
@@ -1601,6 +1604,17 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	Middle6BottomTrans4->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(-90.f));
 	Middle6BottomTrans4->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 11.5f, GravityMapPos.y + m_iGravityBoxSize * 0.5f + 13.f, GravityMapPos.z - m_iGravityBoxSize * 0.625f));
 
+
+	//문아래공간
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle16_Right"), TEXT("Prototype_GameObject_TileCollider"))))
+		return E_FAIL;
+	CGameObject* Middle6BottomTile14 = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle16_Right"));
+	CTransform* Middle6BottomTrans14 = (CTransform*)Middle6BottomTile14->Get_Component(COM_TRANSFORM);
+	static_cast<CTileCollider*>(Middle6BottomTile14)->Set_TextureIndex(1);
+	//실제 보이는 박스
+	Middle6BottomTrans14->Scaled(_float3(m_iGravityBoxSize * 0.25f, 3.f, m_iGravityBoxSize));
+	Middle6BottomTrans14->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(-90.f));
+	Middle6BottomTrans14->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 11.5f, GravityMapPos.y + m_iGravityBoxSize * 0.5f - 0.5f, GravityMapPos.z - m_iGravityBoxSize * 0.625f));
 
 
 
@@ -1616,8 +1630,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	Middle7BottomTrans4->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 11.5f + 18.f, GravityMapPos.y + m_iGravityBoxSize * 0.5f + 13.f, GravityMapPos.z - m_iGravityBoxSize * 0.625f));
 	CBoxCollider* Middle7box4 = static_cast<CBoxCollider*>(Middle7BottomTile4->Get_Component(COM_COLLIDER));
 	//충돌박스
-	Middle7box4->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iGravityBoxSize - 12.f, m_iGravityBoxSize * 0.25f));
-	Middle7box4->Set_AdditionalPos(_float3(-HalfWallSize, 0.f, 0.f));
+	Middle7box4->Set_State(CBoxCollider::COLL_SIZE, _float3(0.2f, m_iGravityBoxSize - 12.f, m_iGravityBoxSize * 0.25f));
+	Middle7box4->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
 
 
 
@@ -1740,6 +1754,19 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 1.f, 1.f));
 	}
 	m_EventCube6 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Open4_Exit"), 0));
+
+
+
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Dispenser"), TEXT("Prototype_GameObject_Dispenser"))))
+			return E_FAIL;
+
+		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Dispenser"), 0);
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Scaled(_float3(3.f, 3.f, 1.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(6.0f, 4.0f, 98.f));
+		trans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180.f));
+	}
 
 
 	return S_OK;
@@ -2269,7 +2296,7 @@ HRESULT CLevel_StageOne::Open_Exit()
 
 	m_Open_1 = m_EventCube1->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 
-	if(m_Open_1)
+	if (m_Open_1)
 	{
 		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube1->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
 	}
@@ -2339,11 +2366,11 @@ HRESULT CLevel_StageOne::Open_Exit4()
 
 	if (m_Open_5)
 	{
-		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube5->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f,2.f,0.f));
+		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube5->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
-	
+
 	return S_OK;
 }
 
@@ -2371,7 +2398,7 @@ HRESULT CLevel_StageOne::Open_Exit6()////
 		m_player->Reset_PlayerPos(static_cast<CTransform*>(m_EventCube7->Get_Component(COM_TRANSFORM))->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 2.f, 0.f));
 	}
 
-		RELEASE_INSTANCE(CGameInstance);
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
@@ -2379,20 +2406,20 @@ HRESULT CLevel_StageOne::Check_Ball()
 {
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	
+
 	if (!m_bBallLive)
 	{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Ball"), TEXT("Prototype_GameObject_Ball"))))
-				return E_FAIL;
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Ball"), TEXT("Prototype_GameObject_Ball"))))
+			return E_FAIL;
 
-			CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Ball"), 0);
-			CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-			trans->Scaled(_float3(1.f, 1.f, 1.f));
-			trans->Set_State(CTransform::STATE_POSITION, _float3(6.f, 4.0f, 73.f));
-			CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
-			box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-			m_bBallLive = true;
-			
+		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Ball"), 0);
+		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
+		trans->Scaled(_float3(1.f, 1.f, 1.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(6.f, 4.0f, 98.f));
+		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+		m_bBallLive = true;
+
 
 	}
 	else
@@ -2401,7 +2428,7 @@ HRESULT CLevel_StageOne::Check_Ball()
 		m_bBallLive = m_pBall->Get_BallLive();
 	}
 
-RELEASE_INSTANCE(CGameInstance);
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

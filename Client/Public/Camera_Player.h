@@ -33,7 +33,7 @@ public:
 public:
 	void Control_Menu(_bool _bool);
 	void Grab_Interaction();
-
+	void Drop_Interaction();
 
 private:
 	CPlayer* m_pPlayer = nullptr;

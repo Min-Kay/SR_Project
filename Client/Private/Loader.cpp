@@ -34,6 +34,7 @@
 #include "CubeBullet.h"
 #include "ChangeLevel.h"
 #include "CompanionCube.h"
+#include "Dispenser.h"
 #include "Laser.h"
 
 #include "Level.h"
@@ -200,7 +201,7 @@ HRESULT CLoader::Loading_ForStageOne()
 		return E_FAIL;
 
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Cube"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Player/Cube.dds")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Player/Cube.dds")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Dispenser"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Dispenser.dds")))))
@@ -289,6 +290,9 @@ HRESULT CLoader::Loading_ForStageOne()
 
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UnPortal"), CUnportal::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dispenser"), CDispenser::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma endregion

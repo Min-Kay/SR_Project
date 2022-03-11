@@ -698,7 +698,7 @@ void CBoss::Sizing_Particles(_float4 _color, _int time, _float _speed)
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CBoss::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
+void CBoss::Gravity_Blowing(_float fTimeDelta, _float PosY,_bool _watchPlayer)
 {
 	if (fTimeDelta <= 0.f)
 		return;
@@ -732,7 +732,7 @@ void CBoss::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
 	if(_watchPlayer)
 		m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
 
-	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 10.f, 0.f) + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 2.f));
+	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, PosY, 0.f) + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 2.f));
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -879,7 +879,7 @@ void CBoss::Init_Attack_Punch()
 }
 
 
-void CBoss::Resizing(_float fTimeDelta)
+void CBoss::Resizing(_float fTimeDelta, _float3 position)
 {
 	if(m_fTimer == 0.f)
 	{
@@ -900,8 +900,8 @@ void CBoss::Resizing(_float fTimeDelta)
 
 	if(m_pOnlyRotation->Get_Scale().x <= 0.1f)
 	{
-		m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_InitPos);
-		m_pTransform->Set_State(CTransform::STATE_POSITION, m_InitPos);
+		m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, position);
+		m_pTransform->Set_State(CTransform::STATE_POSITION, position);
 		m_Resizing = true;
 		m_fTimer = 0.f;
 	}
@@ -980,7 +980,7 @@ void CBoss::Set_ArmPos(ARM _arm, _float3 _start, _float3 _mid, _float3 _end)
 
 void CBoss::Blowing(_float fTimeDelta)
 {
-	Gravity_Blowing(fTimeDelta,true);
+	Gravity_Blowing(fTimeDelta,10.f, true);
 
 	Arm_Posing(fTimeDelta);
 
@@ -1096,7 +1096,7 @@ void CBoss::Idle(_float fTimeDelta)
 	// ¸Û¶§¸®±â
 	if(!m_Resizing)
 	{
-		Resizing(fTimeDelta);
+		Resizing(fTimeDelta,m_InitPos);
 	}
 	else if(!m_Sizing)
 	{
@@ -1104,7 +1104,7 @@ void CBoss::Idle(_float fTimeDelta)
 	}
 	else if(!m_Reset)
 	{
-		Gravity_Blowing(fTimeDelta, false);
+		Gravity_Blowing(fTimeDelta, 10.f, false);
 		
 		if(InitArmPosition(fTimeDelta))
 		{
@@ -1148,7 +1148,7 @@ void CBoss::Move(_float fTimeDelta)
 	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
 	m_pTransform->Go_Straight(fTimeDelta);
 
-	Gravity_Blowing(fTimeDelta, true);
+	Gravity_Blowing(fTimeDelta, 10.f, true);
 
 	Arm_Posing(fTimeDelta);
 
@@ -1199,8 +1199,8 @@ void CBoss::Rage(_float fTimeDelta)
 	case BOSSRAGE_LASER:
 		Rage_Laser(fTimeDelta);
 		break;
-	case BOSSRAGE_TAEBO:
-		Rage_Taebo(fTimeDelta);
+	case BOSSRAGE_SUNFLOWER:
+		Rage_Sunflower(fTimeDelta);
 		break;
 	}
 }
@@ -1333,7 +1333,7 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 	Armtarget1.pParent = this;
 
 
-	Gravity_Blowing(fTimeDelta, true);
+	Gravity_Blowing(fTimeDelta, 10.f, true);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	m_fWaiting += fTimeDelta;
@@ -1427,7 +1427,7 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 	Start_Pattern(TEXT("Boss_AttackAlarm1.wav"));
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	Gravity_Blowing(fTimeDelta, false);
+	Gravity_Blowing(fTimeDelta, 10.f, false);
 
 	if (!m_bCalled)
 	{
@@ -1811,8 +1811,10 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 
 void CBoss::Rage_Laser(_float fTimeDelta)
 {
+	Start_Pattern(TEXT("Boss_AttackAlarm.wav"));
+
 	if(!m_ReachPoint[0] && !m_ReachPoint[1])
-		Gravity_Blowing(fTimeDelta, true);
+		Gravity_Blowing(fTimeDelta, 10.f, true);
 	else
 		m_pTransform->Gravity(0.3f, fTimeDelta);
 
@@ -2041,9 +2043,16 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 
 }
 
-void CBoss::Rage_Taebo(_float fTimeDelta)
+void CBoss::Rage_Sunflower(_float fTimeDelta)
 {
-
+	if(!m_Resizing)
+	{
+		Resizing(fTimeDelta, _float3(0.f, 30.f, 0.f));
+	}
+	else if(!m_Sizing)
+	{
+		
+	}
 }
 
 

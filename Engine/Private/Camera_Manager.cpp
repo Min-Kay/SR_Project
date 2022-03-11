@@ -10,6 +10,9 @@ _int CCamera_Manager::Tick(_float fTimeDelta)
 {
 	for (auto& cam : m_CameraList)
 	{
+		if (!cam.second->Get_Vaild())
+			continue;
+
 		if (0 > cam.second->Tick(fTimeDelta))
 			return -1;
 	}
@@ -21,6 +24,9 @@ _int CCamera_Manager::LateTick(_float fTimeDelta)
 {
 	for (auto& cam : m_CameraList)
 	{
+		if (!cam.second->Get_Vaild())
+			continue;
+
 		if (0 > cam.second->LateTick(fTimeDelta))
 			return -1;
 	}

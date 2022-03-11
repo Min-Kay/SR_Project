@@ -84,8 +84,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Bin\</OutDir>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -158,7 +158,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../Reference/bin/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d9.lib;d3dx9.lib;vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\CompanionCube.h" />
     <ClInclude Include="..\Public\CubeBullet.h" />
     <ClInclude Include="..\Public\CubeMonster.h" />
+    <ClInclude Include="..\Public\Dispenser.h" />
     <ClInclude Include="..\Public\Door_left.h" />
     <ClInclude Include="..\Public\Door_right.h" />
     <ClInclude Include="..\Public\Effect_Alert.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="..\Private\CompanionCube.cpp" />
     <ClCompile Include="..\Private\CubeBullet.cpp" />
     <ClCompile Include="..\Private\CubeMonster.cpp" />
+    <ClCompile Include="..\Private\Dispenser.cpp" />
     <ClCompile Include="..\Private\Door_left.cpp" />
     <ClCompile Include="..\Private\Door_right.cpp" />
     <ClCompile Include="..\Private\Effect_Alert.cpp" />
