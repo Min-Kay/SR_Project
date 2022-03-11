@@ -2045,7 +2045,13 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 
 void CBoss::Rage_Sunflower(_float fTimeDelta)
 {
-	if(!m_Resizing)
+	if(!m_SunflowerSetting)
+	{
+		m_SunflowerSetting = true;
+		m_Resizing = false;
+		m_Sizing = false;
+	}
+	else if(!m_Resizing)
 	{
 		Resizing(fTimeDelta, _float3(0.f, 30.f, 0.f));
 	}
@@ -2053,10 +2059,25 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 	{
 		Sizing(fTimeDelta);
 	}
+	else if(!m_SunflowerArmPosing)
+	{
+		if(InitArmPosition(fTimeDelta))
+		{
+			m_SunflowerArmPosing = true;
+			m_LeftArm->Set_Rolling(false);
+			m_RightArm->Set_Rolling(false);
+
+			m_LeftArm->Set_State(CArm::ARM_ATTACK);
+			m_RightArm->Set_State(CArm::ARM_ATTACK);
+
+		}
+	}
 	else
 	{
 		m_fTimer += fTimeDelta;
 
+		m_pTransform->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+		m_pOnlyRotation->Set_WorldMatrix(m_pTransform->Get_WorldMatrix());
 		_float3 vRight, vUp, vPos;
 		vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
 		vUp = m_pTransform->Get_State(CTransform::STATE_UP);
@@ -2065,11 +2086,14 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 		D3DXVec3Normalize(&vRight, &vRight);
 		D3DXVec3Normalize(&vUp, &vUp);
 
-
 		// 팔 위치 sin cos 으로 해바라기 마냥 회전하면서 본체 룩엣에 고정
-		m_LeftArmTr->Set_State(CTransform::STATE_POSITION,vPos + sinf(D3DXToRadian(m_fTimer)) * vUp * 10.f + vRight * cosf(D3DXToRadian(m_fTimer)) * 10.f);
-		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vPos + sinf(D3DXToRadian(m_fTimer)) * vUp * 10.f - vRight * cosf(D3DXToRadian(m_fTimer)) * 10.f);
 
+		m_LeftArmTr->Set_State(CTransform::STATE_POSITION,vPos + sinf(D3DXToRadian(m_fTimer * 500.f)) * vUp * 10.f - cosf(D3DXToRadian(m_fTimer * 500.f)) * vRight * 10.f);
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vPos + sinf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vUp * 10.f - cosf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vRight * 10.f) ;
+		m_LeftArmRotationTr->Set_WorldMatrix(m_pOnlyRotation->Get_WorldMatrix());
+		m_LeftArmRotationTr->Set_State(CTransform::STATE_POSITION,m_LeftArmTr->Get_State(CTransform::STATE_POSITION));
+		m_RightArmRotationTr->Set_WorldMatrix(m_pOnlyRotation->Get_WorldMatrix());
+		m_RightArmRotationTr->Set_State(CTransform::STATE_POSITION, m_RightArmTr->Get_State(CTransform::STATE_POSITION));
 	}
 }
 

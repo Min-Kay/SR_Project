@@ -266,6 +266,8 @@ private:
 
 
 	// Rage_Sunflower
+	_bool m_SunflowerSetting = false;
+	_bool m_SunflowerArmPosing = false;
 
 
 	//Grogy
