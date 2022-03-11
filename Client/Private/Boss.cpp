@@ -1013,7 +1013,7 @@ void CBoss::Randomize_Pattern(_float fTimeDelta)
 		case BOSS_PHASETWO:
 			if (m_AttPatternTimer > 2.f)
 			{
-				m_RageState = BOSSRAGE_LASER;// m_RageState == BOSSRAGE_TAEBO ? BOSSRAGE_LASER : BOSSRAGE_TAEBO;
+				m_RageState = BOSSRAGE_SUNFLOWER;// m_RageState == BOSSRAGE_TAEBO ? BOSSRAGE_LASER : BOSSRAGE_TAEBO;
 				m_AttPatternTimer = 0.f;
 				Set_BossState(BOSS_ATTACK);
 			}
@@ -1993,7 +1993,7 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 		m_LeftArmRotationTr->Turn(_float3(1.f,1.f,0.f),fTimeDelta * 0.01f);
 		m_RightArmRotationTr->Turn(_float3(-1.f, 1.f, 0.f), fTimeDelta * 0.01f);
 
-		m_pTransform->Go_Straight(fTimeDelta * 1.1f);
+		m_pTransform->Go_Straight(fTimeDelta * 1.4f);
 
 		m_StrikeTimer += fTimeDelta;
 		if(m_StrikeTime <= m_StrikeTimer)
@@ -2051,7 +2051,25 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 	}
 	else if(!m_Sizing)
 	{
-		
+		Sizing(fTimeDelta);
+	}
+	else
+	{
+		m_fTimer += fTimeDelta;
+
+		_float3 vRight, vUp, vPos;
+		vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+		vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+		vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+
+		D3DXVec3Normalize(&vRight, &vRight);
+		D3DXVec3Normalize(&vUp, &vUp);
+
+
+		// 팔 위치 sin cos 으로 해바라기 마냥 회전하면서 본체 룩엣에 고정
+		m_LeftArmTr->Set_State(CTransform::STATE_POSITION,vPos + sinf(D3DXToRadian(m_fTimer)) * vUp * 10.f + vRight * cosf(D3DXToRadian(m_fTimer)) * 10.f);
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vPos + sinf(D3DXToRadian(m_fTimer)) * vUp * 10.f - vRight * cosf(D3DXToRadian(m_fTimer)) * 10.f);
+
 	}
 }
 

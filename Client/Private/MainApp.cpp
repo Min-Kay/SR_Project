@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "..\Public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Logo.h"
@@ -60,7 +60,7 @@ HRESULT CMainApp::NativeConstruct()
 
 	Play_Intro();
 
-	
+
 	g_CurrLevel = LEVEL_LOGO;
 	return S_OK;
 }
@@ -101,27 +101,27 @@ HRESULT CMainApp::Render()
 
 HRESULT CMainApp::OpenLevel(LEVEL eLevelID)
 {
-	CLevel*			pLevel = nullptr;
+	CLevel* pLevel = nullptr;
 
 	switch (eLevelID)
 	{
-	case LEVEL_LOGO: /* ¹Ù·Î ·Î°í·¹º§·Î ÇÒ´çµé¾î°£´Ù. */
+	case LEVEL_LOGO: /* ï¿½Ù·ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½î°£ï¿½ï¿½. */
 		pLevel = CLevel_Logo::Create(m_pGraphic_Device);
 		g_CurrLevel = LEVEL_LOGO;
 		break;
-	case LEVEL_STAGEONE: /* ¹Ù·Î ·Îµù·¹º§·Î ¼±ÇÒ´ç. ·Îµù·¹º§¾È¿¡¼­ ·ÎµùÀÌ ³¡³ª¸é °ÔÀÓÇÃ·¹ÀÌ·Î ÇÒ´çµé¾î°£´Ù. */
+	case LEVEL_STAGEONE: /* ï¿½Ù·ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò´ï¿½. ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½Ì·ï¿½ ï¿½Ò´ï¿½ï¿½î°£ï¿½ï¿½. */
 	case LEVEL_STAGETWO:
-		pLevel = CLevel_Loading::Create(m_pGraphic_Device, eLevelID);		
+		pLevel = CLevel_Loading::Create(m_pGraphic_Device, eLevelID);
 		eLevelID = LEVEL_LOADING;
 		g_CurrLevel = eLevelID;
 		break;
-	}	
+	}
 
 	if (nullptr == pLevel)
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->OpenLevel(/*eLevelID == LEVEL_LOGO ? eLevelID : LEVEL_LOADING*/eLevelID, pLevel)))
-		return E_FAIL;	
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -131,7 +131,7 @@ HRESULT CMainApp::DefaultSetting()
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
 
-	/* ¹ÙÀÎµùµÇ¾îÀÖ´Â ÅØ½ºÃÄ·ÎºÎÅÍ ÇÈ¼¿°ªÀ» ¾ò¾î¿À´Â ÀÛ¾÷À» ¼öÇàÇÒ¶§¿¡ ´ëÇÑ ¼³Á¤. */
+	/* ï¿½ï¿½ï¿½Îµï¿½ï¿½Ç¾ï¿½ï¿½Ö´ï¿½ ï¿½Ø½ï¿½ï¿½Ä·Îºï¿½ï¿½ï¿½ ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. */
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
@@ -139,10 +139,10 @@ HRESULT CMainApp::DefaultSetting()
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
 	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
-	/* ±×¸®´Â »óÅÂ¸¦ ¼ÂÆÃÇÑ´Ù. */
+	/* ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. */
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, false);
 	// m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	
+
 	return S_OK;
 }
 
@@ -210,14 +210,14 @@ HRESULT CMainApp::Close_Intro()
 }
 
 
-CMainApp * CMainApp::Create()
+CMainApp* CMainApp::Create()
 {
-	CMainApp*	pInstance = new CMainApp();
+	CMainApp* pInstance = new CMainApp();
 
 	if (FAILED(pInstance->NativeConstruct()))
 	{
 		MSGBOX("Failed to Creating CMainApp");
-		Safe_Release(pInstance);		
+		Safe_Release(pInstance);
 	}
 
 	return pInstance;
@@ -232,4 +232,3 @@ void CMainApp::Free()
 	CGameInstance::Release_Engine();
 
 }
-

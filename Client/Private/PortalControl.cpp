@@ -119,9 +119,7 @@ HRESULT CPortalControl::Spawn_Portal(CPortal::PORTALCOLOR iIndex)
 	pGameInstance->StopSound(CSoundMgr::EFFECT2);
 	pGameInstance->Play_Sound(iIndex == CPortal::PORTAL_ORANGE ? TEXT("Portal_Orange_Fire.mp3") : TEXT("Portal_Blue_Fire.mp3"), CSoundMgr::EFFECT2, 1.f);
 
-	_float range = 100.f;
-
-	list<CCollision_Manager::COLLPOINT> hitList = pGameInstance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, range, true);
+	list<CCollision_Manager::COLLPOINT> hitList = pGameInstance->Get_Ray_Collision_List(m_vRayDirCH, m_vRayPosCH, 150.f, true);
 
 	if (hitList.empty() || (hitList.size() == 1 && hitList.front().CollObj->Get_Type() == OBJ_PLAYER))
 	{
