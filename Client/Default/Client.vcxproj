@@ -211,6 +211,7 @@
     <ClInclude Include="..\Public\Shield.h" />
     <ClInclude Include="..\Public\Shield_Effect.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\Sunflower.h" />
     <ClInclude Include="..\Public\Targeting.h" />
     <ClInclude Include="..\Public\Tile.h" />
     <ClInclude Include="..\Public\Tile_Collider.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="..\Private\Shield.cpp" />
     <ClCompile Include="..\Private\Shield_Effect.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\Sunflower.cpp" />
     <ClCompile Include="..\Private\Targeting.cpp" />
     <ClCompile Include="..\Private\Tile.cpp" />
     <ClCompile Include="..\Private\Tile_Collider.cpp" />

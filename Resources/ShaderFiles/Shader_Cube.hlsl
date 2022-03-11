@@ -233,4 +233,17 @@ technique Default_Technique
 		PixelShader = compile ps_3_0 PS_MAIN_CUBE();
 	}
 
+	pass Sunflower
+	{
+		AlphaBlendEnable = true;
+		BlendOp = add;
+		SrcBlend = SrcAlpha;
+		DestBlend = InvSrcAlpha;
+
+		cullmode = none;
+
+		VertexShader = compile vs_3_0 VS_MAIN();
+		PixelShader = compile ps_3_0 PS_SETCOLOR_CUBE();
+	}
+
 }

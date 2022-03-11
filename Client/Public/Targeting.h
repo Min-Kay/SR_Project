@@ -13,6 +13,7 @@ END
 BEGIN(Client)
 class CPlayer;
 class CMissile;
+class CBoss;
 class CTargeting :
 	public CGameObject
 {
@@ -32,16 +33,25 @@ public:
 	HRESULT	Release_RanderState();
 	HRESULT SetUp_Component();
 	HRESULT FaceOn_Camera();
+	HRESULT	MainMoving(_float fTimeDelta);
+
+	HRESULT	ColliderCheck();
+
+	_float3 BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float time);
 
 	_bool	Get_CheckCollider() { return m_bcheckCollider; }
 
+	HRESULT MainTarget(_float fTimeDelta);
+	HRESULT SubTarget(_float fTimeDelta);
+
 	typedef struct tagTarget
 	{
-		_float3	targetPos;
-		_bool	MainTarget;
-		_float	SubTargetRangeX;
-		_float	SubTargetRangeY;
-	
+		_float3	Pos1;
+		_float3	Pos2;
+		_float3	Pos3;
+		_bool	MainTaret;
+		void*  Parent;
+
 	}TARGET;
 
 private:
@@ -61,14 +71,16 @@ private:
 	_float3 m_targetPos;
 	CPlayer* m_pPlayer = nullptr;;
 	CMissile*	m_pMissile = nullptr;
-
-	_float m_fFrame;
+	CBoss*		m_pBoss = nullptr;;
+	_float	m_fFrame = 0.0f;
 	_float	timer = 0.0f;
+	_float	deletetimer = 0.0f;
 	_float3			m_ColliderPos;
 	CTransform*		m_pTarget = nullptr;
 	_bool			m_bcheckCollider = false;
 	TARGET			m_Target;
 	_bool			m_fire = false;
+	_float3			BezierPos;
 public:
 	static CTargeting* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

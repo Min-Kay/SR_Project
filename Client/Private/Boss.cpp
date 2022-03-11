@@ -24,6 +24,8 @@
 #include "Shield_Effect.h"
 #include "UI.h"
 
+#include "Sunflower.h"
+
 CBoss::CBoss(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
 {
@@ -269,6 +271,18 @@ HRESULT CBoss::SetUp_Component()
 		se->Set_Parent(m_pOnlyRotation);
 		m_shield_effects_.push_back(se);
 	}
+
+	if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Sunflower"),TEXT("Prototype_GameObject_Sunflower"))))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+
+	m_Sunflower = static_cast<CSunflower*>(p_instance->Get_GameObject_End(g_CurrLevel,TEXT("Sunflower")));
+	m_Sunflower->Set_Valid(false);
+	m_Sunflower->Set_Parent(this);
+	
+
 
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
 	p_instance->StopSound(CSoundMgr::BGM);
@@ -649,6 +663,8 @@ void CBoss::Set_BossState(BOSSSTATE _state)
 	Init_Attack_Missile();
 	Init_Attack_Rolling();
 	Init_Rage_Laser();
+	Init_Rage_Sunflower();
+
 
 	m_State = _state;
 	m_OnPattern = false;
@@ -861,6 +877,13 @@ void CBoss::Init_Rage_Laser()
 	}
 	m_StrikeTimer = 0.f;
 	m_Striking = false;
+}
+
+void CBoss::Init_Rage_Sunflower()
+{
+	m_Sunflower->Set_Valid(false);
+	m_SunflowerSetting = false;
+	m_SunflowerArmPosing = false;
 }
 
 void CBoss::Init_Attack_Punch()
@@ -1321,103 +1344,152 @@ void CBoss::Die(_float fTimeDelta)
 		Set_Dead(true);
 	}
 }
+
 void CBoss::Attack_Missile(_float fTimeDelta)
 {
 	// 미사일
-
+	totalfireCount = 12;
 	Start_Pattern(TEXT("Boss_AttackAlarm.wav"));
-	
-	CMissile::ARMMISSLE Armtarget1;
-	Armtarget1.FireCount = 8;
-	Armtarget1.ArmMissle = CMissile::ARMMISSLE_LEFT;
-	Armtarget1.pParent = this;
 
-
-	Gravity_Blowing(fTimeDelta, 10.f, true);
-
+	Gravity_Blowing(fTimeDelta, 10.f , true);
+	m_fWaiting += fTimeDelta * 3;
+	m_fIWaiting += fTimeDelta;
+	m_fJWaiting += fTimeDelta;
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	m_fWaiting += fTimeDelta;
-	if (m_fFireCount >= Armtarget1.FireCount)
+
+
+	if (!MainTargetFire)//메인타겟 발사
 	{
-		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3); 
+		//처음 날리느 타겟의 위치값
+		CTargeting::TARGET targeting;
+		targeting.Pos1 = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		targeting.Pos2 = m_pTransform->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 30.f, 0.f);
+		targeting.Pos3 = m_pPlayerTr->Get_State(CTransform::STATE_POSITION) - _float3(0.f, 0.2f, 0.f);;
+		targeting.MainTaret = true;
+		targeting.Parent = this;
+
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Target_Main"), TEXT("Prototype_GameObject_Targeting"), &targeting)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			MSGBOX("타겟 오류")
+				return;
+		}
+		m_pTargeting = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target_Main")));
+		MainTargetFire = true;
+
+	}
+
+	if (totalfireCount <= count)
+	{
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
 		m_RightArm->Set_Rolling(false);
 		m_LeftArm->Set_Rolling(false);
 		Reset_Arm_Direction(ARM_RIGHT);
 		Reset_Arm_Direction(ARM_LEFT);
-
-		if (m_fWaiting >= 5.f)
+		if (m_fJWaiting >= 3.f)
 		{
+
 			Set_BossState(BOSS_IDLE);
+			MainTargetFire = false;
+			count = 0;
 			RELEASE_INSTANCE(CGameInstance);
 			return;
 		}
 	}
 
-	if(m_fFireCount > 0 && Armtarget1.FireCount < m_fFireCount)
+	if (m_fWaiting >= 1.f)
 	{
-		m_LaunchTimer += fTimeDelta;
-		_float3 vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
-		D3DXVec3Normalize(&vLook, &vLook);
-		switch (m_CurrLaunchArm)
-		{
-		case ARM_LEFT:
-			m_LeftArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_LEFT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 120.f)) * 10.f);
-			break;
-		case ARM_RIGHT:
-			m_RightArmTr->Set_State(CTransform::STATE_POSITION, m_InitLaunchPos[ARM_RIGHT] + vLook * sinf(D3DXToRadian(m_LaunchTimer * 120.f)) * 10.f);
-			break;
-		}
-	}
-	
-	if (m_btargetCollider && m_fFireCount < Armtarget1.FireCount)
-	{
+		m_fWaiting = 0.f;
+		++count;
+		m_LaunchTimer = 0.f;
 
-		m_fFireFrame += fTimeDelta * 3;
-		if (m_fFireFrame >= 1.f)
+		//날라간 다음 서브 타겟
+		if (m_pTargeting->Get_CheckCollider() && totalfireCount != count)
 		{
-			m_fFireFrame = 0.f;
-			++m_fFireCount;
-			switch (m_fFireCount % 2)
+
+
+			CTransform* mainTrans = static_cast<CTransform*>(m_pTargeting->Get_Component(COM_TRANSFORM));
+			//처음 날리느 타겟의 위치값
+			CTargeting::TARGET targeting_Sub;
+			targeting_Sub.Pos1 = m_pTransform->Get_State(CTransform::STATE_POSITION);
+			targeting_Sub.Pos2 = m_pTransform->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 30.f, 0.f);
+			if (totalfireCount >= count && BeforeCount != count)
 			{
-			case 0:
-				Armtarget1.ArmMissle = CMissile::ARMMISSLE_LEFT;
-				Armtarget1.Left = false;
-				Armtarget1.Right = true;
-				m_LeftArm->Set_Rolling(true, -m_pTransform->Get_State(CTransform::STATE_LOOK));
-				m_RightArm->Set_Rolling(false);
-				Reset_Arm_Direction(ARM_RIGHT);
-				m_CurrLaunchArm = ARM_LEFT;
-				m_LaunchTimer = 0.f;
-				m_InitLaunchPos[ARM_LEFT] = m_LeftArmTr->Get_State(CTransform::STATE_POSITION);
-				p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
-				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"),CSoundMgr::ENEMY_EFFECT3,1.f );
-				break;
-			case 1:
-				Armtarget1.ArmMissle = CMissile::ATMMISSLE_RIGHT;
-				Armtarget1.Left = true;
-				Armtarget1.Right = false;
-				m_RightArm->Set_Rolling(true, m_pTransform->Get_State(CTransform::STATE_LOOK));
-				m_LeftArm->Set_Rolling(false);
-				Reset_Arm_Direction(ARM_LEFT);
-				m_CurrLaunchArm = ARM_RIGHT;
-				m_LaunchTimer = 0.f;
-				m_InitLaunchPos[ARM_RIGHT] = m_RightArmTr->Get_State(CTransform::STATE_POSITION);
-				p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
-				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
-				break;
+				m_fJWaiting = 0.f;
+				targeting_Sub.Pos3 = mainTrans->Get_State(CTransform::STATE_POSITION) + _float3(rand() % 3 - 1, 0.f, rand() % 3 - 1);
+				targeting_Sub.MainTaret = false;
+
+
+				targeting_Sub.Parent = this;
+
+				if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Target_Sub"), TEXT("Prototype_GameObject_Targeting"), &targeting_Sub)))
+				{
+					RELEASE_INSTANCE(CGameInstance);
+					MSGBOX("타겟 오류")
+						return;
+				}
+				CTransform* mainTrans = static_cast<CTransform*>(m_pTargeting->Get_Component(COM_TRANSFORM));
+				CTargeting* SubTarget = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target_Sub")));
+				CTransform* SubTargetTr = static_cast<CTransform*>(SubTarget->Get_Component(COM_TRANSFORM));
+
+				//미사일 생성위치->같이 생성된 타겟서브의 위치를 가지고온다.-> 그위치에 미사일도착지점
+				CMissile::ARMMISSLE MissleLunch;
+				MissleLunch.pParent = this;
+				MissleLunch.pTargeting = SubTarget;
+				MissleLunch.mainTarget = m_pTargeting;
+				switch (count % 2 + 1)
+				{
+				case 1:
+					m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Left")))));
+					MissleLunch.ArmMissle = CMissile::ARMMISSLE_LEFT;
+					m_LeftArmTr = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
+					m_LeftArm->Set_Rolling(true, -m_pTransform->Get_State(CTransform::STATE_LOOK));
+					m_RightArm->Set_Rolling(false);
+					m_CurrLaunchArm = ARM_LEFT;
+					Reset_Arm_Direction(ARM_RIGHT);
+					m_LaunchTimer = 0.f;
+					p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+					p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
+					break;
+				case 2:
+					m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Right")))));
+					MissleLunch.ArmMissle = CMissile::ATMMISSLE_RIGHT;
+					m_RightArmTr = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
+					m_RightArm->Set_Rolling(true, m_pTransform->Get_State(CTransform::STATE_LOOK));
+					m_LeftArm->Set_Rolling(false);
+					m_CurrLaunchArm = ARM_RIGHT;
+					Reset_Arm_Direction(ARM_LEFT);
+					m_LaunchTimer = 0.f;
+					p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+					p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
+					break;
+				}
+
+				CTransform* m_ArmTrans = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
+				//미사일 베지어 곡선용 포지션 3개
+				MissleLunch.Pos1 = m_ArmTrans->Get_State(CTransform::STATE_POSITION);//내 팔의위치
+				MissleLunch.Pos2 = m_ArmTrans->Get_State(CTransform::STATE_POSITION) + _float3(rand() % 10 - 5.f, 30.f, rand() % 10 - 5.f);//중간 지점
+				MissleLunch.Pos3 = targeting_Sub.Pos3;//타겟의 위치
+
+
+				if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Missile"), TEXT("Prototype_GameObject_Missile"), &MissleLunch)))
+				{
+					RELEASE_INSTANCE(CGameInstance);
+					MSGBOX("미사일 생성 오류")
+						return;
+				}
+
+				BeforeCount = count;
+
 			}
 
-			if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Missile"), TEXT("Prototype_GameObject_Missile"), &Armtarget1)))
-			{
-				RELEASE_INSTANCE(CGameInstance);
-			}
 
-			m_fWaiting = 0.f;
 		}
-
 	}
+
+
+
 	RELEASE_INSTANCE(CGameInstance);
-
 }
 
 void CBoss::Attack_Punch(_float fTimeDelta)
@@ -2053,7 +2125,7 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 	}
 	else if(!m_Resizing)
 	{
-		Resizing(fTimeDelta, _float3(0.f, 30.f, 0.f));
+		Resizing(fTimeDelta, _float3(0.f, 40.f, 0.f));
 	}
 	else if(!m_Sizing)
 	{
@@ -2069,19 +2141,21 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 
 			m_LeftArm->Set_State(CArm::ARM_ATTACK);
 			m_RightArm->Set_State(CArm::ARM_ATTACK);
-
+			m_Sunflower->Set_Valid(true);
+			m_Invincible = false;
 		}
 	}
 	else
 	{
 		m_fTimer += fTimeDelta;
 
-		m_pTransform->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
-		m_pOnlyRotation->Set_WorldMatrix(m_pTransform->Get_WorldMatrix());
+		if(!m_Sunflower->Get_Charging())
+			m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
+
 		_float3 vRight, vUp, vPos;
-		vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
-		vUp = m_pTransform->Get_State(CTransform::STATE_UP);
-		vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+		vRight = m_pOnlyRotation->Get_State(CTransform::STATE_RIGHT);
+		vUp = m_pOnlyRotation->Get_State(CTransform::STATE_UP);
+		vPos = m_pOnlyRotation->Get_State(CTransform::STATE_POSITION);
 
 		D3DXVec3Normalize(&vRight, &vRight);
 		D3DXVec3Normalize(&vUp, &vUp);
@@ -2089,11 +2163,24 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 		// 팔 위치 sin cos 으로 해바라기 마냥 회전하면서 본체 룩엣에 고정
 
 		m_LeftArmTr->Set_State(CTransform::STATE_POSITION,vPos + sinf(D3DXToRadian(m_fTimer * 500.f)) * vUp * 10.f - cosf(D3DXToRadian(m_fTimer * 500.f)) * vRight * 10.f);
-		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vPos + sinf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vUp * 10.f - cosf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vRight * 10.f) ;
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vPos + sinf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vUp * 10.f - cosf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vRight * 10.f);
 		m_LeftArmRotationTr->Set_WorldMatrix(m_pOnlyRotation->Get_WorldMatrix());
 		m_LeftArmRotationTr->Set_State(CTransform::STATE_POSITION,m_LeftArmTr->Get_State(CTransform::STATE_POSITION));
 		m_RightArmRotationTr->Set_WorldMatrix(m_pOnlyRotation->Get_WorldMatrix());
 		m_RightArmRotationTr->Set_State(CTransform::STATE_POSITION, m_RightArmTr->Get_State(CTransform::STATE_POSITION));
+
+
+		if (m_SunflowerFireTime <= m_SunflowerTimer && m_Sunflower->Get_State() != CSunflower::SF_FIRING)
+			m_Sunflower->Fire();
+		else if (m_Sunflower->Get_State() == CSunflower::SF_CHARGING)
+			m_SunflowerTimer += fTimeDelta;
+
+		if(m_fTimer >= m_SunflowerTime && m_Sunflower->Get_State() == CSunflower::SF_CHARGING)
+		{
+			m_fTimer = 0.f;
+			m_Sunflower->Set_Valid(false);
+			Set_BossState(BOSS_IDLE);
+		}
 	}
 }
 

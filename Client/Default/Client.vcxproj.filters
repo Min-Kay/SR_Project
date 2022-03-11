@@ -166,6 +166,9 @@
     <Filter Include="02.GameObjects\Dispenser">
       <UniqueIdentifier>{27889068-3c9f-485f-a83b-7e0f550672c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Enemy\Boss\Sunflower">
+      <UniqueIdentifier>{24202c70-52ce-4a75-8ebf-dac8494900a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -321,6 +324,9 @@
     <ClInclude Include="..\Public\Dispenser.h">
       <Filter>02.GameObjects\Dispenser</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sunflower.h">
+      <Filter>02.GameObjects\Enemy\Boss\Sunflower</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -463,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Dispenser.cpp">
       <Filter>02.GameObjects\Dispenser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sunflower.cpp">
+      <Filter>02.GameObjects\Enemy\Boss\Sunflower</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

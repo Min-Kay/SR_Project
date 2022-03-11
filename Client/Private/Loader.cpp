@@ -45,6 +45,7 @@
 #include "Unportal.h"
 #include "Shield.h"
 #include "Shield_Effect.h"
+#include "Sunflower.h"
 
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -351,6 +352,8 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Laser"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Laser.dds")))))
 		return E_FAIL;
 
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sunflower"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Sunflower.dds")))))
+		return E_FAIL;
 
 
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BossHP"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Portal/Enemy/HP.png")))))
@@ -397,6 +400,9 @@ HRESULT CLoader::Loading_ForStageTwo()
 		return E_FAIL;
 
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Laser"), CLaser::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Sunflower"), CSunflower::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

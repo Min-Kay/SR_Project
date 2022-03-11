@@ -19,6 +19,7 @@ class CShield;
 class CMissile;
 class CTargeting;
 class CShield_Effect;
+class CSunflower;
 
 class CBoss :
     public CEnemy
@@ -90,6 +91,7 @@ private:
 
 	void Init_Attack_Rolling();
 	void Init_Rage_Laser();
+	void Init_Rage_Sunflower();
 private:
 
 	void Init_Attack_Punch();
@@ -154,14 +156,12 @@ private:
 	_bool				m_Hand = false;
 	_bool				m_Shaking[2] = { false , false};
 
-
 private:
 	// 태우형 패턴 변수
 	_bool  m_bMissile = false;
 	_float m_fMissileCount = 0.f;
 	_int m_fFireCount = 0;
 	_float m_fFireFrame = 0.f;
-	_float m_fWaiting = 0.f;
 	_bool    m_bLeft = false;
 	_bool    m_bRight = false;
 	_bool    m_btargetCollider = true;
@@ -172,6 +172,31 @@ private:
 	ARM m_CurrLaunchArm = ARM_LEFT;
 	_float m_LaunchTimer = 0.f;
 	_float3 m_InitLaunchPos[2];
+
+
+
+	//
+
+	//변수
+	_float m_fTargetTimer = 0.f;
+	_float m_fWaiting = 0.f;
+
+	_float m_fIWaiting = 0.f;
+	_float m_fJWaiting = 0.f;
+	_float3 m_fBossPos;
+	_float3 m_fBossUPPos;
+	_float3 m_fTargetingBezier;
+	_uint totalfireCount = 0;
+	_uint count = 0;
+	_uint icount = 0;
+	_uint jcount = 0;
+	_uint BeforeCount = 0;
+	CTargeting* m_pTargeting = nullptr;
+	CArm* m_Arm = nullptr;
+	_bool                MainTargetFire = false;
+	////
+
+
 
 	//UI
 	_int                m_uChangeHp = 0;
@@ -266,10 +291,12 @@ private:
 
 
 	// Rage_Sunflower
+	CSunflower* m_Sunflower = nullptr;
 	_bool m_SunflowerSetting = false;
 	_bool m_SunflowerArmPosing = false;
-
-
+	_float m_SunflowerTime = 30.f;
+	_float m_SunflowerFireTime = 5.f;
+	_float m_SunflowerTimer = 0.f;
 	//Grogy
 	_bool m_Grogy = false;
 

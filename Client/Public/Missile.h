@@ -39,22 +39,24 @@ public:
 
 
 	typedef struct tagarmmissle {
+		_float3 Pos1;
+		_float3 Pos2;
+		_float3 Pos3;
 		ArmMissle ArmMissle;
 		_float	FireCount;
 		_bool	Left;
 		_bool	Right;
 		void* pParent;
+		CTargeting* pTargeting;
+		CTargeting* mainTarget;
 	}ARMMISSLE;
 private:
 	HRESULT SetUp_Component();
 	HRESULT SetUp_First();
 	_bool Check_Dead();
 	HRESULT Check_ColliderTarget();
-	HRESULT First_Bezier(_float fTimeDelta);
-	HRESULT Targeting_Main_Sub();
 	HRESULT Missle_Move(_float fTimeDelta);
-	//HRESULT Check_Portaling(_float fTimeDelta);
-	_float3		BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _float time);
+	_float3		BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float time);
 	void Impact(_float3 _Pos);
 protected:
 	CVIBuffer_Cube* m_pVIBuffer = nullptr;
@@ -84,11 +86,13 @@ private:
 
 	_float m_fMissileTimer = 0.f;
 	_float m_fTargetTimer = 0.f;
+	_float m_fdeadCounter = 0.f;
 	_float LerpTimeer;
 	_float3 m_fBezierPos;
 	_float3 m_fFront_BezierPos;
 	_float m_ftimer;
 	_bool	m_bDEAD = false;
+	_bool	m_bDEADcount = false;
 
 	_bool	m_bTargetCollider = false;
 	_uint	Count = 0;
