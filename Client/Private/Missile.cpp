@@ -193,7 +193,7 @@ HRESULT CMissile::SetUp_Component()
 	m_pBoxCollider->Set_ParentInfo(this);
 	Set_Type(OBJ_ENEMY);
 	m_pBoxCollider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.5f, 1.5f, 1.5f));
+	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(2.0f, 2.0f, 2.0f));
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxCollider);
@@ -207,7 +207,7 @@ HRESULT CMissile::SetUp_Component()
 HRESULT CMissile::SetUp_First()
 {
 	m_Damage = 20;
-	m_pTransform->Scaled(_float3(2.f, 2.f, 2.f));
+	m_pTransform->Scaled(_float3(3.f, 3.f, 3.f));
 	m_bTargetCollider = false;
 	return S_OK;
 }
@@ -278,7 +278,7 @@ HRESULT CMissile::Missle_Move(_float fTimeDelta)
 	
 			m_pTransform->Turn(_float3(1.f, 1.f, 0.f), fTimeDelta * 10.f);
 
-			m_fBezierPos = BezierCurve(m_ArmMissle.Pos1, m_ArmMissle.Pos2, m_ArmMissle.Pos3, fTimeDelta);
+			m_fBezierPos = BezierCurve(m_ArmMissle.Pos1, m_ArmMissle.Pos2, m_ArmMissle.Pos3, fTimeDelta*2);
 			m_pTransform->Set_State(CTransform::STATE_POSITION, m_fBezierPos);
 
 			_float3 MissleLook = m_pTransform->Get_State(CTransform::STATE_LOOK);

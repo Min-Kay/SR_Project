@@ -36,6 +36,7 @@ HRESULT CTile_Cube::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Set_Type(OBJ_STATIC);
+	m_pBoxColliderCom->Set_Collider();
 
 	return S_OK;
 }
@@ -45,11 +46,6 @@ _int CTile_Cube::Tick(_float fTimeDelta)
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
 
-
-	if (m_pBoxColliderCom)
-		m_pBoxColliderCom->Set_Collider();
-	
-	
 	return _int();
 }
 
@@ -71,20 +67,9 @@ HRESULT CTile_Cube::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-	//	return E_FAIL;
-
-	////m_pBoxColliderCom->Draw_Box();
-
-	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
-	//	return E_FAIL;
-
-	_float blend = 0;
-
 	m_pTransformCom->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pShader->SetUp_ValueOnShader("g_Alpha", &blend, sizeof(_uint));
 	m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iTextureIndex);
 

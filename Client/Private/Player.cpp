@@ -213,7 +213,9 @@ void CPlayer::Add_Hp(_int _add)
 	if (m_PlayerDead)
 		return;
 
-	m_HP += _add;
+	if(!m_Invincible)
+		m_HP += _add;
+
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->StopSound(CSoundMgr::PLAYER_EFFECT3);
 	p_instance->Play_Sound(rand() % 2 ? TEXT("hurt_0.mp3") : TEXT("hurt_1.mp3"), CSoundMgr::PLAYER_EFFECT3, 1.f);
@@ -650,6 +652,11 @@ _int CPlayer::Player_Control(_float fTimeDelta)
 			m_pPortalCtrl->Set_Vaild(false);
 			m_pGun->Set_Vaild(true);
 		}
+	}
+
+	if (pGameInstance->Get_Key_Down(DIK_5))
+	{
+		m_Invincible = !m_Invincible;
 	}
 
 	

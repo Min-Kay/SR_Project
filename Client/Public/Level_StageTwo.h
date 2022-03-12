@@ -6,6 +6,8 @@
 
 BEGIN(Client)
 class CTile_Cube;
+class CBoss;
+class CTileCollider;
 class CLevel_StageTwo final : public CLevel
 {
 public:
@@ -29,6 +31,14 @@ private:
 	HRESULT Save_Point();
 
 	HRESULT Close_Exit();
+
+
+private:
+	void Spawn_Boss_Tile(_float fTimeDelta);
+	void Change_Boss_Tile(_float fTimeDelta);
+	void Gradiant(_float fTimeDelta);
+
+
 private:
 	_int iLineX = 25;
 	_int iLineY = 10;
@@ -58,6 +68,23 @@ private:
 	_bool m_Open_2 = false;
 	_bool m_Save = false;
 	_bool m_BossSpone = false;
+
+
+private:
+	_bool m_ChangedTile = false;
+	_bool m_GradianChangeTile = false;
+
+	_bool m_ChangedTile2 = false;
+
+	_float m_Timer = 0.f;
+
+	_float m_Gradiant = false;
+	_bool m_GrowColor = false;
+	_float m_GradiantTime = 0.f;
+
+
+	CBoss* m_pBoss = nullptr;
+	list<CTileCollider*> m_TileList;
 
 public:
 	static CLevel_StageTwo* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

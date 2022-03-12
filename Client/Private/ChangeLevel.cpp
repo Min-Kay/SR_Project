@@ -85,24 +85,6 @@ HRESULT CChangeLevel::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	//if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-	//	return E_FAIL;
-
-
-	//if (FAILED(m_pTextureCom->Bind_OnGraphicDevice()))
-	//	return E_FAIL;
-
-
-
-	////m_pBoxColliderCom->Draw_Box();
-
-	//SetUp_RenderState();
-
-	//m_pVIBufferCom->Render();
-
-	//Release_RenderState();
-
-
 	m_pTransformCom->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));

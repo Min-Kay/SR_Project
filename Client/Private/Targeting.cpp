@@ -308,11 +308,11 @@ HRESULT CTargeting::SetUp_Component()
 	Set_Type(OBJ_STATIC);
 
 
-	m_pTransformCom->Scaled(_float3(1.f, 1.f, 1.f));
+	m_pTransformCom->Scaled(_float3(3.f, 3.f, 3.f));
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
 	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-	m_pBoxColliderCom->Set_State(CBoxCollider::COLL_SIZE, _float3(0.5f, 0.5f, 0.5f));
+	m_pBoxColliderCom->Set_State(CBoxCollider::COLL_SIZE, _float3(1.5f, 1.5f, 1.5f));
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
 	m_pPlayer = static_cast<CPlayer*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));

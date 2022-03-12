@@ -106,8 +106,8 @@ HRESULT CShield::Render()
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_BLEND_CUBE);
 	m_pBuffer->Render();
 	m_pShader->End_Shader();
-	m_Color = _float4(0.f, 0.f, 0.f, 0.f);
-	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
+	m_Color = _float4(0.f, 0.f, 0.f, 0.3f);
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, 0.f, 0.f, 0.0f), sizeof(_float4));
 
 	return S_OK;
 }
@@ -142,7 +142,7 @@ HRESULT CShield::SetUp_Component()
 	m_pCollider->Set_ParentInfo(this);
 	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
 
-	m_Hp = 10;
+	m_Hp = m_InitHp;
 	m_EnemyType = ENEMY_SHIELD;
 
 	m_CanPortal = false;
@@ -157,7 +157,7 @@ void CShield::Set_ParentTransform(CTransform* _tr)
 
 void CShield::Add_HP(_int _add)
 {
-	m_Color = _float4(0.f,0.f,0.f,0.5f);
+	m_Color = _float4(0.f,0.f,0.f,0.7f);
 }
 
 void CShield::Spawn_Shield(_float fTimeDelta)

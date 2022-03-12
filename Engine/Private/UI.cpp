@@ -215,10 +215,14 @@ HRESULT CUI::Set_RenderState()
 	m_pShader->SetUp_ValueOnShader("g_ProjMatrix", D3DXMatrixTranspose(&ProjMatrix, &m_ProjMatrix), sizeof(_float4x4));
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", m_desc.Shader_Control, sizeof(_float));
+	m_pShader->SetUp_ValueOnShader("g_Color", m_desc.Color, sizeof(_float4));
+
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture",m_CurrFrame);
 	m_pShader->Begin_Shader(m_desc.Shader_Style);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f,0.f,0.f,0.f), sizeof(_float4));
+
 
 	/*switch (m_desc.Alpha)
 	{
@@ -287,6 +291,16 @@ HRESULT CUI::Set_Size(_float sizeX, _float sizeY)
 	return S_OK;
 }
 
+_float CUI::Get_SizeX()
+{
+	return m_desc.SizeX;
+	
+}
+float CUI::Get_PosX()
+{
+	return m_desc.PosX;
+
+}
 
 HRESULT CUI::Bind_UI()	
 {

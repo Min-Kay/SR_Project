@@ -9,6 +9,8 @@
 #include "Texture.h"
 
 #include "GameInstance.h"
+#include "Impact.h"
+#include "Player.h"
 
 CSunflower::CSunflower(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
@@ -21,12 +23,10 @@ CSunflower::CSunflower(const CSunflower& rhs)
 	, m_pOnlyRotation(rhs.m_pOnlyRotation)
 	,m_pShader(rhs.m_pShader)
 	,m_pTexture(rhs.m_pTexture)
-	,m_pCollider(rhs.m_pCollider)
 	,m_pBuffer(rhs.m_pBuffer)
 	,m_pRenderer(rhs.m_pRenderer)
 {
 	Safe_AddRef(m_pBuffer);
-	Safe_AddRef(m_pCollider);
 	Safe_AddRef(m_pRenderer);
 	Safe_AddRef(m_pShader);
 	Safe_AddRef(m_pTexture);
@@ -112,7 +112,6 @@ HRESULT CSunflower::SetUp_Component()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, COM_TRANSFORM, (CComponent**)&m_pTransform, &desc)))
 		return E_FAIL;
 
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, TEXT("OnlyRotation"), (CComponent**)&m_pOnlyRotation, &desc)))
 		return E_FAIL;
 
@@ -125,26 +124,15 @@ HRESULT CSunflower::SetUp_Component()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sunflower"), COM_TEXTURE, (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_COLLIDER, COM_COLLIDER, (CComponent**)&m_pCollider)))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RENDERER, COM_RENDERER, (CComponent**)&m_pRenderer)))
 		return E_FAIL;
 
 	Set_Type(OBJ_ENEMY);
-	m_pCollider->Set_ParentInfo(this);
-	m_pCollider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-	m_pCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC,m_pCollider);
-	RELEASE_INSTANCE(CGameInstance);
-
 
 	m_pTransform->Scaled(m_NormalSize);
 
 	m_EnemyType = ENEMY_NONE;
-	m_Damage = 50;
+	m_Damage = 20;
 	return S_OK;
 }
 
@@ -174,12 +162,22 @@ void CSunflower::Set_Parent(CGameObject* _parent)
 	m_ParentTransform = static_cast<CTransform*>(m_Parent->Get_Component(TEXT("OnlyRotation")));
 }
 
+void CSunflower::Set_Player(CPlayer* _player)
+{
+	m_pPlayer = _player;
+	m_pPlayerTr = static_cast<CTransform*>(m_pPlayer->Get_Component(COM_TRANSFORM));
+}
+
 void CSunflower::Firing(_float fTimeDelta)
 {
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	Synchronize_Parent(fTimeDelta);
 	if (m_State == SF_CHARGING)
 	{
+
 		m_Color = m_NormalColor;
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
+		RELEASE_INSTANCE(CGameInstance);
 		return;
 	}
 
@@ -192,6 +190,7 @@ void CSunflower::Firing(_float fTimeDelta)
 
 	if(!m_Charging)
 	{
+		p_instance->Play_Sound(TEXT("Sunflower_Charging.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
 		m_Color = m_NormalColor;
 
 		m_pOnlyRotation->Scaled(_float3(m_NormalSize.x + sinf(D3DXToRadian(m_fTimer * 30.f)), m_NormalSize.y + sinf(D3DXToRadian(m_fTimer * 30.f)), m_NormalSize.z));
@@ -201,16 +200,62 @@ void CSunflower::Firing(_float fTimeDelta)
 		{
 			m_fTimer = 0.f;
 			m_pOnlyRotation->Scaled(m_FiringSize);
+			p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
 			m_Charging = true;
 		}
 	}
 	else if(!m_Firing)
 	{
+		m_AttackTick += fTimeDelta;
+		p_instance->Play_Sound(TEXT("Sunflower_Fire.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
 		m_Color = m_ChargingColor;
 		m_Color.y -= m_fTimer;
 
-	
 		m_pOnlyRotation->Scaled(_float3(vScale.x + m_fTimer, vScale.y + m_fTimer, vScale.z));
+
+
+		_float3 vLook = m_pOnlyRotation->Get_State(CTransform::STATE_LOOK);
+		D3DXVec3Normalize(&vLook, &vLook);
+
+		_float3 lineStart = m_pOnlyRotation->Get_State(CTransform::STATE_POSITION) - vLook * vScale.z * 0.5f;
+
+		_float3 lineEnd = m_pOnlyRotation->Get_State(CTransform::STATE_POSITION) + vLook * vScale.z * 0.5f;
+
+		_float3 line = lineEnd - lineStart;
+		D3DXVec3Normalize(&line, &line);
+
+		if (m_AttackTick >= 0.3f)
+		{
+
+			_float3 playerPos = m_pPlayerTr->Get_State(CTransform::STATE_POSITION);
+
+			_float3 lineToPlayer = playerPos - lineStart;
+
+			_float StartToPlayer = D3DXVec3Length(&lineToPlayer);
+			D3DXVec3Normalize(&lineToPlayer, &lineToPlayer);
+
+			_float length = abs(sinf(acos(D3DXVec3Dot(&line, &lineToPlayer))) * StartToPlayer);
+
+			if (length <= (vScale.x + m_fTimer) * 0.5f)
+			{
+				m_pPlayer->Add_Hp(-m_Damage);
+				m_AttackTick = 0.f;
+			}
+		}
+
+		list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(line, lineStart, 100.f, true);
+
+		if (!collList.empty())
+		{
+			auto iter = collList.begin();
+
+			if (iter->CollObj == m_Parent)
+				++iter;
+
+			if(iter != collList.end())
+				Spawn_Impact(iter->Point);
+		}
+
 
 		if (vScale.x + m_fTimer * 0.5f >= m_FiringSize.x)
 		{
@@ -221,6 +266,7 @@ void CSunflower::Firing(_float fTimeDelta)
 		{
 			m_fTimer = 0.f;
 			m_Firing = true;
+			p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
 		}
 	}
 	else
@@ -244,6 +290,7 @@ void CSunflower::Firing(_float fTimeDelta)
 			m_Charging = false;
 		}
 	}
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CSunflower::Synchronize_Parent(_float fTimeDelta)
@@ -268,6 +315,32 @@ void CSunflower::Synchronize_Parent(_float fTimeDelta)
 	m_pTransform->Set_State(CTransform::STATE_POSITION, position);
 
 	m_pOnlyRotation->Set_WorldMatrix(m_pTransform->Get_WorldMatrix());
+
+}
+
+void CSunflower::Spawn_Impact(_float3 pos)
+{
+	CImpact::IMPACT desc;
+	ZeroMemory(&desc,sizeof(desc));
+
+	desc.SpreadSpeed = 10.f;
+	desc.RandomDirection = 10.f;
+	desc.DeleteTime = 0.5f;
+	desc.Color = m_Color;
+	desc.Position = pos;
+	desc.Size = _float3(0.1f,0.1f,0.1f);
+
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	for(_uint i = 0; i < rand() % 5 + 5; ++i)
+	{
+		if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Impact_Sunflower"),TEXT("Prototype_GameObject_Impact"),&desc)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
 
 }
 
@@ -300,7 +373,6 @@ CGameObject* CSunflower::Clone(void* pArg)
 void CSunflower::Free()
 {
 	__super::Free();
-	Safe_Release(m_pCollider);
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);

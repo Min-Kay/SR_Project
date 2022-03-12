@@ -82,7 +82,7 @@ private:
 
 private:
 	_bool				m_OnGround = false;
-
+	_bool				m_Invincible = false;
 private:
 	_uint				m_iCurrIndex = 0; 
 	CPortalControl*		m_pPortalCtrl = nullptr;

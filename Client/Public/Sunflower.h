@@ -2,7 +2,6 @@
 #include "Enemy.h"
 BEGIN(Engine)
 class CTransform;
-class CBoxCollider;
 class CRenderer;
 class CTexture;
 class CShader;
@@ -10,6 +9,7 @@ class CVIBuffer_Cube;
 END
 
 BEGIN(Client)
+class CPlayer;
 class CSunflower :
     public CEnemy
 {
@@ -38,6 +38,7 @@ public:
 
 	void Fire();
 	void Set_Parent(CGameObject* _parent);
+	void Set_Player(CPlayer* _player);
 
 	const _bool& Get_Charging() const { return m_Charging; }
 	const _bool& Get_Firing() const { return m_Firing; }
@@ -46,6 +47,8 @@ public:
 private:
 	void Firing(_float fTimeDelta);
 	void Synchronize_Parent(_float fTimeDelta);
+
+	void Spawn_Impact(_float3 _pos);
 private:
 	_float m_fTimer = 0.f;
 
@@ -56,6 +59,7 @@ private:
 
 	_bool m_Firing = false;
 	_float m_FiringTime = 3.f;
+	_float m_AttackTick = 0.f;
 
 
 	_bool m_Ending = true;
@@ -66,10 +70,13 @@ private:
 	CTransform* m_pOnlyRotation = nullptr;
 
 	CRenderer* m_pRenderer = nullptr;
-	CBoxCollider* m_pCollider = nullptr;
 	CShader* m_pShader = nullptr;
 	CTexture* m_pTexture = nullptr;
 	CVIBuffer_Cube* m_pBuffer = nullptr;
+
+private:
+	CPlayer* m_pPlayer = nullptr;
+	CTransform* m_pPlayerTr = nullptr;
 
 
 private:

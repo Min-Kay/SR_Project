@@ -106,13 +106,13 @@ private:
 	_bool IsCollision();
 
 
-
 private:
 	// 태우형 꺼
 	HRESULT Init_Attack_Missile();
 
 	HRESULT SetUp_UI();
-	void Setting_HpUi();
+	void Setting_HpUi(_float fTimeDelta);
+	void Setting_ShieldUi(_float fTimeDelta);
 
 private:
 	void State_Machine(_float fTimeDelta);
@@ -134,6 +134,8 @@ private:
 	void Rage_Sunflower(_float fTimeDelta);
 
 private:
+	_bool m_Spawned = false;
+
 	_float m_ShieldTimer = 0.f;
 
 	_float m_fTimer = 0.f; 
@@ -155,7 +157,6 @@ private:
 	_bool				m_bCalled = false;
 	_bool				m_Hand = false;
 	_bool				m_Shaking[2] = { false , false};
-
 private:
 	// 태우형 패턴 변수
 	_bool  m_bMissile = false;
@@ -209,13 +210,17 @@ private:
 
 
 	CUI* m_BossUI_HP = nullptr;
-	CUI* m_BossUI_Shield = nullptr;
 	CUI* m_BossUI_Black = nullptr;
 	CUI* m_BossUI_HpBar = nullptr;
 	CUI* m_BossUI_ShieldHP = nullptr;
+	CUI* m_BossUI_BackHP = nullptr;
+	CUI* m_BossUI_BackShieldHP = nullptr;
 
 	_float m_fBossMaxHp;
 	_float m_fMaxShield;
+	_float m_fHpCounter = 0.f;
+	_float m_fShieldCounter = 0.f;
+	_bool m_bshieldsetup = false;
 private:
 	// 내꺼
 	_float3 m_vScale = _float3(5.f,5.f,5.f);

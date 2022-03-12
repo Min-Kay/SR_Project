@@ -41,6 +41,7 @@ public:
 		_uint	Ref;
 		_float* Shader_Control;
 		_uint	Shader_Style;
+		_float4 Color = _float4(0.f,0.f,0.f,0.f);
 		const _tchar* Texture;
 
 
@@ -62,6 +63,7 @@ public:
 			Func = a.Func;
 			Alpha = a.Alpha;
 			Ref = a.Ref;
+			Color = a.Color;
 			return *this;
 		}
 	}UIDESC;
@@ -107,6 +109,8 @@ public:
 public:
 	HRESULT Set_Pos(_float fx, _float fy);
 	HRESULT Set_Size(_float sizeX, _float sizeY);
+	_float Get_PosX();
+	_float Get_SizeX();
 public:
 	virtual HRESULT Tick_UI(_float fTimeDelta);
 	virtual HRESULT Set_RenderState();

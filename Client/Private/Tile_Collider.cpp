@@ -35,6 +35,8 @@ HRESULT CTileCollider::NativeConstruct(void * pArg)
 	Set_Type(OBJ_STATIC);
 
 
+	m_pBoxColliderCom->Set_Collider();
+
 	return S_OK;
 }
 
@@ -42,10 +44,6 @@ _int CTileCollider::Tick(_float fTimeDelta)
 {
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
-
-
-	if (m_pBoxColliderCom)
-		m_pBoxColliderCom->Set_Collider();
 
 	return _int();
 }
@@ -69,27 +67,15 @@ HRESULT CTileCollider::Render()
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	/*if (FAILED(m_pTransformCom->Bind_OnGraphicDevice()))
-		return E_FAIL;
-
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(m_iTextureIndex)))
-		return E_FAIL;*/
-
-	_float			blend = 0;
-
-
 	m_pTransformCom->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pShader->SetUp_ValueOnShader("g_Alpha", &blend, sizeof(_uint));
-	m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f,0.f, 0.f), sizeof(_float4));
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iTextureIndex);
-
 	m_pShader->Begin_Shader(SHADER_SETCOLOR);
-
 	m_pVIBufferCom->Render();
-
 	m_pShader->End_Shader();
+	m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
 
 
 	return S_OK;
@@ -128,8 +114,6 @@ HRESULT CTileCollider::SetUp_Components()
 		return E_FAIL;
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
-	//m_pBoxColliderCom->Set_State(CBoxCollider::COLLIDERINFO::COLL_SIZE, _float3(1.f, 1.f, 1.f));
-
 	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);

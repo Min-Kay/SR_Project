@@ -43,7 +43,8 @@ public:
 	const _bool Get_Valid() const ;
 
 
-	void Set_Parent(CBoss* _boss); 
+	void Set_Parent(CBoss* _boss);
+	const _int& Get_InitHp() const { return m_InitHp; }
 private:
 	void Synchronize_Transform();
 	void Sizing_Particles();
@@ -60,11 +61,13 @@ private:
 	CTransform* m_ParentTr = nullptr;
 
 private:
-	_float4 m_Color = _float4(0.f,0.f,0.f,0.f); 
+	_float4 m_Color = _float4(0.f,0.f,0.f,0.3f); 
 	_float m_Timer = 0.f;
 	_bool m_Valid = false;
 	_bool m_On = false;
 	_bool m_Complete = false;
+
+	_int m_InitHp = 100;
 public:
 	static CShield* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);
 	CGameObject* Clone(void* pArg) override;

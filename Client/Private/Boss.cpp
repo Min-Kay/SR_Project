@@ -116,8 +116,12 @@ _int CBoss::Tick(_float fTimeDelta)
 	if(m_Resizing && m_Sizing && !m_Striking)
 		Synchronize_Transform();
 
-
-	Setting_HpUi();
+	if(m_Spawned)
+	{
+		Setting_HpUi(fTimeDelta);
+		Setting_ShieldUi(fTimeDelta);
+	}
+	
 
 	return 0;
 }
@@ -281,6 +285,7 @@ HRESULT CBoss::SetUp_Component()
 	m_Sunflower = static_cast<CSunflower*>(p_instance->Get_GameObject_End(g_CurrLevel,TEXT("Sunflower")));
 	m_Sunflower->Set_Valid(false);
 	m_Sunflower->Set_Parent(this);
+	m_Sunflower->Set_Player(m_pPlayer);
 	
 
 
@@ -303,11 +308,10 @@ HRESULT CBoss::SetUp_Component()
 	return S_OK; 
 
 }
+
 HRESULT CBoss::SetUp_UI()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-
-
 
 	/* Player_hit_UI*/
 	CUI::UIDESC BossUI_Black;
@@ -338,21 +342,55 @@ HRESULT CBoss::SetUp_UI()
 
 	m_BossUI_Black = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_Block")));
 
+	m_BossUI_Black->Set_Vaild(false);
 
+	//이전보다 얼마나 체력이 감소했나 보여주기위해서있음
+
+	CUI::UIDESC BossUI_BackHp;
+	ZeroMemory(&BossUI_BackHp, sizeof(BossUI_BackHp));
+	BossUI_BackHp.WinCX = g_iWinCX;
+	BossUI_BackHp.WinCY = g_iWinCY;
+
+	BossUI_BackHp.Layer = 3;
+	BossUI_BackHp.FrameCount = 68;
+	BossUI_BackHp.Alpha = CUI::ALPHA_DEFAULT;
+	BossUI_BackHp.PosX = g_iWinCX / 1.92f;
+	BossUI_BackHp.PosY = g_iWinCY / 14.f;
+	BossUI_BackHp.SizeX = g_iWinCX / 1.6f;
+	BossUI_BackHp.SizeY = g_iWinCY / 18.f;
+	BossUI_BackHp.AnimateSpeed = 30.f;
+	BossUI_BackHp.Style = CUI::STYLE_REPEAT;
+	BossUI_BackHp.Color = _float4(0.0f, 0.5f, 0.0f, 0.0f);
+	BossUI_BackHp.Texture = TEXT("Prototype_Component_BossHP");
+	BossUI_BackHp.Shader_Style = SHADER_SETCOLOR_BLEND;
+	BossUI_BackHp.Shader_Control = &g_ControlShader;
+
+
+	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_BackHp"), PROTO_UI, &BossUI_BackHp)))
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return E_FAIL;
+	}
+	m_BossUI_BackHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_BackHp")));
+	//m_BossUI_BackHP->Set_CurrFrameIndex(0);
+	m_BossUI_BackHP->Set_Vaild(false);
+
+	//진짜체력
 	CUI::UIDESC BossUI_HP;
 	ZeroMemory(&BossUI_HP, sizeof(BossUI_HP));
 	BossUI_HP.WinCX = g_iWinCX;
 	BossUI_HP.WinCY = g_iWinCY;
 
 	BossUI_HP.Layer = 3;
-	BossUI_HP.FrameCount = 1;
+	BossUI_HP.FrameCount = 68;
 	BossUI_HP.Alpha = CUI::ALPHA_DEFAULT;
 	BossUI_HP.PosX = g_iWinCX / 1.92f;
 	BossUI_HP.PosY = g_iWinCY / 14.f;
 	BossUI_HP.SizeX = g_iWinCX / 1.6f;
 	BossUI_HP.SizeY = g_iWinCY / 18.f;
 	BossUI_HP.AnimateSpeed = 30.f;
-	BossUI_HP.Style = CUI::STYLE_FIX;
+	BossUI_HP.Style = CUI::STYLE_REPEAT;
+	BossUI_HP.Color = _float4(0.0f, 0.0f, 0.0f, 0.0f);
 	BossUI_HP.Texture = TEXT("Prototype_Component_BossHP");
 	BossUI_HP.Shader_Style = SHADER_SETCOLOR_BLEND;
 	BossUI_HP.Shader_Control = &g_ControlShader;
@@ -367,41 +405,15 @@ HRESULT CBoss::SetUp_UI()
 
 	m_BossUI_HP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_HP")));
 
+	m_BossUI_HP->Set_Vaild(false);
+
 	m_fHpbarPos = g_iWinCX / 1.92f;
 	m_beforeHp = Get_HP();
 
 
 
-	CUI::UIDESC BossUI_ShieldHP;
-	ZeroMemory(&BossUI_ShieldHP, sizeof(BossUI_ShieldHP));
-	BossUI_ShieldHP.WinCX = g_iWinCX;
-	BossUI_ShieldHP.WinCY = g_iWinCY;
+	//쉴드 체력바
 
-	BossUI_ShieldHP.Layer = 2;
-	BossUI_ShieldHP.FrameCount = 2;
-	BossUI_ShieldHP.Alpha = CUI::ALPHA_TEST;
-	BossUI_ShieldHP.PosX = g_iWinCX / 1.91f;
-	BossUI_ShieldHP.PosY = g_iWinCY / 48.f;
-	BossUI_ShieldHP.SizeX = g_iWinCX / 2.8f; // 457
-	BossUI_ShieldHP.SizeY = g_iWinCY / 36.f;
-	BossUI_ShieldHP.AnimateSpeed = 30.f;
-	BossUI_ShieldHP.Style = CUI::STYLE_FIX;
-	BossUI_ShieldHP.Texture = TEXT("Prototype_Component_BossShield");
-	BossUI_ShieldHP.Shader_Style = SHADER_SETCOLOR_BLEND;
-	BossUI_ShieldHP.Shader_Control = &g_ControlShader;
-
-	if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP"), PROTO_UI, &BossUI_ShieldHP)))
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return E_FAIL;
-	}
-
-	m_BossUI_ShieldHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP")));
-
-
-	m_beforeShieldHP = Get_ShieldHp();
-	m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
-	m_ShieldHpPos = (_uint)(g_iWinCX / 1.91f);
 
 	/* Player_hit_UI*/
 	CUI::UIDESC BossUI_HPBaar;
@@ -429,17 +441,19 @@ HRESULT CBoss::SetUp_UI()
 	}
 
 	m_BossUI_HpBar = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_HPBaar")));
-
+	m_BossUI_HpBar->Set_Vaild(false);
 
 	m_fBossMaxHp = (_float)Get_HP();
 	m_fMaxShield = (_float)Get_ShieldHp();
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
-void CBoss::Setting_HpUi()
+
+
+void CBoss::Setting_HpUi(_float fTimeDelta)
 {
 	m_uChangeHp = Get_HP();
-
+	m_fHpCounter += fTimeDelta;
 	if (m_beforeHp != m_uChangeHp)
 	{
 		if (m_beforeHp <= 0)
@@ -457,15 +471,91 @@ void CBoss::Setting_HpUi()
 		{
 			m_uChangeHp = 0;
 		}
+		m_fHpCounter = 0.f;
 	}
 
+	else
+	{
+		if (m_fHpCounter >= 0.3f && m_InitHp != Get_HP())
+		{
+
+			m_BossUI_BackHP->Set_Size(m_BossUI_HP->Get_SizeX(), g_iWinCY / 18.f);
+			m_BossUI_BackHP->Set_Pos(m_BossUI_HP->Get_PosX(), g_iWinCY / 14.f - 340.f);
+		}
+	}
+
+}
+
+void CBoss::Setting_ShieldUi(_float fTimeDelta)
+{
 	if (m_OnShield == true)
 	{
-		if (m_bShieldON == m_OnShield)
-			m_BossUI_HpBar->Set_CurrFrameIndex(1);
+		if (m_bshieldsetup == false)
+		{
+			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
+			CUI::UIDESC BossUI_BacklShieldHP;
+			ZeroMemory(&BossUI_BacklShieldHP, sizeof(BossUI_BacklShieldHP));
+			BossUI_BacklShieldHP.WinCX = g_iWinCX;
+			BossUI_BacklShieldHP.WinCY = g_iWinCY;
+
+			BossUI_BacklShieldHP.Layer = 3;
+			BossUI_BacklShieldHP.FrameCount = 68;
+			BossUI_BacklShieldHP.Alpha = CUI::ALPHA_TEST;
+			BossUI_BacklShieldHP.PosX = 258 - g_iWinCX / 1.91f;
+			BossUI_BacklShieldHP.PosY = g_iWinCY / 48.f;
+			BossUI_BacklShieldHP.SizeX = g_iWinCX / 2.8f; // 457
+			BossUI_BacklShieldHP.SizeY = g_iWinCY / 36.f;
+			BossUI_BacklShieldHP.AnimateSpeed = 30.f;
+			BossUI_BacklShieldHP.Style = CUI::STYLE_REPEAT;
+			BossUI_BacklShieldHP.Color = _float4(0.0f, 0.8f, 0.0f, 0.0f);
+			BossUI_BacklShieldHP.Texture = TEXT("Prototype_Component_BossShield");
+			BossUI_BacklShieldHP.Shader_Style = SHADER_SETCOLOR_BLEND;
+			BossUI_BacklShieldHP.Shader_Control = &g_ControlShader;
+
+			if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_BacklShieldHP"), PROTO_UI, &BossUI_BacklShieldHP)))
+			{
+				RELEASE_INSTANCE(CGameInstance);
+				return;
+			}
+			m_BossUI_BackShieldHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_BacklShieldHP")));
+
+			CUI::UIDESC BossUI_ShieldHP;
+			ZeroMemory(&BossUI_ShieldHP, sizeof(BossUI_ShieldHP));
+			BossUI_ShieldHP.WinCX = g_iWinCX;
+			BossUI_ShieldHP.WinCY = g_iWinCY;
+
+			BossUI_ShieldHP.Layer = 2;
+			BossUI_ShieldHP.FrameCount = 68;
+			BossUI_ShieldHP.Alpha = CUI::ALPHA_TEST;
+			BossUI_ShieldHP.PosX = g_iWinCX / 1.91f;
+			BossUI_ShieldHP.PosY = g_iWinCY / 48.f;
+			BossUI_ShieldHP.SizeX = g_iWinCX / 2.8f; // 457
+			BossUI_ShieldHP.SizeY = g_iWinCY / 36.f;
+			BossUI_ShieldHP.AnimateSpeed = 30.f;
+			BossUI_ShieldHP.Style = CUI::STYLE_REPEAT;
+			BossUI_ShieldHP.Color = _float4(0.0f, 0.0f, 0.0f, 0.0f);
+			BossUI_ShieldHP.Texture = TEXT("Prototype_Component_BossShield");
+			BossUI_ShieldHP.Shader_Style = SHADER_SETCOLOR_BLEND;
+			BossUI_ShieldHP.Shader_Control = &g_ControlShader;
+
+			if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP"), PROTO_UI, &BossUI_ShieldHP)))
+			{
+				RELEASE_INSTANCE(CGameInstance);
+				return;
+			}
+
+			m_BossUI_ShieldHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP")));
+
+			m_beforeShieldHP = Get_InitHP();
+		
+			RELEASE_INSTANCE(CGameInstance);
+			m_bshieldsetup = true;
+		}
+
+		m_BossUI_HpBar->Set_CurrFrameIndex(1);
 		m_uChangeShieldHp = Get_ShieldHp();
-		m_BossUI_ShieldHP->Set_CurrFrameIndex(1);
+		m_fShieldCounter += fTimeDelta;
 
 		if (m_beforeShieldHP != m_uChangeShieldHp)
 		{
@@ -474,24 +564,32 @@ void CBoss::Setting_HpUi()
 			_float ShieldBar = (100.f - ShieldPercent) * (g_iWinCX / 2.8f / 100.f);
 			_float pos = (1280 / 2.8f / 100.f) * ShieldPercent;
 			m_BossUI_ShieldHP->Set_Size(ShieldBar, g_iWinCY / 36.f);
-			m_BossUI_ShieldHP->Set_Pos(258 - pos, g_iWinCY / 48.f - 350.f);
+			m_BossUI_ShieldHP->Set_Pos(258.f - pos, g_iWinCY / 48.f - 350.f);
 			m_beforeShieldHP = m_uChangeShieldHp;
+			m_fShieldCounter = 0.f;
 		}
+		else
+		{
+			if (m_fShieldCounter >= 1.0f && m_Shield->Get_HP() != m_Shield->Get_InitHp())
+			{
+
+				m_BossUI_BackShieldHP->Set_Size(m_BossUI_ShieldHP->Get_SizeX(), g_iWinCY / 36.f);
+				m_BossUI_BackShieldHP->Set_Pos(m_BossUI_ShieldHP->Get_PosX(), g_iWinCY / 48.f - 350.f);
+			}
+
+		}
+
 		if (m_uChangeShieldHp <= 0)
 		{
 			m_uChangeShieldHp = 0;
-			//m_BossUI_HpBar->Set_CurrFrameIndex(0);
+			m_BossUI_HpBar->Set_CurrFrameIndex(0);
+
 		}
-		m_bShieldON = false;
 	}
 	else
 	{
-		m_BossUI_ShieldHP->Set_CurrFrameIndex(0);
 		m_BossUI_HpBar->Set_CurrFrameIndex(0);
 	}
-
-
-
 }
 
 
@@ -919,7 +1017,7 @@ void CBoss::Resizing(_float fTimeDelta, _float3 position)
 
 	m_pOnlyRotation->Scaled(_float3(m_vScale.x - m_fTimer, m_vScale.y - m_fTimer, m_vScale.z - m_fTimer));
 
-	Sizing_Particles(_float4(0.f,0.f,0.f,1.f), 1.f, 20.f);
+	Sizing_Particles( m_Phase == BOSS_PHASEONE ? _float4(0.f,1.f,1.f,1.f) : _float4(1.f, 0.f, 1.f, 1.f), 1.f, 20.f);
 
 	if(m_pOnlyRotation->Get_Scale().x <= 0.1f)
 	{
@@ -939,7 +1037,7 @@ void CBoss::Sizing(_float fTimeDelta)
 
 	m_pOnlyRotation->Scaled(_float3( m_fTimer,  m_fTimer, m_fTimer));
 
-	Sizing_Particles(_float4(0.f, 0.f, 0.f, 1.f), 1.f, 20.f);
+	Sizing_Particles(m_Phase == BOSS_PHASEONE ? _float4(0.f, 1.f, 1.f, 1.f) : _float4(1.f, 0.f, 1.f, 1.f), 1.f, 20.f);
 
 	if (m_fTimer >= m_vScale.x)
 	{
@@ -947,6 +1045,10 @@ void CBoss::Sizing(_float fTimeDelta)
 
 		m_Sizing = true;
 		m_fTimer = 0.f;
+
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 }
 
@@ -1036,7 +1138,7 @@ void CBoss::Randomize_Pattern(_float fTimeDelta)
 		case BOSS_PHASETWO:
 			if (m_AttPatternTimer > 2.f)
 			{
-				m_RageState = BOSSRAGE_SUNFLOWER;// m_RageState == BOSSRAGE_TAEBO ? BOSSRAGE_LASER : BOSSRAGE_TAEBO;
+				m_RageState =  m_RageState == BOSSRAGE_SUNFLOWER ? BOSSRAGE_LASER : BOSSRAGE_SUNFLOWER;
 				m_AttPatternTimer = 0.f;
 				Set_BossState(BOSS_ATTACK);
 			}
@@ -1127,10 +1229,20 @@ void CBoss::Idle(_float fTimeDelta)
 	}
 	else if(!m_Reset)
 	{
+
 		Gravity_Blowing(fTimeDelta, 10.f, false);
 		
 		if(InitArmPosition(fTimeDelta))
 		{
+			if(!m_Spawned)
+			{
+				m_BossUI_HP->Set_Vaild(true);
+				m_BossUI_BackHP->Set_Vaild(true);
+				m_BossUI_HpBar ->Set_Vaild(true);
+				m_Spawned = true;
+			}
+
+
 			m_LeftArm->Set_CanPortal(true);
 			m_RightArm->Set_CanPortal(true);
 			m_Invincible = false;
@@ -1323,13 +1435,18 @@ void CBoss::Die(_float fTimeDelta)
 	m_LeftArm->Set_CanPortal(false);
 	m_RightArm->Set_CanPortal(false);
 
-
-	m_pTransform->Gravity(0.3f, fTimeDelta);
-	m_LeftArmTr->Gravity(0.3f, fTimeDelta);
-	m_RightArmTr->Gravity(0.3f, fTimeDelta);
+	m_pTransform->Gravity(0.8f, fTimeDelta);
+	m_LeftArmTr->Gravity(0.8f, fTimeDelta);
+	m_RightArmTr->Gravity(0.8f, fTimeDelta);
 
 	if(m_pTransform->Get_OnCollide() && m_LeftArmTr->Get_OnCollide() && m_RightArmTr->Get_OnCollide())
 	{
+		m_BossUI_HP->Set_Vaild(false);
+		m_BossUI_HpBar->Set_Vaild(false);
+		m_BossUI_ShieldHP ->Set_Vaild(false);
+		m_BossUI_BackHP->Set_Vaild(false);
+		m_BossUI_BackShieldHP->Set_Vaild(false);
+
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
 		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
@@ -1348,10 +1465,10 @@ void CBoss::Die(_float fTimeDelta)
 void CBoss::Attack_Missile(_float fTimeDelta)
 {
 	// 미사일
-	totalfireCount = 12;
+	totalfireCount = 16;
 	Start_Pattern(TEXT("Boss_AttackAlarm.wav"));
 
-	Gravity_Blowing(fTimeDelta, 10.f , true);
+	Gravity_Blowing(fTimeDelta, 10.f, true);
 	m_fWaiting += fTimeDelta * 3;
 	m_fIWaiting += fTimeDelta;
 	m_fJWaiting += fTimeDelta;
@@ -1416,7 +1533,7 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 			if (totalfireCount >= count && BeforeCount != count)
 			{
 				m_fJWaiting = 0.f;
-				targeting_Sub.Pos3 = mainTrans->Get_State(CTransform::STATE_POSITION) + _float3(rand() % 3 - 1, 0.f, rand() % 3 - 1);
+				targeting_Sub.Pos3 = mainTrans->Get_State(CTransform::STATE_POSITION) + _float3((rand() % 3 - 1) * 2, 0.f, (rand() % 3 - 1) * 2);
 				targeting_Sub.MainTaret = false;
 
 
@@ -1707,9 +1824,9 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 	}
 	else if(!m_RollingReady)
 	{
-		m_pTransform->Gravity(0.3f, fTimeDelta);
-		m_LeftArmTr->Gravity(0.3f, fTimeDelta);
-		m_RightArmTr->Gravity(0.3f, fTimeDelta);
+		m_pTransform->Gravity(0.8f, fTimeDelta);
+		m_LeftArmTr->Gravity(0.7f, fTimeDelta);
+		m_RightArmTr->Gravity(0.6f, fTimeDelta);
 		return;
 	}
 
@@ -1773,6 +1890,14 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 		if(!collList.empty())
 		{
 			auto iter = collList.begin();
+
+			for(;iter!= collList.end();)
+			{
+				if (static_cast<CCollider*>(iter->CollObj->Get_Component(COM_COLLIDER))->Get_CollStyle() != CCollider::COLLSTYLE_ENTER)
+					++iter;
+				else
+					break;
+			}
 
 			if(iter != collList.end())
 			{
@@ -2169,18 +2294,19 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 		m_RightArmRotationTr->Set_WorldMatrix(m_pOnlyRotation->Get_WorldMatrix());
 		m_RightArmRotationTr->Set_State(CTransform::STATE_POSITION, m_RightArmTr->Get_State(CTransform::STATE_POSITION));
 
-
-		if (m_SunflowerFireTime <= m_SunflowerTimer && m_Sunflower->Get_State() != CSunflower::SF_FIRING)
-			m_Sunflower->Fire();
-		else if (m_Sunflower->Get_State() == CSunflower::SF_CHARGING)
-			m_SunflowerTimer += fTimeDelta;
-
 		if(m_fTimer >= m_SunflowerTime && m_Sunflower->Get_State() == CSunflower::SF_CHARGING)
 		{
 			m_fTimer = 0.f;
 			m_Sunflower->Set_Valid(false);
 			Set_BossState(BOSS_IDLE);
+			return;
 		}
+
+
+		if (m_SunflowerFireTime <= m_SunflowerTimer && m_Sunflower->Get_State() != CSunflower::SF_FIRING)
+			m_Sunflower->Fire();
+		else if (m_Sunflower->Get_State() == CSunflower::SF_CHARGING)
+			m_SunflowerTimer += fTimeDelta;
 	}
 }
 
@@ -2217,6 +2343,6 @@ void CBoss::Free()
 	Safe_Release(m_pCollider);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
-
+	
 }
 

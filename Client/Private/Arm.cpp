@@ -231,10 +231,11 @@ void CArm::Mode(_float fTimeDelta)
 		m_Collider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
 		break;
 	case ARM_ATTACK:
-		m_Collider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
+		m_Collider->Set_CollStyle(CCollider::COLLSTYLE_ONLYRAY);
 		if(m_Timer > m_AttackTick)
 		{
 			CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
 			if(p_instance->Get_Collide(m_Collider,static_cast<CBoxCollider*>(m_Player->Get_Component(COM_COLLIDER))))
 			{
 				RELEASE_INSTANCE(CGameInstance);
@@ -242,7 +243,9 @@ void CArm::Mode(_float fTimeDelta)
 				m_Timer = 0.f;
 				break;
 			}
-			else if(m_Portaling && p_instance->Get_Collide(m_Collider, static_cast<CBoxCollider*>(m_Parent->Get_Component(COM_COLLIDER))))
+
+
+			if(m_Portaling && p_instance->Get_Collide(m_Collider, static_cast<CBoxCollider*>(m_Parent->Get_Component(COM_COLLIDER))))
 			{
 				RELEASE_INSTANCE(CGameInstance);
 				if(m_Parent->Get_OnShield())
