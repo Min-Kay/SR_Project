@@ -28,6 +28,10 @@ public:
 	virtual _int LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Set_Color(_float4 _color) { m_Color = _color; }
+	void Set_Vaild(_bool _bool) { m_Vaild = _bool; }
+
 private:
 	/* ÅØ½ºÃÄ */
 	CTexture*				m_pTextureCom = nullptr;
@@ -50,6 +54,11 @@ private:
 	_uint				m_iTextureIndex = 0;
 
 	CBoxCollider*		m_PlayerCollider = nullptr;
+
+
+private:
+	_bool				m_Vaild = true;
+	_float4				m_Color = _float4(0.f,0.f,0.f,0.f);
 private:
 	HRESULT SetUp_Components();
 public:

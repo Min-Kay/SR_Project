@@ -12,6 +12,7 @@
 #include "Tile_Collider.h"
 #include "Tile_Cube.h"
 #include "Transform.h"
+#include "Player.h"
 
 CLevel_StageTwo::CLevel_StageTwo(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLevel(pGraphic_Device)
@@ -72,10 +73,6 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 			return E_FAIL;
 		}
 	}
-	else
-	{
-		Close_Exit();
-	}
 
 	if (!m_Save)
 	{
@@ -89,11 +86,42 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 
 	if (m_Save && m_BossSpone == false)
 	{
-		if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-			return E_FAIL;
 		m_BossSpone = true;
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		if (FAILED(p_instance->Add_GameObject(LEVEL_STAGETWO, TEXT("Layer_Wall"), TEXT("Prototype_GameObject_TileCollider"))))
+			return -1;
+		CGameObject* BottomTileFront2 = p_instance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Wall"));
+		CTransform* BottomTransFront2 = (CTransform*)BottomTileFront2->Get_Component(COM_TRANSFORM);
+		static_cast<CTileCollider*>(BottomTileFront2)->Set_TextureIndex(1);
+		//실제 보이는 박스
+		BottomTransFront2->Scaled(_float3(m_iJumpBoxSize, HalfBoxSize - 20.f, HalfBoxSize));
+		BottomTransFront2->Rotation(_float3(0.f, 0.f, 1.f), D3DXToRadian(-90.f));
+		BottomTransFront2->Set_State(CTransform::STATE_POSITION, _float3(0.f, m_iBoxSize + m_iJumpBoxSize * 0.5f, HalfBoxSize));;
+		CBoxCollider* boxFront2 = static_cast<CBoxCollider*>(BottomTileFront2->Get_Component(COM_COLLIDER));
+		//충돌박스
+		boxFront2->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iJumpBoxSize + m_iJumpBoxSize * 0.5f, HalfBoxSize - 10, WallSize));
+		boxFront2->Set_AdditionalPos(_float3(0.f, 0.f, HalfWallSize));
+		boxFront2->Set_Collider();
+		m_TileList.push_back(static_cast<CTileCollider*>(BottomTileFront2));
+
+		m_pPlayer->Set_Shake(1.f, 2.f);
+
+		p_instance->Play_Sound(TEXT("Boss_Spawn.wav"), CSoundMgr::EFFECT3, 1.f);
+
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
+	if(!m_Changed && m_ChangedTile)
+	{
+		if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+			return E_FAIL;
+		m_pPlayer->Set_Shake(1.f, 2.f);
+
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		p_instance->StopSound(CSoundMgr::EFFECT3);
+		RELEASE_INSTANCE(CGameInstance);
+		m_Changed = true;
+	}
 
 	if(!m_ChangedTile)
 	{
@@ -208,6 +236,9 @@ HRESULT CLevel_StageTwo::Ready_Layer_Player(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
+
+	m_pPlayer = static_cast<CPlayer*>(pGameInstance->Get_GameObject_End(LEVEL_STAGETWO, pLayerTag));
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -225,6 +256,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Monster(const _tchar* pLayerTag)
 	}
 
 	m_pBoss = static_cast<CBoss*>(pGameInstance->Get_GameObject_End(LEVEL_STAGETWO, TEXT("Boss")));
+
 	m_pBoss->Set_InitPos(_float3(0.f, 10.f, 0.f));
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -281,7 +313,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 
 		CGameObject* Left_Door = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Left_Exit"));
 		CTransform* Lefttrans = (CTransform*)Left_Door->Get_Component(COM_TRANSFORM);
-		static_cast<CDoor_left*>(Left_Door)->Set_TextureIndex(1);
+		static_cast<CDoor_left*>(Left_Door)->Set_TextureIndex(0);
 		Lefttrans->Scaled(_float3(fDoorSizeX, fDoorSizeY, 1.f));
 		Lefttrans->Set_State(CTransform::STATE_POSITION, _float3(-10.f, 90.f, 50.f));
 
@@ -298,7 +330,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 
 		CGameObject* Right_Door = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Right_Exit"));
 		CTransform* Righttrans = (CTransform*)Right_Door->Get_Component(COM_TRANSFORM);
-		static_cast<CDoor_right*>(Right_Door)->Set_TextureIndex(1);
+		static_cast<CDoor_right*>(Right_Door)->Set_TextureIndex(0);
 		Righttrans->Scaled(_float3(fDoorSizeX, fDoorSizeY, 1.f));
 		Righttrans->Set_State(CTransform::STATE_POSITION, _float3(10.f, 90.f, 50.f));
 
@@ -331,10 +363,10 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Save_Exit"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Scaled(_float3(1.f, 1.f, 1.f));
-		trans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 81.f, 45.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 1.f, 0.f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3(100.f, 100.f, 2.f));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 5.f, 5.f));
 		box->Set_Collider();
 	}
 
@@ -904,6 +936,8 @@ void CLevel_StageTwo::Spawn_Boss_Tile(_float fTimeDelta)
 
 	m_Gradiant = false;
 
+	static_cast<CTransform*>(m_EventCube_Save_Exit->Get_Component(COM_TRANSFORM))->Turn(_float3(1.f, 1.f, 0.f), fTimeDelta * 10.f);
+
 	if(!m_GradianChangeTile)
 	{
 		m_Timer += fTimeDelta;
@@ -912,10 +946,13 @@ void CLevel_StageTwo::Spawn_Boss_Tile(_float fTimeDelta)
 			i->Set_Color(_float4(m_Timer, m_Timer, m_Timer, 0.f));
 		}
 
+		m_EventCube_Save_Exit->Set_Color(_float4(m_Timer, m_Timer, m_Timer, 0.f));
+	
 		if(m_Timer >= 1.f)
 		{
 			m_GradianChangeTile = true;
 			m_Timer = 0.f;
+			m_EventCube_Save_Exit->Set_Vaild(false);
 			for (auto& i : m_TileList)
 			{
 				i->Set_TextureIndex(6);
@@ -942,13 +979,18 @@ void CLevel_StageTwo::Spawn_Boss_Tile(_float fTimeDelta)
 			{
 				i->Set_Color(_float4(0.f, 0.f, 0.f, 0.f));
 			}
+
+			m_pPlayer->Set_UIColor(_float4(1.f, 1.f, 1.f, 0.f));
+
 		}
 	}
+
+
 }
 
 void CLevel_StageTwo::Change_Boss_Tile(_float fTimeDelta)
 {
-	if (!m_BossSpone || m_pBoss->Get_Phase() != CBoss::BOSS_PHASETWO)
+	if (!m_Changed || m_pBoss->Get_Phase() != CBoss::BOSS_PHASETWO)
 		return;
 
 	m_Gradiant = false;
@@ -992,6 +1034,7 @@ void CLevel_StageTwo::Change_Boss_Tile(_float fTimeDelta)
 			}
 		}
 	}
+
 
 }
 

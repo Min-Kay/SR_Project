@@ -244,6 +244,15 @@ void CGun::Reset()
 	m_pGun_UI->Set_CurrFrameIndex(0);
 }
 
+void CGun::Set_UIColor(_float4 _color)
+{
+	 m_pCurrBullet_UI_1->Set_Color(_color);
+	 m_pCurrBullet_UI_2->Set_Color(_color);
+	 m_pFullBullet_UI_1->Set_Color(_color);
+	 m_pFullBullet_UI_2->Set_Color(_color);
+	 m_pSlash_UI->Set_Color(_color);
+}
+
 HRESULT CGun::SetUp_UI()
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);

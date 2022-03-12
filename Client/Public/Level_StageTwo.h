@@ -8,6 +8,7 @@ BEGIN(Client)
 class CTile_Cube;
 class CBoss;
 class CTileCollider;
+class CPlayer;
 class CLevel_StageTwo final : public CLevel
 {
 public:
@@ -75,8 +76,10 @@ private:
 	_bool m_GradianChangeTile = false;
 
 	_bool m_ChangedTile2 = false;
+	_bool m_Changed = false;
 
 	_float m_Timer = 0.f;
+	_float m_CubeTimer = 0.f;
 
 	_float m_Gradiant = false;
 	_bool m_GrowColor = false;
@@ -84,6 +87,7 @@ private:
 
 
 	CBoss* m_pBoss = nullptr;
+	CPlayer* m_pPlayer = nullptr;
 	list<CTileCollider*> m_TileList;
 
 public:

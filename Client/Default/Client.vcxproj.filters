@@ -133,9 +133,6 @@
     <Filter Include="02.GameObjects\Enemy\CubeMonster\BazierBullet">
       <UniqueIdentifier>{01e8778e-281e-408e-b941-c8aa5222e141}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Effect\Targeting">
-      <UniqueIdentifier>{2ecf10b7-9f53-4b08-a420-e51f430630c6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Enemy\Boss\AttackRange">
       <UniqueIdentifier>{eef2dd94-e9bd-44d9-82c7-2c7f8c5f7dad}</UniqueIdentifier>
     </Filter>
@@ -168,6 +165,9 @@
     </Filter>
     <Filter Include="02.GameObjects\Enemy\Boss\Sunflower">
       <UniqueIdentifier>{24202c70-52ce-4a75-8ebf-dac8494900a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Enemy\Boss\Missile\Targeting">
+      <UniqueIdentifier>{2ecf10b7-9f53-4b08-a420-e51f430630c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -301,7 +301,7 @@
       <Filter>02.GameObjects\Enemy\Boss\AttackRange</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Targeting.h">
-      <Filter>02.GameObjects\Effect\Targeting</Filter>
+      <Filter>02.GameObjects\Enemy\Boss\Missile\Targeting</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Unportal.h">
       <Filter>02.GameObjects\UnportaBlock</Filter>
@@ -447,7 +447,7 @@
       <Filter>02.GameObjects\Enemy\Boss\AttackRange</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Targeting.cpp">
-      <Filter>02.GameObjects\Effect\Targeting</Filter>
+      <Filter>02.GameObjects\Enemy\Boss\Missile\Targeting</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Unportal.cpp">
       <Filter>02.GameObjects\UnportaBlock</Filter>

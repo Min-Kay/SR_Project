@@ -87,7 +87,6 @@ _int CMissile::Tick(_float fTimeDelta)
 	if (Get_Portaling())//포탈 통과했으면
 	{
 		m_pTransform->Go_Straight(fTimeDelta *8.f);
-		Set_Portaling(true);
 	}
 	else //일반상태
 	{
@@ -95,7 +94,7 @@ _int CMissile::Tick(_float fTimeDelta)
 	}
 
 	
-	if (m_bDEADcount == true && !Get_Portaling())
+	if (m_bDEADcount && !Get_Portaling())
 	{
 		m_fdeadCounter += fTimeDelta;
 		
@@ -133,12 +132,13 @@ HRESULT CMissile::Render()
 
 	m_pTransform->Bind_OnShader(m_pShader);
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(m_fMissileTimer, m_fMissileTimer, m_fMissileTimer, 0.f), sizeof(_float4));
 	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBuffer->Render();
 	m_pShader->End_Shader();
+	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
 
 	return S_OK;
 
@@ -151,16 +151,14 @@ void CMissile::Impact(_float3 _Pos)
 	CImpact::IMPACT Impact1;
 	ZeroMemory(&Impact1, sizeof(Impact1));
 	Impact1.Position = _Pos;
-	Impact1.Size = _float3(0.05f, 0.05f, 0.05f);
+	Impact1.Size = _float3(0.1f, 0.1f, 0.1f);
 	Impact1.RandomDirection = 5;
-	Impact1.SpreadSpeed = 5;
-	Impact1.DeleteTime = 1.f;//rand() % 5 + 2;
-	Impact1.Change = true;
+	Impact1.SpreadSpeed = 7;
+	Impact1.DeleteTime = 0.7f;//rand() % 5 + 2;
 	Impact1.Color = _float4(1.f, 0.9f, 0.f, 0.f);
-	Impact1.EndColor = _float4(0.0f, 0.05f, 0.0f, 0.0f);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	for (int i = 0; i < rand() % 5 + 10; ++i)
+	for (int i = 0; i < rand() % 5 + 5; ++i)
 	{
 		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
 		{
@@ -193,7 +191,7 @@ HRESULT CMissile::SetUp_Component()
 	m_pBoxCollider->Set_ParentInfo(this);
 	Set_Type(OBJ_ENEMY);
 	m_pBoxCollider->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
-	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(2.0f, 2.0f, 2.0f));
+	m_pBoxCollider->Set_State(CBoxCollider::COLL_SIZE, _float3(5.0f, 5.0f, 5.0f));
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxCollider);
@@ -207,7 +205,7 @@ HRESULT CMissile::SetUp_Component()
 HRESULT CMissile::SetUp_First()
 {
 	m_Damage = 20;
-	m_pTransform->Scaled(_float3(3.f, 3.f, 3.f));
+	m_pTransform->Scaled(_float3(5.f, 5.f, 5.f));
 	m_bTargetCollider = false;
 	return S_OK;
 }
@@ -223,9 +221,11 @@ _bool CMissile::Check_Dead()
 
 	return false;
 }
-
 HRESULT CMissile::Check_ColliderTarget()
 {
+
+	if (m_bTargetCollider)
+		return S_OK;
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	if (m_pPlayer)
 	{
@@ -243,6 +243,8 @@ HRESULT CMissile::Check_ColliderTarget()
 
 				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Missile_0.wav") : TEXT("Explosion_Missile_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+				m_bTargetCollider = true;
+				break;
 
 			}
 			else if (Get_Portaling() && iter == m_pBoss)
@@ -256,15 +258,19 @@ HRESULT CMissile::Check_ColliderTarget()
 				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
 				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Missile_0.wav") : TEXT("Explosion_Missile_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+				m_bTargetCollider = true;
+				break;
 			}
-			else if(OBJ_STATIC == iter->Get_Type() /*&& iter != m_ArmMissle.mainTarget && iter != m_ArmMissle.pTargeting && iter != m_pBoss*/)
+			else if (OBJ_STATIC == iter->Get_Type() /*&& iter != m_ArmMissle.mainTarget && iter != m_ArmMissle.pTargeting && iter != m_pBoss*/)
 			{
 				m_pPlayer->Set_Shake(0.5f, 1.f);
 				m_bDEADcount = true;
 				Impact(m_pTransform->Get_State(CTransform::STATE_POSITION));
 				p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
-				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Missile_0.wav") : TEXT("Explosion_Missile_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);	
+				p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Missile_0.wav") : TEXT("Explosion_Missile_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
+				break;
 			}
+
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -275,15 +281,15 @@ HRESULT CMissile::Check_ColliderTarget()
 HRESULT CMissile::Missle_Move(_float fTimeDelta)
 {
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	
-			m_pTransform->Turn(_float3(1.f, 1.f, 0.f), fTimeDelta * 10.f);
 
-			m_fBezierPos = BezierCurve(m_ArmMissle.Pos1, m_ArmMissle.Pos2, m_ArmMissle.Pos3, fTimeDelta*2);
-			m_pTransform->Set_State(CTransform::STATE_POSITION, m_fBezierPos);
+	m_pTransform->Turn(_float3(1.f, 1.f, 0.f), fTimeDelta * 10.f);
 
-			_float3 MissleLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
-			D3DXVec3Normalize(&MissleLook, &MissleLook);
-			Impact(m_pTransform->Get_State(CTransform::STATE_POSITION) - MissleLook*0.5f);
+	m_fBezierPos = BezierCurve(m_ArmMissle.Pos1, m_ArmMissle.Pos2, m_ArmMissle.Pos3, m_ArmMissle.Pos4, fTimeDelta * 0.8f);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, m_fBezierPos);
+
+	_float3 MissleLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	D3DXVec3Normalize(&MissleLook, &MissleLook);
+	Impact(m_pTransform->Get_State(CTransform::STATE_POSITION) - MissleLook * 0.5f);
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -291,19 +297,27 @@ HRESULT CMissile::Missle_Move(_float fTimeDelta)
 
 
 
-_float3 CMissile::BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float time)
+_float3 CMissile::BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _float time)
 {
 
 	_float3 vTesult1;
 	_float3 vTesult2;
 	_float3 vTesult3;
-
+	_float3 vTesult4;
+	_float3 vTesult5;
+	_float3 vTesult6;
 	D3DXVec3Lerp(&vTesult1, &P0, &P1, time);
 	D3DXVec3Lerp(&vTesult2, &P1, &P2, time);
-	D3DXVec3Lerp(&vTesult3, &vTesult1, &vTesult2, time);
+	D3DXVec3Lerp(&vTesult3, &P2, &P3, time);
+
+	D3DXVec3Lerp(&vTesult4, &vTesult1, &vTesult2, time);
+	D3DXVec3Lerp(&vTesult5, &vTesult2, &vTesult3, time);
+	D3DXVec3Lerp(&vTesult6, &vTesult4, &vTesult5, time);
+
+	//D3DXVec3Lerp(&vTesult3, &vTesult1, &vTesult2, time);
 
 
-	return vTesult3;
+	return vTesult6;
 }
 
 CMissile* CMissile::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)

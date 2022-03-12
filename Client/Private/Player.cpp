@@ -198,6 +198,18 @@ void CPlayer::Erase_Portal()
 	m_pPortalCtrl->Erase_Portal();
 }
 
+void CPlayer::Set_UIColor(_float4 _color)
+{
+	m_PlayerHP_1->Set_Color(_color);
+	m_PlayerHP_2->Set_Color(_color);
+	m_PlayerHP_3->Set_Color(_color);
+	m_PlayerFullHP_1->Set_Color(_color);
+	m_PlayerFullHP_2->Set_Color(_color);
+	m_PlayerFullHP_3->Set_Color(_color);
+	m_pSlash_UI->Set_Color(_color);
+	m_pGun->Set_UIColor(_color);
+}
+
 const _int& CPlayer::Get_Hp() const
 {
 	return m_HP;

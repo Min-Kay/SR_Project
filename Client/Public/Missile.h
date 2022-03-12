@@ -42,6 +42,7 @@ public:
 		_float3 Pos1;
 		_float3 Pos2;
 		_float3 Pos3;
+		_float3 Pos4;
 		ArmMissle ArmMissle;
 		_float	FireCount;
 		_bool	Left;
@@ -56,7 +57,7 @@ private:
 	_bool Check_Dead();
 	HRESULT Check_ColliderTarget();
 	HRESULT Missle_Move(_float fTimeDelta);
-	_float3		BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float time);
+	_float3	BezierCurve(_float3 P0, _float3 P1, _float3 P2, _float3 P3, _float time);
 	void Impact(_float3 _Pos);
 protected:
 	CVIBuffer_Cube* m_pVIBuffer = nullptr;

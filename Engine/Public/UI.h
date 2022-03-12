@@ -111,6 +111,9 @@ public:
 	HRESULT Set_Size(_float sizeX, _float sizeY);
 	_float Get_PosX();
 	_float Get_SizeX();
+	void Set_Color(_float4 _color) { m_desc.Color = _color; }
+	const _float4& Get_Color() { return m_desc.Color; }
+
 public:
 	virtual HRESULT Tick_UI(_float fTimeDelta);
 	virtual HRESULT Set_RenderState();

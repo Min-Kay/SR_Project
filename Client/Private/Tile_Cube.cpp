@@ -37,7 +37,7 @@ HRESULT CTile_Cube::NativeConstruct(void * pArg)
 
 	Set_Type(OBJ_STATIC);
 	m_pBoxColliderCom->Set_Collider();
-
+	
 	return S_OK;
 }
 
@@ -51,6 +51,9 @@ _int CTile_Cube::Tick(_float fTimeDelta)
 
 _int CTile_Cube::LateTick(_float fTimeDelta)
 {
+	if (!m_Vaild)
+		return 0;
+
 	if (0 > __super::LateTick(fTimeDelta))
 		return -1;
 
@@ -70,7 +73,7 @@ HRESULT CTile_Cube::Render()
 	m_pTransformCom->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
-	m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
+	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", m_iTextureIndex);
 
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
@@ -78,6 +81,7 @@ HRESULT CTile_Cube::Render()
 	m_pVIBufferCom->Render();
 
 	m_pShader->End_Shader();
+	m_pShader->SetUp_ValueOnShader("g_Color", &_float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));
 
 	return S_OK;
 }

@@ -33,6 +33,8 @@ public:
 
 
 	void Reset();
+
+	void Set_UIColor(_float4 _color);
 private:
 	void Fire();
 	void SynchroBullet();

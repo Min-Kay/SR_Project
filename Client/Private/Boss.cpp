@@ -113,6 +113,23 @@ _int CBoss::Tick(_float fTimeDelta)
 
 	State_Machine(fTimeDelta);
 
+	if (!m_HpUiOn && m_Spawned)
+	{
+		m_UiTimer += fTimeDelta;
+
+		m_BossUI_HP->Set_Color(m_BossUI_HP->Get_Color() + _float4(0.f, 0.f, 0.f, fTimeDelta));
+		m_BossUI_BackHP->Set_Color(m_BossUI_BackHP->Get_Color() + _float4(0.f, 0.f, 0.f, fTimeDelta));
+		m_BossUI_HpBar->Set_Color(m_BossUI_HpBar->Get_Color() + _float4(0.f, 0.f, 0.f, fTimeDelta));
+
+		if(m_UiTimer >= 1.f)
+		{
+			m_HpUiOn = true;
+			m_UiTimer = 0.f;
+		}
+	}
+
+
+
 	if(m_Resizing && m_Sizing && !m_Striking)
 		Synchronize_Transform();
 
@@ -192,9 +209,11 @@ HRESULT CBoss::SetUp_Component()
 		return E_FAIL;
 
 	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+
 	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	D3DXVec3Normalize(&vRight, &vRight);
-
+	D3DXVec3Normalize(&vUp, &vUp);
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 
@@ -209,7 +228,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_LeftArm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Left")))));
 	m_LeftArm->Set_Parent(this);
-	m_LeftArm->Set_Position(vPos - vRight * 15.f);
+	m_LeftArm->Set_Position(vPos - vRight * 100.f + vUp * 10.f);
 	m_LeftArm->Set_Player(m_pPlayer);
 	m_LeftArm->Set_ArmPos(CArm::ARMPOS_LEFT);
 	m_LeftArmTr = static_cast<CTransform*>(m_LeftArm->Get_Component(COM_TRANSFORM));
@@ -224,7 +243,7 @@ HRESULT CBoss::SetUp_Component()
 
 	m_RightArm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Right")))));
 	m_RightArm->Set_Parent(this);
-	m_RightArm->Set_Position(vPos + vRight * 15.f);
+	m_RightArm->Set_Position(vPos + vRight * 100.f + vUp * 10.f);
 	m_RightArm->Set_Player(m_pPlayer);
 	m_RightArm->Set_ArmPos(CArm::ARMPOS_RIGHT);
 	m_RightArmTr = static_cast<CTransform*>(m_RightArm->Get_Component(COM_TRANSFORM));
@@ -478,12 +497,13 @@ void CBoss::Setting_HpUi(_float fTimeDelta)
 	{
 		if (m_fHpCounter >= 0.3f && m_InitHp != Get_HP())
 		{
-
 			m_BossUI_BackHP->Set_Size(m_BossUI_HP->Get_SizeX(), g_iWinCY / 18.f);
 			m_BossUI_BackHP->Set_Pos(m_BossUI_HP->Get_PosX(), g_iWinCY / 14.f - 340.f);
 		}
 	}
 
+	if (m_BossUI_HP->Get_SizeX() <= 0.f)
+		m_BossUI_BackHP->Set_Size(0.f, g_iWinCY / 18.f);
 }
 
 void CBoss::Setting_ShieldUi(_float fTimeDelta)
@@ -519,6 +539,8 @@ void CBoss::Setting_ShieldUi(_float fTimeDelta)
 				return;
 			}
 			m_BossUI_BackShieldHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_BacklShieldHP")));
+			m_BossUI_BackShieldHP->Set_Color(m_BossUI_BackShieldHP->Get_Color() + _float4(0.f,0.f,0.f,-1.f));
+
 
 			CUI::UIDESC BossUI_ShieldHP;
 			ZeroMemory(&BossUI_ShieldHP, sizeof(BossUI_ShieldHP));
@@ -546,11 +568,27 @@ void CBoss::Setting_ShieldUi(_float fTimeDelta)
 			}
 
 			m_BossUI_ShieldHP = static_cast<CUI*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("BossUI_ShieldHP")));
+			m_BossUI_ShieldHP->Set_Color(m_BossUI_ShieldHP->Get_Color() + _float4(0.f, 0.f, 0.f, -1.f));
 
 			m_beforeShieldHP = Get_InitHP();
 		
 			RELEASE_INSTANCE(CGameInstance);
 			m_bshieldsetup = true;
+		}
+
+
+		if(!m_ShieldUiOn)
+		{
+			m_UiTimer += fTimeDelta;
+
+			m_BossUI_ShieldHP->Set_Color(m_BossUI_ShieldHP->Get_Color() + _float4(0.f, 0.f, 0.f, fTimeDelta));
+			m_BossUI_BackShieldHP->Set_Color(m_BossUI_BackShieldHP->Get_Color() + _float4(0.f, 0.f, 0.f, fTimeDelta));
+
+			if (m_UiTimer >= 1.f)
+			{
+				m_ShieldUiOn = true;
+				m_UiTimer = 0.f;
+			}
 		}
 
 		m_BossUI_HpBar->Set_CurrFrameIndex(1);
@@ -588,6 +626,11 @@ void CBoss::Setting_ShieldUi(_float fTimeDelta)
 	}
 	else
 	{
+		if (m_BossUI_ShieldHP)
+			m_BossUI_ShieldHP->Set_Size(0.f, g_iWinCY / 36.f);
+		if (m_BossUI_BackShieldHP)
+			m_BossUI_BackShieldHP->Set_Size(0.f, g_iWinCY / 36.f);
+
 		m_BossUI_HpBar->Set_CurrFrameIndex(0);
 	}
 }
@@ -596,6 +639,9 @@ void CBoss::Setting_ShieldUi(_float fTimeDelta)
 void CBoss::Set_InitPos(_float3 _pos)
 {
 	m_InitPos = _pos;
+	m_pTransform->Set_State(CTransform::STATE_POSITION, m_InitPos);
+	m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_InitPos);
+
 }
 
 void CBoss::Add_HP(_int _add)
@@ -1185,6 +1231,7 @@ HRESULT CBoss::Init_Attack_Missile()
 {
 	m_bMissile = false;
 	m_btargetCollider = true;
+	MainTargetFire = false;
 	m_fFireFrame = 0.f;
 	m_fFireCount = 0;
 	m_fWaiting = 0.f;
@@ -1236,6 +1283,10 @@ void CBoss::Idle(_float fTimeDelta)
 		{
 			if(!m_Spawned)
 			{
+				m_BossUI_HP->Set_Color(m_BossUI_HP->Get_Color() + _float4(0.f, 0.f, 0.f, -1.f));
+				m_BossUI_BackHP->Set_Color(m_BossUI_BackHP->Get_Color() + _float4(0.f, 0.f, 0.f, -1.f));
+				m_BossUI_HpBar->Set_Color(m_BossUI_HpBar->Get_Color() + _float4(0.f, 0.f, 0.f, -1.f));
+
 				m_BossUI_HP->Set_Vaild(true);
 				m_BossUI_BackHP->Set_Vaild(true);
 				m_BossUI_HpBar ->Set_Vaild(true);
@@ -1258,6 +1309,7 @@ void CBoss::Idle(_float fTimeDelta)
 	}
 	else if (!m_init)
 	{
+	
 		Blowing(fTimeDelta);
 	}
 	else
@@ -1461,11 +1513,10 @@ void CBoss::Die(_float fTimeDelta)
 		Set_Dead(true);
 	}
 }
-
 void CBoss::Attack_Missile(_float fTimeDelta)
 {
 	// 미사일
-	totalfireCount = 16;
+	totalfireCount = 14;
 	Start_Pattern(TEXT("Boss_AttackAlarm.wav"));
 
 	Gravity_Blowing(fTimeDelta, 10.f, true);
@@ -1481,7 +1532,7 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 		CTargeting::TARGET targeting;
 		targeting.Pos1 = m_pTransform->Get_State(CTransform::STATE_POSITION);
 		targeting.Pos2 = m_pTransform->Get_State(CTransform::STATE_POSITION) + _float3(0.f, 30.f, 0.f);
-		targeting.Pos3 = m_pPlayerTr->Get_State(CTransform::STATE_POSITION) - _float3(0.f, 0.2f, 0.f);;
+		targeting.Pos3 = m_pPlayerTr->Get_State(CTransform::STATE_POSITION) - _float3(0.f, 0.31f, 0.f);;
 		targeting.MainTaret = true;
 		targeting.Parent = this;
 
@@ -1524,7 +1575,6 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 		if (m_pTargeting->Get_CheckCollider() && totalfireCount != count)
 		{
 
-
 			CTransform* mainTrans = static_cast<CTransform*>(m_pTargeting->Get_Component(COM_TRANSFORM));
 			//처음 날리느 타겟의 위치값
 			CTargeting::TARGET targeting_Sub;
@@ -1533,7 +1583,7 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 			if (totalfireCount >= count && BeforeCount != count)
 			{
 				m_fJWaiting = 0.f;
-				targeting_Sub.Pos3 = mainTrans->Get_State(CTransform::STATE_POSITION) + _float3((rand() % 3 - 1) * 2, 0.f, (rand() % 3 - 1) * 2);
+				targeting_Sub.Pos3 = mainTrans->Get_State(CTransform::STATE_POSITION) + _float3((rand() % 3 - 1) * 7, 0.f, (rand() % 3 - 1) * 7);
 				targeting_Sub.MainTaret = false;
 
 
@@ -1554,6 +1604,9 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 				MissleLunch.pParent = this;
 				MissleLunch.pTargeting = SubTarget;
 				MissleLunch.mainTarget = m_pTargeting;
+
+
+
 				switch (count % 2 + 1)
 				{
 				case 1:
@@ -1567,6 +1620,10 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 					m_LaunchTimer = 0.f;
 					p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
 					p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
+
+
+
+
 					break;
 				case 2:
 					m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Right")))));
@@ -1579,15 +1636,43 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 					m_LaunchTimer = 0.f;
 					p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
 					p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Missile_Launch_0.wav") : TEXT("Missile_Launch_1.wav"), CSoundMgr::ENEMY_EFFECT3, 1.f);
+
 					break;
 				}
 
+				//미사일 라업룩
 				CTransform* m_ArmTrans = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
 				//미사일 베지어 곡선용 포지션 3개
-				MissleLunch.Pos1 = m_ArmTrans->Get_State(CTransform::STATE_POSITION);//내 팔의위치
-				MissleLunch.Pos2 = m_ArmTrans->Get_State(CTransform::STATE_POSITION) + _float3(rand() % 10 - 5.f, 30.f, rand() % 10 - 5.f);//중간 지점
-				MissleLunch.Pos3 = targeting_Sub.Pos3;//타겟의 위치
+				_float3 ArmRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+				_float3 ArmUp = m_pTransform->Get_State(CTransform::STATE_UP);
+				_float3 ArmLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+				D3DXVec3Normalize(&ArmRight, &ArmRight);
+				D3DXVec3Normalize(&ArmUp, &ArmUp);
+				D3DXVec3Normalize(&ArmLook, &ArmLook);
 
+				//타겟의 라업룩
+				CTransform* m_pTargetingTr = (CTransform*)m_pTargeting->Get_Component(COM_TRANSFORM);
+				_float3 TargetRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+				_float3 TargetUp = m_pTransform->Get_State(CTransform::STATE_UP);
+				_float3 TargetLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+				D3DXVec3Normalize(&TargetRight, &TargetRight);
+				D3DXVec3Normalize(&TargetUp, &TargetUp);
+				D3DXVec3Normalize(&TargetLook, &TargetLook);
+
+				if (MissleLunch.ArmMissle == CMissile::ARMMISSLE_LEFT)
+				{
+					MissleLunch.Pos1 = m_ArmTrans->Get_State(CTransform::STATE_POSITION);//내 팔의위치
+					MissleLunch.Pos2 = m_ArmTrans->Get_State(CTransform::STATE_POSITION) + (ArmRight * -(rand() % 10 + 45.f) + (ArmUp * (75.f)) + (ArmLook * -(rand() % 10 + 45.f)));//중간 지점
+					MissleLunch.Pos3 = m_pTargetingTr->Get_State(CTransform::STATE_POSITION) + (TargetRight * -(rand() % 10 - 5.f) + (TargetUp * (35.f)) + (TargetLook * -(rand() % 10 - 5.f)));//중간 지점
+					MissleLunch.Pos4 = targeting_Sub.Pos3;//타겟의 위치
+				}
+				else
+				{
+					MissleLunch.Pos1 = m_ArmTrans->Get_State(CTransform::STATE_POSITION);//내 팔의위치
+					MissleLunch.Pos2 = m_ArmTrans->Get_State(CTransform::STATE_POSITION) + (ArmRight * (rand() % 10 + 45.f) + (ArmUp * (75.f)) + (ArmLook * -(rand() % 10 + 45.f)));//중간 지점
+					MissleLunch.Pos3 = m_pTargetingTr->Get_State(CTransform::STATE_POSITION) + (TargetRight * (rand() % 10 - 5.f) + (TargetUp * (35.f)) + (TargetLook * -(rand() % 10 - 5.f)));//중간 지점
+					MissleLunch.Pos4 = targeting_Sub.Pos3;//타겟의 위치
+				}
 
 				if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Missile"), TEXT("Prototype_GameObject_Missile"), &MissleLunch)))
 				{
@@ -1826,7 +1911,7 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 	{
 		m_pTransform->Gravity(0.8f, fTimeDelta);
 		m_LeftArmTr->Gravity(0.7f, fTimeDelta);
-		m_RightArmTr->Gravity(0.6f, fTimeDelta);
+		m_RightArmTr->Gravity(0.7f, fTimeDelta);
 		return;
 	}
 
@@ -1959,17 +2044,23 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-vUp, m_RightArmTr->Get_State(CTransform::STATE_POSITION), 100, true);
-
 		if (!collList.empty())
 		{
 			auto iter = collList.begin();
+
+			for (; iter != collList.end();)
+			{
+				if (static_cast<CCollider*>(iter->CollObj->Get_Component(COM_COLLIDER))->Get_CollStyle() != CCollider::COLLSTYLE_ENTER)
+					++iter;
+				else
+					break;
+			}
 
 			if (iter != collList.end())
 			{
 				vRightPos.y = (*iter).Point.y + 0.01f + vScale.y * 0.5f;
 			}
 		}
-
 		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vRightPos);
 		RELEASE_INSTANCE(CGameInstance);
 	}
@@ -1986,8 +2077,8 @@ void CBoss::Attack_Rolling(_float fTimeDelta)
 		m_fTimer = 0.f;
 	}
 
-	m_LeftArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f, 0.f, 0.f));
-	m_RightArm->Set_Color(_float4(m_RollingChargingGauge * 0.0005f, 0.f, 0.f, 0.f));
+	m_LeftArm->Set_Color(_float4(m_RollingChargingGauge * 0.003f, 0.f, 0.f, 0.f));
+	m_RightArm->Set_Color(_float4(m_RollingChargingGauge * 0.003f, 0.f, 0.f, 0.f));
 
 
 	if(m_MoveToPlayer)

@@ -235,6 +235,11 @@ private:
 
 	_float4 m_InitColor = _float4(0.f, 0.f, 0.f, 0.f);
 
+	_float m_UiTimer = 0.f;
+	_bool m_HpUiOn = false;
+	_bool m_ShieldUiOn = false;
+
+
 
 	// Idle
 	_bool initPos[2] = { false,false };

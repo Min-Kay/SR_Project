@@ -10,7 +10,7 @@ CTargeting::CTargeting(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 }
 
-CTargeting::CTargeting(const CTargeting & rhs)
+CTargeting::CTargeting(const CTargeting& rhs)
 	: CGameObject(rhs)
 	, m_pTransformCom(rhs.m_pTransformCom)
 	, m_pBoxColliderCom(rhs.m_pBoxColliderCom)
@@ -34,7 +34,7 @@ HRESULT CTargeting::NativeConstruct_Prototype()
 
 }
 
-HRESULT CTargeting::NativeConstruct(void * pArg)
+HRESULT CTargeting::NativeConstruct(void* pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
@@ -112,7 +112,7 @@ HRESULT CTargeting::Render()
 		return E_FAIL;
 
 
-	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(1)))
+	if (FAILED(m_pTextureCom->Bind_OnGraphicDevice(0)))
 		return E_FAIL;
 
 	if (m_bcheckCollider == true)
@@ -152,37 +152,6 @@ HRESULT CTargeting::Release_RanderState()
 }
 
 
-
-HRESULT CTargeting::FaceOn_Camera()
-{
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-
-	_float4x4		ViewMatrix;
-	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
-	D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
-
-	_float3		vCamPosition = *(_float3*)&ViewMatrix.m[3][0];
-	_float3		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float3		vDir = vPosition - vCamPosition;
-	_float		m_fCamDistance = D3DXVec3Length(&vDir);
-
-	if (!m_pTarget)
-	{
-		m_pTarget = p_instance->Find_Camera_Object(MAIN_CAM)->Get_CameraTransform();
-	}
-
-	if (m_pTarget)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTarget->Get_State(CTransform::STATE_RIGHT) * m_pTransformCom->Get_Scale().x);
-		m_pTransformCom->Set_State(CTransform::STATE_UP, m_pTarget->Get_State(CTransform::STATE_UP) * m_pTransformCom->Get_Scale().y);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTarget->Get_State(CTransform::STATE_LOOK) * m_pTransformCom->Get_Scale().z);
-	}
-
-
-	RELEASE_INSTANCE(CGameInstance);
-	return S_OK;
-}
-
 HRESULT CTargeting::MainMoving(_float fTimeDelta)
 {
 
@@ -195,13 +164,16 @@ HRESULT CTargeting::MainMoving(_float fTimeDelta)
 
 HRESULT CTargeting::ColliderCheck()
 {
+	if (m_bcheckCollider)
+		return S_OK;
+
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	list<CGameObject*> test = p_instance->Get_Collision_List(m_pBoxColliderCom);
 	_float3 Look, playerpos, Targetpos;
-	for (auto & iter : test)
+	for (auto& iter : test)
 	{
-		
-		if (OBJ_STATIC == iter->Get_Type() && iter != m_Target.Parent )
+
+		if (OBJ_STATIC == iter->Get_Type() && iter != m_Target.Parent && iter != m_pPlayer)
 		{
 			m_pTarget = (CTransform*)iter->Get_Component(COM_TRANSFORM);
 			_float3 Target_Right = m_pTarget->Get_State(CTransform::STATE_RIGHT);
@@ -218,12 +190,7 @@ HRESULT CTargeting::ColliderCheck()
 
 				m_bcheckCollider = true;
 			}
-			else
-			{
-				RELEASE_INSTANCE(CGameInstance)
-					return E_FAIL;
-			}
-
+			break;
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance)
@@ -249,7 +216,6 @@ HRESULT CTargeting::MainTarget(_float fTimeDelta)
 
 	if (m_bcheckCollider == false)
 	{
-		FaceOn_Camera();
 
 		timer += fTimeDelta;
 		MainMoving(timer);//처음 플레이어 위치 잡는 이미지
@@ -308,7 +274,7 @@ HRESULT CTargeting::SetUp_Component()
 	Set_Type(OBJ_STATIC);
 
 
-	m_pTransformCom->Scaled(_float3(3.f, 3.f, 3.f));
+	m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));
 
 	m_pBoxColliderCom->Set_ParentInfo(this);
 	m_pBoxColliderCom->Set_CollStyle(CCollider::COLLSTYLE_TRIGGER);
@@ -323,7 +289,7 @@ HRESULT CTargeting::SetUp_Component()
 	return S_OK;
 }
 
-CTargeting * CTargeting::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CTargeting* CTargeting::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CTargeting* pTargeting = new CTargeting(pGraphic_Device);
 	if (FAILED(pTargeting->NativeConstruct_Prototype()))
@@ -337,7 +303,7 @@ CTargeting * CTargeting::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 }
 
-CGameObject * CTargeting::Clone(void * pArg)
+CGameObject* CTargeting::Clone(void* pArg)
 {
 	CTargeting* pTargeting = new CTargeting(*this);
 	if (FAILED(pTargeting->NativeConstruct(pArg)))

@@ -328,11 +328,11 @@ void CSunflower::Spawn_Impact(_float3 pos)
 	desc.DeleteTime = 0.5f;
 	desc.Color = m_Color;
 	desc.Position = pos;
-	desc.Size = _float3(0.1f,0.1f,0.1f);
+	desc.Size = _float3(0.15f,0.15f,0.15f);
 
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	for(_uint i = 0; i < rand() % 5 + 5; ++i)
+	for(_uint i = 0; i < rand() % 5 + 7; ++i)
 	{
 		if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Impact_Sunflower"),TEXT("Prototype_GameObject_Impact"),&desc)))
 		{

@@ -41,6 +41,8 @@ public:
 	void Set_Shake(_float _timer, _float _force);
 	const _bool Get_PlayerDead() {return m_PlayerDead;}
 
+
+	void Set_UIColor(_float4 _color);
 public:
 	const _int& Get_Hp() const;
 	void Set_Hp(_int _hp);
@@ -57,6 +59,7 @@ private:
 	HRESULT SetUp_UI();
 	void Setting_HpUi(_float ftimedelta);
 	void Setting_Dying(_float fTimeDelta);
+
 
 private:
 
