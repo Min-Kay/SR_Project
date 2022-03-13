@@ -296,6 +296,17 @@ _float CUI::Get_SizeX()
 	return m_desc.SizeX;
 	
 }
+
+_float2 CUI::Get_Pos()
+{
+	return _float2(m_desc.PosX, m_desc.PosY);
+}
+
+_float2 CUI::Get_Size()
+{
+	return _float2(m_desc.SizeX, m_desc.SizeY);
+}
+
 float CUI::Get_PosX()
 {
 	return m_desc.PosX;

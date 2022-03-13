@@ -35,7 +35,7 @@ public:
 	HRESULT NativeConstruct(LEVEL eNextLevel);
 	HRESULT Loading_ForStageOne();
 	HRESULT Loading_ForStageTwo();
-
+	HRESULT Loading_ForEnding();
 private:
 	LPDIRECT3DDEVICE9	m_pGraphic_Device = nullptr;
 	LEVEL				m_eLevel = LEVEL_END;

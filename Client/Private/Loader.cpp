@@ -69,6 +69,9 @@ unsigned int APIENTRY ThreadFunction(void* pArg)
 	case LEVEL_STAGETWO:
 		pLoader->Loading_ForStageTwo();
 		break;
+	case LEVEL_ENDING:
+		pLoader->Loading_ForEnding();
+		break;
 	}	
 
 	LeaveCriticalSection(&pLoader->Get_CS());	
@@ -404,6 +407,19 @@ HRESULT CLoader::Loading_ForStageTwo()
 
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_ForEnding()
+{
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ending"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Ending.png")))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_isFinished = true;
 	return S_OK;
 }
 

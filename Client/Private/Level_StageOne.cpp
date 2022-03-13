@@ -111,6 +111,18 @@ _int CLevel_StageOne::Tick(_float fTimeDelta)
 		return 0;
 	}
 
+	if (p_instance->Get_Key_Down(DIK_9))
+	{
+		if (FAILED(p_instance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device, LEVEL_ENDING))))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return -1;
+		}
+		RELEASE_INSTANCE(CGameInstance);
+		return 0;
+	}
+
+
 	if (m_Change->Get_LevelOut())
 	{
 
@@ -1555,54 +1567,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, 2.f));
 	MiddleunPortalBox->Set_Collider();
 
-	////¿ÞÂÊ
-	//{
 
-	//	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal1"), TEXT("Prototype_GameObject_UnPortal"))))
-	//		return E_FAIL;
 
-	//	CGameObject* MiddleunPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal1"));
-	//	CTransform* MiddleunPortalTr = static_cast<CTransform*>(MiddleunPortal->Get_Component(COM_TRANSFORM));
-
-	//	MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x - HalfBoxSize, BallMapPos.y+ 5.f , BallMapPos.z - 8.f));;
-	//	MiddleunPortalTr->Scaled(_float3(16.5f, 11.f, 1.f));
-	//	MiddleunPortalTr->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
-	//	CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
-	//	MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3( -1.f, 15.f, 17.5f));
-	//	MiddleunPortalBox->Set_Collider();
-	//}
-
-	////¿À¸¥
-	//{
-
-	//	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal2"), TEXT("Prototype_GameObject_UnPortal"))))
-	//		return E_FAIL;
-
-	//	CGameObject* MiddleunPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal2"));
-	//	CTransform* MiddleunPortalTr = static_cast<CTransform*>(MiddleunPortal->Get_Component(COM_TRANSFORM));
-
-	//	MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x + HalfBoxSize, BallMapPos.y + 5.f, BallMapPos.z - 8.f));;
-	//	MiddleunPortalTr->Scaled(_float3(16.5f, 11.f, 1.f));
-	//	MiddleunPortalTr->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(-90.f));
-	//	CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
-	//	MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 15.f, 17.5f));
-	//	MiddleunPortalBox->Set_Collider();
-	//}
-	//µÚ
-	{
-
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal3"), TEXT("Prototype_GameObject_UnPortal"))))
-			return E_FAIL;
-
-		CGameObject* MiddleunPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal3"));
-		CTransform* MiddleunPortalTr = static_cast<CTransform*>(MiddleunPortal->Get_Component(COM_TRANSFORM));
-
-		MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x + 6.5f, BallMapPos.y + 3.f, BallMapPos.z - HalfBoxSize * 1.5f +0.2f));
-		MiddleunPortalTr->Scaled(_float3(m_iBoxSize * 0.5f-1.5f, 13.f, 0.5f));
-		CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
-		MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize * 0.5f - 1.5f, 13.f, 0.5f));
-		MiddleunPortalBox->Set_Collider();
-	}
 
 	////º¼¸ÊÀÌ¶û Áß·Â¸Ê Åë·Î
 

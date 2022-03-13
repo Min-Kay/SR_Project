@@ -155,7 +155,7 @@ HRESULT CBall::Move(_float fTimeDelta)
 				if (length.z <= 40.f &&-15< length.x &&length.x<15)
 				{
 					CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-					p_instance->Play_Sound(TEXT("Shooting Laser gun 10.wav") , CSoundMgr::EFFECT3, 0.5f);
+					p_instance->Play_Sound(TEXT("Shooting_Laser_gun_10.wav") , CSoundMgr::EFFECT3, 0.5f);
 					//p_instance->StopSound(CSoundMgr::EFFECT3);
 					RELEASE_INSTANCE(CGameInstance);
 				}

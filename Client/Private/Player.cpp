@@ -48,6 +48,9 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_UI()))
 		return E_FAIL;
 
+	g_ControlShader = -1.f;
+	m_PlayerDead = true;
+
 	return S_OK;
 }
 

@@ -164,7 +164,6 @@ HRESULT CTargeting::MainMoving(_float fTimeDelta)
 }
 
 
-
 HRESULT CTargeting::ColliderCheck()
 {
 	if (m_bcheckCollider)
@@ -172,11 +171,14 @@ HRESULT CTargeting::ColliderCheck()
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	list<CGameObject*> test = p_instance->Get_Collision_List(m_pBoxColliderCom);
+
 	_float3 Look, playerpos, Targetpos;
 	for (auto& iter : test)
 	{
 
-		if (OBJ_STATIC == iter->Get_Type() && iter != m_Target.Parent)
+		CCollider::COLLSTYLE listCollstyle = static_cast<CCollider*>(iter->Get_Component(COM_COLLIDER))->Get_CollStyle();
+
+		if (listCollstyle == CCollider::COLLSTYLE_ENTER && iter != m_Target.Parent && iter != m_pPlayer)
 		{
 			m_pTarget = (CTransform*)iter->Get_Component(COM_TRANSFORM);
 			_float3 Target_Right = m_pTarget->Get_State(CTransform::STATE_RIGHT);
@@ -196,6 +198,7 @@ HRESULT CTargeting::ColliderCheck()
 
 			break;
 		}
+
 
 	}
 	RELEASE_INSTANCE(CGameInstance)

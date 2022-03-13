@@ -111,6 +111,10 @@ public:
 	HRESULT Set_Size(_float sizeX, _float sizeY);
 	_float Get_PosX();
 	_float Get_SizeX();
+
+	_float2 Get_Pos();
+	_float2 Get_Size();
+
 	void Set_Color(_float4 _color) { m_desc.Color = _color; }
 	const _float4& Get_Color() { return m_desc.Color; }
 

@@ -7,6 +7,8 @@
 #include "Camera.h"
 #include "Door_left.h"
 #include "Door_right.h"
+#include "Level_Ending.h"
+#include "Level_Loading.h"
 #include "UI.h"
 #include "Player.h"
 #include "Tile_Collider.h"
@@ -135,6 +137,7 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 		Change_Boss_Tile(fTimeDelta);
 	}
 
+
 	if(m_pBoss && m_pBoss->Get_HP() <= 0)
 	{
 		m_SoundTimer += fTimeDelta;
@@ -142,20 +145,34 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 
 		if (m_SoundTimer < 1.5f)
 		{
+			for (auto& i : m_TileList)
+			{
+				i->Set_Color(_float4(0.f, 0.f, 0.f, 0.f));
+			}
+
 			m_pPlayer->Set_Shake(1.0f, 2.f);
 			p_instance->BGMVolumeDown(fTimeDelta * 0.5f);
 			g_ControlTime -= fTimeDelta * 0.6f;
-			g_ControlShader += fTimeDelta * 0.3f;
+			g_ControlShader += fTimeDelta * 0.5f;
+		}
+		else if (m_SoundTimer >= 1.5f && m_SoundTimer <= 2.f)
+		{
+			p_instance->StopAll();
+			
+			g_ControlShader = 1.f;
+			g_ControlTime = 0.2f;
 		}
 		else
 		{
-			p_instance->StopAll();
-			g_ControlShader = 1.f;
-			g_ControlTime = 0.2f;
+			p_instance->OpenLevel(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphic_Device,LEVEL_ENDING), true);
+			RELEASE_INSTANCE(CGameInstance);
+			return 0;
 		}
 		RELEASE_INSTANCE(CGameInstance);
 
 	}
+	else
+		Gradiant(fTimeDelta);
 
 	m_setting = true;
 
@@ -371,7 +388,7 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Open_Exit"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Scaled(_float3(1.f, 1.f, 1.f));
+		trans->Scaled(_float3(0.f, 0.f, 0.f));
 		trans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 81.f, 55.f));
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE,_float3(100.f,100.f,2.f));
@@ -1075,9 +1092,9 @@ void CLevel_StageTwo::Gradiant(_float fTimeDelta)
 	if (!m_Gradiant)
 		return;
 
-	m_GradiantTime = m_GrowColor ? m_GradiantTime + fTimeDelta : m_GradiantTime - fTimeDelta;
+	m_GradiantTime = m_GrowColor ? m_GradiantTime + fTimeDelta * 0.3f : m_GradiantTime - fTimeDelta * 0.3f;
 
-	if(m_GradiantTime >= 0.3f || m_GradiantTime <= 0.f)
+	if(m_GradiantTime >= 0.f || m_GradiantTime <= -0.3f)
 	{
 		m_GrowColor = !m_GrowColor;
 	}

@@ -2,6 +2,7 @@
 #include "..\Public\Level_Loading.h"
 #include "Loader.h"
 #include "GameInstance.h"
+#include "Level_Ending.h"
 #include "Level_StageOne.h"
 #include "Level_StageTwo.h"
 #include "UI.h"
@@ -63,6 +64,10 @@ _int CLevel_Loading::LateTick(_float fTimeDelta)
 		case LEVEL_STAGETWO:
 			g_CurrLevel = LEVEL_STAGETWO;
 			m_Level = CLevel_StageTwo::Create(m_pGraphic_Device);
+			break;
+		case LEVEL_ENDING:
+			g_CurrLevel = LEVEL_ENDING;
+			m_Level = CLevel_Ending::Create(m_pGraphic_Device);
 			break;
 		}
 		if (FAILED(pGameInstance->OpenLevel(m_eNextLevel, m_Level,false)))

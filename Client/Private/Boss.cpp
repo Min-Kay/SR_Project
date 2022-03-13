@@ -1196,7 +1196,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 	switch(_arm)
 	{
 	case ARM_LEFT:
-		if ( m_LeftTimer >= 1.f ||  1.5f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
+		if ( m_LeftTimer >= 1.f || 1.5f >= D3DXVec3Length(&(m_LeftArmTr->Get_State(CTransform::STATE_POSITION) - leftArmBazier[2])))
 		{
 			m_LeftTimer = 0.f;
 			Reset_Arm_Direction(ARM_LEFT);
@@ -1207,7 +1207,7 @@ _bool CBoss::Move_By_Bazier(ARM _arm , _float fTimeDelta)
 		m_LeftArmTr->Set_State(CTransform::STATE_POSITION, powf(1 - m_LeftTimer, 2) * leftArmBazier[0] + 2 * m_LeftTimer * (1 - m_LeftTimer) * leftArmBazier[1] + powf(m_LeftTimer, 2)* leftArmBazier[2]);
 		break;
 	case ARM_RIGHT:
-		if (m_RightTimer >= 1.f ||1.5f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
+		if (m_RightTimer >= 1.f || 1.5f >= D3DXVec3Length(&(m_RightArmTr->Get_State(CTransform::STATE_POSITION) - rightArmBazier[2])))
 		{
 			m_RightTimer = 0.f;
 
@@ -1601,13 +1601,11 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 				MissleLunch.mainTarget = m_pTargeting;
 
 
-
 				switch (count % 2 + 1)
 				{
 				case 1:
-					m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Left")))));
+					m_Arm = m_LeftArm;
 					MissleLunch.ArmMissle = CMissile::ARMMISSLE_LEFT;
-					m_LeftArmTr = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
 					m_LeftArm->Set_Rolling(true, -m_pTransform->Get_State(CTransform::STATE_LOOK));
 					m_RightArm->Set_Rolling(false);
 					m_CurrLaunchArm = ARM_LEFT;
@@ -1621,9 +1619,8 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 
 					break;
 				case 2:
-					m_Arm = static_cast<CArm*>(static_cast<CEnemy*>((p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Arm_Right")))));
+					m_Arm = m_RightArm;
 					MissleLunch.ArmMissle = CMissile::ATMMISSLE_RIGHT;
-					m_RightArmTr = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
 					m_RightArm->Set_Rolling(true, m_pTransform->Get_State(CTransform::STATE_LOOK));
 					m_LeftArm->Set_Rolling(false);
 					m_CurrLaunchArm = ARM_RIGHT;
@@ -1638,34 +1635,28 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 				//미사일 라업룩
 				CTransform* m_ArmTrans = (CTransform*)m_Arm->Get_Component(COM_TRANSFORM);
 				//미사일 베지어 곡선용 포지션 3개
-				_float3 ArmRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
-				_float3 ArmUp = m_pTransform->Get_State(CTransform::STATE_UP);
-				_float3 ArmLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+				_float3 ArmRight = m_ArmTrans->Get_State(CTransform::STATE_RIGHT);
+				_float3 ArmUp = m_ArmTrans->Get_State(CTransform::STATE_UP);
+				_float3 ArmLook = m_ArmTrans->Get_State(CTransform::STATE_LOOK);
 				D3DXVec3Normalize(&ArmRight, &ArmRight);
 				D3DXVec3Normalize(&ArmUp, &ArmUp);
 				D3DXVec3Normalize(&ArmLook, &ArmLook);
 
 				//타겟의 라업룩
 				CTransform* m_pTargetingTr = (CTransform*)m_pTargeting->Get_Component(COM_TRANSFORM);
-				_float3 TargetRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
-				_float3 TargetUp = m_pTransform->Get_State(CTransform::STATE_UP);
-				_float3 TargetLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
-				D3DXVec3Normalize(&TargetRight, &TargetRight);
-				D3DXVec3Normalize(&TargetUp, &TargetUp);
-				D3DXVec3Normalize(&TargetLook, &TargetLook);
 
 				if (MissleLunch.ArmMissle == CMissile::ARMMISSLE_LEFT)
 				{
 					MissleLunch.Pos1 = m_ArmTrans->Get_State(CTransform::STATE_POSITION);//내 팔의위치
 					MissleLunch.Pos2 = m_ArmTrans->Get_State(CTransform::STATE_POSITION) + (ArmRight * -(rand() % 10 + 45.f) + (ArmUp * (75.f)) + (ArmLook * -(rand() % 10 + 45.f)));//중간 지점
-					MissleLunch.Pos3 = m_pTargetingTr->Get_State(CTransform::STATE_POSITION) + (TargetRight * -(rand() % 10 - 5.f) + (TargetUp * (35.f)) + (TargetLook * -(rand() % 10 - 5.f)));//중간 지점
+					MissleLunch.Pos3 = m_pTargetingTr->Get_State(CTransform::STATE_POSITION) + (ArmRight * -(rand() % 10 - 5.f) + (ArmUp * (35.f)) + (ArmLook * -(rand() % 10 - 5.f)));//중간 지점
 					MissleLunch.Pos4 = targeting_Sub.Pos3;//타겟의 위치
 				}
 				else
 				{
 					MissleLunch.Pos1 = m_ArmTrans->Get_State(CTransform::STATE_POSITION);//내 팔의위치
 					MissleLunch.Pos2 = m_ArmTrans->Get_State(CTransform::STATE_POSITION) + (ArmRight * (rand() % 10 + 45.f) + (ArmUp * (75.f)) + (ArmLook * -(rand() % 10 + 45.f)));//중간 지점
-					MissleLunch.Pos3 = m_pTargetingTr->Get_State(CTransform::STATE_POSITION) + (TargetRight * (rand() % 10 - 5.f) + (TargetUp * (35.f)) + (TargetLook * -(rand() % 10 - 5.f)));//중간 지점
+					MissleLunch.Pos3 = m_pTargetingTr->Get_State(CTransform::STATE_POSITION) + (ArmRight * (rand() % 10 - 5.f) + (ArmUp * (35.f)) + (ArmLook * -(rand() % 10 - 5.f)));//중간 지점
 					MissleLunch.Pos4 = targeting_Sub.Pos3;//타겟의 위치
 				}
 
@@ -1675,6 +1666,9 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 					MSGBOX("미사일 생성 오류")
 						return;
 				}
+
+				CTransform* missileTr = static_cast<CTransform*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Missile"))->Get_Component(COM_TRANSFORM));
+				missileTr->Set_State(CTransform::STATE_POSITION, MissleLunch.Pos1);
 
 				BeforeCount = count;
 
@@ -1747,6 +1741,7 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 			if(!m_RollingHit[0])
 			{
 				m_LeftArmTr->Go_Straight(fTimeDelta * 10.f);
+				initPos[0] = false;
 				if (m_LeftArm->Get_ParentCollide() || m_LeftArmTr->Get_OnCollide())
 				{
 					m_pPlayer->Set_Shake(0.5f, 2.f);
@@ -1815,6 +1810,7 @@ void CBoss::Attack_Punch(_float fTimeDelta)
 					p_instance->StopSound(CSoundMgr::WEAPON_EFFECT3);
 					p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Explosion_Punch_0.wav") : TEXT("Explosion_Punch_1.wav"), CSoundMgr::WEAPON_EFFECT3, 1.f);
 
+					initPos[1] = false;
 					m_pAttackRange->Set_Valid(false);
 				}
 			}
@@ -2327,6 +2323,8 @@ void CBoss::Rage_Laser(_float fTimeDelta)
 
 void CBoss::Rage_Sunflower(_float fTimeDelta)
 {
+	Start_Pattern(TEXT("Boss_AttackAlarm1.wav"));
+
 	if(!m_SunflowerSetting)
 	{
 		m_SunflowerSetting = true;

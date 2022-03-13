@@ -166,6 +166,9 @@
     <Filter Include="02.GameObjects\Enemy\Boss\Missile\Targeting">
       <UniqueIdentifier>{2ecf10b7-9f53-4b08-a420-e51f430630c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\Ending">
+      <UniqueIdentifier>{82883021-9af9-42e4-9c2c-ea411f9799d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -321,6 +324,9 @@
     <ClInclude Include="..\Public\Sunflower.h">
       <Filter>02.GameObjects\Enemy\Boss\Sunflower</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Ending.h">
+      <Filter>01.Levels\Ending</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -463,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sunflower.cpp">
       <Filter>02.GameObjects\Enemy\Boss\Sunflower</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Ending.cpp">
+      <Filter>01.Levels\Ending</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

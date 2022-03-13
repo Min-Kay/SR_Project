@@ -98,7 +98,7 @@ _int CMissile::Tick(_float fTimeDelta)
 	{
 		m_fdeadCounter += fTimeDelta;
 		
-		if (m_fdeadCounter >= 1.f)
+		if (m_fdeadCounter >= 3.f)
 		{
 			m_bDEAD = true;
 		}
