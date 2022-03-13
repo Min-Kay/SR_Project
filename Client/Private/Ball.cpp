@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Shader.h"
-
+#include "Impact.h"
 CBall::CBall(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject(pGraphic_Device)
 {
@@ -55,6 +55,8 @@ _int CBall::Tick(_float fTimeDelta)
 		m_pBoxColliderCom->Set_Collider();
 	Move(fTimeDelta);
 
+
+	
 	return _int();
 }
 
@@ -99,6 +101,36 @@ HRESULT CBall::Render()
 	return S_OK;
 }
 
+void CBall::Spark(_float3 _point)
+{
+	CImpact::IMPACT Impact1, Impact2;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Position = _point;
+	Impact1.Size = _float3(0.03f, 0.03f, 0.03f);
+	Impact1.RandomDirection = 3.f;
+	Impact1.DeleteTime = 0.1f;//rand() % 5 + 2;
+	Impact1.SpreadSpeed = 10.f;
+	Impact1.Color = _float4(1.f, 0.9f, 0.f, 0.f);
+	Impact1.EndColor = _float4(1.f, 0.5f, 0.f, 0.f);
+	Impact1.Change = true;
+
+	Impact2 = Impact1;
+	Impact2.Color = _float4(1.f, 0.6f, 0.f, 0.f);
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	for (int i = 0; i < rand() % 10 + 20; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact_Gun"), TEXT("Prototype_GameObject_Impact"), rand() % 2 == 0 ? &Impact1 : &Impact2)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
+
+}
+
+
 HRESULT CBall::Move(_float fTimeDelta)
 {
 	m_pTransformCom->Go_Straight(fTimeDelta);
@@ -114,8 +146,24 @@ HRESULT CBall::Move(_float fTimeDelta)
 			CCollider* test = (CCollider*)i->Get_Component(COM_COLLIDER);
 			if (CCollider::COLLSTYLE_ENTER == test->Get_CollStyle())
 			{
-				m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(6.f, 4.0f, 98.f));
-				m_pTransformCom->Set_State(CTransform::STATE_LOOK, _float3(0.f, 0.f, -1.f));
+
+				CTransform* playertr = static_cast<CTransform*>(m_Player->Get_Component(COM_TRANSFORM));
+				_float3 Playerpos = playertr->Get_State(CTransform::STATE_POSITION);
+				_float3 mypos = m_pTransformCam->Get_State(CTransform::STATE_POSITION);
+				_float3 length = mypos - Playerpos ;
+				D3DXVec3Length(&length);
+				if (length.z <= 40.f &&-15< length.x &&length.x<15)
+				{
+					CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+					p_instance->Play_Sound(TEXT("Shooting Laser gun 10.wav") , CSoundMgr::EFFECT3, 0.5f);
+					//p_instance->StopSound(CSoundMgr::EFFECT3);
+					RELEASE_INSTANCE(CGameInstance);
+				}
+
+				Spark(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(6.f, 4.0f, 94.f));
+				m_pTransformCom->Set_State(CTransform::STATE_LOOK, _float3(0.f, 1.f, 0.f));
 				m_pTransformCom->Set_State(CTransform::STATE_RIGHT, _float3(1.f, 0.f, 0.f));
 				m_pTransformCom->Set_State(CTransform::STATE_UP, _float3(0.f, 1.f, 0.f));
 
@@ -184,7 +232,8 @@ HRESULT CBall::SetUp_Components()
 
 	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 	p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxColliderCom);
-	//m_Player = static_cast<CPlayer*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));
+	m_Player = static_cast<CPlayer*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Layer_Player")));
+	
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

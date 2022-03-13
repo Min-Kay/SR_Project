@@ -583,8 +583,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 
 		CGameObject* Water = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Water"), 0);
 		CTransform* WaterTrans = (CTransform*)Water->Get_Component(COM_TRANSFORM);
-		WaterTrans->Scaled(_float3(25.f, 2.f, 5.f));
-		WaterTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 2.5f), -0.5f, (_float)iWaterZ * 2.4f));
+		WaterTrans->Scaled(_float3(23.5f, 1.9f, 4.9f));
+		WaterTrans->Set_State(CTransform::STATE_POSITION, _float3((iWaterZ * 2.5f) -0.5f, -0.5f, (_float)iWaterZ * 2.4f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Water->Get_Component(COM_COLLIDER));
 
@@ -1597,10 +1597,10 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		CGameObject* MiddleunPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal3"));
 		CTransform* MiddleunPortalTr = static_cast<CTransform*>(MiddleunPortal->Get_Component(COM_TRANSFORM));
 
-		MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x + 5.f, BallMapPos.y + 3.f, BallMapPos.z - HalfBoxSize * 1.5f - 0.1f));
-		MiddleunPortalTr->Scaled(_float3(m_iBoxSize * 0.5f, 13.f, 1.f));
+		MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x + 6.5f, BallMapPos.y + 3.f, BallMapPos.z - HalfBoxSize * 1.5f +0.2f));
+		MiddleunPortalTr->Scaled(_float3(m_iBoxSize * 0.5f-1.5f, 13.f, 0.5f));
 		CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
-		MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, 12.f, 1.f));
+		MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize * 0.5f - 1.5f, 13.f, 0.5f));
 		MiddleunPortalBox->Set_Collider();
 	}
 

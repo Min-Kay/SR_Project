@@ -22,9 +22,9 @@ protected:
 	explicit CCubeMonster(const CCubeMonster& rhs);
 	virtual ~CCubeMonster() = default;
 
-private:
+public:
 	enum STATE {STATE_IDLE, STATE_SEARCH, STATE_ALERT, STATE_CHASE, STATE_ATTACK, STATE_DIE};
-
+	enum MONSTERTYPE {MT_SEARCH, MT_IDLE};
 
 public:
 	HRESULT NativeConstruct_Prototype() override;
@@ -52,6 +52,8 @@ private:
 	const STATE& Get_MonsterState() const;
 	void Set_MonsterState(STATE _state);
 
+	void Impact();
+	_bool Sizing(_float fTimeDelta);
 public:
 	void Target_Turn(_float3 dir, _float fTimeDelta);
 	virtual void Add_HP(_int _add) override;
@@ -60,14 +62,16 @@ private:
 
 public:
 	void Set_InitPos(_float3 _pos);
-
+	void Set_MonsterType(MONSTERTYPE _type);
 private:
 	void Charging(_float fTimeDelta);
 	void Firing(_float fTimeDelta);
 	void Rebounding(_float fTimeDelta);
 
+
 private:
 	STATE m_State = STATE_IDLE;
+	MONSTERTYPE m_MonsterType = MT_SEARCH;
 	CPlayer* m_Player = nullptr;
 	CTransform* m_PlayerPos = nullptr;
 
@@ -94,6 +98,9 @@ private:
 
 
 	_float	m_fTimer = 0.f;
+
+	_bool m_Sizing = false;
+
 
 private:
 	_bool m_isCharging = false;

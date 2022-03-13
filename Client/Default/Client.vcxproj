@@ -203,7 +203,6 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\Public\LoadingLoader.h" />
     <ClInclude Include="..\public\MainApp.h" />
-    <ClInclude Include="..\Public\Minimy.h" />
     <ClInclude Include="..\Public\Missile.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Portal.h" />
@@ -255,7 +254,6 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\Private\LoadingLoader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
-    <ClCompile Include="..\Private\Minimy.cpp" />
     <ClCompile Include="..\Private\Missile.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Portal.cpp" />

@@ -23,7 +23,7 @@ private:
 	virtual ~CBall() = default;
 
 public:
-
+	void Spark(_float3 _point);
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
 	virtual HRESULT NativeConstruct(void* pArg) override;

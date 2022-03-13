@@ -154,7 +154,6 @@ _bool CTile_Cube::Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag,
 
 _bool CTile_Cube::Open_Block_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag)
 {
-	return false;
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (!m_PlayerCollider)

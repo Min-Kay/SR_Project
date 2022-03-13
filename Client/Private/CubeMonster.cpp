@@ -11,13 +11,15 @@
 
 #include "Player.h"
 #include "Effect_Alert.h"
+#include "Impact.h"
+#include "Shield.h"
 
-Client::CCubeMonster::CCubeMonster(LPDIRECT3DDEVICE9 m_pGraphic_Device)
+CCubeMonster::CCubeMonster(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 	:CEnemy(m_pGraphic_Device)
 {
 }
 
-Client::CCubeMonster::CCubeMonster(const CCubeMonster& rhs)
+CCubeMonster::CCubeMonster(const CCubeMonster& rhs)
 	: CEnemy(rhs)
 	,m_pTransform(rhs.m_pTransform)
 	, m_pTexture(rhs.m_pTexture)
@@ -36,7 +38,7 @@ Client::CCubeMonster::CCubeMonster(const CCubeMonster& rhs)
 	Safe_AddRef(m_pRenderer);
 }
 
-HRESULT Client::CCubeMonster::NativeConstruct_Prototype()
+HRESULT CCubeMonster::NativeConstruct_Prototype()
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
@@ -44,7 +46,7 @@ HRESULT Client::CCubeMonster::NativeConstruct_Prototype()
 	return S_OK;
 }
 
-HRESULT Client::CCubeMonster::NativeConstruct(void* pArg)
+HRESULT CCubeMonster::NativeConstruct(void* pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
@@ -55,7 +57,7 @@ HRESULT Client::CCubeMonster::NativeConstruct(void* pArg)
 	return S_OK;
 }
 
-_int Client::CCubeMonster::Tick(_float fTimeDelta)
+_int CCubeMonster::Tick(_float fTimeDelta)
 {
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return -1;
@@ -69,7 +71,7 @@ _int Client::CCubeMonster::Tick(_float fTimeDelta)
 	return 0;
 }
 
-_int Client::CCubeMonster::LateTick(_float fTimeDelta)
+_int CCubeMonster::LateTick(_float fTimeDelta)
 {
 	if(FAILED(__super::LateTick(fTimeDelta)))
 		return -1;
@@ -79,13 +81,13 @@ _int Client::CCubeMonster::LateTick(_float fTimeDelta)
 	return 0;
 }
 
-HRESULT Client::CCubeMonster::Render()
+HRESULT CCubeMonster::Render()
 {
 	m_pTransform->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
 	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
-	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", 0);
+	m_pTexture->Bind_OnShader(m_pShader, "g_Texture", m_MonsterType);
 	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
 	m_pVIBuffer->Render();
 	m_pShader->End_Shader();
@@ -96,7 +98,7 @@ HRESULT Client::CCubeMonster::Render()
 	return CEnemy::Render();
 }
 
-HRESULT Client::CCubeMonster::SetUp_Component()
+HRESULT CCubeMonster::SetUp_Component()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -137,7 +139,7 @@ HRESULT Client::CCubeMonster::SetUp_Component()
 		m_PlayerPos = static_cast<CTransform*>(m_Player->Get_Component(COM_TRANSFORM));
 
 	m_Hp = 50;
-	m_Damage = 5;
+	m_Damage = 20;
 
 	CGameInstance* p_Instance = GET_INSTANCE(CGameInstance);
 	p_Instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pBoxCollider);
@@ -206,7 +208,7 @@ void CCubeMonster::Blow(_float fTimeDelta)
 	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 	_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
 
-	D3DXVec3Normalize(&vRight, &vRight);	D3DXVec3Normalize(&vRight, &vRight);
+	D3DXVec3Normalize(&vRight, &vRight);
 	D3DXVec3Normalize(&vUp, &vUp);
 
 	m_Angle += 10.f;
@@ -251,7 +253,104 @@ void CCubeMonster::Dying(_float fTimeDelta)
 {
 	m_pTransform->Gravity(1.f, fTimeDelta);
 	m_pTransform->Add_Force(fTimeDelta);
-	Set_Type(OBJ_INTERACTION); 
+	Set_Type(OBJ_INTERACTION);
+
+	if (m_pTransform->Get_CollideFormalForce() >= 1.f && !Get_Grab())
+	{
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+		list<CGameObject*> colllist = p_instance->Get_Collision_Object_List(m_pBoxCollider);
+
+		if (colllist.empty())
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+
+		list<CEnemy*> enemyList;
+
+		for (auto& obj : colllist)
+		{
+			if (obj->Get_Type() == OBJ_ENEMY)
+			{
+				enemyList.push_back(static_cast<CEnemy*>(obj));
+			}
+		}
+
+		if (!enemyList.empty())
+		{
+			enemyList.sort([](CEnemy* a, CEnemy* b) { return a->Get_EnemyType() > b->Get_EnemyType(); });
+
+			switch (enemyList.front()->Get_EnemyType())
+			{
+			case ENEMY_SHIELD:
+				static_cast<CShield*>(enemyList.front())->Add_ShieldHp(-m_Damage * 3);
+				break;
+			case ENEMY_BOSS:
+				enemyList.front()->Add_HP(-m_Damage);
+				break;
+			}
+
+			p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
+			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Minimy_Die1.wav") : TEXT("Minimy_Die.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
+			Impact();
+			m_pBoxCollider->Set_Dead(true);
+			Set_Dead(true);
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
+		p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Minimy_Die1.wav") : TEXT("Minimy_Die.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
+		Impact();
+		m_pBoxCollider->Set_Dead(true);
+		Set_Dead(true);
+		RELEASE_INSTANCE(CGameInstance);
+	}
+}
+
+
+_bool CCubeMonster::Sizing(_float fTimeDelta)
+{
+	m_Timer += fTimeDelta;
+	if (!m_Sizing)
+	{
+		Impact();
+		m_pTransform->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta);
+		m_pTransform->Scaled(_float3(m_Timer, m_Timer, m_Timer));
+		if (m_Timer >= 1.0f)
+		{
+			m_pTransform->Scaled(_float3(1.f, 1.f, 1.f));
+			m_Sizing = true;
+			m_Timer = 0.f;
+
+		}
+		return false;
+	}
+
+	return true;
+
+}
+void CCubeMonster::Impact()
+{
+	CImpact::IMPACT Impact1;
+	ZeroMemory(&Impact1, sizeof(Impact1));
+	Impact1.Position = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	Impact1.Size = _float3(0.08f, 0.08f, 0.08f);
+	Impact1.RandomDirection = 5;
+	Impact1.SpreadSpeed = 5;
+	Impact1.DeleteTime = 1.f;//rand() % 5 + 2;
+	Impact1.Color = _float4(0.f, 0.7f, 0.f, 0.f);
+
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	for (int i = 0; i < rand() % 5 + 5; ++i)
+	{
+		if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Impact"), TEXT("Prototype_GameObject_Impact"), &Impact1)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return;
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CCubeMonster::Set_InitPos(_float3 _pos)
@@ -260,6 +359,11 @@ void CCubeMonster::Set_InitPos(_float3 _pos)
 	m_MovePoint = m_InitPoint;
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION,_pos);
+}
+
+void CCubeMonster::Set_MonsterType(MONSTERTYPE _type)
+{
+	m_MonsterType = _type;
 }
 
 void CCubeMonster::Charging(_float fTimeDelta)
@@ -384,13 +488,17 @@ void CCubeMonster::Search_Player(_float fTimeDelta)
 	if (!m_Player || fTimeDelta <= 0.f)
 		return;
 
-	_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
-	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
-
-	if( m_SearchRange >= D3DXVec3Length(&(myPos-playerPos)))
+	if (m_MonsterType == MT_SEARCH)
 	{
-		Set_MonsterState(STATE_ALERT);
-		return; 
+		_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
+		_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+
+		if (m_SearchRange >= D3DXVec3Length(&(myPos - playerPos)))
+		{
+			Set_MonsterState(STATE_ALERT);
+			return;
+		}
+
 	}
 
 	Move(fTimeDelta);
@@ -521,13 +629,22 @@ void CCubeMonster::Idle(_float fTimeDelta)
 	
 	if (!m_Player)
 		return;
-	_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
-	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 
-	if (m_SearchRange >= D3DXVec3Length(&(myPos - playerPos)))
+	if(m_MonsterType == MT_SEARCH)
 	{
-		Set_MonsterState(STATE_ALERT);
-		return;
+		_float3 playerPos = m_PlayerPos->Get_State(CTransform::STATE_POSITION);
+		_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+
+		if (m_SearchRange >= D3DXVec3Length(&(myPos - playerPos)))
+		{
+			Set_MonsterState(STATE_ALERT);
+			return;
+		}
+	}
+	else
+	{
+		if (!Sizing(fTimeDelta))
+			return;
 	}
 
 	m_Timer += fTimeDelta;
@@ -577,7 +694,7 @@ void CCubeMonster::State_Machine(_float fTimeDelta)
 	}
 }
 
-Client::CCubeMonster* Client::CCubeMonster::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)
+CCubeMonster* CCubeMonster::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)
 {
 	CCubeMonster* p_instance = new CCubeMonster(m_pGraphic_Device);
 
@@ -589,7 +706,7 @@ Client::CCubeMonster* Client::CCubeMonster::Create(LPDIRECT3DDEVICE9 m_pGraphic_
 	return p_instance;
 }
 
-CGameObject* Client::CCubeMonster::Clone(void* pArg)
+CGameObject* CCubeMonster::Clone(void* pArg)
 {
 	CCubeMonster* p_instance = new CCubeMonster(*this);
 
@@ -601,7 +718,7 @@ CGameObject* Client::CCubeMonster::Clone(void* pArg)
 	return p_instance;
 }
 
-void Client::CCubeMonster::Free()
+void CCubeMonster::Free()
 {
 	__super::Free();
 	Safe_Release(m_pTransform);

@@ -145,9 +145,6 @@
     <Filter Include="02.GameObjects\Enemy\Boss\Missile">
       <UniqueIdentifier>{e249d9a0-f6e7-425b-b9ff-3214008c4378}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Enemy\Boss\Minimy">
-      <UniqueIdentifier>{43fe2385-760d-41c3-a60a-db03d9c50554}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Enemy\Boss\Shield_Effect">
       <UniqueIdentifier>{69218b4f-9fbc-4900-9c94-fe85e3315f7a}</UniqueIdentifier>
     </Filter>
@@ -309,9 +306,6 @@
     <ClInclude Include="..\Public\Shield.h">
       <Filter>02.GameObjects\Enemy\Boss\Shield</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Minimy.h">
-      <Filter>02.GameObjects\Enemy\Boss\Minimy</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Shield_Effect.h">
       <Filter>02.GameObjects\Enemy\Boss\Shield_Effect</Filter>
     </ClInclude>
@@ -454,9 +448,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Shield.cpp">
       <Filter>02.GameObjects\Enemy\Boss\Shield</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Minimy.cpp">
-      <Filter>02.GameObjects\Enemy\Boss\Minimy</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Shield_Effect.cpp">
       <Filter>02.GameObjects\Enemy\Boss\Shield_Effect</Filter>

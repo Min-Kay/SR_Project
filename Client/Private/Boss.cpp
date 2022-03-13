@@ -16,7 +16,7 @@
 
 #include "AttackRange.h"
 #include "Laser.h"
-#include "Minimy.h"
+#include "CubeMonster.h"
 #include "Missile.h"
 #include "Targeting.h"
 
@@ -953,22 +953,19 @@ void CBoss::Spawn_Shield()
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		for(_uint i = 0; i < 10; ++i)
 		{
-			if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Minimy"),TEXT("Prototype_GameObject_Minimy"))))
+			if(FAILED(p_instance->Add_GameObject(g_CurrLevel,TEXT("Minimy"),TEXT("Prototype_GameObject_CubeMonster"))))
 			{
 				RELEASE_INSTANCE(CGameInstance);
 				return;
 			}
-			CMinimy* mini = static_cast<CMinimy*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Minimy")));
+			CCubeMonster* mini = static_cast<CCubeMonster*>(p_instance->Get_GameObject_End(g_CurrLevel, TEXT("Minimy")));
 			CTransform* tr = static_cast<CTransform*>(mini->Get_Component(COM_TRANSFORM));
-			mini->Set_Boss(this);
-			mini->Set_Player(m_pPlayer);
 			_float3 vPos = m_InitPos;
-			vPos.x += rand() % 2 == 0 ? rand() % 20: -(rand() % 20);
+
+			vPos.x += rand() % 2 == 0 ? rand() % 20 : -(rand() % 20);
 			vPos.z += rand() % 2 == 0 ? rand() % 20 : -(rand() % 20);
-
-			tr->Set_State(CTransform::STATE_POSITION, vPos);
-
-
+			mini->Set_MonsterType(CCubeMonster::MT_IDLE);
+			mini->Set_InitPos(vPos);
 			
 		}
 		RELEASE_INSTANCE(CGameInstance); 
