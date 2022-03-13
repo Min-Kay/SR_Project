@@ -35,34 +35,29 @@ public:
 	HRESULT SetUp_Component() override;
 
 private:
-	void Synchronize_Transform();
-	void Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer = false);
+	void Gravity_Blowing(_float fTimeDelta);
 	void Impact();
 
 public:
 	void Add_HP(_int _add) override;
-	void Calling();
-
 	void Set_Player(CPlayer* _player);
 	void Set_Boss(CBoss* _boss);
 
 private:
+	
+private:
 	void State_Machine(_float fTimeDelta);
 	_bool Sizing(_float fTimeDelta);
+
+	void Target_Turn(_float3 dir, _float fTimeDelta);
+	void Set_InitPos(_float3 _pos);
 private:
 	void Idle(_float fTimeDelta);
 	void Move(_float fTimeDelta);
-	void Attack(_float fTimeDelta);
 	void Die(_float fTimeDelta);
-
-private:
-	void Screw(_float fTimeDelta);
-	void Company_Fire(_float fTimeDelta);
-	void Find_Company();
-
+	
 private:
 	CTransform* m_pTransform = nullptr;
-	CTransform* m_pOnlyRotation = nullptr;
 	CRenderer* m_pRenderer = nullptr;
 	CTexture* m_pTexture = nullptr;
 	CBoxCollider* m_pCollider = nullptr;
@@ -72,6 +67,19 @@ private:
 private:
 	_bool m_Sizing = false;
 	_float3 m_Size = _float3(0.8f,0.8f,0.8f);
+
+
+private:
+	_bool	m_YMove = false;
+	_bool	m_RMove = false;
+	_float m_Timer = 0.f;
+	_float m_SearchRange = 5.f;
+	_float m_IdleSpeed = 0.1f;
+	_float m_Angle = 0.f;
+private:
+	_float3 m_InitPoint;
+	_float3 m_MovePoint;
+
 private:
 	CPlayer* m_pPlayer = nullptr;
 	CBoss* m_pBoss = nullptr;

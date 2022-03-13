@@ -307,6 +307,9 @@ private:
 	_float m_SunflowerTime = 30.f;
 	_float m_SunflowerFireTime = 5.f;
 	_float m_SunflowerTimer = 0.f;
+
+	_float m_SunflowerSpread = 10.f;
+	_bool m_SunflowerSpreading = false;
 	//Grogy
 	_bool m_Grogy = false;
 

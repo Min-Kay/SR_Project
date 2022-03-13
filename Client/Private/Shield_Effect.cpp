@@ -188,18 +188,10 @@ void CShield_Effect::Turning(_float fTimeDelta)
 
 	vScale = m_pTransform->Get_Scale();
 	vLook = m_pTransform->Get_State(CTransform::STATE_POSITION) - vParentPos;
-	if(m_TurnType)
-	{
-		vRight.x = cosf(degree) * m_SpreadRange + vParentPos.x;
-		vRight.y = m_YType ? vParentPos.y: sinf(degree) * m_SpreadRange + vParentPos.y;
-		vRight.z = sinf(degree) * m_SpreadRange + vParentPos.z;
-	}
-	else
-	{
-		vRight.x = sinf(degree) * m_SpreadRange + vParentPos.x;
-		vRight.y = m_YType ? vParentPos.y : sinf(degree) * m_SpreadRange + vParentPos.y;
-		vRight.z = cosf(degree) * m_SpreadRange + vParentPos.z;
-	}
+
+	vRight.x = m_TurnType ? cosf(degree) * m_SpreadRange + vParentPos.x : sinf(degree) * m_SpreadRange + vParentPos.x;
+	vRight.y = m_YType ? vParentPos.y : sinf(degree) * m_SpreadRange + vParentPos.y;
+	vRight.z = m_TurnType ? sinf(degree) * m_SpreadRange + vParentPos.z : cosf(degree) * m_SpreadRange + vParentPos.z;
 
 	vRight = vRight - vParentPos;
 

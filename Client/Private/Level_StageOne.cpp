@@ -262,7 +262,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(7.f, 3.f, 6.f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), 0.5f, (-iWaterZ * 0.5f)));
-
+		box->Set_Collider();
 	}
 
 
@@ -283,7 +283,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 7.f, 6.f));
 		box->Set_AdditionalPos(_float3(-0.5f, 5.f, 0.f));
-
+		box->Set_Collider();
 	}
 
 	// 입구 왼쪽면 충돌체
@@ -303,6 +303,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 5.f, 6.f));
 		box->Set_AdditionalPos(_float3(1.f, 1.f, 0.f));
+		box->Set_Collider();
 	}
 
 	// 입구 뒷면 충돌체
@@ -322,6 +323,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Scaled(_float3(10.f, 15.f, 10.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ + 1, (_float)iWaterZ, 0.1f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), (iWaterZ * 0.5f), 0.f));
+		box->Set_Collider();
 
 	}
 
@@ -343,6 +345,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(270));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)iLineZ));
 		box->Set_AdditionalPos(_float3(iLineX * 0.5f, 0.5f, iLineZ * 0.5f));
+		box->Set_Collider();
 
 	}
 
@@ -364,6 +367,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(270));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 6, (_float)iLineY + 1, 0.1f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f) + 1 + 5, iLineY * 0.5f, 0.f));
+		box->Set_Collider();
 
 	}
 
@@ -384,6 +388,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 1 + 20.f, (_float)iLineY + 1, 0.5f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), iLineY * 0.5f, 0.f));
+		box->Set_Collider();
 	}
 
 
@@ -404,6 +409,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2, (_float)iLineY + 1, 0.1f));
 		box->Set_AdditionalPos(_float3(0.f, iLineY * 0.5f, 0.f));
+		box->Set_Collider();
 
 	}
 
@@ -423,6 +429,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Scaled(_float3(10.f, 10.f, 10.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2 + 1 + 3, (_float)iLineY + 1, 0.1f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f) - 2.f, iLineY * 0.5f, 0.f));
+		box->Set_Collider();
 	}
 
 
@@ -442,6 +449,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Scaled(_float3(5.f, 1.f, 5.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ * 2, (_float)iLineY, 0.1f));
 		box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), iLineY * 0.5f, 0.f));
+		box->Set_Collider();
 	}
 
 
@@ -461,6 +469,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Scaled(_float3(30.f, 1.f, 30.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.f, (_float)iLineY, (_float)iLineZ));
 		box->Set_AdditionalPos(_float3(-1.f, iLineY * 0.5f, iLineZ * 0.5f));
+		box->Set_Collider();
 
 	}
 
@@ -482,6 +491,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)(iWaterZ * 2.f) + 1.f));
 		box->Set_AdditionalPos(_float3(iLineX * 0.5f, -0.5f, 0));
+		box->Set_Collider();
 
 	}
 
@@ -502,6 +512,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.5f, (_float)iLineY, (_float)iLineZ));
 		box->Set_AdditionalPos(_float3(0.f, iLineY * 0.5f, iLineZ * 0.5f));
+		box->Set_Collider();
 
 	}
 
@@ -521,6 +532,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Scaled(_float3(30.f, 1.f, 30.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)(iWaterZ * 2.9)));
 		box->Set_AdditionalPos(_float3(iLineX * 0.5f, 0.f, iWaterZ * 0.5f));
+		box->Set_Collider();
 
 	}
 
@@ -541,6 +553,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		transform->Scaled(_float3(30.f, 1.f, 30.f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 1.f, (_float)(iWaterZ)));
 		box->Set_AdditionalPos(_float3(iLineX * 0.5f, 0.f, iWaterZ * 0.5f));
+		box->Set_Collider();
 
 	}
 
@@ -576,6 +589,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(Water->Get_Component(COM_COLLIDER));
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(25.f, 1.f, 5.f));
+		box->Set_Collider();
 	}
 
 	//물 옆 면_1
@@ -622,6 +636,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Event()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Left_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 	// Start Right Door
 	{
@@ -636,6 +651,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Event()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Right_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 
 	// Exit Left Door
@@ -651,6 +667,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Event()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Left_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 
 	// Exit Right Door
@@ -666,6 +683,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Event()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Right_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 
 
@@ -695,6 +713,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ, 0.1f, (_float)iWaterZ));
 		//	box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), 0.5f, (iWaterZ * 0.5f)));
+		box->Set_Collider();
 	}
 
 	// 두번째 입구 오른쪽면 충돌체
@@ -715,6 +734,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 
 		//box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ, (_float)iWaterZ, 0.5f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.1f, (_float)iWaterZ, (_float)iWaterZ));
+		box->Set_Collider();
 	}
 
 	// 두번째 입구 왼쪽면 충돌체
@@ -735,6 +755,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 
 		//box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ, (_float)iWaterZ, 0.5f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.1f, (_float)iWaterZ, (_float)iWaterZ));
+		box->Set_Collider();
 	}
 	// 두번째 입구 천장 충돌체
 	{
@@ -753,6 +774,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ + 1.f, 0.1f, (_float)iWaterZ));
+		box->Set_Collider();
 	}
 
 	// Second entrance Right Door
@@ -767,6 +789,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Left_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 
 	// Second entrance Right Door
@@ -781,6 +804,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Right_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 
 
@@ -791,11 +815,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Second_Entrance()
 	m_Change = static_cast<CChangeLevel*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_ChangeLevel")));
 
 	CTransform* ExitTrans = static_cast<CTransform*>(m_Change->Get_Component(COM_TRANSFORM));
-	ExitTrans->Scaled(_float3(1.f, 1.f, 10.f));
+	ExitTrans->Scaled(_float3(0.f, 0.f, 0.f));
 	ExitTrans->Set_State(CTransform::STATE_POSITION, _float3(81.f, 1.f, 73.f));
 
 	CBoxCollider* ExitBox = static_cast<CBoxCollider*>(m_Change->Get_Component(COM_COLLIDER));
 	ExitBox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 10.f));
+	ExitBox->Set_Collider();
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -823,6 +848,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 0.1f, (_float)iLineZ));
 		//	box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), 0.5f, (iWaterZ * 0.5f)));
+		box->Set_Collider();
 	}
 
 	// 두번째 맵 천장 충돌체
@@ -843,6 +869,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX, 0.1f, (_float)iLineZ));
 		//	box->Set_AdditionalPos(_float3((iWaterZ * 0.5f), 0.5f, (iWaterZ * 0.5f)));
+		box->Set_Collider();
 	}
 
 	// 두번째 맵 왼쪽면 충돌체
@@ -862,6 +889,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.1f, (_float)iLineY * 1.5f, (_float)iLineZ));
+		box->Set_Collider();
 	}
 
 	// 두번째 맵 오른쪽면 충돌체
@@ -881,6 +909,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(0.1f, (_float)iLineY * 1.5f, (_float)iLineZ));
+		box->Set_Collider();
 	}
 
 	// 두번째 맵 후면 충돌체_0
@@ -900,6 +929,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX * 0.3f, (_float)iLineY * 1.5f, 0.1f));
+		box->Set_Collider();
 
 	}
 
@@ -920,6 +950,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX * 1.3f, (_float)iLineY * 0.5f, 0.1f));
+		box->Set_Collider();
 
 	}
 
@@ -940,6 +971,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX * 0.3f, (_float)iLineY * 1.5f, 0.1f));
+		box->Set_Collider();
 	}
 
 	// 두번째 맵 정면 충돌체_0
@@ -958,6 +990,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX * 0.3f, (_float)iLineY * 1.5f, 0.1f));
+		box->Set_Collider();
 
 	}
 
@@ -977,6 +1010,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX * 0.3f, (_float)iLineY * 1.3f, 0.1f));
+		box->Set_Collider();
 
 	}
 
@@ -996,6 +1030,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		// collider의 위치
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iLineX * 0.4f, (_float)iLineY * 1.5f, 0.1f));
+		box->Set_Collider();
 	}
 
 	// Second Exit Right Door
@@ -1011,6 +1046,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Left_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 
 	// Second Exit Right Door
@@ -1026,6 +1062,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Right_Door->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(fDoorSizeX, fDoorSizeY, 1.f));
+		box->Set_Collider();
 	}
 
 	//빨간 버튼 아래
@@ -1044,7 +1081,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 1.f, 5.f));
 		box->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-
+		box->Set_Collider();
 	}
 
 
@@ -1131,10 +1168,11 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open_Exit"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Scaled(_float3(1.f, 1.f, 1.f));
+		trans->Scaled(_float3(0.f, 0.f, 0.f));
 		trans->Set_State(CTransform::STATE_POSITION, _float3(12.f, 1.f, ((_float)iLineZ) - 3.f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
+		box->Set_Collider();
 	}
 
 	// Open Event용 충돌체 cube
@@ -1150,6 +1188,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 0.7f, 1.f));
+		box->Set_Collider();
 	}
 
 
@@ -1160,10 +1199,11 @@ HRESULT CLevel_StageOne::Ready_Layer_Monster_Map()
 
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Door_Switch"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Scaled(_float3(5.f, 0.7f, 1.f));
+		trans->Scaled(_float3(0.f, 0.f, 0.f));
 		trans->Set_State(CTransform::STATE_POSITION, _float3(12.f, 1.f, ((_float)iLineZ) + 2.5f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
+		box->Set_Collider();
 	}
 
 
@@ -1197,6 +1237,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Next_Stage()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ, 2.f, (_float)iWaterZ + 15.f));
 		box->Set_AdditionalPos(_float3(0.f, -1.f, 0.f));
+		box->Set_Collider();
 	}
 
 	// 2번방이랑 에너지볼 맵 통로 오른쪽면 충돌체
@@ -1219,6 +1260,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Next_Stage()
 		//box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ, (_float)iWaterZ, 0.5f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(2.f, (_float)iWaterZ, (_float)iWaterZ + 15.f));
 		box->Set_AdditionalPos(_float3(1.f, 0.f, 0.f));
+		box->Set_Collider();
 	}
 
 	//2번방이랑 에너지볼 맵 통로 왼쪽면 충돌체
@@ -1240,6 +1282,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Next_Stage()
 		//box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ, (_float)iWaterZ, 0.5f));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(2.f, (_float)iWaterZ, (_float)iWaterZ + 15.f));
 		box->Set_AdditionalPos(_float3(-1.f, 0.f, 0.f));
+		box->Set_Collider();
 	}
 	// 2번방이랑 에너지볼 맵 통로 천장 충돌체
 	{
@@ -1259,6 +1302,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Next_Stage()
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3((_float)iWaterZ, 2.f, (_float)iWaterZ + 15.f));
 		box->Set_AdditionalPos(_float3(0.f, 1.f, 0.f));
+		box->Set_Collider();
 	}
 
 
@@ -1288,6 +1332,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Ballbox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, WallSize, m_iBoxSize + HalfBoxSize));
 	Ballbox->Set_AdditionalPos(_float3(0.f, -HalfWallSize, 0.f));
+	Ballbox->Set_Collider();
 
 	//천장
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Ball_Bottom3"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1303,7 +1348,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	BallboxBottom1->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, WallSize, m_iBoxSize + HalfBoxSize));
 	BallboxBottom1->Set_AdditionalPos(_float3(0.f, HalfWallSize, 0.f));
-
+	BallboxBottom1->Set_Collider();
 	//왼쪽
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Ball_Left1"), TEXT("Prototype_GameObject_TileCollider"))))
 		return E_FAIL;
@@ -1318,7 +1363,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Ballbox1->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iBoxSize, m_iBoxSize + HalfBoxSize));
 	Ballbox1->Set_AdditionalPos(_float3(-HalfWallSize, 0.f, 0.f));
-
+	Ballbox1->Set_Collider();
 
 
 	//오른쪽
@@ -1335,7 +1380,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Ballbox4->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iBoxSize, m_iBoxSize + HalfBoxSize));
 	Ballbox4->Set_AdditionalPos(_float3(HalfWallSize, 0.f, 0.f));
-
+	Ballbox4->Set_Collider();
 
 
 	//정면
@@ -1352,7 +1397,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Ballbox2->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, WallSize));
 	Ballbox2->Set_AdditionalPos(_float3(0.f, 0.f, HalfWallSize));
-
+	Ballbox2->Set_Collider();
 
 
 	//뒤에 왼
@@ -1371,7 +1416,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Ballbox3->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, WallSize));
 	Ballbox3->Set_AdditionalPos(_float3(0.f, 0.f, -HalfWallSize));
-
+	Ballbox3->Set_Collider();
 	//뒤에 오른
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Ball_Back1"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1388,7 +1433,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Ballbox7->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, WallSize));
 	Ballbox7->Set_AdditionalPos(_float3(0.f, 0.f, -HalfWallSize - 2.f));
-
+	Ballbox7->Set_Collider();
 	//뒤에 중앙
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Ball_Back3"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1403,9 +1448,9 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	BallBottomTrans8->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x, BallMapPos.y + HalfBoxSize + 5.f, BallMapPos.z - HalfBoxSize * 1.5f - 0.1f));
 	CBoxCollider* Ballbox8 = static_cast<CBoxCollider*>(BallBottomTile8->Get_Component(COM_COLLIDER));
 	//충돌박스
-	Ballbox7->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iBoxSize, 12.5f));
+	Ballbox8->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, WallSize));
 	Ballbox8->Set_AdditionalPos(_float3(0.f, 0.f, -HalfWallSize));
-
+	Ballbox8->Set_Collider();
 
 	//그 아래있는 문
 	// 통로 출구 왼
@@ -1421,6 +1466,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		PassageLeft1Exittrans->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x - 2.f, BallMapPos.y + 3.f, BallMapPos.z - HalfBoxSize * 1.5f - 0.1f));
 		CBoxCollider* PassageLeft1Exitbox = static_cast<CBoxCollider*>(PassageLeft1Exit_Door->Get_Component(COM_COLLIDER));
 		PassageLeft1Exitbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		PassageLeft1Exitbox->Set_Collider();
 	}
 	// 통로 출구 오른
 	{
@@ -1434,6 +1480,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		PassageRight1Exittrans->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x + 2.f, BallMapPos.y + 3.f, BallMapPos.z - HalfBoxSize * 1.5f - 0.1f));
 		CBoxCollider* PassageRight1Exitbox = static_cast<CBoxCollider*>(PassageRight1Exit_Door->Get_Component(COM_COLLIDER));
 		PassageRight1Exitbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		PassageRight1Exitbox->Set_Collider();
 	}
 
 	// 통로 출구 Open Event용 충돌체 cube
@@ -1443,11 +1490,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open4_Exit"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Scaled(_float3(5.f, 1.f, 1.f));
+		trans->Scaled(_float3(0.f, 0.f, 0.f));
 		trans->Set_State(CTransform::STATE_POSITION, _float3(12.f, 1.0f, 67.f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 1.f, 1.f));
+		box->Set_Collider();
 	}
 	m_EventCube4 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Open4_Exit"), 0));
 	////중간벽
@@ -1466,7 +1514,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Middlebox1->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iBoxSize, m_iBoxSize - HalfBoxSize + HalfBoxSize * 0.5f));
 	Middlebox1->Set_AdditionalPos(_float3(HalfWallSize, 0.f, 0.f));
-
+	Middlebox1->Set_Collider();
 
 
 	//오른
@@ -1494,6 +1542,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	MiddleTrans3->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x, BallMapPos.y + HalfBoxSize, BallMapPos.z));
 
 
+	//포탈 사라지는벽가운데
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal"), TEXT("Prototype_GameObject_UnPortal"))))
 		return E_FAIL;
 
@@ -1504,7 +1553,56 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	MiddleunPortalTr->Scaled(_float3(m_iBoxSize, m_iBoxSize, 2.f));
 	CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
 	MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, m_iBoxSize, 2.f));
+	MiddleunPortalBox->Set_Collider();
 
+	////왼쪽
+	//{
+
+	//	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal1"), TEXT("Prototype_GameObject_UnPortal"))))
+	//		return E_FAIL;
+
+	//	CGameObject* MiddleunPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal1"));
+	//	CTransform* MiddleunPortalTr = static_cast<CTransform*>(MiddleunPortal->Get_Component(COM_TRANSFORM));
+
+	//	MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x - HalfBoxSize, BallMapPos.y+ 5.f , BallMapPos.z - 8.f));;
+	//	MiddleunPortalTr->Scaled(_float3(16.5f, 11.f, 1.f));
+	//	MiddleunPortalTr->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
+	//	CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
+	//	MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3( -1.f, 15.f, 17.5f));
+	//	MiddleunPortalBox->Set_Collider();
+	//}
+
+	////오른
+	//{
+
+	//	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal2"), TEXT("Prototype_GameObject_UnPortal"))))
+	//		return E_FAIL;
+
+	//	CGameObject* MiddleunPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal2"));
+	//	CTransform* MiddleunPortalTr = static_cast<CTransform*>(MiddleunPortal->Get_Component(COM_TRANSFORM));
+
+	//	MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x + HalfBoxSize, BallMapPos.y + 5.f, BallMapPos.z - 8.f));;
+	//	MiddleunPortalTr->Scaled(_float3(16.5f, 11.f, 1.f));
+	//	MiddleunPortalTr->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(-90.f));
+	//	CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
+	//	MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 15.f, 17.5f));
+	//	MiddleunPortalBox->Set_Collider();
+	//}
+	//뒤
+	{
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal3"), TEXT("Prototype_GameObject_UnPortal"))))
+			return E_FAIL;
+
+		CGameObject* MiddleunPortal = pGameInstance->Get_GameObject_End(LEVEL_STAGEONE, TEXT("Layer_Middle_UnPortal3"));
+		CTransform* MiddleunPortalTr = static_cast<CTransform*>(MiddleunPortal->Get_Component(COM_TRANSFORM));
+
+		MiddleunPortalTr->Set_State(CTransform::STATE_POSITION, _float3(BallMapPos.x + 5.f, BallMapPos.y + 3.f, BallMapPos.z - HalfBoxSize * 1.5f - 0.1f));
+		MiddleunPortalTr->Scaled(_float3(m_iBoxSize * 0.5f, 13.f, 1.f));
+		CBoxCollider* MiddleunPortalBox = static_cast<CBoxCollider*>(MiddleunPortal->Get_Component(COM_COLLIDER));
+		MiddleunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iBoxSize, 12.f, 1.f));
+		MiddleunPortalBox->Set_Collider();
+	}
 
 	////볼맵이랑 중력맵 통로
 
@@ -1524,7 +1622,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Passagebox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	Passagebox->Set_AdditionalPos(_float3(0.f, -HalfGravityWallSize, 0.f));
-
+	Passagebox->Set_Collider();
 
 	//통로 천장
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Up"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1540,7 +1638,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	PassageboxUp->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	PassageboxUp->Set_AdditionalPos(_float3(0.f, HalfGravityWallSize, 0.f));
-
+	PassageboxUp->Set_Collider();
 
 	// 통로 뒤에
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Back"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1557,7 +1655,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	PassageBackbox3->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, m_iGravityBoxSize, GravityWallSize));
 	PassageBackbox3->Set_AdditionalPos(_float3(0.f, 0.f, -HalfGravityWallSize));
-
+	PassageBackbox3->Set_Collider();
 
 	// 통로 앞에
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Front"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1573,6 +1671,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	PassageFrontbox3->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, m_iGravityBoxSize, GravityWallSize));
 	PassageFrontbox3->Set_AdditionalPos(_float3(0.f, 0.f, HalfGravityWallSize));
+	PassageFrontbox3->Set_Collider();
 	RELEASE_INSTANCE(CGameInstance);
 
 
@@ -1591,7 +1690,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Middle5box4->Set_State(CBoxCollider::COLL_SIZE, _float3(0.2f, m_iGravityBoxSize - 12.f, m_iGravityBoxSize * 0.25f));
 	Middle5box4->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-
+	Middle5box4->Set_Collider();
 
 	//통로쪽 머리위
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle6_Right"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1603,7 +1702,6 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	Middle6BottomTrans4->Scaled(_float3(m_iGravityBoxSize * 0.25f, m_iGravityBoxSize - 12.f, m_iGravityBoxSize));
 	Middle6BottomTrans4->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(-90.f));
 	Middle6BottomTrans4->Set_State(CTransform::STATE_POSITION, _float3((GravityMapPos.x + BallMapPos.x) / 2 - 11.5f, GravityMapPos.y + m_iGravityBoxSize * 0.5f + 13.f, GravityMapPos.z - m_iGravityBoxSize * 0.625f));
-
 
 	//문아래공간
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle16_Right"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1632,7 +1730,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 	//충돌박스
 	Middle7box4->Set_State(CBoxCollider::COLL_SIZE, _float3(0.2f, m_iGravityBoxSize - 12.f, m_iGravityBoxSize * 0.25f));
 	Middle7box4->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-
+	Middle7box4->Set_Collider();
 
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Middle8_Right"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1658,6 +1756,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		PassageLefttrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* PassageLeftbox = static_cast<CBoxCollider*>(PassageLeft_Door->Get_Component(COM_COLLIDER));
 		PassageLeftbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		PassageLeftbox->Set_Collider();
 	}
 	// 통로 입구 오른
 	{
@@ -1672,6 +1771,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		PassageRighttrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* PassageRightbox = static_cast<CBoxCollider*>(PassageRight_Door->Get_Component(COM_COLLIDER));
 		PassageRightbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		PassageRightbox->Set_Collider();
 	}
 
 
@@ -1691,7 +1791,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 1.f, 5.f));
 		box->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-
+		box->Set_Collider();
 	}
 
 	// Open Event용 충돌체 cube
@@ -1707,6 +1807,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+		box->Set_Collider();
 	}
 	m_EventCube5 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Exit_Switch"), 0));
 
@@ -1724,6 +1825,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		PassageLeftExittrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* PassageLeftExitbox = static_cast<CBoxCollider*>(PassageLeftExit_Door->Get_Component(COM_COLLIDER));
 		PassageLeftExitbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		PassageLeftExitbox->Set_Collider();
 	}
 	// 통로 출구 오른
 	{
@@ -1738,6 +1840,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		PassageRightExittrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* PassageRightExitbox = static_cast<CBoxCollider*>(PassageRightExit_Door->Get_Component(COM_COLLIDER));
 		PassageRightExitbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		PassageRightExitbox->Set_Collider();
 	}
 
 
@@ -1747,11 +1850,12 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Open4_Exit"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
-		trans->Scaled(_float3(5.f, 1.f, 1.f));
+		trans->Scaled(_float3(0.f, 0.f, 0.f));
 		trans->Set_State(CTransform::STATE_POSITION, _float3(37.f, 0.0f, 73.f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 1.f, 1.f));
+		box->Set_Collider();
 	}
 	m_EventCube6 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Open4_Exit"), 0));
 
@@ -1764,8 +1868,9 @@ HRESULT CLevel_StageOne::Ready_Layer_Ball_Map()
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Dispenser"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Scaled(_float3(3.f, 3.f, 1.f));
-		trans->Set_State(CTransform::STATE_POSITION, _float3(6.0f, 4.0f, 98.f));
-		trans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(180.f));
+
+		trans->Set_State(CTransform::STATE_POSITION, _float3(6.0f, 1.0f, 94.f));
+		trans->Rotation(_float3(1.f, 0.f, 0.f), D3DXToRadian(-90.f));
 	}
 
 
@@ -1794,6 +1899,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	Gravitybox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, GravityWallSize, m_iGravityBoxSize + GravityhalfBoxSize));
 	Gravitybox->Set_AdditionalPos(_float3(0.f, -HalfGravityWallSize, 0.f));
+	Gravitybox->Set_Collider();
 
 	//천장
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Bottom3"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1809,7 +1915,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	GravityboxBottom1->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, GravityWallSize, m_iGravityBoxSize + GravityhalfBoxSize));
 	GravityboxBottom1->Set_AdditionalPos(_float3(0.f, HalfGravityWallSize, 0.f));
-
+	GravityboxBottom1->Set_Collider();
 	//왼쪽
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Left1"), TEXT("Prototype_GameObject_TileCollider"))))
 		return E_FAIL;
@@ -1824,7 +1930,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	Gravitybox1->Set_State(CBoxCollider::COLL_SIZE, _float3(GravityWallSize, m_iGravityBoxSize, m_iGravityBoxSize + GravityhalfBoxSize));
 	Gravitybox1->Set_AdditionalPos(_float3(-HalfGravityWallSize, 0.f, 0.f));
-
+	Gravitybox1->Set_Collider();
 
 
 	//오른쪽
@@ -1841,7 +1947,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	Gravitybox4->Set_State(CBoxCollider::COLL_SIZE, _float3(GravityWallSize, m_iGravityBoxSize, m_iGravityBoxSize + GravityhalfBoxSize));
 	Gravitybox4->Set_AdditionalPos(_float3(HalfGravityWallSize, 0.f, 0.f));
-
+	Gravitybox4->Set_Collider();
 
 
 	//정면
@@ -1858,7 +1964,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	Gravitybox2->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, m_iGravityBoxSize, GravityWallSize * 2));
 	Gravitybox2->Set_AdditionalPos(_float3(0.f, 0.f, GravityWallSize));// HalfGravityWallSize));
-
+	Gravitybox2->Set_Collider();
 
 
 	//뒤에
@@ -1876,7 +1982,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	Gravitybox3->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, m_iGravityBoxSize, GravityWallSize));
 	Gravitybox3->Set_AdditionalPos(_float3(0.f, 0.f, -HalfGravityWallSize));
-
+	Gravitybox3->Set_Collider();
 
 
 	//물
@@ -1890,7 +1996,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	GravityunPortalTr->Scaled(_float3(m_iGravityBoxSize, m_iGravityBoxSize, 2.f));
 	CBoxCollider* GravityunPortalBox = static_cast<CBoxCollider*>(GravityunPortal->Get_Component(COM_COLLIDER));
 	GravityunPortalBox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, m_iGravityBoxSize, 2.f));
-
+	GravityunPortalBox->Set_Collider();
 
 	//중간 바닥
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Player_Bottom"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1906,7 +2012,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	GravityPlayerboxBottom->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, GravityWallSize, m_iGravityBoxSize * 0.25f));
 	GravityPlayerboxBottom->Set_AdditionalPos(_float3(0.f, -HalfGravityWallSize, 0.f));
-
+	GravityPlayerboxBottom->Set_Collider();
 
 	//중간 바닥 벽
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Player_Wall"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -1922,7 +2028,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	GravityWallbox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize * 1.5f, m_iGravityBoxSize * 0.5f, GravityWallSize));
 	GravityWallbox->Set_AdditionalPos(_float3(0.f, 0.f, -HalfGravityWallSize));
-
+	GravityWallbox->Set_Collider();
 
 
 
@@ -1941,7 +2047,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	GravityPlayerboxBottom1->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, GravityWallSize, m_iGravityBoxSize * 0.25f));
 	GravityPlayerboxBottom1->Set_AdditionalPos(_float3(0.f, -HalfGravityWallSize, 0.f));
-
+	GravityPlayerboxBottom1->Set_Collider();
 	//중간 바닥 반대 벽
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Player_Wall1"), TEXT("Prototype_GameObject_TileCollider"))))
 		return E_FAIL;
@@ -1956,7 +2062,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	GravityWall1box->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize * 1.5f, m_iGravityBoxSize * 0.5f, GravityWallSize));
 	GravityWall1box->Set_AdditionalPos(_float3(0.f, 0.f, HalfGravityWallSize));
-
+	GravityWall1box->Set_Collider();
 	//물
 	{
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Water"), TEXT("Prototype_GameObject_Water"))))
@@ -1970,6 +2076,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(GravityWater->Get_Component(COM_COLLIDER));
 
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, 2.f, m_iGravityBoxSize));
+		box->Set_Collider();
 	}
 
 
@@ -1987,8 +2094,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	CBoxCollider* GravityWaterBottmboxBottom = static_cast<CBoxCollider*>(GravityWaterBottmTileBottom->Get_Component(COM_COLLIDER));
 	//충돌박스
 	GravityWaterBottmboxBottom->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize * 0.25f, 0.5f, m_iGravityBoxSize * 0.25f));
-	GravityWaterBottmboxBottom->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-
+	GravityWaterBottmboxBottom->Set_AdditionalPos(_float3(0.f, -0.25f, 0.f));
+	GravityWaterBottmboxBottom->Set_Collider();
 	//물 위 바닥 반대
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Water_Bottom1"), TEXT("Prototype_GameObject_TileCollider"))))
 		return E_FAIL;
@@ -2002,8 +2109,8 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	CBoxCollider* GravityWaterBottm1boxBottom = static_cast<CBoxCollider*>(GravityWaterBottm1TileBottom->Get_Component(COM_COLLIDER));
 	//충돌박스
 	GravityWaterBottm1boxBottom->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize * 0.25f, 0.5f, m_iGravityBoxSize * 0.25f));
-	GravityWaterBottm1boxBottom->Set_AdditionalPos(_float3(0.f, 0.f, 0.f));
-
+	GravityWaterBottm1boxBottom->Set_AdditionalPos(_float3(0.f, -0.25f, 0.f));
+	GravityWaterBottm1boxBottom->Set_Collider();
 
 
 
@@ -2024,7 +2131,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	PassageGravitybox->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	PassageGravitybox->Set_AdditionalPos(_float3(0.f, -HalfGravityWallSize, 0.f));
-
+	PassageGravitybox->Set_Collider();
 
 	//통로 천장
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_PassageGravity_Up"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -2040,7 +2147,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	PassageGravityboxUp->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, GravityWallSize, m_iGravityBoxSize * 0.25f - 0.1f));
 	PassageGravityboxUp->Set_AdditionalPos(_float3(0.f, HalfGravityWallSize, 0.f));
-
+	PassageGravityboxUp->Set_Collider();
 
 	// 통로 뒤에
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_PassageGravity_Back"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -2057,7 +2164,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	PassageGravityBackbox3->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize, m_iGravityBoxSize, GravityWallSize));
 	PassageGravityBackbox3->Set_AdditionalPos(_float3(0.f, 0.f, -HalfGravityWallSize));
-
+	PassageGravityBackbox3->Set_Collider();
 
 	// 통로 앞에
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_PassageGravity_Front"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -2073,7 +2180,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	PassageGravityFrontbox3->Set_State(CBoxCollider::COLL_SIZE, _float3(m_iGravityBoxSize - 12.f, m_iGravityBoxSize, GravityWallSize));
 	PassageGravityFrontbox3->Set_AdditionalPos(_float3(0.f, 0.f, HalfGravityWallSize));
-
+	PassageGravityFrontbox3->Set_Collider();
 
 
 
@@ -2091,7 +2198,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 	//충돌박스
 	MiddleGravity5box4->Set_State(CBoxCollider::COLL_SIZE, _float3(WallSize, m_iGravityBoxSize - 12.f, m_iGravityBoxSize * 0.25f));
 	MiddleGravity5box4->Set_AdditionalPos(_float3(HalfWallSize, 0.f, 0.f));
-
+	MiddleGravity5box4->Set_Collider();
 
 	//통로쪽 머리위
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STAGEONE, TEXT("Layer_MiddleGravity6_Right"), TEXT("Prototype_GameObject_TileCollider"))))
@@ -2119,6 +2226,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 		passageGravityLefttrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* passageGravityLeftbox = static_cast<CBoxCollider*>(passageGravityLeft_Door->Get_Component(COM_COLLIDER));
 		passageGravityLeftbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		passageGravityLeftbox->Set_Collider();
 	}
 	// 통로 입구 오른
 	{
@@ -2133,6 +2241,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 		passageGravityRighttrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* passageGravityRightbox = static_cast<CBoxCollider*>(passageGravityRight_Door->Get_Component(COM_COLLIDER));
 		passageGravityRightbox->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, fDoorSizeY, fDoorSizeX));
+		passageGravityRightbox->Set_Collider();
 	}
 	//출구(맵이동)
 	// Start Left Door
@@ -2149,6 +2258,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 		LeftGravitytrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* LeftGravitybox = static_cast<CBoxCollider*>(LeftGravity_Door->Get_Component(COM_COLLIDER));
 		LeftGravitybox->Set_State(CBoxCollider::COLL_SIZE, _float3(20.f, 20.f, 1.f));
+		LeftGravitybox->Set_Collider();
 	}
 	// Start Right Door
 	{
@@ -2163,6 +2273,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 		RightGravitytrans->Rotation(_float3(0.f, 1.f, 0.f), D3DXToRadian(90.f));
 		CBoxCollider* RightGravitybox = static_cast<CBoxCollider*>(RightGravity_Door->Get_Component(COM_COLLIDER));
 		RightGravitybox->Set_State(CBoxCollider::COLL_SIZE, _float3(20.f, 20.f, 1.f));
+		RightGravitybox->Set_Collider();
 	}
 
 	//빨간 버튼 아래 
@@ -2181,7 +2292,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 		CBoxCollider* box = static_cast<CBoxCollider*>(tileCollider->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 1.f, 5.f));
 		box->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
-
+		box->Set_Collider();
 	}
 
 	// Open Event용 충돌체 cube
@@ -2197,6 +2308,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+		box->Set_Collider();
 	}
 	m_EventCube7 = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Gravity_Exit_Switch"), 0));
 
@@ -2215,6 +2327,7 @@ HRESULT CLevel_StageOne::Ready_Layer_Gravity_Map()
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+		box->Set_Collider();
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -2234,7 +2347,7 @@ HRESULT CLevel_StageOne::Door_OpenEvent()
 		}
 	}
 
-	if (!m_Close_1 || !m_Open_2)
+	if (!m_Open_2)
 	{
 		m_player->Get_Info().Pos = _float3(15.f, 1.f, 35.f);
 		if (FAILED(Close_Exit_Open_Door2()))
@@ -2310,7 +2423,7 @@ HRESULT CLevel_StageOne::Close_Exit_Open_Door2()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	m_Close_1 = m_EventCube2->Close_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
+	//m_Close_1 = m_EventCube2->Close_Event(LEVEL_STAGEONE, TEXT("Layer_Left_Exit"), TEXT("Layer_Right_Exit"));
 	m_Open_2 = m_EventCube2->Open_Event(LEVEL_STAGEONE, TEXT("Layer_Second_Left_Entrance"), TEXT("Layer_Second_Right_Entrance"));
 
 	if (m_Open_2)
@@ -2415,9 +2528,10 @@ HRESULT CLevel_StageOne::Check_Ball()
 		CGameObject* Switch = pGameInstance->Get_GameObject(LEVEL_STAGEONE, TEXT("Layer_Passage_Ball"), 0);
 		CTransform* trans = (CTransform*)Switch->Get_Component(COM_TRANSFORM);
 		trans->Scaled(_float3(1.f, 1.f, 1.f));
-		trans->Set_State(CTransform::STATE_POSITION, _float3(6.f, 4.0f, 98.f));
+		trans->Set_State(CTransform::STATE_POSITION, _float3(6.f, 2.0f, 94.f));
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
 		box->Set_State(CBoxCollider::COLL_SIZE, _float3(1.f, 1.f, 1.f));
+		box->Set_Collider();
 		m_bBallLive = true;
 
 

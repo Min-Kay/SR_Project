@@ -120,7 +120,7 @@ HRESULT CWater::Render()
 
 	m_pTextureCom->Bind_OnShader(m_pShader, "g_Texture", (_uint)m_fFrame);
 
-	m_pShader->Begin_Shader(SHADER_SETCOLOR_CUBE);
+	m_pShader->Begin_Shader(SHADER_SKYBOX + 1);
 	m_pVIBufferCom->Render();
 	m_pShader->End_Shader();
 	m_pShader->SetUp_ValueOnShader("g_Color", _float4(0.f, 0.f, 0.f, 0.f), sizeof(_float4));

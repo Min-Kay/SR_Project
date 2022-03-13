@@ -2,7 +2,10 @@
 
 #include "Client_Defines.h"
 #include "Level.h"
-#
+
+BEGIN(Engine)
+class CTransform;
+END
 
 BEGIN(Client)
 class CTile_Cube;
@@ -76,6 +79,7 @@ private:
 	_bool m_GradianChangeTile = false;
 
 	_bool m_ChangedTile2 = false;
+	_bool m_Spawning = false;
 	_bool m_Changed = false;
 
 	_float m_Timer = 0.f;
@@ -89,6 +93,12 @@ private:
 	CBoss* m_pBoss = nullptr;
 	CPlayer* m_pPlayer = nullptr;
 	list<CTileCollider*> m_TileList;
+
+	CTransform* m_EventCubeTr = nullptr;
+
+	_float m_SoundTimer = 0.f;
+	_float m_BlowTimer = 0.f;
+
 
 public:
 	static CLevel_StageTwo* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

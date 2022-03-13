@@ -1504,13 +1504,13 @@ void CBoss::Die(_float fTimeDelta)
 		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT2);
 		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT3);
 		RELEASE_INSTANCE(CGameInstance);
-		static_cast<CBoxCollider*>(m_LeftArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
+		/*static_cast<CBoxCollider*>(m_LeftArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
 		m_pCollider->Set_Dead(true);
 		static_cast<CBoxCollider*>(m_RightArm->Get_Component(COM_COLLIDER))->Set_Dead(true);
 		m_LeftArm->Set_Dead(true);
 		m_RightArm->Set_Dead(true);
 		m_Shield->Set_Dead(true);
-		Set_Dead(true);
+		Set_Dead(true);*/
 	}
 }
 void CBoss::Attack_Missile(_float fTimeDelta)
@@ -1576,6 +1576,7 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 		{
 
 			CTransform* mainTrans = static_cast<CTransform*>(m_pTargeting->Get_Component(COM_TRANSFORM));
+
 			//처음 날리느 타겟의 위치값
 			CTargeting::TARGET targeting_Sub;
 			targeting_Sub.Pos1 = m_pTransform->Get_State(CTransform::STATE_POSITION);
@@ -1585,8 +1586,6 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 				m_fJWaiting = 0.f;
 				targeting_Sub.Pos3 = mainTrans->Get_State(CTransform::STATE_POSITION) + _float3((rand() % 3 - 1) * 7, 0.f, (rand() % 3 - 1) * 7);
 				targeting_Sub.MainTaret = false;
-
-
 				targeting_Sub.Parent = this;
 
 				if (FAILED(p_instance->Add_GameObject(g_CurrLevel, TEXT("Target_Sub"), TEXT("Prototype_GameObject_Targeting"), &targeting_Sub)))
@@ -1595,7 +1594,6 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 					MSGBOX("타겟 오류")
 						return;
 				}
-				CTransform* mainTrans = static_cast<CTransform*>(m_pTargeting->Get_Component(COM_TRANSFORM));
 				CTargeting* SubTarget = static_cast<CTargeting*>(p_instance->Get_GameObject(g_CurrLevel, TEXT("Target_Sub")));
 				CTransform* SubTargetTr = static_cast<CTransform*>(SubTarget->Get_Component(COM_TRANSFORM));
 
@@ -1693,7 +1691,6 @@ void CBoss::Attack_Missile(_float fTimeDelta)
 
 	RELEASE_INSTANCE(CGameInstance);
 }
-
 void CBoss::Attack_Punch(_float fTimeDelta)
 {
 	// 펀치
@@ -2376,10 +2373,17 @@ void CBoss::Rage_Sunflower(_float fTimeDelta)
 		D3DXVec3Normalize(&vRight, &vRight);
 		D3DXVec3Normalize(&vUp, &vUp);
 
+		if (m_SunflowerSpread >= 15.f)
+			m_SunflowerSpreading = false;
+		else if(m_SunflowerSpread <= 10.f)
+			m_SunflowerSpreading = true;
+
+		m_SunflowerSpread = m_SunflowerSpreading ? m_SunflowerSpread + fTimeDelta * 2.0f : m_SunflowerSpread - fTimeDelta * 2.0f;
+
 		// 팔 위치 sin cos 으로 해바라기 마냥 회전하면서 본체 룩엣에 고정
 
-		m_LeftArmTr->Set_State(CTransform::STATE_POSITION,vPos + sinf(D3DXToRadian(m_fTimer * 500.f)) * vUp * 10.f - cosf(D3DXToRadian(m_fTimer * 500.f)) * vRight * 10.f);
-		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vPos + sinf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vUp * 10.f - cosf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vRight * 10.f);
+		m_LeftArmTr->Set_State(CTransform::STATE_POSITION,vPos + sinf(D3DXToRadian(m_fTimer * 500.f)) * vUp * m_SunflowerSpread - cosf(D3DXToRadian(m_fTimer * 500.f)) * vRight * m_SunflowerSpread);
+		m_RightArmTr->Set_State(CTransform::STATE_POSITION, vPos +sinf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vUp * m_SunflowerSpread - cosf(D3DXToRadian(m_fTimer * 500.f + 180.f)) * vRight * m_SunflowerSpread);
 		m_LeftArmRotationTr->Set_WorldMatrix(m_pOnlyRotation->Get_WorldMatrix());
 		m_LeftArmRotationTr->Set_State(CTransform::STATE_POSITION,m_LeftArmTr->Get_State(CTransform::STATE_POSITION));
 		m_RightArmRotationTr->Set_WorldMatrix(m_pOnlyRotation->Get_WorldMatrix());

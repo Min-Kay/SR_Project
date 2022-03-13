@@ -94,6 +94,7 @@ private:
 
 
 	_float	m_fTimer = 0.f;
+
 private:
 	_bool m_isCharging = false;
 	_float3 m_vChargingLook;

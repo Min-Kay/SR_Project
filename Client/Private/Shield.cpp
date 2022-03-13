@@ -199,7 +199,7 @@ void CShield::Set_Valid(_bool _bool)
 	{
 		m_On = true;
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-		p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_STATIC, m_pCollider);
+		p_instance->Add_Collider(CCollision_Manager::COLLOBJTYPE_OBJ, m_pCollider);
 		RELEASE_INSTANCE(CGameInstance);
 	}
 	else

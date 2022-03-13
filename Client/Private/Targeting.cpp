@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Missile.h"
 #include "Transform.h"
+#include "Boss.h"
 
 CTargeting::CTargeting(LPDIRECT3DDEVICE9 pGraphic_Device)
 	:CGameObject(pGraphic_Device)
@@ -45,8 +46,10 @@ HRESULT CTargeting::NativeConstruct(void* pArg)
 
 	m_Target = *static_cast<TARGET*>(pArg);
 
+
 	m_pBoss = static_cast<CBoss*>(m_Target.Parent);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _float3(2.f, 2.f, 2.f));
+	CTransform* BossTr = static_cast<CTransform*>(m_pBoss->Get_Component(COM_TRANSFORM));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, BossTr->Get_State(CTransform::STATE_POSITION));
 	m_bcheckCollider = false;
 
 	return S_OK;
@@ -173,7 +176,7 @@ HRESULT CTargeting::ColliderCheck()
 	for (auto& iter : test)
 	{
 
-		if (OBJ_STATIC == iter->Get_Type() && iter != m_Target.Parent && iter != m_pPlayer)
+		if (OBJ_STATIC == iter->Get_Type() && iter != m_Target.Parent)
 		{
 			m_pTarget = (CTransform*)iter->Get_Component(COM_TRANSFORM);
 			_float3 Target_Right = m_pTarget->Get_State(CTransform::STATE_RIGHT);
@@ -190,8 +193,10 @@ HRESULT CTargeting::ColliderCheck()
 
 				m_bcheckCollider = true;
 			}
+
 			break;
 		}
+
 	}
 	RELEASE_INSTANCE(CGameInstance)
 		return S_OK;
@@ -223,6 +228,7 @@ HRESULT CTargeting::MainTarget(_float fTimeDelta)
 	}
 	else
 	{
+		timer = 0.f;
 		MainMoving(1); //출동하고 위치 고정시킴 이위치에 이제 미사일 쏠거임
 		deletetimer += fTimeDelta;
 		if (deletetimer >= 8.f)
@@ -271,7 +277,7 @@ HRESULT CTargeting::SetUp_Component()
 		return E_FAIL;
 
 
-	Set_Type(OBJ_STATIC);
+	Set_Type(OBJ_NONE);
 
 
 	m_pTransformCom->Scaled(_float3(4.f, 4.f, 4.f));

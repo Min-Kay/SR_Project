@@ -23,7 +23,6 @@ CMinimy::CMinimy(const CMinimy& rhs)
 	: CEnemy(rhs)
 	, m_pTransform(rhs.m_pTransform)
 	, m_pCollider(rhs.m_pCollider)
-	, m_pOnlyRotation(rhs.m_pOnlyRotation)
 	, m_pTexture(rhs.m_pTexture)
 	, m_pBuffer(rhs.m_pBuffer)
 	, m_pRenderer(rhs.m_pRenderer)
@@ -31,7 +30,6 @@ CMinimy::CMinimy(const CMinimy& rhs)
 {
 	Safe_AddRef(m_pTransform);
 	Safe_AddRef(m_pCollider);
-	Safe_AddRef(m_pOnlyRotation);
 	Safe_AddRef(m_pBuffer);
 	Safe_AddRef(m_pRenderer);
 	Safe_AddRef(m_pTexture);
@@ -75,7 +73,7 @@ _int CMinimy::Tick(_float fTimeDelta)
 
 	State_Machine(fTimeDelta);
 
-	Synchronize_Transform();
+	m_pCollider->Set_Collider();
 
 	return 0;
 }
@@ -96,7 +94,7 @@ HRESULT CMinimy::Render()
 		return E_FAIL;
 
 
-	m_pOnlyRotation->Bind_OnShader(m_pShader);
+	m_pTransform->Bind_OnShader(m_pShader);
 
 	m_pShader->SetUp_ValueOnShader("g_ColorStack", &g_ControlShader, sizeof(_float));
 	m_pShader->SetUp_ValueOnShader("g_Color", m_Color, sizeof(_float4));
@@ -130,9 +128,6 @@ HRESULT CMinimy::SetUp_Component()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_RENDERER, COM_RENDERER, (CComponent**)&m_pRenderer)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_TRANSFORM, TEXT("OnlyRotation"), (CComponent**)&m_pOnlyRotation)))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, PROTO_CUBE, COM_BUFFER, (CComponent**)&m_pBuffer)))
 		return E_FAIL;
 
@@ -142,7 +137,6 @@ HRESULT CMinimy::SetUp_Component()
 	Set_Type(OBJ_ENEMY);
 
 	m_pTransform->Scaled(m_Size);
-	m_pOnlyRotation->Scaled(m_Size);
 
 
 	m_pCollider->Set_CollStyle(CCollider::COLLSTYLE_ENTER);
@@ -163,55 +157,37 @@ HRESULT CMinimy::SetUp_Component()
 	return S_OK;
 }
 
-void CMinimy::Synchronize_Transform()
-{
-	m_pOnlyRotation->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
-	m_pCollider->Set_Collider();
-}
-
-void CMinimy::Gravity_Blowing(_float fTimeDelta, _bool _watchPlayer)
+void CMinimy::Gravity_Blowing(_float fTimeDelta)
 {
 	if (fTimeDelta <= 0.f)
 		return;
 
-	m_fTimer += fTimeDelta;
+	_float3 vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	_float3 vUp = m_pTransform->Get_State(CTransform::STATE_UP);
 
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-	list<CCollision_Manager::COLLPOINT> collList = p_instance->Get_Ray_Collision_List(-m_pTransform->Get_State(CTransform::STATE_UP), m_pTransform->Get_State(CTransform::STATE_POSITION), 100, true);
+	D3DXVec3Normalize(&vRight, &vRight);	D3DXVec3Normalize(&vRight, &vRight);
+	D3DXVec3Normalize(&vUp, &vUp);
 
-	if (collList.empty())
-	{
-		RELEASE_INSTANCE(CGameInstance);
-		return;
-	}
+	m_Angle += 10.f;
+
+	m_YMove = (_int)m_Angle % 360 == 0 ? !m_YMove : m_YMove;
+	m_RMove = (_int)m_Angle % 720 == 0 ? !m_RMove : m_RMove;
 
 
-	auto iter = collList.begin();
+	vUp = m_YMove ? vUp * sinf(D3DXToRadian(m_Angle)) * 0.01f : -vUp * sinf(D3DXToRadian(m_Angle)) * 0.01f;
+	vRight = m_RMove ? vRight * 0.003f : -vRight * 0.003f;
 
-	for (; iter != collList.end();)
-	{
-		if (iter->CollObj == this)
-			++iter;
-		else
-			break;
-	}
-
-	if (iter == collList.end())
-	{
-
-		m_pTransform->Set_State(CTransform::STATE_POSITION, m_pTransform->Get_State(CTransform::STATE_POSITION));
-		RELEASE_INSTANCE(CGameInstance);
-		return;
-	}
-
-	if (_watchPlayer)
-		m_pOnlyRotation->LookAt(m_pPlayerTr->Get_State(CTransform::STATE_POSITION));
-
-	m_pTransform->Set_State(CTransform::STATE_POSITION, (*iter).Point + _float3(0.f, 2.f, 0.f)  + _float3(0.f, 1.f, 0.f) * sinf(D3DXToDegree(m_fTimer * 0.01f) * 0.5f));
-
-	RELEASE_INSTANCE(CGameInstance);
+	m_pTransform->Turn(vUp, fTimeDelta * 0.5f);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, vPos + vRight + vUp);
 }
 
+void CMinimy::Target_Turn(_float3 dir, _float fTimeDelta)
+{
+	_float3 vAxis = *D3DXVec3Cross(&vAxis, &(m_pTransform->Get_State(CTransform::STATE_LOOK)), &(_float3(dir.x, 0.f, dir.z)));
+
+	m_pTransform->Turn(vAxis, fTimeDelta);
+}
 
 void CMinimy::Add_HP(_int _add)
 {
@@ -241,9 +217,6 @@ void CMinimy::State_Machine(_float fTimeDelta)
 	case MINIMY_MOVE:
 		Move(fTimeDelta);
 		break;
-	case MINIMY_ATTACK:
-		Attack(fTimeDelta);
-		break;
 	case MINIMY_DIE:
 		Die(fTimeDelta);
 		break;
@@ -256,11 +229,11 @@ _bool CMinimy::Sizing(_float fTimeDelta)
 	if (!m_Sizing)
 	{
 		Impact();
-		m_pOnlyRotation->Turn(_float3(0.f,1.f,1.f), fTimeDelta);
-		m_pOnlyRotation->Scaled(_float3(m_fTimer, m_fTimer, m_fTimer));
+		m_pTransform->Turn(_float3(0.f,1.f,1.f), fTimeDelta);
+		m_pTransform->Scaled(_float3(m_fTimer, m_fTimer, m_fTimer));
 		if (m_fTimer >= m_Size.x)
 		{
-			m_pOnlyRotation->Scaled(m_Size);
+			m_pTransform->Scaled(m_Size);
 			m_Sizing = true;
 			m_fTimer = 0.f;
 
@@ -275,17 +248,35 @@ _bool CMinimy::Sizing(_float fTimeDelta)
 void CMinimy::Idle(_float fTimeDelta)
 {
 	if (Sizing(fTimeDelta))
-		Gravity_Blowing(fTimeDelta,true);
+		Gravity_Blowing(fTimeDelta);
 
 }
 
 void CMinimy::Move(_float fTimeDelta)
 {
-	Gravity_Blowing(fTimeDelta);
+	_float3 myPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	if (0.5f >= D3DXVec3Length(&(myPos - m_MovePoint)) || m_pTransform->Get_OnCollide())
+	{
+		m_MovePoint.x = rand() % 2 == 0 ? m_InitPoint.x + rand() % 5 : m_InitPoint.x - rand() % 5;
+		m_MovePoint.y = rand() % 2 == 0 ? m_InitPoint.y + rand() % 5 : m_InitPoint.y - rand() % 5;
+		m_MovePoint.z = rand() % 2 == 0 ? m_InitPoint.z + rand() % 5 : m_InitPoint.z - rand() % 5;
+	}
+
+	_float3 vDir = m_MovePoint - myPos;
+
+	D3DXVec3Normalize(&vDir, &vDir);
+
+	Target_Turn(vDir, fTimeDelta);
+
+	m_pTransform->Set_State(CTransform::STATE_POSITION, myPos + vDir * m_IdleSpeed);
 }
 
-void CMinimy::Attack(_float fTimeDelta)
+void CMinimy::Set_InitPos(_float3 _pos)
 {
+	m_InitPoint = _pos;
+	m_MovePoint = m_InitPoint;
+
+	m_pTransform->Set_State(CTransform::STATE_POSITION, _pos);
 }
 
 void CMinimy::Die(_float fTimeDelta)
@@ -304,20 +295,30 @@ void CMinimy::Die(_float fTimeDelta)
 			return;
 		}
 
+		list<CEnemy*> enemyList;
+
 		for (auto& obj : colllist)
 		{
 			if (obj->Get_Type() == OBJ_ENEMY)
 			{
-				if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_SHIELD)
-				{
-					static_cast<CShield*>(obj)->Add_ShieldHp(-(m_Damage * 3));
-				}
-				else if (static_cast<CEnemy*>(obj)->Get_EnemyType() == ENEMY_BOSS)
-				{
-					static_cast<CEnemy*>(obj)->Add_HP(-m_Damage);
-				}
-
+				enemyList.push_back(static_cast<CEnemy*>(obj));
 			}
+		}
+
+		if(!enemyList.empty())
+		{
+			enemyList.sort([](CEnemy* a, CEnemy* b) { return a->Get_EnemyType() > b->Get_EnemyType(); });
+
+			switch (enemyList.front()->Get_EnemyType())
+			{
+			case ENEMY_SHIELD:
+				static_cast<CShield*>(enemyList.front())->Add_ShieldHp(-m_Damage * 3);
+				break;
+			case ENEMY_BOSS:
+				enemyList.front()->Add_HP(-m_Damage);
+				break;
+			}
+
 			p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
 			p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Minimy_Die1.wav") : TEXT("Minimy_Die.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
 			Impact();
@@ -326,6 +327,12 @@ void CMinimy::Die(_float fTimeDelta)
 			RELEASE_INSTANCE(CGameInstance);
 			return;
 		}
+
+		p_instance->StopSound(CSoundMgr::ENEMY_EFFECT1);
+		p_instance->Play_Sound(rand() % 2 == 0 ? TEXT("Minimy_Die1.wav") : TEXT("Minimy_Die.wav"), CSoundMgr::ENEMY_EFFECT1, 1.0f);
+		Impact();
+		m_pCollider->Set_Dead(true);
+		Set_Dead(true);
 		RELEASE_INSTANCE(CGameInstance);
 	}
 }
@@ -352,15 +359,6 @@ void CMinimy::Impact()
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);
-}
-
-
-void CMinimy::Screw(_float fTimeDelta)
-{
-}
-
-void CMinimy::Company_Fire(_float fTimeDelta)
-{
 }
 
 CMinimy* CMinimy::Create(LPDIRECT3DDEVICE9 m_pGraphic_Device)
@@ -395,7 +393,6 @@ void CMinimy::Free()
 	__super::Free();
 	Safe_Release(m_pTransform);
 	Safe_Release(m_pCollider);
-	Safe_Release(m_pOnlyRotation);
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTexture);

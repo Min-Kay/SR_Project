@@ -111,8 +111,10 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 		RELEASE_INSTANCE(CGameInstance);
 	}
 
-	if(!m_Changed && m_ChangedTile)
+	if(m_Changed && !m_Spawning)
 	{
+		static_cast<CBoxCollider*>(m_EventCube_Save_Exit->Get_Component(COM_COLLIDER))->Set_Dead(false);
+
 		if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 			return E_FAIL;
 		m_pPlayer->Set_Shake(1.f, 2.f);
@@ -120,7 +122,7 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
 		p_instance->StopSound(CSoundMgr::EFFECT3);
 		RELEASE_INSTANCE(CGameInstance);
-		m_Changed = true;
+		m_Spawning = true;
 	}
 
 	if(!m_ChangedTile)
@@ -131,6 +133,28 @@ _int CLevel_StageTwo::Tick(_float fTimeDelta)
 	if (!m_ChangedTile2)
 	{
 		Change_Boss_Tile(fTimeDelta);
+	}
+
+	if(m_pBoss && m_pBoss->Get_HP() <= 0)
+	{
+		m_SoundTimer += fTimeDelta;
+		CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+
+		if (m_SoundTimer < 1.5f)
+		{
+			m_pPlayer->Set_Shake(1.0f, 2.f);
+			p_instance->BGMVolumeDown(fTimeDelta * 0.5f);
+			g_ControlTime -= fTimeDelta * 0.6f;
+			g_ControlShader += fTimeDelta * 0.3f;
+		}
+		else
+		{
+			p_instance->StopAll();
+			g_ControlShader = 1.f;
+			g_ControlTime = 0.2f;
+		}
+		RELEASE_INSTANCE(CGameInstance);
+
 	}
 
 	m_setting = true;
@@ -366,13 +390,15 @@ HRESULT CLevel_StageTwo::Ready_Layer_Map()
 		trans->Set_State(CTransform::STATE_POSITION, _float3(0.f, 1.f, 0.f));
 
 		CBoxCollider* box = static_cast<CBoxCollider*>(Switch->Get_Component(COM_COLLIDER));
-		box->Set_State(CBoxCollider::COLL_SIZE, _float3(5.f, 5.f, 5.f));
+		box->Set_State(CBoxCollider::COLL_SIZE, _float3(15.f, 15.f, 15.f));
 		box->Set_Collider();
 	}
 
 	m_EventCube_Save_Exit = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Save_Exit"), 0));
 
 	m_EventCube_Save_Exit->Set_TextureIndex(4);
+
+	m_EventCubeTr = static_cast<CTransform*>(m_EventCube_Save_Exit->Get_Component(COM_TRANSFORM));
 
 	m_EventCube_Open = static_cast<CTile_Cube*>(pGameInstance->Get_GameObject(LEVEL_STAGETWO, TEXT("Layer_Open_Exit"), 0));
 
@@ -932,11 +958,17 @@ HRESULT CLevel_StageTwo::Close_Exit()
 void CLevel_StageTwo::Spawn_Boss_Tile(_float fTimeDelta)
 {
 	if (!m_BossSpone)
+	{
+		m_BlowTimer += fTimeDelta;
+
+		m_EventCubeTr->Set_State(CTransform::STATE_POSITION, _float3(0.f, sinf(D3DXToRadian(m_BlowTimer * 20.f)) + 2.f, 0.f));
+		
 		return;
+	}
 
 	m_Gradiant = false;
-
-	static_cast<CTransform*>(m_EventCube_Save_Exit->Get_Component(COM_TRANSFORM))->Turn(_float3(1.f, 1.f, 0.f), fTimeDelta * 10.f);
+	m_EventCubeTr->Turn(_float3(1.f, 1.f, 0.f), fTimeDelta * 10.f);
+	m_EventCubeTr->Set_State(CTransform::STATE_POSITION, _float3(0.f, m_EventCubeTr->Get_State(CTransform::STATE_POSITION).y + fTimeDelta * 3.f,0.f));
 
 	if(!m_GradianChangeTile)
 	{
@@ -962,7 +994,7 @@ void CLevel_StageTwo::Spawn_Boss_Tile(_float fTimeDelta)
 	else if(m_GradianChangeTile)
 	{
 		m_Timer += fTimeDelta;
-
+		m_Changed = true;
 		for (auto& i : m_TileList)
 		{
 			i->Set_Color(_float4(1.f - m_Timer, 1.f - m_Timer, 1.f - m_Timer, 0.f));
@@ -990,7 +1022,7 @@ void CLevel_StageTwo::Spawn_Boss_Tile(_float fTimeDelta)
 
 void CLevel_StageTwo::Change_Boss_Tile(_float fTimeDelta)
 {
-	if (!m_Changed || m_pBoss->Get_Phase() != CBoss::BOSS_PHASETWO)
+	if (!m_Spawning || m_pBoss->Get_Phase() != CBoss::BOSS_PHASETWO)
 		return;
 
 	m_Gradiant = false;
