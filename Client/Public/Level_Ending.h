@@ -27,7 +27,7 @@ private:
 
 private:
 	CUI* m_Scroll = nullptr;
-
+	_float m_Timer = 0.f;
 
 public:
 	static CLevel_Ending* Create(LPDIRECT3DDEVICE9 m_pGraphic_Device);

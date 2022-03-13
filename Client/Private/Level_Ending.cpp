@@ -26,6 +26,10 @@ HRESULT CLevel_Ending::NativeConstruct()
 	g_ControlShader = 0.f;
 	g_ControlTime = 1.f;
 
+	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
+	p_instance->PlayBGM(TEXT("Ending.mp3"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -33,9 +37,11 @@ _int CLevel_Ending::Tick(_float fTimeDelta)
 {
 	if (0 > __super::Tick(fTimeDelta))
 		return -1;
+	m_Timer += fTimeDelta;
 
-	m_Scroll->Set_Pos(m_Scroll->Get_Pos().x, m_Scroll->Get_Pos().y -
-		fTimeDelta *50.f);
+	if(m_Timer <= 28.7f)
+		m_Scroll->Set_Pos(m_Scroll->Get_Pos().x, m_Scroll->Get_Pos().y -
+		fTimeDelta *70.f);
 
 	return 0;
 }

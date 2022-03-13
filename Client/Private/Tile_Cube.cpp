@@ -130,12 +130,16 @@ HRESULT CTile_Cube::SetUp_Components()
 
 _bool CTile_Cube::Open_Event(_uint iLevelIndex, const _tchar* pLeftDoorLayerTag, const _tchar* pRightDoorLayerTag)
 {
-
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (!m_PlayerCollider)
 		m_PlayerCollider = static_cast<CBoxCollider*>(pGameInstance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player"))->Get_Component(COM_COLLIDER));
 
+	if (!m_PlayerCollider)
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return false;
+	}
 
 	if(pGameInstance->Get_Collide(m_pBoxColliderCom, m_PlayerCollider))
 	{
@@ -160,6 +164,12 @@ _bool CTile_Cube::Open_Block_Event(_uint iLevelIndex, const _tchar* pLeftDoorLay
 		m_PlayerCollider = static_cast<CBoxCollider*>(pGameInstance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player"))->Get_Component(COM_COLLIDER));
 
 	list<CGameObject*> collList = pGameInstance->Get_Collision_Object_List(m_pBoxColliderCom);
+
+	if (collList.empty())
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return false;
+	}
 
 	for(auto& i : collList)
 	{
@@ -213,6 +223,12 @@ _bool CTile_Cube::Save_Point()
 
 	if (!m_PlayerCollider)
 		m_PlayerCollider = static_cast<CBoxCollider*>(pGameInstance->Get_GameObject_End(g_CurrLevel, TEXT("Layer_Player"))->Get_Component(COM_COLLIDER));
+
+	if (!m_PlayerCollider)
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return false;
+	}
 
 	if (pGameInstance->Get_Collide(m_pBoxColliderCom, m_PlayerCollider))
 	{

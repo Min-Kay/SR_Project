@@ -119,25 +119,50 @@ HRESULT CLevel_Loading::Ready()
 		return E_FAIL;
 	}
 
-	CUI::UIDESC desc;
-	ZeroMemory(&desc, sizeof(Engine::CUI::UIDESC));
-	desc.WinCX = g_iWinCX;
-	desc.WinCY = g_iWinCY;
-	desc.PosX = g_iWinCX * 0.5f;
-	desc.PosY = g_iWinCY * 0.5f;
-	desc.SizeX = g_iWinCX;
-	desc.SizeY = g_iWinCY;
-	desc.Texture = TEXT("Prototype_Component_Texture_Loading");
-	desc.FrameCount = 50;
-	desc.AnimateSpeed = 100.f;
-	desc.Style = CUI::STYLE_REPEAT;
-	desc.Shader_Control = &g_ControlShader;
-	desc.Shader_Style = SHADER_NONE;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Loading"), PROTO_UI, &desc)))
+	if (m_eNextLevel != LEVEL_ENDING)
 	{
-		RELEASE_INSTANCE(CGameInstance);
-		return E_FAIL;
+		CUI::UIDESC desc;
+		ZeroMemory(&desc, sizeof(Engine::CUI::UIDESC));
+		desc.WinCX = g_iWinCX;
+		desc.WinCY = g_iWinCY;
+		desc.PosX = g_iWinCX * 0.5f;
+		desc.PosY = g_iWinCY * 0.5f;
+		desc.SizeX = g_iWinCX;
+		desc.SizeY = g_iWinCY;
+		desc.Texture = TEXT("Prototype_Component_Texture_Loading");
+		desc.FrameCount = 50;
+		desc.AnimateSpeed = 100.f;
+		desc.Style = CUI::STYLE_REPEAT;
+		desc.Shader_Control = &g_ControlShader;
+		desc.Shader_Style = SHADER_NONE;
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Loading"), PROTO_UI, &desc)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return E_FAIL;
+		}
+	}
+	else
+	{
+		CUI::UIDESC desc;
+		ZeroMemory(&desc, sizeof(Engine::CUI::UIDESC));
+		desc.WinCX = g_iWinCX;
+		desc.WinCY = g_iWinCY;
+		desc.PosX = g_iWinCX * 0.5f;
+		desc.PosY = g_iWinCY * 0.5f;
+		desc.SizeX = g_iWinCX;
+		desc.SizeY = g_iWinCY;
+		desc.Texture = TEXT("Prototype_Component_Texture_White");
+		desc.FrameCount = 1;
+		desc.Style = CUI::STYLE_FIX;
+		desc.Shader_Control = &g_ControlShader;
+		desc.Shader_Style = SHADER_NONE;
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("White"), PROTO_UI, &desc)))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return E_FAIL;
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

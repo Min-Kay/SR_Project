@@ -962,8 +962,8 @@ void CBoss::Spawn_Shield()
 			CTransform* tr = static_cast<CTransform*>(mini->Get_Component(COM_TRANSFORM));
 			_float3 vPos = m_InitPos;
 
-			vPos.x += rand() % 2 == 0 ? rand() % 20 : -(rand() % 20);
-			vPos.z += rand() % 2 == 0 ? rand() % 20 : -(rand() % 20);
+			vPos.x += rand() % 2 == 0 ? rand() % 40 : -(rand() % 40);
+			vPos.z += rand() % 2 == 0 ? rand() % 40 : -(rand() % 40);
 			mini->Set_MonsterType(CCubeMonster::MT_IDLE);
 			mini->Set_InitPos(vPos);
 			

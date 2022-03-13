@@ -343,9 +343,6 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Shield_Effect"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Shield_Effect.dds")))))
 		return E_FAIL;
 
-	//if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Minimy"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Minimy.dds")))))
-		//return E_FAIL;
-
 	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Laser"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../../Resources/Textures/Portal/Enemy/Boss_Laser.dds")))))
 		return E_FAIL;
 
@@ -394,9 +391,6 @@ HRESULT CLoader::Loading_ForStageTwo()
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Shield_Effect"), CShield_Effect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	//if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Minimy"), CMinimy::Create(m_pGraphic_Device))))
-		//return E_FAIL;
-
 	if (FAILED(p_instance->Add_Prototype(TEXT("Prototype_GameObject_Laser"), CLaser::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
@@ -412,13 +406,6 @@ HRESULT CLoader::Loading_ForStageTwo()
 
 HRESULT CLoader::Loading_ForEnding()
 {
-	CGameInstance* p_instance = GET_INSTANCE(CGameInstance);
-
-	if (FAILED(p_instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ending"), CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../../Resources/Textures/Ending.png")))))
-		return E_FAIL;
-
-	RELEASE_INSTANCE(CGameInstance);
-
 	m_isFinished = true;
 	return S_OK;
 }

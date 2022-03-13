@@ -34,9 +34,6 @@ private:
 	HRESULT Open_Exit();
 	HRESULT Save_Point();
 
-	HRESULT Close_Exit();
-
-
 private:
 	void Spawn_Boss_Tile(_float fTimeDelta);
 	void Change_Boss_Tile(_float fTimeDelta);
